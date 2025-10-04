@@ -1,0 +1,118 @@
+<div class="intakehub-container">
+  <!-- Sidebar: Profile & Previous Intakes -->
+  <aside class="sidebar">
+    <div class="profile-section">
+      <img src="ZBLogo.jpg" alt="Profile" class="profile-image">
+      <h3 class="profile-name">Client Name</h3>
+      <p class="profile-email">client&#64;email.com</p>
+    </div>
+
+    <div class="previous-intakes">
+      <h4>Previous Intakes</h4>
+      <ul class="intake-list">
+        <li class="intake-item">Estate Planning - 01/15/2025</li>
+        <li class="intake-item">Elder Law - 12/20/2024</li>
+        <li class="intake-item">Guardianship - 11/10/2024</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="logo-header">
+      <img src="ZBLogo.jpg" alt="ZBB Logo" class="logo">
+      <h1 class="page-title">Zacharia Brown & Bratkovich</h1>
+    </div>
+
+    <!-- Main Cards -->
+    <div class="cards-container" *ngIf="!showIntakeOptions">
+      <div class="card" (click)="toggleIntakeOptions()">
+        <div class="card-image">
+          <img src="intakeform.jpg" alt="New Intake">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">New Intake</h2>
+          <p class="card-description">Start a new client intake form</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <img src="library.jpg" alt="Education Center">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Education Center</h2>
+          <p class="card-description">Access educational resources and materials</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Intake Options (8 cards) -->
+    <div class="intake-options" *ngIf="showIntakeOptions">
+      <button class="back-button" (click)="toggleIntakeOptions()">← Back</button>
+
+      <h2 class="section-title">Select Intake Type</h2>
+
+      <div class="intake-cards-grid">
+        <div class="intake-card">
+          <h3>Estate Planning Single</h3>
+          <p>Single individual estate planning</p>
+        </div>
+        <div class="intake-card">
+          <h3>Estate Planning Married</h3>
+          <p>Married couple estate planning</p>
+        </div>
+        <div class="intake-card">
+          <h3>Elder Law Benefits Single</h3>
+          <p>Single individual elder law benefits</p>
+        </div>
+        <div class="intake-card">
+          <h3>Elder Law Benefits Married</h3>
+          <p>Married couple elder law benefits</p>
+        </div>
+        <div class="intake-card">
+          <h3>Estate Administration</h3>
+          <p>Estate administration services</p>
+        </div>
+        <div class="intake-card">
+          <h3>Guardianship</h3>
+          <p>Guardianship services</p>
+        </div>
+        <div class="intake-card">
+          <h3>Special Needs Trust</h3>
+          <p>Special needs trust planning</p>
+        </div>
+        <div class="intake-card">
+          <h3>Other</h3>
+          <p>Other legal services</p>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label for="state">State</label>
+          <select id="state" name="state">
+            <option value="">Select a state</option>
+            <option value="florida">Florida</option>
+            <option value="pennsylvania">Pennsylvania</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comments">Comments</label>
+          <textarea id="comments" name="comments" rows="4" placeholder="Enter any additional comments or information..."></textarea>
+        </div>
+
+        <div class="continue-section">
+          <button class="btn-continue">
+            Continue
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
