@@ -1,0 +1,208 @@
+/* Enhanced Personal Component Styles with better padding and color scheme */
+
+/* Override Tailwind/DaisyUI defaults for better spacing and colors */
+
+/* Main container - enhanced background */
+.personal-container {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 10%, #f5f5f5 10%);
+  min-height: 100vh;
+}
+
+/* Card body padding enhancement */
+:host ::ng-deep .card-body {
+  padding: 3rem !important;
+}
+
+/* Section headers with better styling */
+:host ::ng-deep h2 {
+  color: #1a1a2e;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid #d4a146;
+}
+
+/* Form sections with more breathing room */
+:host ::ng-deep .mb-8 {
+  margin-bottom: 3rem !important;
+}
+
+/* Enhanced label styling */
+:host ::ng-deep .label-text {
+  color: #1a1a2e;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Input fields with better padding and borders */
+:host ::ng-deep .input,
+:host ::ng-deep .select {
+  padding: 1rem !important;
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .input:focus,
+:host ::ng-deep .select:focus {
+  border-color: #d4a146 !important;
+  box-shadow: 0 0 0 3px rgba(212, 161, 70, 0.15) !important;
+  outline: none;
+}
+
+:host ::ng-deep .input::placeholder {
+  color: #999;
+}
+
+/* Enhanced grid spacing */
+:host ::ng-deep .gap-4 {
+  gap: 1.5rem !important;
+}
+
+/* Checkbox styling */
+:host ::ng-deep .checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #d4a146;
+}
+
+:host ::ng-deep .checkbox:checked {
+  background-color: #d4a146;
+  border-color: #d4a146;
+}
+
+/* Previous address cards with better contrast */
+:host ::ng-deep .bg-slate-50 {
+  background: #f8f9fa !important;
+  border: 1px solid #e0e0e0;
+  padding: 2rem !important;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Button enhancements */
+:host ::ng-deep .btn {
+  padding: 1rem 2rem !important;
+  font-weight: 600;
+  font-size: 1.05rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .btn-primary {
+  background: linear-gradient(135deg, #d4a146 0%, #c99438 100%) !important;
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(212, 161, 70, 0.3);
+}
+
+:host ::ng-deep .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 161, 70, 0.4);
+}
+
+:host ::ng-deep .btn-outline {
+  background: transparent;
+  border: 2px solid #16213e !important;
+  color: #16213e;
+}
+
+:host ::ng-deep .btn-outline:hover {
+  background: #16213e !important;
+  color: #ffffff;
+}
+
+:host ::ng-deep .btn-error {
+  background: transparent;
+  border: 2px solid #dc3545 !important;
+  color: #dc3545;
+}
+
+:host ::ng-deep .btn-error:hover {
+  background: #dc3545 !important;
+  color: #ffffff;
+}
+
+/* Header section */
+:host ::ng-deep h1 {
+  color: #1a1a2e;
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:host ::ng-deep .text-slate-600 {
+  color: #666 !important;
+  font-size: 1.1rem;
+}
+
+/* Card shadow enhancement */
+:host ::ng-deep .shadow-xl {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 1.25rem;
+}
+
+/* Form control spacing */
+:host ::ng-deep .form-control {
+  margin-bottom: 0.5rem;
+}
+
+/* Section title for previous addresses */
+:host ::ng-deep h3 {
+  color: #1a1a2e;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+/* Better button gap in action section */
+:host ::ng-deep .gap-4:last-child {
+  gap: 1.5rem !important;
+}
+
+/* Animation for card appearance */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:host ::ng-deep .card {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Responsive padding adjustments */
+@media (max-width: 768px) {
+  :host ::ng-deep .card-body {
+    padding: 1.5rem !important;
+  }
+
+  :host ::ng-deep h1 {
+    font-size: 2rem;
+  }
+
+  :host ::ng-deep h2 {
+    font-size: 1.5rem;
+  }
+
+  :host ::ng-deep .btn {
+    padding: 0.875rem 1.5rem !important;
+  }
+}
+
+/* Focus visible for accessibility */
+:host ::ng-deep .input:focus-visible,
+:host ::ng-deep .select:focus-visible,
+:host ::ng-deep .btn:focus-visible {
+  outline: 2px solid #d4a146;
+  outline-offset: 2px;
+}

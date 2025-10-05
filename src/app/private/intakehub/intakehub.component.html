@@ -3,12 +3,10 @@
   <aside class="sidebar">
     <div class="profile-section">
       <img src="ZBLogo.jpg" alt="Profile" class="profile-image">
-      <h3 class="profile-name">Client Name</h3>
+      <h4 class="profile-name">Client Name</h4>
       <p class="profile-email">client&#64;email.com</p>
     </div>
-    <div class="new-intake-button">
-      <button (click)="toggleIntakeOptions('intake')">+ New Intake</button>
-    </div>
+
 
     <div class="previous-intakes">
       <h4>Previous Intakes</h4>
@@ -28,8 +26,8 @@
     </div>
 
     <!-- Main Cards -->
-    <div class="cards-container">
-      <div class="card">
+    <div class="cards-container" *ngIf="!showIntakeOptions">
+      <div class="card" (click)="toggleIntakeOptions(true)">
         <div class="card-image">
           <img src="intakeform.jpg" alt="New Intake">
         </div>
@@ -48,63 +46,39 @@
           <p class="card-description">Access educational resources and materials</p>
         </div>
       </div>
-    </div>
 
-    <div class="cards-container" *ngIf="showtemplate === 'vision'">
       <div class="card">
         <div class="card-image">
-          <img src="values.jpg" alt="Our Values">
+          <img src="library.jpg" alt="Education Center">
         </div>
         <div class="card-content">
-          <h2 class="card-title">Our Values</h2>
-          <p class="card-description">Learn about our core values and mission</p>
-          <p><strong>COMPREHENSIVE ESTATE PLANNING INTAKE SYSTEM</strong></ p>
-          <p>Purpose: Set the tone, build trust, and understand the client's "why"</p>
-          <p>Opening Message/Video Topic:</p>
-          <ul>
-            <li>Welcome and confidentiality assurance</li>
-            <li>Overview of the estate planning journey</li>
-            <li>"This is about love and legacy, not just legal documents"</li>
-          </ul>
-
-          <p><strong>Vision & Values Questions:</strong></p>
-          <ul>
-            <li>What prompted you to think about estate planning at this time?</li>
-            <li>What keeps you awake at night regarding your family's future?</li>
-            <li>When you imagine your life well-lived, what will stand out?</li>
-            <li>If you could look back from the end of your life, what would you want to have accomplished with your
-              wealth?</li>
-            <li>What does "success" mean for your family?</li>
-            <li>What values do you want your legacy to reflect? (Options: self-reliance, education, philanthropy, family
-              unity, entrepreneurship, service to others, etc.)</li>
-            <li>What's your biggest fear about what could happen to your family or assets if something happened to you?
-            </li>
-            <li>What do you hope your family will say about you and remember most?</li>
-            <li>Are there any family stories or experiences that shape how you think about wealth and legacy?</li>
-          </ul>
+          <h2 class="card-title">Education Center</h2>
+          <p class="card-description">Access educational resources and materials</p>
         </div>
       </div>
     </div>
+
+
     <!-- New Intake Options (8 cards) -->
-    <div class="intake-options" *ngIf="showtemplate === 'intakeOptions'">
-      <button class="back-button" (click)="toggleIntakeOptions('vision')">← Back</button>
+    <div class="intake-options" *ngIf="showIntakeOptions">
+      <button class="back-button" (click)="toggleIntakeOptions(false)">← Back</button>
 
       <h2 class="section-title">Select Intake Type</h2>
 
       <div class="intake-cards-grid">
-        <div class="intake-card">
+        <div class="intake-card" routerLink="/main" routerLinkActive="router-link-active">
           <h3>Estate Planning Single</h3>
           <p>Single individual estate planning</p>
         </div>
-        <div class="intake-card">
+        <div class="intake-card" routerLink="/main" routerLinkActive="router-link-active">
           <h3>Estate Planning Married</h3>
           <p>Married couple estate planning</p>
         </div>
-        <div class="intake-card">
+        <div class="intake-card" routerLink="/main" routerLinkActive="router-link-active">
           <h3>Elder Law Benefits Single</h3>
           <p>Single individual elder law benefits</p>
         </div>
-        <div class="intake-card">
+        <div class="intake-card" routerLink="/main" routerLinkActive="router-link-active">
           <h3>Elder Law Benefits Married</h3>
           <p>Married couple elder law benefits</p>
         </div>
