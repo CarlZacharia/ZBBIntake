@@ -2,9 +2,9 @@
 
 /* Override Tailwind/DaisyUI defaults for better spacing and colors */
 
-/* Main container - enhanced background */
+/* Main container - enhanced background with better contrast */
 .personal-container {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 10%, #f5f5f5 10%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 10%, #5f6162 10%);
   min-height: 100vh;
 }
 
@@ -141,10 +141,15 @@
   font-size: 1.1rem;
 }
 
-/* Card shadow enhancement */
+/* Card shadow enhancement - much stronger contrast */
 :host ::ng-deep .shadow-xl {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
   border-radius: 1.25rem;
+  border: 1px solid #d0d0d0;
+}
+
+:host ::ng-deep .card {
+  background: #ffffff !important;
 }
 
 /* Form control spacing */
@@ -170,6 +175,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
