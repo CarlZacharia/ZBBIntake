@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
 import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, PersonalComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
