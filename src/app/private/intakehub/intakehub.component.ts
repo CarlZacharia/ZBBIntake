@@ -8,9 +8,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './intakehub.component.css'
 })
 export class IntakehubComponent {
-  showIntakeOptions = false;
+  showtemplate: string = 'vision';
 
-  toggleIntakeOptions() {
-    this.showIntakeOptions = !this.showIntakeOptions;
+  toggleIntakeOptions(option: string) {
+    if (option == 'vision') {
+      this.showtemplate = 'vision';
+    } else if (option == 'intake') {
+      this.showtemplate = 'intakeOptions';
+    }
   }
 }

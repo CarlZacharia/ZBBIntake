@@ -6,6 +6,9 @@
       <h3 class="profile-name">Client Name</h3>
       <p class="profile-email">client&#64;email.com</p>
     </div>
+    <div class="new-intake-button">
+      <button (click)="toggleIntakeOptions('intake')">+ New Intake</button>
+    </div>
 
     <div class="previous-intakes">
       <h4>Previous Intakes</h4>
@@ -25,8 +28,8 @@
     </div>
 
     <!-- Main Cards -->
-    <div class="cards-container" *ngIf="!showIntakeOptions">
-      <div class="card" (click)="toggleIntakeOptions()">
+    <div class="cards-container">
+      <div class="card">
         <div class="card-image">
           <img src="intakeform.jpg" alt="New Intake">
         </div>
@@ -47,9 +50,44 @@
       </div>
     </div>
 
+    <div class="cards-container" *ngIf="showtemplate === 'vision'">
+      <div class="card">
+        <div class="card-image">
+          <img src="values.jpg" alt="Our Values">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Our Values</h2>
+          <p class="card-description">Learn about our core values and mission</p>
+          <p><strong>COMPREHENSIVE ESTATE PLANNING INTAKE SYSTEM</strong></ p>
+          <p>Purpose: Set the tone, build trust, and understand the client's "why"</p>
+          <p>Opening Message/Video Topic:</p>
+          <ul>
+            <li>Welcome and confidentiality assurance</li>
+            <li>Overview of the estate planning journey</li>
+            <li>"This is about love and legacy, not just legal documents"</li>
+          </ul>
+
+          <p><strong>Vision & Values Questions:</strong></p>
+          <ul>
+            <li>What prompted you to think about estate planning at this time?</li>
+            <li>What keeps you awake at night regarding your family's future?</li>
+            <li>When you imagine your life well-lived, what will stand out?</li>
+            <li>If you could look back from the end of your life, what would you want to have accomplished with your
+              wealth?</li>
+            <li>What does "success" mean for your family?</li>
+            <li>What values do you want your legacy to reflect? (Options: self-reliance, education, philanthropy, family
+              unity, entrepreneurship, service to others, etc.)</li>
+            <li>What's your biggest fear about what could happen to your family or assets if something happened to you?
+            </li>
+            <li>What do you hope your family will say about you and remember most?</li>
+            <li>Are there any family stories or experiences that shape how you think about wealth and legacy?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <!-- New Intake Options (8 cards) -->
-    <div class="intake-options" *ngIf="showIntakeOptions">
-      <button class="back-button" (click)="toggleIntakeOptions()">← Back</button>
+    <div class="intake-options" *ngIf="showtemplate === 'intakeOptions'">
+      <button class="back-button" (click)="toggleIntakeOptions('vision')">← Back</button>
 
       <h2 class="section-title">Select Intake Type</h2>
 
@@ -100,13 +138,15 @@
 
         <div class="form-group">
           <label for="comments">Comments</label>
-          <textarea id="comments" name="comments" rows="4" placeholder="Enter any additional comments or information..."></textarea>
+          <textarea id="comments" name="comments" rows="4"
+            placeholder="Enter any additional comments or information..."></textarea>
         </div>
 
         <div class="continue-section">
           <button class="btn-continue">
             Continue
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
