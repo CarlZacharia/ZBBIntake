@@ -1,0 +1,2250 @@
+<div class="assets-container">
+  <h2>Assets</h2>
+
+  <!-- Add Asset Buttons -->
+  <div class="add-buttons-row">
+    <button class="btn btn-add" (click)="openAddModal('real_estate')">+ Real Estate</button>
+    <button class="btn btn-add" (click)="openAddModal('financial_account')">+ Financial Account</button>
+    <button class="btn btn-add" (click)="openAddModal('retirement_account')">+ Retirement Account</button>
+    <button class="btn btn-add" (click)="openAddModal('life_insurance')">+ Life Insurance</button>
+    <button class="btn btn-add" (click)="openAddModal('business_interest')">+ Business Interest</button>
+    <button class="btn btn-add" (click)="openAddModal('digital_asset')">+ Digital Asset</button>
+    <button class="btn btn-add" (click)="openAddModal('other_asset')">+ Other Asset</button>
+  </div>
+
+  <!-- Single Person View -->
+  <div *ngIf="!isMarried" class="single-view">
+    <h3>All Assets</h3>
+
+    <!-- Real Estate -->
+    <div class="asset-category" *ngIf="getAllAssets('real_estate').length > 0">
+      <h4>Real Estate</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('real_estate'); let i = index" (click)="openEditModal('real_estate', i)"
+            class="clickable-row">
+            <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Real Estate Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('real_estate')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Financial Accounts -->
+    <div class="asset-category" *ngIf="getAllAssets('financial_account').length > 0">
+      <h4>Financial Accounts</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('financial_account'); let i = index"
+            (click)="openEditModal('financial_account', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('financial_account', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Financial Accounts Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('financial_account')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Retirement Accounts -->
+    <div class="asset-category" *ngIf="getAllAssets('retirement_account').length > 0">
+      <h4>Retirement Accounts</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('retirement_account'); let i = index"
+            (click)="openEditModal('retirement_account', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('retirement_account', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Retirement Accounts Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('retirement_account')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Life Insurance -->
+    <div class="asset-category" *ngIf="getAllAssets('life_insurance').length > 0">
+      <h4>Life Insurance</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Policy</th>
+            <th>Death Benefit</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('life_insurance'); let i = index"
+            (click)="openEditModal('life_insurance', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('life_insurance', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Life Insurance Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('life_insurance')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Business Interests -->
+    <div class="asset-category" *ngIf="getAllAssets('business_interest').length > 0">
+      <h4>Business Interests</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Business</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('business_interest'); let i = index"
+            (click)="openEditModal('business_interest', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('business_interest', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Business Interests Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('business_interest')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Digital Assets -->
+    <div class="asset-category" *ngIf="getAllAssets('digital_asset').length > 0">
+      <h4>Digital Assets</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('digital_asset'); let i = index"
+            (click)="openEditModal('digital_asset', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Digital Assets Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('digital_asset')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Other Assets -->
+    <div class="asset-category" *ngIf="getAllAssets('other_asset').length > 0">
+      <h4>Other Assets</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('other_asset'); let i = index" (click)="openEditModal('other_asset', i)"
+            class="clickable-row">
+            <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>Other Assets Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('other_asset')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="grand-total">
+      <h3>Total Assets: {{ formatCurrency(getGrandTotal()) }}</h3>
+    </div>
+  </div>
+
+  <!-- Married Couple View -->
+  <div *ngIf="isMarried" class="married-view">
+
+    <!-- Client Assets -->
+    <div class="ownership-section">
+      <h3>Client Assets</h3>
+
+      <div class="asset-category" *ngIf="getClientAssets('real_estate').length > 0">
+        <h4>Real Estate</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('real_estate'); let i = index"
+              (click)="openEditModal('real_estate', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('financial_account').length > 0">
+        <h4>Financial Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('financial_account'); let i = index"
+              (click)="openEditModal('financial_account', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('financial_account', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('retirement_account').length > 0">
+        <h4>Retirement Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('retirement_account'); let i = index"
+              (click)="openEditModal('retirement_account', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('retirement_account', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('life_insurance').length > 0">
+        <h4>Life Insurance</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Policy</th>
+              <th>Death Benefit</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('life_insurance'); let i = index"
+              (click)="openEditModal('life_insurance', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('life_insurance', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('business_interest').length > 0">
+        <h4>Business Interests</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('business_interest'); let i = index"
+              (click)="openEditModal('business_interest', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('business_interest', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('digital_asset').length > 0">
+        <h4>Digital Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('digital_asset'); let i = index"
+              (click)="openEditModal('digital_asset', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('other_asset').length > 0">
+        <h4>Other Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('other_asset'); let i = index"
+              (click)="openEditModal('other_asset', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-total">
+        <strong>Client Total: {{ formatCurrency(getGrandTotal('client')) }}</strong>
+      </div>
+    </div>
+
+    <!-- Spouse Assets -->
+    <div class="ownership-section">
+      <h3>Spouse Assets</h3>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('real_estate').length > 0">
+        <h4>Real Estate</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('real_estate'); let i = index"
+              (click)="openEditModal('real_estate', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('financial_account').length > 0">
+        <h4>Financial Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('financial_account'); let i = index"
+              (click)="openEditModal('financial_account', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('financial_account', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('retirement_account').length > 0">
+        <h4>Retirement Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('retirement_account'); let i = index"
+              (click)="openEditModal('retirement_account', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('retirement_account', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('life_insurance').length > 0">
+        <h4>Life Insurance</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Policy</th>
+              <th>Death Benefit</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('life_insurance'); let i = index"
+              (click)="openEditModal('life_insurance', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('life_insurance', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('business_interest').length > 0">
+        <h4>Business Interests</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('business_interest'); let i = index"
+              (click)="openEditModal('business_interest', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('business_interest', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('digital_asset').length > 0">
+        <h4>Digital Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('digital_asset'); let i = index"
+              (click)="openEditModal('digital_asset', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('other_asset').length > 0">
+        <h4>Other Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('other_asset'); let i = index"
+              (click)="openEditModal('other_asset', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-total">
+        <strong>Spouse Total: {{ formatCurrency(getGrandTotal('spouse')) }}</strong>
+      </div>
+    </div>
+
+    <!-- Joint Assets -->
+    <div class="ownership-section">
+      <h3>Joint Assets</h3>
+
+      <div class="asset-category" *ngIf="getJointAssets('real_estate').length > 0">
+        <h4>Real Estate</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('real_estate'); let i = index"
+              (click)="openEditModal('real_estate', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('financial_account').length > 0">
+        <h4>Financial Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('financial_account'); let i = index"
+              (click)="openEditModal('financial_account', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('financial_account', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('retirement_account').length > 0">
+        <h4>Retirement Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('retirement_account'); let i = index"
+              (click)="openEditModal('retirement_account', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('retirement_account', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('life_insurance').length > 0">
+        <h4>Life Insurance</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Policy</th>
+              <th>Death Benefit</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('life_insurance'); let i = index"
+              (click)="openEditModal('life_insurance', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('life_insurance', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('business_interest').length > 0">
+        <h4>Business Interests</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('business_interest'); let i = index"
+              (click)="openEditModal('business_interest', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('business_interest', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('digital_asset').length > 0">
+        <h4>Digital Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('digital_asset'); let i = index"
+              (click)="openEditModal('digital_asset', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('other_asset').length > 0">
+        <h4>Other Assets</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('other_asset'); let i = index"
+              (click)="openEditModal('other_asset', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-total">
+        <strong>Joint Total: {{ formatCurrency(getGrandTotal(null)) }}</strong>
+      </div>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="grand-total">
+      <h3>Combined Total: {{ formatCurrency(getGrandTotal('client') + getGrandTotal('spouse') + getGrandTotal(null)) }}
+      </h3>
+    </div>
+  </div>
+</div>
+
+<!-- Real Estate Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'real_estate'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Real Estate</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingRealEstate">
+      <form>
+        <!-- Property Type -->
+        <div class="form-group">
+          <label>Property Type *</label>
+          <select [(ngModel)]="editingRealEstate.property_type" name="property_type" required>
+            <option value="primary_residence">Primary Residence</option>
+            <option value="vacation">Vacation</option>
+            <option value="rental">Rental</option>
+            <option value="land">Land</option>
+            <option value="commercial">Commercial</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <label>Address Line 1 *</label>
+          <input type="text" [(ngModel)]="editingRealEstate.address_line1" name="address1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Address Line 2</label>
+          <input type="text" [(ngModel)]="editingRealEstate.address_line2" name="address2">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City *</label>
+            <input type="text" [(ngModel)]="editingRealEstate.city" name="city" required>
+          </div>
+          <div class="form-group">
+            <label>State *</label>
+            <select [(ngModel)]="editingRealEstate.state" name="state" required>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP *</label>
+            <input type="text" [(ngModel)]="editingRealEstate.zip" name="zip" required>
+          </div>
+        </div>
+
+        <!-- Ownership Structure -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Holding *</label>
+            <select [(ngModel)]="editingRealEstate.title_holding" name="title_holding" required>
+              <option value="client">Client</option>
+              <option value="spouse">Spouse</option>
+              <option value="joint_spouse">Joint with Spouse</option>
+              <option value="tenants_common">Tenants in Common</option>
+              <option value="joint_rights_survivorship">Joint with Rights of Survivorship</option>
+              <option value="tod_deed">TOD Deed</option>
+              <option value="trust">Trust</option>
+              <option value="llc">LLC</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
+              <option [ngValue]="null">Joint/Both</option>
+              <option value="client">Client</option>
+              <option value="spouse">Spouse</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Title Details</label>
+          <textarea [(ngModel)]="editingRealEstate.title_details" name="title_details" rows="2"></textarea>
+        </div>
+
+        <!-- Financial Details -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estimated Value</label>
+            <input type="number" [(ngModel)]="editingRealEstate.estimated_value" name="estimated_value">
+          </div>
+          <div class="form-group">
+            <label>Mortgage Balance</label>
+            <input type="number" [(ngModel)]="editingRealEstate.mortgage_balance" name="mortgage_balance">
+          </div>
+        </div>
+
+        <!-- Tenants in Common Fields -->
+        <div *ngIf="editingRealEstate.title_holding === 'tenants_common'">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ownership Percentage</label>
+              <input type="number" [(ngModel)]="editingRealEstate.ownership_percentage" name="ownership_percentage"
+                min="0" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Other Owners</label>
+            <textarea [(ngModel)]="editingRealEstate.other_owners" name="other_owners" rows="2"
+              placeholder="List other owners and their percentages"></textarea>
+          </div>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiaries on Deed</label>
+          <textarea [(ngModel)]="editingRealEstate.beneficiaries_on_deed" name="beneficiaries_on_deed"
+            rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Intended Beneficiary</label>
+          <input type="text" [(ngModel)]="editingRealEstate.intended_beneficiary" name="intended_beneficiary">
+        </div>
+
+        <!-- Special Notes -->
+        <div class="form-group">
+          <label>Special Notes</label>
+          <textarea [(ngModel)]="editingRealEstate.special_notes" name="special_notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Real Estate Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'real_estate'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Real Estate</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingRealEstate">
+      <form>
+        <!-- Property Type -->
+        <div class="form-group">
+          <label>Property Type *</label>
+          <select [(ngModel)]="editingRealEstate.property_type" name="property_type" required>
+            <option value="primary_residence">Primary Residence</option>
+            <option value="vacation">Vacation</option>
+            <option value="rental">Rental</option>
+            <option value="land">Land</option>
+            <option value="commercial">Commercial</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <label>Address Line 1 *</label>
+          <input type="text" [(ngModel)]="editingRealEstate.address_line1" name="address1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Address Line 2</label>
+          <input type="text" [(ngModel)]="editingRealEstate.address_line2" name="address2">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City *</label>
+            <input type="text" [(ngModel)]="editingRealEstate.city" name="city" required>
+          </div>
+          <div class="form-group">
+            <label>State *</label>
+            <select [(ngModel)]="editingRealEstate.state" name="state" required>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP *</label>
+            <input type="text" [(ngModel)]="editingRealEstate.zip" name="zip" required>
+          </div>
+        </div>
+
+        <!-- Ownership Structure -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Holding *</label>
+            <select [(ngModel)]="editingRealEstate.title_holding" name="title_holding" required>
+              <option value="client">Client</option>
+              <option value="spouse">Spouse</option>
+              <option value="joint_spouse">Joint with Spouse</option>
+              <option value="tenants_common">Tenants in Common</option>
+              <option value="joint_rights_survivorship">Joint with Rights of Survivorship</option>
+              <option value="tod_deed">TOD Deed</option>
+              <option value="trust">Trust</option>
+              <option value="llc">LLC</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
+              <option [ngValue]="null">Joint/Both</option>
+              <option value="client">Client</option>
+              <option value="spouse">Spouse</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Title Details</label>
+          <textarea [(ngModel)]="editingRealEstate.title_details" name="title_details" rows="2"></textarea>
+        </div>
+
+        <!-- Financial Details -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estimated Value</label>
+            <input type="number" [(ngModel)]="editingRealEstate.estimated_value" name="estimated_value">
+          </div>
+          <div class="form-group">
+            <label>Mortgage Balance</label>
+            <input type="number" [(ngModel)]="editingRealEstate.mortgage_balance" name="mortgage_balance">
+          </div>
+        </div>
+
+        <!-- Tenants in Common Fields -->
+        <div *ngIf="editingRealEstate.title_holding === 'tenants_common'">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ownership Percentage</label>
+              <input type="number" [(ngModel)]="editingRealEstate.ownership_percentage" name="ownership_percentage"
+                min="0" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Other Owners</label>
+            <textarea [(ngModel)]="editingRealEstate.other_owners" name="other_owners" rows="2"
+              placeholder="List other owners and their percentages"></textarea>
+          </div>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiaries on Deed</label>
+          <textarea [(ngModel)]="editingRealEstate.beneficiaries_on_deed" name="beneficiaries_on_deed"
+            rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Intended Beneficiary</label>
+          <input type="text" [(ngModel)]="editingRealEstate.intended_beneficiary" name="intended_beneficiary">
+        </div>
+
+        <!-- Special Notes -->
+        <div class="form-group">
+          <label>Special Notes</label>
+          <textarea [(ngModel)]="editingRealEstate.special_notes" name="special_notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Financial Account Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'financial_account'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Financial Account</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingFinancialAccount">
+      <form>
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingFinancialAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Account Type *</label>
+            <select [(ngModel)]="editingFinancialAccount.account_type" name="account_type" required>
+              <option value="checking">Checking</option>
+              <option value="savings">Savings</option>
+              <option value="money_market">Money Market</option>
+              <option value="cd">CD</option>
+              <option value="brokerage">Brokerage</option>
+              <option value="other_investment">Other Investment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Account Number (last 4 digits)</label>
+            <input type="text" [(ngModel)]="editingFinancialAccount.account_number_encrypted" name="account_number" maxlength="4">
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Balance</label>
+          <input type="number" [(ngModel)]="editingFinancialAccount.approximate_balance" name="approximate_balance">
+        </div>
+
+        <!-- Title Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Type *</label>
+            <select [(ngModel)]="editingFinancialAccount.title_type" name="title_type" required>
+              <option value="individual">Individual</option>
+              <option value="joint">Joint</option>
+              <option value="pod">POD (Payable on Death)</option>
+              <option value="tod">TOD (Transfer on Death)</option>
+              <option value="trust">Trust</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingFinancialAccount.title_type === 'joint'">
+            <label>Joint Owner Name</label>
+            <input type="text" [(ngModel)]="editingFinancialAccount.joint_owner_name" name="joint_owner_name">
+          </div>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingFinancialAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingFinancialAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingFinancialAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Financial Account Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'financial_account'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Financial Account</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingFinancialAccount">
+      <form>
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingFinancialAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Account Type *</label>
+            <select [(ngModel)]="editingFinancialAccount.account_type" name="account_type" required>
+              <option value="checking">Checking</option>
+              <option value="savings">Savings</option>
+              <option value="money_market">Money Market</option>
+              <option value="cd">CD</option>
+              <option value="brokerage">Brokerage</option>
+              <option value="other_investment">Other Investment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Account Number (last 4 digits)</label>
+            <input type="text" [(ngModel)]="editingFinancialAccount.account_number_encrypted" name="account_number" maxlength="4">
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Balance</label>
+          <input type="number" [(ngModel)]="editingFinancialAccount.approximate_balance" name="approximate_balance">
+        </div>
+
+        <!-- Title Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Type *</label>
+            <select [(ngModel)]="editingFinancialAccount.title_type" name="title_type" required>
+              <option value="individual">Individual</option>
+              <option value="joint">Joint</option>
+              <option value="pod">POD (Payable on Death)</option>
+              <option value="tod">TOD (Transfer on Death)</option>
+              <option value="trust">Trust</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingFinancialAccount.title_type === 'joint'">
+            <label>Joint Owner Name</label>
+            <input type="text" [(ngModel)]="editingFinancialAccount.joint_owner_name" name="joint_owner_name">
+          </div>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingFinancialAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingFinancialAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingFinancialAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Retirement Account Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'retirement_account'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Retirement Account</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingRetirementAccount">
+      <form>
+        <!-- Account Type -->
+        <div class="form-group">
+          <label>Account Type *</label>
+          <select [(ngModel)]="editingRetirementAccount.account_type" name="account_type" required>
+            <option value="401k">401(k)</option>
+            <option value="403b">403(b)</option>
+            <option value="traditional_ira">Traditional IRA</option>
+            <option value="roth_ira">Roth IRA</option>
+            <option value="sep_ira">SEP IRA</option>
+            <option value="simple_ira">SIMPLE IRA</option>
+            <option value="pension">Pension</option>
+            <option value="annuity">Annuity</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingRetirementAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Number -->
+        <div class="form-group">
+          <label>Account Number (last 4 digits)</label>
+          <input type="text" [(ngModel)]="editingRetirementAccount.account_number_encrypted" name="account_number" maxlength="4">
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Value</label>
+          <input type="number" [(ngModel)]="editingRetirementAccount.approximate_value" name="approximate_value">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingRetirementAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- RMD Information -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingRetirementAccount.rmd_age_reached" name="rmd_age_reached">
+            RMD Age Reached
+          </label>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingRetirementAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingRetirementAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Retirement Account Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'retirement_account'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Retirement Account</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingRetirementAccount">
+      <form>
+        <!-- Account Type -->
+        <div class="form-group">
+          <label>Account Type *</label>
+          <select [(ngModel)]="editingRetirementAccount.account_type" name="account_type" required>
+            <option value="401k">401(k)</option>
+            <option value="403b">403(b)</option>
+            <option value="traditional_ira">Traditional IRA</option>
+            <option value="roth_ira">Roth IRA</option>
+            <option value="sep_ira">SEP IRA</option>
+            <option value="simple_ira">SIMPLE IRA</option>
+            <option value="pension">Pension</option>
+            <option value="annuity">Annuity</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingRetirementAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Number -->
+        <div class="form-group">
+          <label>Account Number (last 4 digits)</label>
+          <input type="text" [(ngModel)]="editingRetirementAccount.account_number_encrypted" name="account_number" maxlength="4">
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Value</label>
+          <input type="number" [(ngModel)]="editingRetirementAccount.approximate_value" name="approximate_value">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingRetirementAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- RMD Information -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingRetirementAccount.rmd_age_reached" name="rmd_age_reached">
+            RMD Age Reached
+          </label>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingRetirementAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingRetirementAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Life Insurance Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'life_insurance'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Life Insurance Policy</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingLifeInsurance">
+      <form>
+        <!-- Insurance Company -->
+        <div class="form-group">
+          <label>Insurance Company *</label>
+          <input type="text" [(ngModel)]="editingLifeInsurance.insurance_company" name="insurance_company" required>
+        </div>
+
+        <!-- Policy Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Policy Type *</label>
+            <select [(ngModel)]="editingLifeInsurance.policy_type" name="policy_type" required>
+              <option value="term">Term</option>
+              <option value="whole_life">Whole Life</option>
+              <option value="universal">Universal</option>
+              <option value="variable">Variable</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Policy Number</label>
+            <input type="text" [(ngModel)]="editingLifeInsurance.policy_number" name="policy_number">
+          </div>
+        </div>
+
+        <!-- Financial Details -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Face Value *</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.face_value" name="face_value" required>
+          </div>
+          <div class="form-group">
+            <label>Death Benefit *</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.death_benefit" name="death_benefit" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cash Value</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.cash_value" name="cash_value">
+          </div>
+          <div class="form-group">
+            <label>Annual Premium</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.annual_premium" name="annual_premium">
+          </div>
+        </div>
+
+        <!-- Trust Ownership -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingLifeInsurance.owned_by_trust" name="owned_by_trust">
+            Owned by Trust
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingLifeInsurance.owned_by_trust">
+          <label>Trust Name</label>
+          <input type="text" [(ngModel)]="editingLifeInsurance.trust_name" name="trust_name">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingLifeInsurance.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Life Insurance Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'life_insurance'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Life Insurance Policy</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingLifeInsurance">
+      <form>
+        <!-- Insurance Company -->
+        <div class="form-group">
+          <label>Insurance Company *</label>
+          <input type="text" [(ngModel)]="editingLifeInsurance.insurance_company" name="insurance_company" required>
+        </div>
+
+        <!-- Policy Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Policy Type *</label>
+            <select [(ngModel)]="editingLifeInsurance.policy_type" name="policy_type" required>
+              <option value="term">Term</option>
+              <option value="whole_life">Whole Life</option>
+              <option value="universal">Universal</option>
+              <option value="variable">Variable</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Policy Number</label>
+            <input type="text" [(ngModel)]="editingLifeInsurance.policy_number" name="policy_number">
+          </div>
+        </div>
+
+        <!-- Financial Details -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Face Value *</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.face_value" name="face_value" required>
+          </div>
+          <div class="form-group">
+            <label>Death Benefit *</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.death_benefit" name="death_benefit" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cash Value</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.cash_value" name="cash_value">
+          </div>
+          <div class="form-group">
+            <label>Annual Premium</label>
+            <input type="number" [(ngModel)]="editingLifeInsurance.annual_premium" name="annual_premium">
+          </div>
+        </div>
+
+        <!-- Trust Ownership -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingLifeInsurance.owned_by_trust" name="owned_by_trust">
+            Owned by Trust
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingLifeInsurance.owned_by_trust">
+          <label>Trust Name</label>
+          <input type="text" [(ngModel)]="editingLifeInsurance.trust_name" name="trust_name">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingLifeInsurance.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Business Interest Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'business_interest'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Business Interest</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingBusinessInterest">
+      <form>
+        <!-- Business Name -->
+        <div class="form-group">
+          <label>Business Name *</label>
+          <input type="text" [(ngModel)]="editingBusinessInterest.business_name" name="business_name" required>
+        </div>
+
+        <!-- Business Type and Ownership -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Business Type *</label>
+            <select [(ngModel)]="editingBusinessInterest.business_type" name="business_type" required>
+              <option value="llc">LLC</option>
+              <option value="s_corp">S Corporation</option>
+              <option value="c_corp">C Corporation</option>
+              <option value="partnership">Partnership</option>
+              <option value="sole_prop">Sole Proprietorship</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Ownership Percentage</label>
+            <input type="number" [(ngModel)]="editingBusinessInterest.ownership_percentage" name="ownership_percentage" min="0" max="100">
+          </div>
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingBusinessInterest.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Other Owners -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.has_other_owners" name="has_other_owners">
+            Has Other Owners
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingBusinessInterest.has_other_owners">
+          <label>Other Owners Names</label>
+          <textarea [(ngModel)]="editingBusinessInterest.other_owners_names" name="other_owners_names" rows="2"></textarea>
+        </div>
+
+        <!-- Buy-Sell Agreement -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.buy_sell_agreement_exists" name="buy_sell_agreement_exists">
+            Buy-Sell Agreement Exists
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingBusinessInterest.buy_sell_agreement_exists">
+          <label>Buy-Sell Document ID</label>
+          <input type="number" [(ngModel)]="editingBusinessInterest.buy_sell_document_id" name="buy_sell_document_id">
+        </div>
+
+        <!-- Succession Planning -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.succession_plan_exists" name="succession_plan_exists">
+            Succession Plan Exists
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Business Vision After Death</label>
+          <textarea [(ngModel)]="editingBusinessInterest.business_vision_after_death" name="business_vision_after_death" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Intended Successor</label>
+            <input type="text" [(ngModel)]="editingBusinessInterest.intended_successor" name="intended_successor">
+          </div>
+
+          <div class="form-group">
+            <label>Successor is Family</label>
+            <select [(ngModel)]="editingBusinessInterest.successor_is_family" name="successor_is_family">
+              <option [ngValue]="null">Unknown</option>
+              <option [ngValue]="true">Yes</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Should Business Be Sold</label>
+          <select [(ngModel)]="editingBusinessInterest.should_business_be_sold" name="should_business_be_sold">
+            <option [ngValue]="null">Unknown</option>
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingBusinessInterest.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingBusinessInterest.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Business Interest Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'business_interest'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Business Interest</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingBusinessInterest">
+      <form>
+        <!-- Business Name -->
+        <div class="form-group">
+          <label>Business Name *</label>
+          <input type="text" [(ngModel)]="editingBusinessInterest.business_name" name="business_name" required>
+        </div>
+
+        <!-- Business Type and Ownership -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Business Type *</label>
+            <select [(ngModel)]="editingBusinessInterest.business_type" name="business_type" required>
+              <option value="llc">LLC</option>
+              <option value="s_corp">S Corporation</option>
+              <option value="c_corp">C Corporation</option>
+              <option value="partnership">Partnership</option>
+              <option value="sole_prop">Sole Proprietorship</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Ownership Percentage</label>
+            <input type="number" [(ngModel)]="editingBusinessInterest.ownership_percentage" name="ownership_percentage" min="0" max="100">
+          </div>
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingBusinessInterest.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Other Owners -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.has_other_owners" name="has_other_owners">
+            Has Other Owners
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingBusinessInterest.has_other_owners">
+          <label>Other Owners Names</label>
+          <textarea [(ngModel)]="editingBusinessInterest.other_owners_names" name="other_owners_names" rows="2"></textarea>
+        </div>
+
+        <!-- Buy-Sell Agreement -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.buy_sell_agreement_exists" name="buy_sell_agreement_exists">
+            Buy-Sell Agreement Exists
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingBusinessInterest.buy_sell_agreement_exists">
+          <label>Buy-Sell Document ID</label>
+          <input type="number" [(ngModel)]="editingBusinessInterest.buy_sell_document_id" name="buy_sell_document_id">
+        </div>
+
+        <!-- Succession Planning -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingBusinessInterest.succession_plan_exists" name="succession_plan_exists">
+            Succession Plan Exists
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Business Vision After Death</label>
+          <textarea [(ngModel)]="editingBusinessInterest.business_vision_after_death" name="business_vision_after_death" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Intended Successor</label>
+            <input type="text" [(ngModel)]="editingBusinessInterest.intended_successor" name="intended_successor">
+          </div>
+
+          <div class="form-group">
+            <label>Successor is Family</label>
+            <select [(ngModel)]="editingBusinessInterest.successor_is_family" name="successor_is_family">
+              <option [ngValue]="null">Unknown</option>
+              <option [ngValue]="true">Yes</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Should Business Be Sold</label>
+          <select [(ngModel)]="editingBusinessInterest.should_business_be_sold" name="should_business_be_sold">
+            <option [ngValue]="null">Unknown</option>
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingBusinessInterest.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingBusinessInterest.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Digital Asset Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'digital_asset'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Digital Asset</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingDigitalAsset">
+      <form>
+        <!-- Asset Type -->
+        <div class="form-group">
+          <label>Asset Type *</label>
+          <select [(ngModel)]="editingDigitalAsset.asset_type" name="asset_type" required>
+            <option value="email">Email Account</option>
+            <option value="social_media">Social Media</option>
+            <option value="cryptocurrency">Cryptocurrency</option>
+            <option value="nft">NFT</option>
+            <option value="domain">Domain Name</option>
+            <option value="website">Website</option>
+            <option value="online_business">Online Business</option>
+            <option value="cloud_storage">Cloud Storage</option>
+            <option value="password_manager">Password Manager</option>
+            <option value="digital_media">Digital Media/Content</option>
+            <option value="loyalty_programs">Loyalty Programs</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Asset Name -->
+        <div class="form-group">
+          <label>Asset Name *</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.asset_name" name="asset_name" required>
+        </div>
+
+        <!-- Platform/Service -->
+        <div class="form-group">
+          <label>Platform or Service</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.platform_or_service" name="platform_or_service" placeholder="e.g., Facebook, Coinbase, GoDaddy">
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingDigitalAsset.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.username" name="username">
+        </div>
+
+        <!-- Access Location -->
+        <div class="form-group">
+          <label>Access Location</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.access_location" name="access_location" placeholder="Where password/credentials are stored">
+        </div>
+
+        <!-- Crypto-specific fields -->
+        <div *ngIf="editingDigitalAsset.asset_type === 'cryptocurrency' || editingDigitalAsset.asset_type === 'nft'">
+          <div class="form-group">
+            <label>Wallet Type</label>
+            <input type="text" [(ngModel)]="editingDigitalAsset.wallet_type" name="wallet_type" placeholder="e.g., Hardware, Software, Exchange">
+          </div>
+
+          <div class="form-group">
+            <label>Seed Phrase Location</label>
+            <input type="text" [(ngModel)]="editingDigitalAsset.seed_phrase_location" name="seed_phrase_location" placeholder="Where recovery phrase is stored">
+          </div>
+        </div>
+
+        <!-- Intended Disposition -->
+        <div class="form-group">
+          <label>Intended Disposition</label>
+          <select [(ngModel)]="editingDigitalAsset.intended_disposition" name="intended_disposition">
+            <option [ngValue]="null">Not Specified</option>
+            <option value="delete">Delete</option>
+            <option value="preserve">Preserve</option>
+            <option value="transfer">Transfer to Someone</option>
+            <option value="memorialize">Memorialize</option>
+          </select>
+        </div>
+
+        <!-- Access Instructions -->
+        <div class="form-group">
+          <label>Access Instructions</label>
+          <textarea [(ngModel)]="editingDigitalAsset.access_instructions" name="access_instructions" rows="3" placeholder="How to access this asset after death"></textarea>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingDigitalAsset.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Digital Asset Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'digital_asset'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Digital Asset</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingDigitalAsset">
+      <form>
+        <!-- Asset Type -->
+        <div class="form-group">
+          <label>Asset Type *</label>
+          <select [(ngModel)]="editingDigitalAsset.asset_type" name="asset_type" required>
+            <option value="email">Email Account</option>
+            <option value="social_media">Social Media</option>
+            <option value="cryptocurrency">Cryptocurrency</option>
+            <option value="nft">NFT</option>
+            <option value="domain">Domain Name</option>
+            <option value="website">Website</option>
+            <option value="online_business">Online Business</option>
+            <option value="cloud_storage">Cloud Storage</option>
+            <option value="password_manager">Password Manager</option>
+            <option value="digital_media">Digital Media/Content</option>
+            <option value="loyalty_programs">Loyalty Programs</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Asset Name -->
+        <div class="form-group">
+          <label>Asset Name *</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.asset_name" name="asset_name" required>
+        </div>
+
+        <!-- Platform/Service -->
+        <div class="form-group">
+          <label>Platform or Service</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.platform_or_service" name="platform_or_service" placeholder="e.g., Facebook, Coinbase, GoDaddy">
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingDigitalAsset.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.username" name="username">
+        </div>
+
+        <!-- Access Location -->
+        <div class="form-group">
+          <label>Access Location</label>
+          <input type="text" [(ngModel)]="editingDigitalAsset.access_location" name="access_location" placeholder="Where password/credentials are stored">
+        </div>
+
+        <!-- Crypto-specific fields -->
+        <div *ngIf="editingDigitalAsset.asset_type === 'cryptocurrency' || editingDigitalAsset.asset_type === 'nft'">
+          <div class="form-group">
+            <label>Wallet Type</label>
+            <input type="text" [(ngModel)]="editingDigitalAsset.wallet_type" name="wallet_type" placeholder="e.g., Hardware, Software, Exchange">
+          </div>
+
+          <div class="form-group">
+            <label>Seed Phrase Location</label>
+            <input type="text" [(ngModel)]="editingDigitalAsset.seed_phrase_location" name="seed_phrase_location" placeholder="Where recovery phrase is stored">
+          </div>
+        </div>
+
+        <!-- Intended Disposition -->
+        <div class="form-group">
+          <label>Intended Disposition</label>
+          <select [(ngModel)]="editingDigitalAsset.intended_disposition" name="intended_disposition">
+            <option [ngValue]="null">Not Specified</option>
+            <option value="delete">Delete</option>
+            <option value="preserve">Preserve</option>
+            <option value="transfer">Transfer to Someone</option>
+            <option value="memorialize">Memorialize</option>
+          </select>
+        </div>
+
+        <!-- Access Instructions -->
+        <div class="form-group">
+          <label>Access Instructions</label>
+          <textarea [(ngModel)]="editingDigitalAsset.access_instructions" name="access_instructions" rows="3" placeholder="How to access this asset after death"></textarea>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingDigitalAsset.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Other Asset Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'other_asset'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Other Asset</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingOtherAsset">
+      <form>
+        <!-- Asset Type -->
+        <div class="form-group">
+          <label>Asset Type *</label>
+          <select [(ngModel)]="editingOtherAsset.asset_type" name="asset_type" required>
+            <option value="vehicle">Vehicle</option>
+            <option value="boat">Boat</option>
+            <option value="rv">RV</option>
+            <option value="motorcycle">Motorcycle</option>
+            <option value="aircraft">Aircraft</option>
+            <option value="art">Art</option>
+            <option value="antiques">Antiques</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="collectibles">Collectibles</option>
+            <option value="wine">Wine Collection</option>
+            <option value="precious_metals">Precious Metals</option>
+            <option value="intellectual_property">Intellectual Property</option>
+            <option value="livestock">Livestock</option>
+            <option value="farm_equipment">Farm Equipment</option>
+            <option value="timeshare">Timeshare</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label>Description *</label>
+          <input type="text" [(ngModel)]="editingOtherAsset.description" name="description" required placeholder="Detailed description of the asset">
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Heirloom Status -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingOtherAsset.is_heirloom" name="is_heirloom">
+            Family Heirloom
+          </label>
+        </div>
+
+        <!-- Intended Recipient -->
+        <div class="form-group">
+          <label>Intended Recipient</label>
+          <input type="text" [(ngModel)]="editingOtherAsset.intended_recipient" name="intended_recipient" placeholder="Who should receive this asset">
+        </div>
+
+        <!-- Special Instructions -->
+        <div class="form-group">
+          <label>Special Instructions</label>
+          <textarea [(ngModel)]="editingOtherAsset.special_instructions" name="special_instructions" rows="3" placeholder="Any special handling or distribution instructions"></textarea>
+        </div>
+
+        <!-- Appraisal Information -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingOtherAsset.appraisal_exists" name="appraisal_exists">
+            Appraisal Exists
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingOtherAsset.appraisal_exists">
+          <label>Appraisal Date</label>
+          <input type="date" [(ngModel)]="editingOtherAsset.appraisal_date" name="appraisal_date">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Other Asset Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'other_asset'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Other Asset</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingOtherAsset">
+      <form>
+        <!-- Asset Type -->
+        <div class="form-group">
+          <label>Asset Type *</label>
+          <select [(ngModel)]="editingOtherAsset.asset_type" name="asset_type" required>
+            <option value="vehicle">Vehicle</option>
+            <option value="boat">Boat</option>
+            <option value="rv">RV</option>
+            <option value="motorcycle">Motorcycle</option>
+            <option value="aircraft">Aircraft</option>
+            <option value="art">Art</option>
+            <option value="antiques">Antiques</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="collectibles">Collectibles</option>
+            <option value="wine">Wine Collection</option>
+            <option value="precious_metals">Precious Metals</option>
+            <option value="intellectual_property">Intellectual Property</option>
+            <option value="livestock">Livestock</option>
+            <option value="farm_equipment">Farm Equipment</option>
+            <option value="timeshare">Timeshare</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label>Description *</label>
+          <input type="text" [(ngModel)]="editingOtherAsset.description" name="description" required placeholder="Detailed description of the asset">
+        </div>
+
+        <!-- Estimated Value -->
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.estimated_value" name="estimated_value">
+        </div>
+
+        <!-- Heirloom Status -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingOtherAsset.is_heirloom" name="is_heirloom">
+            Family Heirloom
+          </label>
+        </div>
+
+        <!-- Intended Recipient -->
+        <div class="form-group">
+          <label>Intended Recipient</label>
+          <input type="text" [(ngModel)]="editingOtherAsset.intended_recipient" name="intended_recipient" placeholder="Who should receive this asset">
+        </div>
+
+        <!-- Special Instructions -->
+        <div class="form-group">
+          <label>Special Instructions</label>
+          <textarea [(ngModel)]="editingOtherAsset.special_instructions" name="special_instructions" rows="3" placeholder="Any special handling or distribution instructions"></textarea>
+        </div>
+
+        <!-- Appraisal Information -->
+        <div class="form-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="editingOtherAsset.appraisal_exists" name="appraisal_exists">
+            Appraisal Exists
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="editingOtherAsset.appraisal_exists">
+          <label>Appraisal Date</label>
+          <input type="date" [(ngModel)]="editingOtherAsset.appraisal_date" name="appraisal_date">
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICaseData, IAddress, IAssets, IBusinessInterest, IChild, IClient,IDigitalAsset,IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, IChild, IClient,IDigitalAsset,IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 
 
 // --- DATA SERVICE ---
@@ -90,6 +90,8 @@ export class DataService {
       other_asset_holdings: [],
     }
   };
+
+
 
 public client: IClient = {
     client_id: null,
@@ -194,10 +196,8 @@ public client: IClient = {
     legal_last_name: '',
     suffix: null,
     date_of_birth: null,
-    is_adopted: false,
-    is_stepchild: false,
-    from_current_marriage: false,
-    from_relationship_with: null,
+    child_of: 'both',
+    child_comment: null,
     address: null,
     city: null,
     state: null,
@@ -256,7 +256,18 @@ public client: IClient = {
     other_asset_holdings: [],
   };
 
-
+  public beneficiary: IBeneficiary = {
+    beneficiary_id: null,
+    beneficiary_type: 'child',
+    child_id: null,
+    spouse_id: null,
+    family_member_id: null,
+    other_name: null,
+    percentage: 0,
+    calculated_value: null,
+    per_stirpes: false,
+    notes: null
+  };
 
   public realEstate: IRealEstate = {
     property_id: null,
@@ -266,13 +277,18 @@ public client: IClient = {
     city: '',
     state: '',
     zip: '',
-    title_holding: 'sole',
+    title_holding: 'client',
     title_details: null,
     estimated_value: null,
     mortgage_balance: null,
+    net_value: null,
     beneficiaries_on_deed: null,
     intended_beneficiary: null,
-    special_notes: null
+    special_notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null,
+    ownership_value: null
   };
 
   public financialAccount: IFinancialAccount = {
@@ -283,10 +299,13 @@ public client: IClient = {
     approximate_balance: null,
     title_type: 'individual',
     joint_owner_name: null,
-    primary_beneficiary: null,
-    contingent_beneficiary: null,
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
     beneficiary_last_reviewed: null,
-    notes: null
+    notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
   };
 
   public retirementAccount: IRetirementAccount = {
@@ -295,13 +314,14 @@ public client: IClient = {
     institution_name: '',
     account_number_encrypted: null,
     approximate_value: null,
-    primary_beneficiary: null,
-    primary_beneficiary_percentage: null,
-    contingent_beneficiary: null,
-    contingent_beneficiary_percentage: null,
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
     beneficiary_last_reviewed: null,
     rmd_age_reached: false,
-    notes: null
+    notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
   };
 
   public businessInterest: IBusinessInterest = {
@@ -319,7 +339,9 @@ public client: IClient = {
     intended_successor: null,
     successor_is_family: null,
     should_business_be_sold: null,
-    notes: null
+    notes: null,
+    owned_by: null,
+    other_owners: null
   };
 
   public lifeInsurance: ILifeInsurance = {
@@ -327,14 +349,18 @@ public client: IClient = {
     insurance_company: '',
     policy_type: 'term',
     policy_number: null,
+    face_value: 0,
     death_benefit: 0,
     cash_value: 0,
-    primary_beneficiary: null,
-    contingent_beneficiary: null,
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
     owned_by_trust: false,
     trust_name: null,
     annual_premium: 0,
     notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
   };
 
   public digitalAsset: IDigitalAsset = {
@@ -349,7 +375,10 @@ public client: IClient = {
     seed_phrase_location: null,
     intended_disposition: null,
     access_instructions: null,
-    notes: null
+    notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
   };
 
   public otherAsset: IOtherAsset = {
@@ -361,7 +390,10 @@ public client: IClient = {
     intended_recipient: null,
     special_instructions: null,
     appraisal_exists: false,
-    appraisal_date: null
+    appraisal_date: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
   };
 
   constructor() { }

@@ -6,13 +6,18 @@ export interface IRealEstate {
   city: string;
   state: string;
   zip: string;
-  title_holding: 'sole' | 'joint_spouse' | 'tenants_common' | 'joint_rights_survivorship' | 'tod_deed' | 'trust' | 'llc' | 'other';
+  title_holding: 'client' | 'spouse' | 'joint_spouse' | 'tenants_common' | 'joint_rights_survivorship' | 'tod_deed' | 'trust' | 'llc' | 'other';
   title_details: string | null;
   estimated_value: number | null;
   mortgage_balance: number | null;
+  net_value: number | null;              // estimated_value - mortgage_balance
   beneficiaries_on_deed: string | null;
   intended_beneficiary: string | null;
   special_notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
+  ownership_value: number | null;        // net_value * (ownership_percentage / 100)
 }
 
 /**
@@ -26,10 +31,13 @@ export interface IFinancialAccount {
   approximate_balance: number | null;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
   joint_owner_name: string | null;
-  primary_beneficiary: string | null;
-  contingent_beneficiary: string | null;
+  primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
 }
 
 /**
@@ -41,13 +49,14 @@ export interface IRetirementAccount {
   institution_name: string;
   account_number_encrypted: string | null;
   approximate_value: number | null;
-  primary_beneficiary: string | null;
-  primary_beneficiary_percentage: number | null;
-  contingent_beneficiary: string | null;
-  contingent_beneficiary_percentage: number | null;
+  primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   rmd_age_reached: boolean;
   notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
 }
 
 /**
@@ -58,14 +67,18 @@ export interface ILifeInsurance {
   insurance_company: string;
   policy_type: 'term' | 'whole_life' | 'universal' | 'variable' | 'other';
   policy_number: string | null;
+  face_value: number;
   death_benefit: number;
   cash_value: number | null;
-  primary_beneficiary: string | null;
-  contingent_beneficiary: string | null;
+  primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
   owned_by_trust: boolean;
   trust_name: string | null;
   annual_premium: number | null;
   notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
 }
 
 /**
@@ -87,6 +100,8 @@ export interface IBusinessInterest {
   successor_is_family: boolean | null;
   should_business_be_sold: boolean | null;
   notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  other_owners: string | null;
 }
 
 /**
@@ -105,6 +120,9 @@ export interface IDigitalAsset {
   intended_disposition: 'delete' | 'preserve' | 'transfer' | 'memorialize' | null;
   access_instructions: string | null;
   notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
 }
 
 /**
@@ -120,6 +138,25 @@ export interface IOtherAsset {
   special_instructions: string | null;
   appraisal_exists: boolean;
   appraisal_date: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
+}
+
+/**
+ * Interface for a beneficiary designation on an asset.
+ */
+export interface IBeneficiary {
+  beneficiary_id: number | null;
+  beneficiary_type: 'child' | 'spouse' | 'family_member' | 'other';
+  child_id: number | null;           // Links to IChild
+  spouse_id: number | null;          // Could link to spouse info
+  family_member_id: number | null;   // Links to IFamilyMember
+  other_name: string | null;         // For non-family beneficiaries
+  percentage: number;                 // Percentage allocation
+  calculated_value: number | null;    // Calculated dollar value based on percentage
+  per_stirpes: boolean;              // Whether inheritance passes to descendants if beneficiary is deceased
+  notes: string | null;
 }
 
 /**
@@ -159,10 +196,8 @@ export interface IChild {
   legal_last_name: string;
   suffix: string | null;
   date_of_birth: string | null;
-  is_adopted: boolean;
-  is_stepchild: boolean;
-  from_current_marriage: boolean;
-  from_relationship_with: string | null;
+  child_of: 'client' | 'spouse' | 'both';
+  child_comment: string | null;
   address: string | null;
   city: string | null;
   state: string | null;

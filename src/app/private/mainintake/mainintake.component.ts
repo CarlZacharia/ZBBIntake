@@ -2,16 +2,23 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
+import { ChildrenComponent } from '../children/children.component';
+import { AssetsComponent } from '../assets/assets.component';
 import { DataService } from '../../services/data.service';
+import { ICaseData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, AssetsComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
 export class MainintakeComponent {
   activeSection: string = 'personal';
+
+  get csd(): ICaseData {
+    return this.ds.casedata;
+  }
 
   constructor(public ds: DataService) { }
 

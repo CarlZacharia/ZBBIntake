@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { IAddress } from '../../models/case_data';
+import { IAddress, ICaseData } from '../../models/case_data';
 
 @Component({
   selector: 'app-personal',
@@ -27,6 +27,10 @@ export class PersonalComponent {
   ];
 
   constructor(public ds: DataService) { }
+
+  get csd(): ICaseData {
+    return this.ds.casedata;
+  }
 
   addPreviousAddress() {
     const newAddress: IAddress = {
