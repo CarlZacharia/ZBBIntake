@@ -1,0 +1,347 @@
+.summary-container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-size: 0.75rem;
+}
+
+.summary-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.summary-subtitle {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.summary-section {
+  background: white;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.summary-section:hover {
+  transform: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid #3498db;
+}
+
+/* Info Grid Layout */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.4rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 2px solid #3498db;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.15rem;
+}
+
+.info-value {
+  font-size: 0.75rem;
+  color: #2c3e50;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Children & Family Cards */
+.children-list, .family-list, .fiduciary-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.child-card, .family-card, .fiduciary-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: white;
+  box-shadow: 0 2px 5px rgba(102, 126, 234, 0.3);
+}
+
+.family-card {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 2px 5px rgba(240, 147, 251, 0.3);
+}
+
+.fiduciary-card {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 2px 5px rgba(79, 172, 254, 0.3);
+}
+
+.child-name, .family-name, .fiduciary-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.child-details, .family-details, .fiduciary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.detail-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Assets Section */
+.asset-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.total-assets {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  border-radius: 6px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(17, 153, 142, 0.3);
+}
+
+.total-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.total-value {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.asset-category {
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #e9ecef;
+}
+
+.category-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.category-total {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #27ae60;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #27ae60;
+}
+
+.asset-item {
+  padding: 0.4rem;
+  background: white;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+  border-left: 2px solid #3498db;
+  transition: transform 0.2s;
+}
+
+.asset-item:hover {
+  transform: translateX(3px);
+}
+
+.asset-item:last-child {
+  margin-bottom: 0;
+}
+
+.asset-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.15rem;
+  line-height: 1.2;
+}
+
+.asset-value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #27ae60;
+  margin-bottom: 0.15rem;
+}
+
+.asset-details {
+  font-size: 0.65rem;
+  color: #7f8c8d;
+  line-height: 1.2;
+}
+
+.asset-details span {
+  margin-right: 0.3rem;
+}
+
+/* No Data Message */
+.no-data {
+  text-align: center;
+  padding: 0.75rem;
+  color: #95a5a6;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+/* Print Styles */
+@media print {
+  .summary-container {
+    background: white;
+    padding: 0;
+  }
+
+  .summary-section {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #e9ecef;
+  }
+
+  .summary-section:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .child-card, .family-card, .fiduciary-card {
+    background: white !important;
+    color: #2c3e50 !important;
+    border: 2px solid #3498db;
+  }
+
+  .child-name, .family-name, .fiduciary-name {
+    color: #2c3e50 !important;
+  }
+
+  .detail-label, .detail-value {
+    color: #2c3e50 !important;
+  }
+
+  .total-assets {
+    background: white !important;
+    color: #2c3e50 !important;
+    border: 2px solid #27ae60;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .summary-container {
+    padding: 0.5rem;
+  }
+
+  .summary-header {
+    padding: 0.5rem;
+  }
+
+  .summary-title {
+    font-size: 1rem;
+  }
+
+  .summary-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .summary-section {
+    padding: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .children-list, .family-list, .fiduciary-list {
+    grid-template-columns: 1fr;
+  }
+
+  .total-assets {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .total-label {
+    font-size: 0.75rem;
+  }
+
+  .total-value {
+    font-size: 0.95rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+}

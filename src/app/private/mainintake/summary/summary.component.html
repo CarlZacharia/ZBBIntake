@@ -1,0 +1,415 @@
+<div class="summary-container">
+  <!-- Header -->
+  <div class="summary-header">
+    <h1 class="summary-title">Estate Planning Summary</h1>
+    <p class="summary-subtitle">Comprehensive Overview of Client Information</p>
+  </div>
+
+  <!-- Personal Information Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Personal Information</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Full Legal Name:</span>
+        <span class="info-value">{{ds.personal.legal_first_name}} {{ds.personal.legal_middle_name}} {{ds.personal.legal_last_name}} {{ds.personal.suffix}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Preferred Name:</span>
+        <span class="info-value">{{ds.personal.preferred_name || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Date of Birth:</span>
+        <span class="info-value">{{formatDate(ds.personal.date_of_birth)}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">SSN:</span>
+        <span class="info-value">{{ds.personal.ssn_encrypted || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">US Citizen:</span>
+        <span class="info-value">{{ds.personal.us_citizen === true ? 'Yes' : ds.personal.us_citizen === false ? 'No' : 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.personal.us_citizen === false">
+        <span class="info-label">Citizenship Country:</span>
+        <span class="info-value">{{ds.personal.citizenship_country || 'N/A'}}</span>
+      </div>
+      <div class="info-item full-width">
+        <span class="info-label">Current Address:</span>
+        <span class="info-value">
+          {{ds.personal.current_address.address_line1}}
+          <span *ngIf="ds.personal.current_address.address_line2">, {{ds.personal.current_address.address_line2}}</span>,
+          {{ds.personal.current_address.city}}, {{ds.personal.current_address.state}} {{ds.personal.current_address.zip}}
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Years at Address:</span>
+        <span class="info-value">{{ds.personal.years_at_address || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Mobile Phone:</span>
+        <span class="info-value">{{ds.personal.mobile_phone || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Home Phone:</span>
+        <span class="info-value">{{ds.personal.home_phone || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Email:</span>
+        <span class="info-value">{{ds.personal.email || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Preferred Contact:</span>
+        <span class="info-value">{{ds.personal.preferred_contact_method || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Occupation:</span>
+        <span class="info-value">{{ds.personal.occupation || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Employer:</span>
+        <span class="info-value">{{ds.personal.employer_name || 'N/A'}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Military Service:</span>
+        <span class="info-value">{{ds.personal.military_service ? 'Yes' : 'No'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.personal.military_service">
+        <span class="info-label">Branch:</span>
+        <span class="info-value">{{ds.personal.military_branch || 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.personal.military_service">
+        <span class="info-label">Service Dates:</span>
+        <span class="info-value">{{ds.personal.military_service_dates || 'N/A'}}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marital Information Section -->
+  <section class="summary-section" *ngIf="ds.maritalInfo.marital_status">
+    <h2 class="section-title">Marital Information</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Marital Status:</span>
+        <span class="info-value">{{ds.maritalInfo.marital_status}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Spouse/Partner Name:</span>
+        <span class="info-value">{{ds.maritalInfo.spouse_legal_name || 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Spouse DOB:</span>
+        <span class="info-value">{{formatDate(ds.maritalInfo.spouse_dob)}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Marriage Date:</span>
+        <span class="info-value">{{formatDate(ds.maritalInfo.marriage_date)}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Marriage Location:</span>
+        <span class="info-value">{{ds.maritalInfo.marriage_location || 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">First Marriage:</span>
+        <span class="info-value">{{ds.maritalInfo.first_marriage === true ? 'Yes' : ds.maritalInfo.first_marriage === false ? 'No' : 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Relationship Quality:</span>
+        <span class="info-value">{{ds.maritalInfo.relationship_quality || 'N/A'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Prenuptial Agreement:</span>
+        <span class="info-value">{{ds.maritalInfo.prenup_exists ? 'Yes' : 'No'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Postnuptial Agreement:</span>
+        <span class="info-value">{{ds.maritalInfo.postnup_exists ? 'Yes' : 'No'}}</span>
+      </div>
+      <div class="info-item" *ngIf="ds.maritalInfo.marital_status === 'married' || ds.maritalInfo.marital_status === 'domestic_partnership'">
+        <span class="info-label">Spouse Has Other Children:</span>
+        <span class="info-value">{{ds.maritalInfo.spouse_has_other_children === true ? 'Yes' : ds.maritalInfo.spouse_has_other_children === false ? 'No' : 'N/A'}}</span>
+      </div>
+      <div class="info-item full-width" *ngIf="ds.maritalInfo.first_marriage === false && ds.maritalInfo.divorce_obligations">
+        <span class="info-label">Divorce Obligations:</span>
+        <span class="info-value">{{ds.maritalInfo.divorce_obligations}}</span>
+      </div>
+      <div class="info-item full-width" *ngIf="ds.maritalInfo.first_marriage === false && ds.maritalInfo.divorce_decree_restrictions">
+        <span class="info-label">Divorce Decree Restrictions:</span>
+        <span class="info-value">{{ds.maritalInfo.divorce_decree_restrictions}}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Children Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Children ({{ds.casedata.children.length}})</h2>
+    <div *ngIf="ds.casedata.children.length === 0" class="no-data">No children recorded</div>
+    <div class="children-list" *ngIf="ds.casedata.children.length > 0">
+      <div class="child-card" *ngFor="let child of ds.casedata.children; let i = index">
+        <h3 class="child-name">{{child.legal_first_name}} {{child.legal_middle_name}} {{child.legal_last_name}} {{child.suffix}}</h3>
+        <div class="child-details">
+          <div class="detail-row">
+            <span class="detail-label">Date of Birth:</span>
+            <span class="detail-value">{{formatDate(child.date_of_birth)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Child Of:</span>
+            <span class="detail-value">{{child.child_of}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.marital_status">
+            <span class="detail-label">Marital Status:</span>
+            <span class="detail-value">{{child.marital_status}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.address">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{child.address}}, {{child.city}}, {{child.state}} {{child.zip}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Has Children:</span>
+            <span class="detail-value">{{child.has_children ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Special Needs:</span>
+            <span class="detail-value">{{child.special_needs ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.special_needs && child.special_needs_description">
+            <span class="detail-label">Special Needs Description:</span>
+            <span class="detail-value">{{child.special_needs_description}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.relationship_quality">
+            <span class="detail-label">Relationship Quality:</span>
+            <span class="detail-value">{{child.relationship_quality}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.financially_responsible">
+            <span class="detail-label">Financially Responsible:</span>
+            <span class="detail-value">{{child.financially_responsible}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.excluded_or_reduced">
+            <span class="detail-label">Excluded or Reduced Inheritance:</span>
+            <span class="detail-value">Yes</span>
+          </div>
+          <div class="detail-row" *ngIf="child.excluded_or_reduced && child.exclusion_reason">
+            <span class="detail-label">Exclusion Reason:</span>
+            <span class="detail-value">{{child.exclusion_reason}}</span>
+          </div>
+          <div class="detail-row" *ngIf="child.is_deceased">
+            <span class="detail-label">Deceased:</span>
+            <span class="detail-value">Yes ({{formatDate(child.date_of_death)}})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Family Members Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Other Family Members ({{ds.casedata.family_members.length}})</h2>
+    <div *ngIf="ds.casedata.family_members.length === 0" class="no-data">No family members recorded</div>
+    <div class="family-list" *ngIf="ds.casedata.family_members.length > 0">
+      <div class="family-card" *ngFor="let member of ds.casedata.family_members; let i = index">
+        <h3 class="family-name">{{member.legal_name}}</h3>
+        <div class="family-details">
+          <div class="detail-row">
+            <span class="detail-label">Relationship:</span>
+            <span class="detail-value">{{member.relationship}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Date of Birth:</span>
+            <span class="detail-value">{{formatDate(member.date_of_birth)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Living:</span>
+            <span class="detail-value">{{member.is_living ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="!member.is_living">
+            <span class="detail-label">Date of Death:</span>
+            <span class="detail-value">{{formatDate(member.date_of_death)}}</span>
+          </div>
+          <div class="detail-row" *ngIf="member.address">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{member.address}}, {{member.city}}, {{member.state}} {{member.zip}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Financial Support:</span>
+            <span class="detail-value">{{member.financial_support ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="member.financial_support && member.support_amount_monthly">
+            <span class="detail-label">Support Amount (Monthly):</span>
+            <span class="detail-value">{{formatCurrency(member.support_amount_monthly)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Special Needs:</span>
+            <span class="detail-value">{{member.special_needs ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Caregiving Responsibilities:</span>
+            <span class="detail-value">{{member.caregiving_responsibilities ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="member.notes">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">{{member.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assets Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Assets Overview</h2>
+    <div class="asset-summary">
+      <div class="total-assets">
+        <span class="total-label">Total Estimated Value:</span>
+        <span class="total-value">{{formatCurrency(getTotalAssetValue())}}</span>
+      </div>
+
+      <!-- Real Estate -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.real_estate_holdings.length > 0">
+        <h3 class="category-title">Real Estate ({{ds.casedata.assets.real_estate_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('real_estate'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.real_estate_holdings">
+          <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
+          <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.estimated_value)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
+            <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Accounts -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.financial_account_holdings.length > 0">
+        <h3 class="category-title">Financial Accounts ({{ds.casedata.assets.financial_account_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('financial'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.financial_account_holdings">
+          <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_balance)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.title_type">Title: {{asset.title_type}}</span>
+            <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retirement Accounts -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.retirement_account_holdings.length > 0">
+        <h3 class="category-title">Retirement Accounts ({{ds.casedata.assets.retirement_account_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('retirement'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.retirement_account_holdings">
+          <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.owned_by">Owned by: {{asset.owned_by}}</span>
+            <span *ngIf="asset.rmd_age_reached"> | RMD Age Reached</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Life Insurance -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.life_insurance_holdings.length > 0">
+        <h3 class="category-title">Life Insurance ({{ds.casedata.assets.life_insurance_holdings.length}})</h3>
+        <div class="category-total">Total Death Benefit: {{formatCurrency(getAssetCategoryTotal('insurance'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.life_insurance_holdings">
+          <div class="asset-name">{{asset.insurance_company}} - {{asset.policy_type}}</div>
+          <div class="asset-value">Death Benefit: {{formatCurrency(asset.death_benefit)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.cash_value">Cash Value: {{formatCurrency(asset.cash_value)}}</span>
+            <span *ngIf="asset.owned_by_trust"> | Owned by Trust: {{asset.trust_name}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Interests -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.business_interest_holdings.length > 0">
+        <h3 class="category-title">Business Interests ({{ds.casedata.assets.business_interest_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('business'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.business_interest_holdings">
+          <div class="asset-name">{{asset.business_name}} ({{asset.business_type}})</div>
+          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.ownership_percentage">Ownership: {{asset.ownership_percentage}}%</span>
+            <span *ngIf="asset.buy_sell_agreement_exists"> | Buy-Sell Agreement Exists</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Digital Assets -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.digital_asset_holdings.length > 0">
+        <h3 class="category-title">Digital Assets ({{ds.casedata.assets.digital_asset_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('digital'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.digital_asset_holdings">
+          <div class="asset-name">{{asset.asset_name}} ({{asset.asset_type}})</div>
+          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.platform_or_service">Platform: {{asset.platform_or_service}}</span>
+            <span *ngIf="asset.intended_disposition"> | Disposition: {{asset.intended_disposition}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Assets -->
+      <div class="asset-category" *ngIf="ds.casedata.assets.other_asset_holdings.length > 0">
+        <h3 class="category-title">Other Assets ({{ds.casedata.assets.other_asset_holdings.length}})</h3>
+        <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('other'))}}</div>
+        <div class="asset-item" *ngFor="let asset of ds.casedata.assets.other_asset_holdings">
+          <div class="asset-name">{{asset.description}} ({{asset.asset_type}})</div>
+          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-details">
+            <span *ngIf="asset.is_heirloom">Heirloom</span>
+            <span *ngIf="asset.intended_recipient"> | Intended Recipient: {{asset.intended_recipient}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="getTotalAssetValue() === 0" class="no-data">No assets recorded</div>
+    </div>
+  </section>
+
+  <!-- Fiduciaries Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Fiduciaries ({{ds.casedata.fiduciaries.length}})</h2>
+    <div *ngIf="ds.casedata.fiduciaries.length === 0" class="no-data">No fiduciaries appointed</div>
+    <div class="fiduciary-list" *ngIf="ds.casedata.fiduciaries.length > 0">
+      <div class="fiduciary-card" *ngFor="let fiduciary of ds.casedata.fiduciaries; let i = index">
+        <h3 class="fiduciary-name">{{fiduciary.appointee_name}}</h3>
+        <div class="fiduciary-details">
+          <div class="detail-row">
+            <span class="detail-label">Role:</span>
+            <span class="detail-value">{{fiduciary.role_type}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Priority:</span>
+            <span class="detail-value">{{fiduciary.priority}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.relationship">
+            <span class="detail-label">Relationship:</span>
+            <span class="detail-value">{{fiduciary.relationship}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.contact_phone">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">{{fiduciary.contact_phone}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.contact_email">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">{{fiduciary.contact_email}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.address">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{fiduciary.address}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Discussed with Appointee:</span>
+            <span class="detail-value">{{fiduciary.discussed_with_appointee ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.reasons_for_selection">
+            <span class="detail-label">Reasons for Selection:</span>
+            <span class="detail-value">{{fiduciary.reasons_for_selection}}</span>
+          </div>
+          <div class="detail-row" *ngIf="fiduciary.limitations_or_instructions">
+            <span class="detail-label">Limitations/Instructions:</span>
+            <span class="detail-value">{{fiduciary.limitations_or_instructions}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
