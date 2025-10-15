@@ -3,8 +3,8 @@ import { MainPublicComponent } from './main-public/main-public.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { IntakehubComponent } from './private/intakehub/intakehub.component';
-import { PersonalComponent } from './private/personal/personal.component';
 import { MainintakeComponent } from './private/mainintake/mainintake.component';
+import { MedicaidintakeComponent } from './private/elderlaw/medicaidintake/medicaidintake.component';
 
 export const routes: Routes = [
   { path: '', component: MainPublicComponent },
@@ -12,5 +12,6 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'intakehub', component: IntakehubComponent },
   { path: 'mainintake', component: MainintakeComponent },
+  { path: 'medicaidintake', component: MedicaidintakeComponent },
   { path: '**', redirectTo: '' }
 ];

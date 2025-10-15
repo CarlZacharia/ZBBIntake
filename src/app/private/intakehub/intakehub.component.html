@@ -26,34 +26,38 @@
     </div>
 
     <!-- Main Cards -->
+
+
     <div class="cards-container" *ngIf="!showIntakeOptions">
+      <div class="card" (click)="toggleIntakeOptions(true)">
+        <div class="card-image">
+          <img src="library.jpg" alt="Education Center">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Education Center</h2>
+          <p class="card-description">Access educational resources and materials</p>
+        </div>
+      </div>
+
       <div class="card" (click)="toggleIntakeOptions(true)">
         <div class="card-image">
           <img src="intakeform.jpg" alt="New Intake">
         </div>
         <div class="card-content">
-          <h2 class="card-title">New Intake</h2>
+          <h2 class="card-title">New Estate Planning Intake</h2>
           <p class="card-description">Start a new client intake form</p>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-image">
-          <img src="library.jpg" alt="Education Center">
-        </div>
-        <div class="card-content">
-          <h2 class="card-title">Education Center</h2>
-          <p class="card-description">Access educational resources and materials</p>
-        </div>
-      </div>
 
-      <div class="card">
+
+      <div class="card" (click)="toggleIntakeOptions(true)">
         <div class="card-image">
-          <img src="library.jpg" alt="Education Center">
+          <img src="medicaid.jpg" alt="Medicaid Intake">
         </div>
         <div class="card-content">
-          <h2 class="card-title">Education Center</h2>
-          <p class="card-description">Access educational resources and materials</p>
+          <h2 class="card-title">Medicaid Application Approval Plan</h2>
+          <p class="card-description">Intake Form for MAAP (Florida)</p>
         </div>
       </div>
     </div>
@@ -67,21 +71,15 @@
 
       <div class="intake-cards-grid">
         <div class="intake-card" routerLink="/mainintake" routerLinkActive="router-link-active">
-          <h3>Estate Planning Single</h3>
-          <p>Single individual estate planning</p>
+          <h3>Estate Planning</h3>
+          <p>Married or Single estate planning</p>
         </div>
-        <div class="intake-card" routerLink="/mainintake" routerLinkActive="router-link-active">
-          <h3>Estate Planning Married</h3>
-          <p>Married couple estate planning</p>
+
+        <div class="intake-card" routerLink="/medicaidintake" routerLinkActive="router-link-active">
+          <h3>Medicaid Benefits</h3>
+          <p>Medicaid Eligibility Intake</p>
         </div>
-        <div class="intake-card" routerLink="/mainintake" routerLinkActive="router-link-active">
-          <h3>Elder Law Benefits Single</h3>
-          <p>Single individual elder law benefits</p>
-        </div>
-        <div class="intake-card" routerLink="/mainintake" routerLinkActive="router-link-active">
-          <h3>Elder Law Benefits Married</h3>
-          <p>Married couple elder law benefits</p>
-        </div>
+
         <div class="intake-card">
           <h3>Estate Administration</h3>
           <p>Estate administration services</p>
