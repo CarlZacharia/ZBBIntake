@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
 import { ChildrenComponent } from '../children/children.component';
+import { CharitiesComponent } from '../charities/charities.component';
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
 import { DataService } from '../../services/data.service';
@@ -10,7 +11,7 @@ import { ICaseData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, AssetsComponent, SummaryComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, SummaryComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
@@ -44,6 +45,10 @@ export class MainintakeComponent {
 
   getFamilyMembersCount() {
     return this.ds.casedata.family_members.length;
+  }
+
+  getCharitiesCount() {
+    return this.ds.casedata.charities.length;
   }
 
   getTotalAssetValue() {

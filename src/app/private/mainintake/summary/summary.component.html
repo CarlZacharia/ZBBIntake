@@ -253,6 +253,107 @@
     </div>
   </section>
 
+  <!-- Charities Section -->
+  <section class="summary-section">
+    <h2 class="section-title">Charitable Beneficiaries ({{ds.casedata.charities.length}})</h2>
+    <div *ngIf="ds.casedata.charities.length === 0" class="no-data">No charitable beneficiaries recorded</div>
+    <div class="charity-list" *ngIf="ds.casedata.charities.length > 0">
+      <div class="charity-card" *ngFor="let charity of ds.casedata.charities; let i = index">
+        <h3 class="charity-name">{{charity.organization_name}}</h3>
+        <div class="charity-details">
+          <div class="detail-row">
+            <span class="detail-label">Charity Type:</span>
+            <span class="detail-value">{{charity.charity_type | titlecase}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.ein_tax_id">
+            <span class="detail-label">EIN/Tax ID:</span>
+            <span class="detail-value">{{charity.ein_tax_id}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.website">
+            <span class="detail-label">Website:</span>
+            <span class="detail-value">{{charity.website}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.mission_description">
+            <span class="detail-label">Mission:</span>
+            <span class="detail-value">{{charity.mission_description}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.address">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{charity.address}}, {{charity.city}}, {{charity.state}} {{charity.zip}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.contact_person">
+            <span class="detail-label">Contact Person:</span>
+            <span class="detail-value">{{charity.contact_person}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.contact_phone">
+            <span class="detail-label">Contact Phone:</span>
+            <span class="detail-value">{{charity.contact_phone}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.contact_email">
+            <span class="detail-label">Contact Email:</span>
+            <span class="detail-value">{{charity.contact_email}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Current Donor:</span>
+            <span class="detail-value">{{charity.current_donor ? 'Yes' : 'No'}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.current_donor && charity.annual_contribution_amount">
+            <span class="detail-label">Annual Contribution:</span>
+            <span class="detail-value">{{formatCurrency(charity.annual_contribution_amount)}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.current_donor && charity.years_supporting">
+            <span class="detail-label">Years Supporting:</span>
+            <span class="detail-value">{{charity.years_supporting}} years</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.personal_connection">
+            <span class="detail-label">Personal Connection:</span>
+            <span class="detail-value">{{charity.personal_connection}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.intended_gift_type">
+            <span class="detail-label">Intended Gift Type:</span>
+            <span class="detail-value">{{charity.intended_gift_type | titlecase}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'percentage' && charity.intended_percentage">
+            <span class="detail-label">Gift Percentage:</span>
+            <span class="detail-value">{{charity.intended_percentage}}% of estate</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'specific_amount' && charity.intended_dollar_amount">
+            <span class="detail-label">Gift Amount:</span>
+            <span class="detail-value">{{formatCurrency(charity.intended_dollar_amount)}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'specific_asset' && charity.intended_asset_description">
+            <span class="detail-label">Specific Asset:</span>
+            <span class="detail-value">{{charity.intended_asset_description}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.gift_restrictions">
+            <span class="detail-label">Gift Restrictions:</span>
+            <span class="detail-value">{{charity.gift_restrictions}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.memorial_gift">
+            <span class="detail-label">Memorial Gift:</span>
+            <span class="detail-value">Yes<span *ngIf="charity.memorial_name"> - In memory of {{charity.memorial_name}}</span></span>
+          </div>
+          <div class="detail-row" *ngIf="charity.endowment_fund">
+            <span class="detail-label">Endowment Fund:</span>
+            <span class="detail-value">Yes</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.endowment_fund && charity.endowment_purpose">
+            <span class="detail-label">Endowment Purpose:</span>
+            <span class="detail-value">{{charity.endowment_purpose}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.recognition_preferences">
+            <span class="detail-label">Recognition Preference:</span>
+            <span class="detail-value">{{charity.recognition_preferences | titlecase}}</span>
+          </div>
+          <div class="detail-row" *ngIf="charity.notes">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">{{charity.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Assets Section -->
   <section class="summary-section">
     <h2 class="section-title">Assets Overview</h2>

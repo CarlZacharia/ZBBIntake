@@ -57,9 +57,25 @@
         </div>
       </button>
 
+      <!-- Charities Card -->
+      <button
+        class="nav-card"
+        [class.active]="activeSection === 'charities'"
+        (click)="setActiveSection('charities')">
+        <div class="nav-card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+          </svg>
+          <span class="nav-title">Charities</span>
+        </div>
+        <div class="nav-card-info">
+          {{getCharitiesCount()}} Charit{{getCharitiesCount() !== 1 ? 'ies' : 'y'}}
+        </div>
+      </button>
+
       <!-- Assets Card -->
-      <button 
-        class="nav-card" 
+      <button
+        class="nav-card"
         [class.active]="activeSection === 'assets'"
         (click)="setActiveSection('assets')">
         <div class="nav-card-header">
@@ -122,6 +138,11 @@
       <!-- Children Component -->
       <div *ngIf="activeSection === 'children'">
         <app-children></app-children>
+      </div>
+
+      <!-- Charities Component -->
+      <div *ngIf="activeSection === 'charities'">
+        <app-charities></app-charities>
       </div>
 
       <!-- Assets Component -->

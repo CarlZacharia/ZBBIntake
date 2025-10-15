@@ -1,0 +1,429 @@
+<div class="charities-container">
+  <h2>Charitable Beneficiaries</h2>
+
+  <!-- Action Button -->
+  <div class="action-buttons">
+    <button class="btn btn-primary" (click)="openAddCharityModal()">Add Charity</button>
+  </div>
+
+  <!-- Charities Table -->
+  <section class="charities-section">
+    <h3>Charities</h3>
+    <table class="data-table" *ngIf="ds.casedata.charities.length > 0">
+      <thead>
+        <tr>
+          <th>Organization Name</th>
+          <th>Type</th>
+          <th>Current Donor</th>
+          <th>Intended Gift</th>
+          <th>Gift Amount/Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let charity of ds.casedata.charities; let i = index">
+          <td>{{ charity.organization_name }}</td>
+          <td>{{ charity.charity_type | titlecase }}</td>
+          <td>{{ charity.current_donor ? 'Yes' : 'No' }}</td>
+          <td>{{ charity.intended_gift_type ? (charity.intended_gift_type | titlecase) : 'N/A' }}</td>
+          <td>
+            <span *ngIf="charity.intended_gift_type === 'percentage'">{{ charity.intended_percentage }}%</span>
+            <span *ngIf="charity.intended_gift_type === 'specific_amount'">{{ charity.intended_dollar_amount | currency }}</span>
+            <span *ngIf="charity.intended_gift_type === 'specific_asset'">{{ charity.intended_asset_description }}</span>
+            <span *ngIf="charity.intended_gift_type === 'residuary'">Residuary</span>
+            <span *ngIf="!charity.intended_gift_type">N/A</span>
+          </td>
+          <td class="actions">
+            <button class="btn-small btn-edit" (click)="openEditCharityModal(charity, i)">Edit</button>
+            <button class="btn-small btn-delete" (click)="deleteCharity(i)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="ds.casedata.charities.length === 0" class="no-data">No charities added yet.</p>
+  </section>
+</div>
+
+<!-- Add Charity Modal -->
+<div class="modal-overlay" *ngIf="showAddCharityModal" (click)="closeAddCharityModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Charity</h3>
+      <button class="close-btn" (click)="closeAddCharityModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingCharity">
+      <form>
+        <!-- Organization Information -->
+        <div class="form-group">
+          <label>Organization Name *</label>
+          <input type="text" [(ngModel)]="editingCharity.organization_name" name="organization_name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>EIN/Tax ID</label>
+            <input type="text" [(ngModel)]="editingCharity.ein_tax_id" name="ein_tax_id" placeholder="XX-XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Charity Type *</label>
+            <select [(ngModel)]="editingCharity.charity_type" name="charity_type" required>
+              <option value="religious">Religious</option>
+              <option value="educational">Educational</option>
+              <option value="medical">Medical/Healthcare</option>
+              <option value="environmental">Environmental</option>
+              <option value="animal_welfare">Animal Welfare</option>
+              <option value="arts_culture">Arts & Culture</option>
+              <option value="social_services">Social Services</option>
+              <option value="community">Community Development</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mission Description</label>
+          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2" placeholder="Brief description of the organization's mission..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Website</label>
+          <input type="url" [(ngModel)]="editingCharity.website" name="website" placeholder="https://...">
+        </div>
+
+        <!-- Contact Information -->
+        <h4 class="section-heading">Contact Information</h4>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingCharity.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingCharity.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingCharity.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingCharity.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input type="text" [(ngModel)]="editingCharity.contact_person" name="contact_person">
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="tel" [(ngModel)]="editingCharity.contact_phone" name="contact_phone">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" [(ngModel)]="editingCharity.contact_email" name="contact_email">
+        </div>
+
+        <!-- Donor Relationship -->
+        <h4 class="section-heading">Donor Relationship</h4>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current Donor</label>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="editingCharity.current_donor">
+          <div class="form-group">
+            <label>Annual Contribution Amount</label>
+            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount" name="annual_contribution_amount" min="0">
+          </div>
+          <div class="form-group">
+            <label>Years Supporting</label>
+            <input type="number" [(ngModel)]="editingCharity.years_supporting" name="years_supporting" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Personal Connection</label>
+          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3" placeholder="Describe your personal connection to this organization..."></textarea>
+        </div>
+
+        <!-- Gift Planning -->
+        <h4 class="section-heading">Intended Gift</h4>
+
+        <div class="form-group">
+          <label>Gift Type</label>
+          <select [(ngModel)]="editingCharity.intended_gift_type" name="intended_gift_type">
+            <option [ngValue]="null">Select...</option>
+            <option value="percentage">Percentage of Estate</option>
+            <option value="specific_amount">Specific Dollar Amount</option>
+            <option value="specific_asset">Specific Asset</option>
+            <option value="residuary">Residuary Beneficiary</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'percentage'">
+          <label>Percentage of Estate</label>
+          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0" max="100" step="0.1">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_amount'">
+          <label>Dollar Amount</label>
+          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount" min="0">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_asset'">
+          <label>Asset Description</label>
+          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2" placeholder="Describe the specific asset..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Gift Restrictions or Conditions</label>
+          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2" placeholder="Any specific restrictions on how the gift should be used..."></textarea>
+        </div>
+
+        <!-- Memorial & Endowment Options -->
+        <h4 class="section-heading">Special Designations</h4>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial Gift</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment Fund</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.memorial_gift">
+          <label>Memorial Name</label>
+          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name" placeholder="In memory of...">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.endowment_fund">
+          <label>Endowment Purpose</label>
+          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2" placeholder="Specific purpose for the endowment..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Recognition Preferences</label>
+          <select [(ngModel)]="editingCharity.recognition_preferences" name="recognition_preferences">
+            <option [ngValue]="null">Select...</option>
+            <option value="anonymous">Anonymous Gift</option>
+            <option value="public">Public Recognition</option>
+            <option value="family_only">Family Only</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Notes</label>
+          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddCharityModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewCharity()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Charity Modal -->
+<div class="modal-overlay" *ngIf="showEditCharityModal" (click)="closeEditCharityModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Charity</h3>
+      <button class="close-btn" (click)="closeEditCharityModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingCharity">
+      <form>
+        <!-- Organization Information -->
+        <div class="form-group">
+          <label>Organization Name *</label>
+          <input type="text" [(ngModel)]="editingCharity.organization_name" name="organization_name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>EIN/Tax ID</label>
+            <input type="text" [(ngModel)]="editingCharity.ein_tax_id" name="ein_tax_id" placeholder="XX-XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Charity Type *</label>
+            <select [(ngModel)]="editingCharity.charity_type" name="charity_type" required>
+              <option value="religious">Religious</option>
+              <option value="educational">Educational</option>
+              <option value="medical">Medical/Healthcare</option>
+              <option value="environmental">Environmental</option>
+              <option value="animal_welfare">Animal Welfare</option>
+              <option value="arts_culture">Arts & Culture</option>
+              <option value="social_services">Social Services</option>
+              <option value="community">Community Development</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mission Description</label>
+          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2" placeholder="Brief description of the organization's mission..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Website</label>
+          <input type="url" [(ngModel)]="editingCharity.website" name="website" placeholder="https://...">
+        </div>
+
+        <!-- Contact Information -->
+        <h4 class="section-heading">Contact Information</h4>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingCharity.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingCharity.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingCharity.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingCharity.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input type="text" [(ngModel)]="editingCharity.contact_person" name="contact_person">
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="tel" [(ngModel)]="editingCharity.contact_phone" name="contact_phone">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" [(ngModel)]="editingCharity.contact_email" name="contact_email">
+        </div>
+
+        <!-- Donor Relationship -->
+        <h4 class="section-heading">Donor Relationship</h4>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current Donor</label>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="editingCharity.current_donor">
+          <div class="form-group">
+            <label>Annual Contribution Amount</label>
+            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount" name="annual_contribution_amount" min="0">
+          </div>
+          <div class="form-group">
+            <label>Years Supporting</label>
+            <input type="number" [(ngModel)]="editingCharity.years_supporting" name="years_supporting" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Personal Connection</label>
+          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3" placeholder="Describe your personal connection to this organization..."></textarea>
+        </div>
+
+        <!-- Gift Planning -->
+        <h4 class="section-heading">Intended Gift</h4>
+
+        <div class="form-group">
+          <label>Gift Type</label>
+          <select [(ngModel)]="editingCharity.intended_gift_type" name="intended_gift_type">
+            <option [ngValue]="null">Select...</option>
+            <option value="percentage">Percentage of Estate</option>
+            <option value="specific_amount">Specific Dollar Amount</option>
+            <option value="specific_asset">Specific Asset</option>
+            <option value="residuary">Residuary Beneficiary</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'percentage'">
+          <label>Percentage of Estate</label>
+          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0" max="100" step="0.1">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_amount'">
+          <label>Dollar Amount</label>
+          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount" min="0">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_asset'">
+          <label>Asset Description</label>
+          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2" placeholder="Describe the specific asset..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Gift Restrictions or Conditions</label>
+          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2" placeholder="Any specific restrictions on how the gift should be used..."></textarea>
+        </div>
+
+        <!-- Memorial & Endowment Options -->
+        <h4 class="section-heading">Special Designations</h4>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial Gift</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment Fund</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.memorial_gift">
+          <label>Memorial Name</label>
+          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name" placeholder="In memory of...">
+        </div>
+
+        <div class="form-group" *ngIf="editingCharity.endowment_fund">
+          <label>Endowment Purpose</label>
+          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2" placeholder="Specific purpose for the endowment..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Recognition Preferences</label>
+          <select [(ngModel)]="editingCharity.recognition_preferences" name="recognition_preferences">
+            <option [ngValue]="null">Select...</option>
+            <option value="anonymous">Anonymous Gift</option>
+            <option value="public">Public Recognition</option>
+            <option value="family_only">Family Only</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Notes</label>
+          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditCharityModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditCharity()">Save</button>
+    </div>
+  </div>
+</div>

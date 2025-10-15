@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, IChild, IClient,IDigitalAsset,IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient,IDigitalAsset,IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 
 
 // --- DATA SERVICE ---
@@ -70,6 +70,7 @@ export class DataService {
     },
     children: [],
     family_members: [],
+    charities: [],
     fiduciaries: [],
     guardian_preferences: {
       preference_id: null,

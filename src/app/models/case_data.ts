@@ -237,6 +237,37 @@ export interface IFamilyMember {
   notes: string | null;
 }
 
+export interface ICharity {
+  charity_id: number | null;
+  organization_name: string;
+  ein_tax_id: string | null;
+  charity_type: 'religious' | 'educational' | 'medical' | 'environmental' | 'animal_welfare' | 'arts_culture' | 'social_services' | 'community' | 'other';
+  mission_description: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip: string | null;
+  contact_person: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  current_donor: boolean;
+  annual_contribution_amount: number | null;
+  years_supporting: number | null;
+  personal_connection: string | null;
+  intended_gift_type: 'percentage' | 'specific_amount' | 'specific_asset' | 'residuary' | null;
+  intended_percentage: number | null;
+  intended_dollar_amount: number | null;
+  intended_asset_description: string | null;
+  gift_restrictions: string | null;
+  memorial_gift: boolean;
+  memorial_name: string | null;
+  endowment_fund: boolean;
+  endowment_purpose: string | null;
+  recognition_preferences: 'anonymous' | 'public' | 'family_only' | null;
+  notes: string | null;
+}
+
 export interface IFiduciary {
   appointment_id: number | null;
   role_type: 'executor' | 'trustee' | 'financial_poa' | 'healthcare_poa' | 'guardian_person' | 'guardian_property';
@@ -330,6 +361,7 @@ export interface ICaseData {
   marital_info: IMaritalInfo;
   children: IChild[];
   family_members: IFamilyMember[];
+  charities: ICharity[];
   fiduciaries: IFiduciary[];
   guardian_preferences: IGuardianPreferences;
   assets: IAssets; // <-- Added assets object
