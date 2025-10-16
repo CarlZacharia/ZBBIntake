@@ -1,1 +1,35 @@
-<app-medicaid-steps></app-medicaid-steps>
+<div class="mainintake-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <!-- Back to Main Button -->
+
+
+    <div class="profile-section">
+      <img src="ZBLogo.jpg" alt="Profile" class="profile-image">
+      <h4 class="profile-name">Client Name</h4>
+      <p class="profile-email">client&#64;email.com</p>
+    </div>
+    <button class="back-button" routerLink="/intakehub">
+      <svg xmlns="http://www.w3.org/2000/svg" class="back-icon" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+          clip-rule="evenodd" />
+      </svg>
+      Back to Main
+    </button>
+    <div class="previous-intakes">
+      <h4>Buttons here</h4>
+
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="logo-header">
+      <img src="ZBLogo.jpg" alt="ZBB Logo" class="logo">
+      <h1 class="page-title">Zacharia Brown & Bratkovich</h1>
+    </div>
+
+    <app-medicaid-steps></app-medicaid-steps>
+  </main>
+</div>

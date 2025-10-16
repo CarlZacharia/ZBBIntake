@@ -3,3 +3,21 @@
 @tailwind utilities;
 
 /* You can add global styles to this file, and also import other style files */
+
+/* Global Animation - Card Slide In */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply slide-in animation to all cards */
+.card {
+  animation: slideIn 0.5s ease-out;
+}

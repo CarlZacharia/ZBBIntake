@@ -28,8 +28,8 @@
     <!-- Main Cards -->
 
 
-    <div class="cards-container" *ngIf="!showIntakeOptions">
-      <div class="card" (click)="toggleIntakeOptions(true)">
+    <div class="cards-container">
+      <div class="card">
         <div class="card-image">
           <img src="library.jpg" alt="Education Center">
         </div>
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div class="card" (click)="toggleIntakeOptions(true)">
+      <div class="card" [routerLink]="['/mainintake']" routerLinkActive="router-link-active">
         <div class="card-image">
           <img src="intakeform.jpg" alt="New Intake">
         </div>
@@ -51,7 +51,7 @@
 
 
 
-      <div class="card" (click)="toggleIntakeOptions(true)">
+      <div class="card" [routerLink]="['/medicaidintake']" routerLinkActive="router-link-active">
         <div class="card-image">
           <img src="medicaid.jpg" alt="Medicaid Intake">
         </div>
@@ -65,38 +65,6 @@
 
     <!-- New Intake Options (8 cards) -->
     <div class="intake-options" *ngIf="showIntakeOptions">
-      <button class="back-button" (click)="toggleIntakeOptions(false)">← Back</button>
-
-      <h2 class="section-title">Select Intake Type</h2>
-
-      <div class="intake-cards-grid">
-        <div class="intake-card" routerLink="/mainintake" routerLinkActive="router-link-active">
-          <h3>Estate Planning</h3>
-          <p>Married or Single estate planning</p>
-        </div>
-
-        <div class="intake-card" routerLink="/medicaidintake" routerLinkActive="router-link-active">
-          <h3>Medicaid Benefits</h3>
-          <p>Medicaid Eligibility Intake</p>
-        </div>
-
-        <div class="intake-card">
-          <h3>Estate Administration</h3>
-          <p>Estate administration services</p>
-        </div>
-        <div class="intake-card">
-          <h3>Guardianship</h3>
-          <p>Guardianship services</p>
-        </div>
-        <div class="intake-card">
-          <h3>Special Needs Trust</h3>
-          <p>Special needs trust planning</p>
-        </div>
-        <div class="intake-card">
-          <h3>Other</h3>
-          <p>Other legal services</p>
-        </div>
-      </div>
 
       <div class="form-section">
         <div class="form-group">

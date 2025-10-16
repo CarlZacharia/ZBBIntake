@@ -169,23 +169,6 @@
   gap: 1.5rem !important;
 }
 
-/* Animation for card appearance */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-:host ::ng-deep .card {
-  animation: slideIn 0.5s ease-out;
-}
-
 /* Responsive padding adjustments */
 @media (max-width: 768px) {
   :host ::ng-deep .card-body {

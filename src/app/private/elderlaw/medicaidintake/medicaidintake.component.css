@@ -1,0 +1,171 @@
+.mainintake-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* Sidebar - 20% width */
+.sidebar {
+  width: 20%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #ffffff;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-section {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid #d4a146;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.profile-name {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.profile-email {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.previous-intakes h4 {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  color: #d4a146;
+}
+
+.intake-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.intake-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.intake-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.back-button {
+  width: 100%;
+  background: transparent;
+  border: 2px solid #d4a146;
+  color: #d4a146;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.back-button:hover {
+  background: #d4a146;
+  color: #1a1a2e;
+  transform: translateX(-5px);
+  box-shadow: 0 4px 16px rgba(212, 161, 70, 0.3);
+}
+
+.back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover .back-icon {
+  transform: translateX(-3px);
+}
+
+/* Main Content - 80% width */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.logo-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.logo {
+  height: 80px;
+  width: auto;
+  border-radius: 50%;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .mainintake-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 1rem;
+  }
+
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .logo-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logo {
+    height: 60px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .main-content {
+    padding: 1.5rem;
+  }
+}
