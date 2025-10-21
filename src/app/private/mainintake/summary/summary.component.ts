@@ -13,6 +13,14 @@ export class SummaryComponent {
   // Computed signals for reactive data access
   readonly casedata = computed(() => this.ds.casedata());
   readonly assets = computed(() => this.ds.assets());
+  readonly personal = computed(() => this.ds.personal());
+  readonly maritalInfo = computed(() => this.ds.maritalInfo());
+
+  // Computed signals for individual arrays
+  readonly children = computed(() => this.ds.casedata().children);
+  readonly charities = computed(() => this.ds.casedata().charities);
+  readonly fiduciaries = computed(() => this.ds.casedata().fiduciaries);
+  readonly familyMembers = computed(() => this.ds.casedata().family_members);
 
   // Computed signal for total asset value
   readonly totalAssetValue = computed(() => {

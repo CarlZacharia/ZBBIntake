@@ -130,6 +130,13 @@ export class DataService {
     }));
   }
 
+  updateMaritalInfo(updates: Partial<IMaritalInfo>) {
+    this._casedata.update(current => ({
+      ...current,
+      marital_info: { ...current.marital_info, ...updates }
+    }));
+  }
+
   updatePersonalAddress(updates: Partial<IAddress>) {
     this._casedata.update(current => ({
       ...current,

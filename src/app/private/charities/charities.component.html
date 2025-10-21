@@ -9,7 +9,7 @@
   <!-- Charities Table -->
   <section class="charities-section">
     <h3>Charities</h3>
-    <table class="data-table" *ngIf="ds.casedata.charities.length > 0">
+    <table class="data-table" *ngIf="charities().length > 0">
       <thead>
         <tr>
           <th>Organization Name</th>
@@ -21,15 +21,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let charity of ds.casedata.charities; let i = index">
+        <tr *ngFor="let charity of charities(); let i = index">
           <td>{{ charity.organization_name }}</td>
           <td>{{ charity.charity_type | titlecase }}</td>
           <td>{{ charity.current_donor ? 'Yes' : 'No' }}</td>
           <td>{{ charity.intended_gift_type ? (charity.intended_gift_type | titlecase) : 'N/A' }}</td>
           <td>
             <span *ngIf="charity.intended_gift_type === 'percentage'">{{ charity.intended_percentage }}%</span>
-            <span *ngIf="charity.intended_gift_type === 'specific_amount'">{{ charity.intended_dollar_amount | currency }}</span>
-            <span *ngIf="charity.intended_gift_type === 'specific_asset'">{{ charity.intended_asset_description }}</span>
+            <span *ngIf="charity.intended_gift_type === 'specific_amount'">{{ charity.intended_dollar_amount | currency
+              }}</span>
+            <span *ngIf="charity.intended_gift_type === 'specific_asset'">{{ charity.intended_asset_description
+              }}</span>
             <span *ngIf="charity.intended_gift_type === 'residuary'">Residuary</span>
             <span *ngIf="!charity.intended_gift_type">N/A</span>
           </td>
@@ -40,7 +42,7 @@
         </tr>
       </tbody>
     </table>
-    <p *ngIf="ds.casedata.charities.length === 0" class="no-data">No charities added yet.</p>
+    <p *ngIf="charities().length === 0" class="no-data">No charities added yet.</p>
   </section>
 </div>
 
@@ -82,7 +84,8 @@
 
         <div class="form-group">
           <label>Mission Description</label>
-          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2" placeholder="Brief description of the organization's mission..."></textarea>
+          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2"
+            placeholder="Brief description of the organization's mission..."></textarea>
         </div>
 
         <div class="form-group">
@@ -137,14 +140,16 @@
 
         <div class="form-row">
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current Donor</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current
+              Donor</label>
           </div>
         </div>
 
         <div class="form-row" *ngIf="editingCharity.current_donor">
           <div class="form-group">
             <label>Annual Contribution Amount</label>
-            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount" name="annual_contribution_amount" min="0">
+            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount"
+              name="annual_contribution_amount" min="0">
           </div>
           <div class="form-group">
             <label>Years Supporting</label>
@@ -154,7 +159,8 @@
 
         <div class="form-group">
           <label>Personal Connection</label>
-          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3" placeholder="Describe your personal connection to this organization..."></textarea>
+          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3"
+            placeholder="Describe your personal connection to this organization..."></textarea>
         </div>
 
         <!-- Gift Planning -->
@@ -173,22 +179,26 @@
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'percentage'">
           <label>Percentage of Estate</label>
-          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0" max="100" step="0.1">
+          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0"
+            max="100" step="0.1">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_amount'">
           <label>Dollar Amount</label>
-          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount" min="0">
+          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount"
+            min="0">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_asset'">
           <label>Asset Description</label>
-          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2" placeholder="Describe the specific asset..."></textarea>
+          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2"
+            placeholder="Describe the specific asset..."></textarea>
         </div>
 
         <div class="form-group">
           <label>Gift Restrictions or Conditions</label>
-          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2" placeholder="Any specific restrictions on how the gift should be used..."></textarea>
+          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2"
+            placeholder="Any specific restrictions on how the gift should be used..."></textarea>
         </div>
 
         <!-- Memorial & Endowment Options -->
@@ -196,21 +206,25 @@
 
         <div class="form-row">
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial Gift</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial
+              Gift</label>
           </div>
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment Fund</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment
+              Fund</label>
           </div>
         </div>
 
         <div class="form-group" *ngIf="editingCharity.memorial_gift">
           <label>Memorial Name</label>
-          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name" placeholder="In memory of...">
+          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name"
+            placeholder="In memory of...">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.endowment_fund">
           <label>Endowment Purpose</label>
-          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2" placeholder="Specific purpose for the endowment..."></textarea>
+          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2"
+            placeholder="Specific purpose for the endowment..."></textarea>
         </div>
 
         <div class="form-group">
@@ -225,7 +239,8 @@
 
         <div class="form-group">
           <label>Additional Notes</label>
-          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3"
+            placeholder="Any additional information..."></textarea>
         </div>
       </form>
     </div>
@@ -274,7 +289,8 @@
 
         <div class="form-group">
           <label>Mission Description</label>
-          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2" placeholder="Brief description of the organization's mission..."></textarea>
+          <textarea [(ngModel)]="editingCharity.mission_description" name="mission_description" rows="2"
+            placeholder="Brief description of the organization's mission..."></textarea>
         </div>
 
         <div class="form-group">
@@ -329,14 +345,16 @@
 
         <div class="form-row">
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current Donor</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.current_donor" name="current_donor"> Current
+              Donor</label>
           </div>
         </div>
 
         <div class="form-row" *ngIf="editingCharity.current_donor">
           <div class="form-group">
             <label>Annual Contribution Amount</label>
-            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount" name="annual_contribution_amount" min="0">
+            <input type="number" [(ngModel)]="editingCharity.annual_contribution_amount"
+              name="annual_contribution_amount" min="0">
           </div>
           <div class="form-group">
             <label>Years Supporting</label>
@@ -346,7 +364,8 @@
 
         <div class="form-group">
           <label>Personal Connection</label>
-          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3" placeholder="Describe your personal connection to this organization..."></textarea>
+          <textarea [(ngModel)]="editingCharity.personal_connection" name="personal_connection" rows="3"
+            placeholder="Describe your personal connection to this organization..."></textarea>
         </div>
 
         <!-- Gift Planning -->
@@ -365,22 +384,26 @@
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'percentage'">
           <label>Percentage of Estate</label>
-          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0" max="100" step="0.1">
+          <input type="number" [(ngModel)]="editingCharity.intended_percentage" name="intended_percentage" min="0"
+            max="100" step="0.1">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_amount'">
           <label>Dollar Amount</label>
-          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount" min="0">
+          <input type="number" [(ngModel)]="editingCharity.intended_dollar_amount" name="intended_dollar_amount"
+            min="0">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.intended_gift_type === 'specific_asset'">
           <label>Asset Description</label>
-          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2" placeholder="Describe the specific asset..."></textarea>
+          <textarea [(ngModel)]="editingCharity.intended_asset_description" name="intended_asset_description" rows="2"
+            placeholder="Describe the specific asset..."></textarea>
         </div>
 
         <div class="form-group">
           <label>Gift Restrictions or Conditions</label>
-          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2" placeholder="Any specific restrictions on how the gift should be used..."></textarea>
+          <textarea [(ngModel)]="editingCharity.gift_restrictions" name="gift_restrictions" rows="2"
+            placeholder="Any specific restrictions on how the gift should be used..."></textarea>
         </div>
 
         <!-- Memorial & Endowment Options -->
@@ -388,21 +411,25 @@
 
         <div class="form-row">
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial Gift</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.memorial_gift" name="memorial_gift"> Memorial
+              Gift</label>
           </div>
           <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment Fund</label>
+            <label><input type="checkbox" [(ngModel)]="editingCharity.endowment_fund" name="endowment_fund"> Endowment
+              Fund</label>
           </div>
         </div>
 
         <div class="form-group" *ngIf="editingCharity.memorial_gift">
           <label>Memorial Name</label>
-          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name" placeholder="In memory of...">
+          <input type="text" [(ngModel)]="editingCharity.memorial_name" name="memorial_name"
+            placeholder="In memory of...">
         </div>
 
         <div class="form-group" *ngIf="editingCharity.endowment_fund">
           <label>Endowment Purpose</label>
-          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2" placeholder="Specific purpose for the endowment..."></textarea>
+          <textarea [(ngModel)]="editingCharity.endowment_purpose" name="endowment_purpose" rows="2"
+            placeholder="Specific purpose for the endowment..."></textarea>
         </div>
 
         <div class="form-group">
@@ -417,7 +444,8 @@
 
         <div class="form-group">
           <label>Additional Notes</label>
-          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+          <textarea [(ngModel)]="editingCharity.notes" name="notes" rows="3"
+            placeholder="Any additional information..."></textarea>
         </div>
       </form>
     </div>

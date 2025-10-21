@@ -2,13 +2,14 @@ import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { IAddress, ICaseData } from '../../models/case_data';
+import { ICaseData, IAddress } from '../../models/case_data';
 
 @Component({
   selector: 'app-personal',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './personal.component.html',
-  styleUrls: ['./personal.component.css']
+  styleUrl: './personal.component.css'
 })
 export class PersonalComponent {
 
@@ -36,6 +37,7 @@ export class PersonalComponent {
 
   // Reactive computed properties from the data service
   readonly personal = computed(() => this.ds.personal());
+  readonly maritalInfo = computed(() => this.ds.maritalInfo());
   readonly casedata = computed(() => this.ds.casedata());
   readonly isPersonalInfoComplete = computed(() => this.ds.isPersonalInfoComplete());
   readonly completionPercentage = computed(() => this.ds.completionPercentage());
@@ -86,12 +88,32 @@ export class PersonalComponent {
     this.ds.updatePersonal({ [field]: value });
   }
 
+  updateMaritalInfo(field: string, value: any) {
+    this.ds.updateMaritalInfo({ [field]: value });
+  }
+
   updateAddress(field: string, value: any) {
     this.ds.updatePersonalAddress({ [field]: value });
   }
 
   updatePreviousAddress(index: number, field: string, value: any) {
     this.ds.updatePreviousAddress(index, { [field]: value });
+  }
+
+  // Event handler methods for type safety
+  onInputChange(field: string, event: Event, updateFn: (field: string, value: any) => void) {
+    const target = event.target as HTMLInputElement;
+    updateFn(field, target.value || null);
+  }
+
+  onSelectChange(field: string, event: Event, updateFn: (field: string, value: any) => void) {
+    const target = event.target as HTMLSelectElement;
+    updateFn(field, target.value || null);
+  }
+
+  onCheckboxChange(field: string, event: Event, updateFn: (field: string, value: any) => void) {
+    const target = event.target as HTMLInputElement;
+    updateFn(field, target.checked);
   }
 
   async savePersonalInfo() {
