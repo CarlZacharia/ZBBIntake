@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -26,12 +26,47 @@ export class PersonalComponent {
     'Space Force', 'National Guard', 'Reserves'
   ];
 
+  // State signals for component-specific concerns
+  private _isSaving = signal(false);
+  private _saveMessage = signal<string | null>(null);
+
+  // Computed signals for reactive UI
+  readonly isSaving = this._isSaving.asReadonly();
+  readonly saveMessage = this._saveMessage.asReadonly();
+
+  // Reactive computed properties from the data service
+  readonly personal = computed(() => this.ds.personal());
+  readonly casedata = computed(() => this.ds.casedata());
+  readonly isPersonalInfoComplete = computed(() => this.ds.isPersonalInfoComplete());
+  readonly completionPercentage = computed(() => this.ds.completionPercentage());
+
+  // Computed signals for UI state
+  readonly canSave = computed(() => {
+    const personal = this.personal();
+    return !!(personal.legal_first_name && personal.legal_last_name) && !this.isSaving();
+  });
+
+  readonly previousAddressesCount = computed(() => this.personal().previous_addresses.length);
+
+  readonly formValidationMessage = computed(() => {
+    const personal = this.personal();
+    if (!personal.legal_first_name) return 'First name is required';
+    if (!personal.legal_last_name) return 'Last name is required';
+    if (!personal.current_address.address_line1) return 'Address is required';
+    if (!personal.current_address.city) return 'City is required';
+    if (!personal.current_address.state) return 'State is required';
+    if (!personal.current_address.zip) return 'ZIP code is required';
+    return null;
+  });
+
   constructor(public ds: DataService) { }
 
+  // Backwards compatibility getter - can be removed if not used elsewhere
   get csd(): ICaseData {
-    return this.ds.casedata;
+    return this.ds.casedata();
   }
 
+  // Methods using the new signal-based data service
   addPreviousAddress() {
     const newAddress: IAddress = {
       address_line1: '',
@@ -40,15 +75,44 @@ export class PersonalComponent {
       state: '',
       zip: ''
     };
-    this.ds.personal.previous_addresses.push(newAddress);
+    this.ds.addPreviousAddress(newAddress);
   }
 
   removePreviousAddress(index: number) {
-    this.ds.personal.previous_addresses.splice(index, 1);
+    this.ds.removePreviousAddress(index);
   }
 
-  savePersonalInfo() {
-    console.log('Saving personal information:', this.ds.personal);
-    // Add your save logic here (e.g., API call)
+  updatePersonalInfo(field: string, value: any) {
+    this.ds.updatePersonal({ [field]: value });
+  }
+
+  updateAddress(field: string, value: any) {
+    this.ds.updatePersonalAddress({ [field]: value });
+  }
+
+  updatePreviousAddress(index: number, field: string, value: any) {
+    this.ds.updatePreviousAddress(index, { [field]: value });
+  }
+
+  async savePersonalInfo() {
+    if (!this.canSave()) return;
+
+    this._isSaving.set(true);
+    this._saveMessage.set(null);
+
+    try {
+      const success = await this.ds.savePersonalInfo();
+      if (success) {
+        this._saveMessage.set('Personal information saved successfully!');
+        setTimeout(() => this._saveMessage.set(null), 3000);
+      } else {
+        this._saveMessage.set('Failed to save personal information. Please try again.');
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      this._saveMessage.set('An error occurred while saving. Please try again.');
+    } finally {
+      this._isSaving.set(false);
+    }
   }
 }

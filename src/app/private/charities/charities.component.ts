@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -19,6 +19,9 @@ export class CharitiesComponent {
   // Current edit items
   editingCharity: ICharity | null = null;
   editingCharityIndex: number = -1;
+
+  // Reactive data access
+  readonly charities = computed(() => this.ds.casedata().charities);
 
   // US States array for dropdowns
   states = [
@@ -46,21 +49,21 @@ export class CharitiesComponent {
 
   saveNewCharity() {
     if (this.editingCharity) {
-      this.ds.casedata.charities.push(this.editingCharity);
+      this.ds.addCharity(this.editingCharity);
       this.closeAddCharityModal();
     }
   }
 
   saveEditCharity() {
     if (this.editingCharity && this.editingCharityIndex >= 0) {
-      this.ds.casedata.charities[this.editingCharityIndex] = this.editingCharity;
+      this.ds.updateCharity(this.editingCharityIndex, this.editingCharity);
       this.closeEditCharityModal();
     }
   }
 
   deleteCharity(index: number) {
     if (confirm('Are you sure you want to delete this charity?')) {
-      this.ds.casedata.charities.splice(index, 1);
+      this.ds.removeCharity(index);
     }
   }
 

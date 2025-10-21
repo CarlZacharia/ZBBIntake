@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -38,6 +38,11 @@ export class AssetsComponent {
   editingOtherAsset: IOtherAsset | null = null;
   editingIndex: number = -1;
 
+  // Reactive data access
+  readonly assets = computed(() => this.ds.assets());
+  readonly maritalInfo = computed(() => this.ds.maritalInfo());
+  readonly isMarriedSignal = computed(() => this.maritalInfo().marital_status === 'married');
+
   // US States for dropdowns
   states = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -49,8 +54,9 @@ export class AssetsComponent {
 
   constructor(public ds: DataService) { }
 
+  // Backwards compatibility
   get isMarried(): boolean {
-    return this.ds.maritalInfo.marital_status === 'married';
+    return this.isMarriedSignal();
   }
 
   // --- Asset Filtering Methods ---
@@ -68,8 +74,8 @@ export class AssetsComponent {
   }
 
   getAllAssets(assetType: string): any[] {
-    const assets = this.ds.casedata.assets;
-    switch(assetType) {
+    const assets = this.assets();
+    switch (assetType) {
       case 'real_estate': return assets.real_estate_holdings;
       case 'financial_account': return assets.financial_account_holdings;
       case 'retirement_account': return assets.retirement_account_holdings;
@@ -99,7 +105,7 @@ export class AssetsComponent {
 
     return assets.reduce((total, asset) => {
       let value = 0;
-      switch(assetType) {
+      switch (assetType) {
         case 'real_estate':
           value = asset.ownership_value || asset.net_value || asset.estimated_value || 0;
           break;
@@ -160,7 +166,7 @@ export class AssetsComponent {
   }
 
   private initializeEditingAsset(assetType: AssetType) {
-    switch(assetType) {
+    switch (assetType) {
       case 'real_estate':
         this.editingRealEstate = { ...this.ds.realEstate };
         break;
@@ -186,7 +192,7 @@ export class AssetsComponent {
   }
 
   private setEditingAsset(assetType: AssetType, asset: any) {
-    switch(assetType) {
+    switch (assetType) {
       case 'real_estate':
         this.editingRealEstate = asset;
         break;
@@ -217,28 +223,27 @@ export class AssetsComponent {
     const asset = this.getCurrentEditingAsset();
     if (!asset) return;
 
-    const assets = this.ds.casedata.assets;
-    switch(this.currentAssetType) {
+    switch (this.currentAssetType) {
       case 'real_estate':
-        assets.real_estate_holdings.push(asset as IRealEstate);
+        this.ds.addRealEstate(asset as IRealEstate);
         break;
       case 'financial_account':
-        assets.financial_account_holdings.push(asset as IFinancialAccount);
+        this.ds.addFinancialAccount(asset as IFinancialAccount);
         break;
       case 'retirement_account':
-        assets.retirement_account_holdings.push(asset as IRetirementAccount);
+        this.ds.addRetirementAccount(asset as IRetirementAccount);
         break;
       case 'life_insurance':
-        assets.life_insurance_holdings.push(asset as ILifeInsurance);
+        this.ds.addLifeInsurance(asset as ILifeInsurance);
         break;
       case 'business_interest':
-        assets.business_interest_holdings.push(asset as IBusinessInterest);
+        this.ds.addBusinessInterest(asset as IBusinessInterest);
         break;
       case 'digital_asset':
-        assets.digital_asset_holdings.push(asset as IDigitalAsset);
+        this.ds.addDigitalAsset(asset as IDigitalAsset);
         break;
       case 'other_asset':
-        assets.other_asset_holdings.push(asset as IOtherAsset);
+        this.ds.addOtherAsset(asset as IOtherAsset);
         break;
     }
 
@@ -251,28 +256,27 @@ export class AssetsComponent {
     const asset = this.getCurrentEditingAsset();
     if (!asset) return;
 
-    const assets = this.ds.casedata.assets;
-    switch(this.currentAssetType) {
+    switch (this.currentAssetType) {
       case 'real_estate':
-        assets.real_estate_holdings[this.editingIndex] = asset as IRealEstate;
+        this.ds.updateRealEstate(this.editingIndex, asset as IRealEstate);
         break;
       case 'financial_account':
-        assets.financial_account_holdings[this.editingIndex] = asset as IFinancialAccount;
+        this.ds.updateFinancialAccount(this.editingIndex, asset as IFinancialAccount);
         break;
       case 'retirement_account':
-        assets.retirement_account_holdings[this.editingIndex] = asset as IRetirementAccount;
+        this.ds.updateRetirementAccount(this.editingIndex, asset as IRetirementAccount);
         break;
       case 'life_insurance':
-        assets.life_insurance_holdings[this.editingIndex] = asset as ILifeInsurance;
+        this.ds.updateLifeInsurance(this.editingIndex, asset as ILifeInsurance);
         break;
       case 'business_interest':
-        assets.business_interest_holdings[this.editingIndex] = asset as IBusinessInterest;
+        this.ds.updateBusinessInterest(this.editingIndex, asset as IBusinessInterest);
         break;
       case 'digital_asset':
-        assets.digital_asset_holdings[this.editingIndex] = asset as IDigitalAsset;
+        this.ds.updateDigitalAsset(this.editingIndex, asset as IDigitalAsset);
         break;
       case 'other_asset':
-        assets.other_asset_holdings[this.editingIndex] = asset as IOtherAsset;
+        this.ds.updateOtherAsset(this.editingIndex, asset as IOtherAsset);
         break;
     }
 
@@ -290,34 +294,33 @@ export class AssetsComponent {
       actualIndex = allAssets.indexOf(asset);
     }
 
-    const assets = this.ds.casedata.assets;
-    switch(assetType) {
+    switch (assetType) {
       case 'real_estate':
-        assets.real_estate_holdings.splice(actualIndex, 1);
+        this.ds.removeRealEstate(actualIndex);
         break;
       case 'financial_account':
-        assets.financial_account_holdings.splice(actualIndex, 1);
+        this.ds.removeFinancialAccount(actualIndex);
         break;
       case 'retirement_account':
-        assets.retirement_account_holdings.splice(actualIndex, 1);
+        this.ds.removeRetirementAccount(actualIndex);
         break;
       case 'life_insurance':
-        assets.life_insurance_holdings.splice(actualIndex, 1);
+        this.ds.removeLifeInsurance(actualIndex);
         break;
       case 'business_interest':
-        assets.business_interest_holdings.splice(actualIndex, 1);
+        this.ds.removeBusinessInterest(actualIndex);
         break;
       case 'digital_asset':
-        assets.digital_asset_holdings.splice(actualIndex, 1);
+        this.ds.removeDigitalAsset(actualIndex);
         break;
       case 'other_asset':
-        assets.other_asset_holdings.splice(actualIndex, 1);
+        this.ds.removeOtherAsset(actualIndex);
         break;
     }
   }
 
   private getCurrentEditingAsset(): any {
-    switch(this.currentAssetType) {
+    switch (this.currentAssetType) {
       case 'real_estate': return this.editingRealEstate;
       case 'financial_account': return this.editingFinancialAccount;
       case 'retirement_account': return this.editingRetirementAccount;
@@ -365,7 +368,7 @@ export class AssetsComponent {
   }
 
   getAssetDisplayName(assetType: string, asset: any): string {
-    switch(assetType) {
+    switch (assetType) {
       case 'real_estate':
         return `${asset.address_line1}, ${asset.city}`;
       case 'financial_account':
@@ -386,7 +389,7 @@ export class AssetsComponent {
   }
 
   getAssetValue(assetType: string, asset: any): number {
-    switch(assetType) {
+    switch (assetType) {
       case 'real_estate':
         return asset.ownership_value || asset.net_value || asset.estimated_value || 0;
       case 'financial_account':

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient,IDigitalAsset,IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { Injectable, signal, computed } from '@angular/core';
+import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 
 
 // --- DATA SERVICE ---
@@ -9,7 +9,8 @@ import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity
 })
 export class DataService {
 
-  public casedata: ICaseData = {
+  // Primary signals for reactive state management
+  private _casedata = signal<ICaseData>({
     client: {
       client_id: null,
       user_account_id: null,
@@ -90,72 +91,408 @@ export class DataService {
       digital_asset_holdings: [],
       other_asset_holdings: [],
     }
-  };
+  });
 
+  // Computed signals for reactive derived state
+  readonly casedata = this._casedata.asReadonly();
+  readonly personal = computed(() => this._casedata().personal);
+  readonly client = computed(() => this._casedata().client);
+  readonly maritalInfo = computed(() => this._casedata().marital_info);
+  readonly children = computed(() => this._casedata().children);
+  readonly assets = computed(() => this._casedata().assets);
 
+  // Computed signals for validation and completion tracking
+  readonly isPersonalInfoComplete = computed(() => {
+    const personal = this.personal();
+    return !!(personal.legal_first_name &&
+      personal.legal_last_name &&
+      personal.date_of_birth &&
+      personal.current_address.address_line1 &&
+      personal.current_address.city &&
+      personal.current_address.state &&
+      personal.current_address.zip);
+  });
 
-public client: IClient = {
-    client_id: null,
-    user_account_id: null,
-    status: null,
-    completion_percentage: 0,
-    assigned_attorney_id: null,
-    referral_source: null
-  };
+  readonly completionPercentage = computed(() => {
+    const sections = [
+      this.isPersonalInfoComplete(),
+      // Add other section completion checks here
+    ];
+    const completed = sections.filter(Boolean).length;
+    return Math.round((completed / sections.length) * 100);
+  });
 
-  public personal: IPersonal = {
-    personal_id: null,
-    legal_first_name: '',
-    legal_middle_name: null,
-    legal_last_name: '',
-    suffix: null,
-    preferred_name: null,
-    date_of_birth: null,
-    ssn_encrypted: null,
-    us_citizen: null,
-    citizenship_country: 'USA',
-    current_address: {
-      address_line1: '',
-      address_line2: null,
-      city: '',
-      state: '',
-      zip: ''
-    },
-    years_at_address: null,
-    previous_addresses: [],
-    mobile_phone: null,
-    home_phone: null,
-    email: null,
-    preferred_contact_method: 'email',
-    occupation: null,
-    employer_name: null,
-    employer_address: null,
-    military_service: false,
-    military_branch: null,
-    military_service_dates: null
-  };
+  // Methods to update specific parts of the case data
+  updatePersonal(updates: Partial<IPersonal>) {
+    this._casedata.update(current => ({
+      ...current,
+      personal: { ...current.personal, ...updates }
+    }));
+  }
 
-  public maritalInfo: IMaritalInfo = {
-    marital_id: null,
-    marital_status: 'single',
-    spouse_legal_name: null,
-    spouse_dob: null,
-    spouse_ssn_encrypted: null,
-    marriage_date: null,
-    marriage_location: null,
-    first_marriage: null,
-    prenup_exists: false,
-    prenup_document_id: null,
-    postnup_exists: false,
-    postnup_document_id: null,
-    spouse_has_other_children: null,
-    relationship_quality: null,
-    previous_marriages: [],
-    divorce_obligations: null,
-    divorce_decree_restrictions: null
-  };
+  updatePersonalAddress(updates: Partial<IAddress>) {
+    this._casedata.update(current => ({
+      ...current,
+      personal: {
+        ...current.personal,
+        current_address: { ...current.personal.current_address, ...updates }
+      }
+    }));
+  }
 
-    public address: IAddress = {
+  addPreviousAddress(address: IAddress) {
+    this._casedata.update(current => ({
+      ...current,
+      personal: {
+        ...current.personal,
+        previous_addresses: [...current.personal.previous_addresses, address]
+      }
+    }));
+  }
+
+  removePreviousAddress(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      personal: {
+        ...current.personal,
+        previous_addresses: current.personal.previous_addresses.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  updatePreviousAddress(index: number, updates: Partial<IAddress>) {
+    this._casedata.update(current => ({
+      ...current,
+      personal: {
+        ...current.personal,
+        previous_addresses: current.personal.previous_addresses.map((addr, i) =>
+          i === index ? { ...addr, ...updates } : addr
+        )
+      }
+    }));
+  }
+
+  // Save method that can return a Promise/Observable for API calls
+  async savePersonalInfo(): Promise<boolean> {
+    try {
+      console.log('Saving personal information:', this.personal());
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Update completion percentage after successful save
+      this._casedata.update(current => ({
+        ...current,
+        client: {
+          ...current.client,
+          completion_percentage: this.completionPercentage()
+        }
+      }));
+
+      return true;
+    } catch (error) {
+      console.error('Failed to save personal info:', error);
+      return false;
+    }
+  }
+
+  // Methods for managing children
+  addChild(child: IChild) {
+    this._casedata.update(current => ({
+      ...current,
+      children: [...current.children, child]
+    }));
+  }
+
+  updateChild(index: number, updates: Partial<IChild>) {
+    this._casedata.update(current => ({
+      ...current,
+      children: current.children.map((child, i) =>
+        i === index ? { ...child, ...updates } : child
+      )
+    }));
+  }
+
+  removeChild(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      children: current.children.filter((_, i) => i !== index)
+    }));
+  }
+
+  // Methods for managing family members
+  addFamilyMember(familyMember: IFamilyMember) {
+    this._casedata.update(current => ({
+      ...current,
+      family_members: [...current.family_members, familyMember]
+    }));
+  }
+
+  updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
+    this._casedata.update(current => ({
+      ...current,
+      family_members: current.family_members.map((member, i) =>
+        i === index ? { ...member, ...updates } : member
+      )
+    }));
+  }
+
+  removeFamilyMember(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      family_members: current.family_members.filter((_, i) => i !== index)
+    }));
+  }
+
+  // Methods for managing charities
+  addCharity(charity: ICharity) {
+    this._casedata.update(current => ({
+      ...current,
+      charities: [...current.charities, charity]
+    }));
+  }
+
+  updateCharity(index: number, updates: Partial<ICharity>) {
+    this._casedata.update(current => ({
+      ...current,
+      charities: current.charities.map((charity, i) =>
+        i === index ? { ...charity, ...updates } : charity
+      )
+    }));
+  }
+
+  removeCharity(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      charities: current.charities.filter((_, i) => i !== index)
+    }));
+  }
+
+  // Methods for managing assets
+  addRealEstate(asset: IRealEstate) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        real_estate_holdings: [...current.assets.real_estate_holdings, asset]
+      }
+    }));
+  }
+
+  updateRealEstate(index: number, updates: Partial<IRealEstate>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        real_estate_holdings: current.assets.real_estate_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeRealEstate(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        real_estate_holdings: current.assets.real_estate_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addFinancialAccount(asset: IFinancialAccount) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        financial_account_holdings: [...current.assets.financial_account_holdings, asset]
+      }
+    }));
+  }
+
+  updateFinancialAccount(index: number, updates: Partial<IFinancialAccount>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        financial_account_holdings: current.assets.financial_account_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeFinancialAccount(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        financial_account_holdings: current.assets.financial_account_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addRetirementAccount(asset: IRetirementAccount) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        retirement_account_holdings: [...current.assets.retirement_account_holdings, asset]
+      }
+    }));
+  }
+
+  updateRetirementAccount(index: number, updates: Partial<IRetirementAccount>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        retirement_account_holdings: current.assets.retirement_account_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeRetirementAccount(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        retirement_account_holdings: current.assets.retirement_account_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addLifeInsurance(asset: ILifeInsurance) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        life_insurance_holdings: [...current.assets.life_insurance_holdings, asset]
+      }
+    }));
+  }
+
+  updateLifeInsurance(index: number, updates: Partial<ILifeInsurance>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        life_insurance_holdings: current.assets.life_insurance_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeLifeInsurance(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        life_insurance_holdings: current.assets.life_insurance_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addBusinessInterest(asset: IBusinessInterest) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        business_interest_holdings: [...current.assets.business_interest_holdings, asset]
+      }
+    }));
+  }
+
+  updateBusinessInterest(index: number, updates: Partial<IBusinessInterest>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        business_interest_holdings: current.assets.business_interest_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeBusinessInterest(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        business_interest_holdings: current.assets.business_interest_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addDigitalAsset(asset: IDigitalAsset) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        digital_asset_holdings: [...current.assets.digital_asset_holdings, asset]
+      }
+    }));
+  }
+
+  updateDigitalAsset(index: number, updates: Partial<IDigitalAsset>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        digital_asset_holdings: current.assets.digital_asset_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeDigitalAsset(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        digital_asset_holdings: current.assets.digital_asset_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addOtherAsset(asset: IOtherAsset) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        other_asset_holdings: [...current.assets.other_asset_holdings, asset]
+      }
+    }));
+  }
+
+  updateOtherAsset(index: number, updates: Partial<IOtherAsset>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        other_asset_holdings: current.assets.other_asset_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeOtherAsset(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        other_asset_holdings: current.assets.other_asset_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+  // Template objects for creating new instances
+  public address: IAddress = {
     address_line1: '',
     address_line2: null,
     city: '',
@@ -245,16 +582,6 @@ public client: IClient = {
     religious_upbringing_preferences: null,
     education_priorities: null,
     other_preferences: null
-  };
-
-  public assets: IAssets = {
-    real_estate_holdings: [],
-    financial_account_holdings: [],
-    retirement_account_holdings: [],
-    life_insurance_holdings: [],
-    business_interest_holdings: [],
-    digital_asset_holdings: [],
-    other_asset_holdings: [],
   };
 
   public beneficiary: IBeneficiary = {

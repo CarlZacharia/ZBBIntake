@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
@@ -18,8 +18,74 @@ import { ICaseData } from '../../models/case_data';
 export class MainintakeComponent {
   activeSection: string = 'personal';
 
+  // Computed signals for reactive data access
+  readonly casedata = computed(() => this.ds.casedata());
+  readonly personal = computed(() => this.ds.personal());
+  readonly maritalInfo = computed(() => this.ds.maritalInfo());
+  readonly children = computed(() => this.ds.children());
+  readonly assets = computed(() => this.ds.assets());
+
+  // Computed signals for card information
+  readonly personalCardInfo = computed(() => {
+    const personal = this.personal();
+    const marital = this.maritalInfo();
+    let info = `${personal.legal_first_name} ${personal.legal_last_name}`;
+    if (marital.marital_status === 'married' && marital.spouse_legal_name) {
+      info += ` & ${marital.spouse_legal_name}`;
+    }
+    return info;
+  });
+
+  readonly childrenCount = computed(() => this.casedata().children.length);
+  readonly familyMembersCount = computed(() => this.casedata().family_members.length);
+  readonly charitiesCount = computed(() => this.casedata().charities.length);
+  readonly fiduciariesCount = computed(() => this.casedata().fiduciaries.length);
+
+  readonly totalAssetValue = computed(() => {
+    let total = 0;
+    const assets = this.assets();
+
+    // Real Estate
+    assets.real_estate_holdings.forEach(re => {
+      total += re.estimated_value || 0;
+    });
+
+    // Financial Accounts
+    assets.financial_account_holdings.forEach(fa => {
+      total += fa.approximate_balance || 0;
+    });
+
+    // Retirement Accounts
+    assets.retirement_account_holdings.forEach(ra => {
+      total += ra.approximate_value || 0;
+    });
+
+    // Life Insurance
+    assets.life_insurance_holdings.forEach(li => {
+      total += li.death_benefit || 0;
+    });
+
+    // Business Interests
+    assets.business_interest_holdings.forEach(bi => {
+      total += bi.estimated_value || 0;
+    });
+
+    // Digital Assets
+    assets.digital_asset_holdings.forEach(da => {
+      total += da.estimated_value || 0;
+    });
+
+    // Other Assets
+    assets.other_asset_holdings.forEach(oa => {
+      total += oa.estimated_value || 0;
+    });
+
+    return total;
+  });
+
+  // Backwards compatibility getter
   get csd(): ICaseData {
-    return this.ds.casedata;
+    return this.casedata();
   }
 
   constructor(public ds: DataService) { }
@@ -28,72 +94,29 @@ export class MainintakeComponent {
     this.activeSection = section;
   }
 
-  // Helper methods for displaying card information
+  // Helper methods for displaying card information (backwards compatibility)
   getPersonalCardInfo() {
-    const personal = this.ds.personal;
-    const marital = this.ds.maritalInfo;
-    let info = `${personal.legal_first_name} ${personal.legal_last_name}`;
-    if (marital.marital_status === 'married' && marital.spouse_legal_name) {
-      info += ` & ${marital.spouse_legal_name}`;
-    }
-    return info;
+    return this.personalCardInfo();
   }
 
   getChildrenCount() {
-    return this.ds.casedata.children.length;
+    return this.childrenCount();
   }
 
   getFamilyMembersCount() {
-    return this.ds.casedata.family_members.length;
+    return this.familyMembersCount();
   }
 
   getCharitiesCount() {
-    return this.ds.casedata.charities.length;
+    return this.charitiesCount();
   }
 
   getTotalAssetValue() {
-    let total = 0;
-
-    // Real Estate
-    this.ds.casedata.assets.real_estate_holdings.forEach(re => {
-      total += re.estimated_value || 0;
-    });
-
-    // Financial Accounts
-    this.ds.casedata.assets.financial_account_holdings.forEach(fa => {
-      total += fa.approximate_balance || 0;
-    });
-
-    // Retirement Accounts
-    this.ds.casedata.assets.retirement_account_holdings.forEach(ra => {
-      total += ra.approximate_value || 0;
-    });
-
-    // Life Insurance
-    this.ds.casedata.assets.life_insurance_holdings.forEach(li => {
-      total += li.death_benefit || 0;
-    });
-
-    // Business Interests
-    this.ds.casedata.assets.business_interest_holdings.forEach(bi => {
-      total += bi.estimated_value || 0;
-    });
-
-    // Digital Assets
-    this.ds.casedata.assets.digital_asset_holdings.forEach(da => {
-      total += da.estimated_value || 0;
-    });
-
-    // Other Assets
-    this.ds.casedata.assets.other_asset_holdings.forEach(oa => {
-      total += oa.estimated_value || 0;
-    });
-
-    return total;
+    return this.totalAssetValue();
   }
 
   getFiduciariesCount() {
-    return this.ds.casedata.fiduciaries.length;
+    return this.fiduciariesCount();
   }
 
   formatCurrency(value: number): string {

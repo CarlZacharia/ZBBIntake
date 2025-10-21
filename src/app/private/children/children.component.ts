@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -23,6 +23,10 @@ export class ChildrenComponent {
   editingChildIndex: number = -1;
   editingFamilyMember: IFamilyMember | null = null;
   editingFamilyMemberIndex: number = -1;
+
+  // Reactive data access
+  readonly children = computed(() => this.ds.children());
+  readonly familyMembers = computed(() => this.ds.casedata().family_members);
 
   // US States array for dropdowns
   states = [
@@ -50,21 +54,21 @@ export class ChildrenComponent {
 
   saveNewChild() {
     if (this.editingChild) {
-      this.ds.casedata.children.push(this.editingChild);
+      this.ds.addChild(this.editingChild);
       this.closeAddChildModal();
     }
   }
 
   saveEditChild() {
     if (this.editingChild && this.editingChildIndex >= 0) {
-      this.ds.casedata.children[this.editingChildIndex] = this.editingChild;
+      this.ds.updateChild(this.editingChildIndex, this.editingChild);
       this.closeEditChildModal();
     }
   }
 
   deleteChild(index: number) {
     if (confirm('Are you sure you want to delete this child?')) {
-      this.ds.casedata.children.splice(index, 1);
+      this.ds.removeChild(index);
     }
   }
 
@@ -126,21 +130,21 @@ export class ChildrenComponent {
 
   saveNewFamilyMember() {
     if (this.editingFamilyMember) {
-      this.ds.casedata.family_members.push(this.editingFamilyMember);
+      this.ds.addFamilyMember(this.editingFamilyMember);
       this.closeAddFamilyMemberModal();
     }
   }
 
   saveEditFamilyMember() {
     if (this.editingFamilyMember && this.editingFamilyMemberIndex >= 0) {
-      this.ds.casedata.family_members[this.editingFamilyMemberIndex] = this.editingFamilyMember;
+      this.ds.updateFamilyMember(this.editingFamilyMemberIndex, this.editingFamilyMember);
       this.closeEditFamilyMemberModal();
     }
   }
 
   deleteFamilyMember(index: number) {
     if (confirm('Are you sure you want to delete this family member?')) {
-      this.ds.casedata.family_members.splice(index, 1);
+      this.ds.removeFamilyMember(index);
     }
   }
 
