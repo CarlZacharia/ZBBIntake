@@ -1,4 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 
 
@@ -8,6 +12,9 @@ import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity
   providedIn: 'root'
 })
 export class DataService {
+  private readonly API_URL = 'http://localhost:3000/api/cases'; // Replace with your API URL
+  private readonly authService = inject(AuthService);
+  private readonly http = inject(HttpClient);
 
   // Primary signals for reactive state management
   private _casedata = signal<ICaseData>({
@@ -124,20 +131,36 @@ export class DataService {
 
   // Methods to update specific parts of the case data
   updatePersonal(updates: Partial<IPersonal>) {
+    if (!this.authService.isAuthenticated()) {
+      throw new Error('User must be authenticated to update data');
+    }
+
     this._casedata.update(current => ({
       ...current,
       personal: { ...current.personal, ...updates }
     }));
+
+    this.autoSave();
   }
 
   updateMaritalInfo(updates: Partial<IMaritalInfo>) {
+    if (!this.authService.isAuthenticated()) {
+      throw new Error('User must be authenticated to update data');
+    }
+
     this._casedata.update(current => ({
       ...current,
       marital_info: { ...current.marital_info, ...updates }
     }));
+
+    this.autoSave();
   }
 
   updatePersonalAddress(updates: Partial<IAddress>) {
+    if (!this.authService.isAuthenticated()) {
+      throw new Error('User must be authenticated to update data');
+    }
+
     this._casedata.update(current => ({
       ...current,
       personal: {
@@ -145,9 +168,15 @@ export class DataService {
         current_address: { ...current.personal.current_address, ...updates }
       }
     }));
+
+    this.autoSave();
   }
 
   addPreviousAddress(address: IAddress) {
+    if (!this.authService.isAuthenticated()) {
+      throw new Error('User must be authenticated to update data');
+    }
+
     this._casedata.update(current => ({
       ...current,
       personal: {
@@ -155,6 +184,8 @@ export class DataService {
         previous_addresses: [...current.personal.previous_addresses, address]
       }
     }));
+
+    this.autoSave();
   }
 
   removePreviousAddress(index: number) {
@@ -182,20 +213,22 @@ export class DataService {
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
     try {
+      if (!this.authService.isAuthenticated()) {
+        throw new Error('User must be authenticated to save data');
+      }
+
       console.log('Saving personal information:', this.personal());
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Update completion percentage after successful save
-      this._casedata.update(current => ({
-        ...current,
-        client: {
-          ...current.client,
-          completion_percentage: this.completionPercentage()
-        }
-      }));
+      // Use the new saveCaseData method
+      const savedData = await this.saveCaseData().toPromise();
 
-      return true;
+      if (savedData) {
+        // Update local state with saved data
+        this._casedata.set(savedData);
+        return true;
+      }
+
+      return false;
     } catch (error) {
       console.error('Failed to save personal info:', error);
       return false;
@@ -731,5 +764,232 @@ export class DataService {
     other_owners: null
   };
 
-  constructor() { }
+  constructor() {
+    // Initialize case data with user context when available
+    this.initializeCaseData();
+  }
+
+  /**
+   * Get current user ID from auth service
+   */
+  getCurrentUserId(): number | null {
+    return this.authService.getCurrentUserId();
+  }
+
+  /**
+   * Check if current user can access this case data
+   */
+  canAccessCaseData(): boolean {
+    const userId = this.authService.getCurrentUserId();
+    const caseUserId = this._casedata().client.user_account_id;
+
+    return !!(userId && caseUserId && userId === caseUserId);
+  }
+
+  /**
+   * Reset case data (for logout or new user)
+   */
+  resetCaseData(): void {
+    this._casedata.set({
+      client: {
+        client_id: null,
+        user_account_id: this.authService.getCurrentUserId(),
+        status: null,
+        completion_percentage: 0,
+        assigned_attorney_id: null,
+        referral_source: null,
+      },
+      personal: {
+        personal_id: null,
+        legal_first_name: '',
+        legal_middle_name: null,
+        legal_last_name: '',
+        suffix: null,
+        preferred_name: null,
+        date_of_birth: null,
+        ssn_encrypted: null,
+        us_citizen: null,
+        citizenship_country: 'USA',
+        current_address: {
+          address_line1: '',
+          address_line2: null,
+          city: '',
+          state: '',
+          zip: ''
+        },
+        years_at_address: null,
+        previous_addresses: [],
+        mobile_phone: null,
+        home_phone: null,
+        email: null,
+        preferred_contact_method: 'email',
+        occupation: null,
+        employer_name: null,
+        employer_address: null,
+        military_service: false,
+        military_branch: null,
+        military_service_dates: null,
+      },
+      marital_info: {
+        marital_id: null,
+        marital_status: 'single',
+        spouse_legal_name: null,
+        spouse_dob: null,
+        spouse_ssn_encrypted: null,
+        marriage_date: null,
+        marriage_location: null,
+        first_marriage: null,
+        prenup_exists: false,
+        prenup_document_id: null,
+        postnup_exists: false,
+        postnup_document_id: null,
+        spouse_has_other_children: null,
+        relationship_quality: null,
+        previous_marriages: [],
+        divorce_obligations: null,
+        divorce_decree_restrictions: null,
+      },
+      children: [],
+      family_members: [],
+      charities: [],
+      fiduciaries: [],
+      guardian_preferences: {
+        preference_id: null,
+        child_raising_values: null,
+        location_importance: null,
+        religious_upbringing_preferences: null,
+        education_priorities: null,
+        other_preferences: null,
+      },
+      assets: {
+        real_estate_holdings: [],
+        financial_account_holdings: [],
+        retirement_account_holdings: [],
+        life_insurance_holdings: [],
+        business_interest_holdings: [],
+        digital_asset_holdings: [],
+        other_asset_holdings: [],
+      }
+    });
+  }
+
+  /**
+   * Force save case data immediately (bypass auto-save delay)
+   */
+  forceSave(): Observable<ICaseData> {
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+      this.saveTimeout = undefined;
+    }
+
+    return this.saveCaseData();
+  }
+
+  /**
+   * Initialize case data with current user context
+   */
+  private initializeCaseData(): void {
+    const userId = this.authService.getCurrentUserId();
+    if (userId) {
+      this._casedata.update(current => ({
+        ...current,
+        client: {
+          ...current.client,
+          user_account_id: userId
+        }
+      }));
+
+      // Load existing case data for this user
+      this.loadCaseData().subscribe({
+        next: (caseData) => {
+          if (caseData) {
+            this._casedata.set(caseData);
+          }
+        },
+        error: (error) => {
+          console.warn('Could not load existing case data:', error);
+        }
+      });
+    }
+  }
+
+  /**
+   * Load case data from server for current user
+   */
+  loadCaseData(): Observable<ICaseData | null> {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
+    }
+
+    return this.http.get<ICaseData>(`${this.API_URL}/user/${userId}`).pipe(
+      map(response => response || null),
+      catchError(error => {
+        if (error.status === 404) {
+          // No case data exists yet - this is normal for new users
+          return [null];
+        }
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Save case data to server
+   */
+  saveCaseData(): Observable<ICaseData> {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
+    }
+
+    const caseData = this._casedata();
+
+    // Ensure user_account_id is set
+    const dataToSave = {
+      ...caseData,
+      client: {
+        ...caseData.client,
+        user_account_id: userId
+      }
+    };
+
+    if (caseData.client.client_id) {
+      // Update existing case
+      return this.http.put<ICaseData>(`${this.API_URL}/${caseData.client.client_id}`, dataToSave);
+    } else {
+      // Create new case
+      return this.http.post<ICaseData>(`${this.API_URL}`, dataToSave);
+    }
+  }
+
+  /**
+   * Auto-save case data (debounced)
+   */
+  private saveTimeout?: any;
+
+  private autoSave(): void {
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
+    // Clear existing timeout
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+    }
+
+    // Set new timeout for 2 seconds
+    this.saveTimeout = setTimeout(() => {
+      this.saveCaseData().subscribe({
+        next: (savedData) => {
+          // Update local data with server response (includes IDs)
+          this._casedata.set(savedData);
+          console.log('Case data auto-saved successfully');
+        },
+        error: (error) => {
+          console.error('Auto-save failed:', error);
+        }
+      });
+    }, 2000);
+  }
 }

@@ -7,150 +7,167 @@
 
     <h2 class="form-title">Create Account</h2>
 
-    <form class="registration-form">
+    <!-- General Error Message -->
+    @if (error()) {
+    <div class="error-banner">
+      {{ error() }}
+    </div>
+    }
+
+    <form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)" class="registration-form">
       <div class="form-row">
         <div class="form-group">
           <label for="firstName">First Name *</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            placeholder="First name"
-            required
-          >
+          <input type="text" id="firstName" name="firstName" placeholder="First name"
+            [value]="registerData().first_name" (input)="onInputChange('first_name', $event)"
+            [class.error]="hasFieldError('first_name')" required>
+          @if (hasFieldError('first_name')) {
+          <div class="field-error">{{ getFieldError('first_name') }}</div>
+          } @else if (false) {
+          <div class="field-error">First name is required</div>
+          }
         </div>
 
         <div class="form-group">
           <label for="middleName">Middle Name</label>
-          <input
-            type="text"
-            id="middleName"
-            name="middleName"
-            placeholder="Middle name"
-          >
+          <input type="text" id="middleName" name="middleName" placeholder="Middle name"
+            [value]="registerData().middle_name || ''" (input)="onInputChange('middle_name', $event)">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label for="lastName">Last Name *</label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            placeholder="Last name"
-            required
-          >
+          <input type="text" id="lastName" name="lastName" placeholder="Last name" [value]="registerData().last_name"
+            (input)="onInputChange('last_name', $event)" [class.error]="hasFieldError('last_name')" required>
+          @if (hasFieldError('last_name')) {
+          <div class="field-error">{{ getFieldError('last_name') }}</div>
+          } @else if (false) {
+          <div class="field-error">Last name is required</div>
+          }
         </div>
 
         <div class="form-group form-group-small">
-          <label for="extension">Ext.</label>
-          <input
-            type="text"
-            id="extension"
-            name="extension"
-            placeholder="Jr., Sr."
-          >
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="address">Address *</label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          placeholder="Street address"
-          required
-        >
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="city">City *</label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            placeholder="City"
-            required
-          >
-        </div>
-
-        <div class="form-group form-group-small">
-          <label for="state">State *</label>
-          <input
-            type="text"
-            id="state"
-            name="state"
-            placeholder="State"
-            required
-          >
-        </div>
-
-        <div class="form-group form-group-small">
-          <label for="zip">ZIP *</label>
-          <input
-            type="text"
-            id="zip"
-            name="zip"
-            placeholder="ZIP"
-            required
-          >
+          <label for="suffix">Suffix</label>
+          <input type="text" id="suffix" name="suffix" placeholder="Jr., Sr." [value]="registerData().suffix || ''"
+            (input)="onInputChange('suffix', $event)">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="telephone">Telephone *</label>
-          <input
-            type="tel"
-            id="telephone"
-            name="telephone"
-            placeholder="(555) 555-5555"
-            required
-          >
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555" [value]="registerData().phone || ''"
+            (input)="onInputChange('phone', $event)" [class.error]="hasFieldError('phone')">
+          @if (hasFieldError('phone')) {
+          <div class="field-error">{{ getFieldError('phone') }}</div>
+          }
         </div>
 
         <div class="form-group">
           <label for="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="your@email.com"
-            required
-          >
+          <input type="email" id="email" name="email" placeholder="your@email.com" [value]="registerData().email"
+            (input)="onInputChange('email', $event)" [class.error]="hasFieldError('email')" required email>
+          @if (hasFieldError('email')) {
+          <div class="field-error">{{ getFieldError('email') }}</div>
+          }
         </div>
+      </div>
+
+      <div class="form-group">
+        <label for="preferredContact">Preferred Contact Method</label>
+        <select id="preferredContact" name="preferredContact" [value]="registerData().preferred_contact_method"
+          (change)="onSelectChange('preferred_contact_method', $event)">
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+          <option value="text">Text</option>
+        </select>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label for="password">Password *</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Create password"
-            required
-          >
+          <div class="password-input-container">
+            <input [type]="showPassword() ? 'text' : 'password'" id="password" name="password"
+              placeholder="Create password" [value]="registerData().password"
+              (input)="onInputChange('password', $event)" [class.error]="hasFieldError('password')" required
+              minlength="6">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()" tabindex="-1">
+              @if (showPassword()) {
+              👁️
+              } @else {
+              👁️‍🗨️
+              }
+            </button>
+          </div>
+          @if (registerData().password) {
+          <div class="password-strength password-{{ getPasswordStrength() }}">
+            Password strength: {{ getPasswordStrength() }}
+          </div>
+          }
+          @if (hasFieldError('password')) {
+          <div class="field-error">{{ getFieldError('password') }}</div>
+          }
         </div>
 
         <div class="form-group">
           <label for="confirmPassword">Confirm Password *</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder="Confirm password"
-            required
-          >
+          <div class="password-input-container">
+            <input [type]="showConfirmPassword() ? 'text' : 'password'" id="confirmPassword" name="confirmPassword"
+              placeholder="Confirm password" [value]="registerData().confirmPassword"
+              (input)="onInputChange('confirmPassword', $event)" [class.error]="hasFieldError('confirmPassword')"
+              required>
+            <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()" tabindex="-1">
+              @if (showConfirmPassword()) {
+              👁️
+              } @else {
+              👁️‍🗨️
+              }
+            </button>
+          </div>
+          @if (hasFieldError('confirmPassword')) {
+          <div class="field-error">{{ getFieldError('confirmPassword') }}</div>
+          } @else if (false) {
+          <div class="field-error">Please confirm your password</div>
+          } @else if (registerData().confirmPassword && !passwordsMatch()) {
+          <div class="field-error">Passwords do not match</div>
+          }
+        </div>
+      </div>
+
+      <div class="checkbox-section">
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="terms" [checked]="registerData().terms_accepted"
+              (change)="onCheckboxChange('terms_accepted', $event)" required>
+            <span class="checkmark"></span>
+            I agree to the <a href="#" class="link">Terms of Service</a>
+          </label>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="privacy" [checked]="registerData().privacy_accepted"
+              (change)="onCheckboxChange('privacy_accepted', $event)" required>
+            <span class="checkmark"></span>
+            I agree to the <a href="#" class="link">Privacy Policy</a>
+          </label>
         </div>
       </div>
 
       <div class="button-group">
-        <button type="button" class="btn-cancel" routerLink="/">Cancel</button>
-        <button type="submit" class="btn-submit">Create Account</button>
+        <button type="button" class="btn-cancel" routerLink="/" [disabled]="isLoading()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-submit"
+          [disabled]="isLoading() || registrationForm.invalid || !registerData().terms_accepted || !registerData().privacy_accepted">
+          @if (isLoading()) {
+          <span class="loading-spinner"></span>
+          Creating Account...
+          } @else {
+          Create Account
+          }
+        </button>
       </div>
 
       <div class="form-footer">
