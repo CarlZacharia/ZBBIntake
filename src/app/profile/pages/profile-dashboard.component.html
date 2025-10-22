@@ -1,0 +1,46 @@
+<!-- Outer container: generous max width + comfortable side padding -->
+<div class="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-6">
+
+  <!-- Header: full width -->
+  <app-profile-header
+    [profile]="profile()"
+    [event]="nextEvent()"
+    (newMessage)="composeMessage()"
+    (upload)="uploadDoc()"
+    (schedule)="scheduleCall()">
+  </app-profile-header>
+
+  <!-- Primary grid: 12 columns, large gaps for breathing room -->
+  <div class="mt-6 grid grid-cols-12 gap-6">
+    <!-- Column 1 -->
+    <div class="col-span-12 lg:col-span-4 space-y-6">
+      <app-milestone-tracker [milestones]="milestones()"></app-milestone-tracker>
+      <app-todo-list [items]="todos()" (toggle)="toggleTodo($event)"></app-todo-list>
+    </div>
+
+    <!-- Column 2 -->
+    <div class="col-span-12 lg:col-span-4 space-y-6">
+      <app-estate-map-card [miniMapUrl]="miniMapUrl()" (open)="goToEstateMap()"></app-estate-map-card>
+      <app-funding-checklist-card [items]="fundingItems()"></app-funding-checklist-card>
+    </div>
+
+    <!-- Column 3 -->
+    <div class="col-span-12 lg:col-span-4 space-y-6">
+      <app-education-hub-card [items]="education()" (open)="openEducation($event)"></app-education-hub-card>
+      <app-ask-lawyer-card [threads]="threads()" (new)="composeMessage()"></app-ask-lawyer-card>
+      <app-notes-card [notes]="notes()" (save)="saveNotes($event)"></app-notes-card>
+      <app-client-vault-card [docs]="vault()" (open)="openVaultItem($event)"></app-client-vault-card>
+    </div>
+  </div>
+
+  <!-- Secondary grid -->
+  <div class="mt-6 grid grid-cols-12 gap-6">
+    <div class="col-span-12 lg:col-span-8">
+      <app-scenarios-card [presets]="scenarios()" (open)="openScenario($event)"></app-scenarios-card>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <app-recent-activity-card [events]="recentActivity()"></app-recent-activity-card>
+    </div>
+  </div>
+
+</div>

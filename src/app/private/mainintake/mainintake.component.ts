@@ -7,6 +7,7 @@ import { CharitiesComponent } from '../charities/charities.component';
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
 import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
 import { ICaseData } from '../../models/case_data';
 
 @Component({
@@ -88,7 +89,7 @@ export class MainintakeComponent {
     return this.casedata();
   }
 
-  constructor(public ds: DataService) { }
+  constructor(public ds: DataService, private authService: AuthService) { }
 
   setActiveSection(section: string) {
     this.activeSection = section;
@@ -126,5 +127,9 @@ export class MainintakeComponent {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

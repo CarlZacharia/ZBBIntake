@@ -74,3 +74,4 @@ export interface IAuthError {
   message: string;
   field?: string;
 }
+

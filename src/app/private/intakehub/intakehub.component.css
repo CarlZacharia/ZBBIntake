@@ -93,6 +93,40 @@
   font-weight: 700;
   color: #1a1a2e;
   margin: 0;
+  flex: 1;
+}
+
+/* Logout Button */
+.logout-button {
+  background: #dc3545;
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.logout-button:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(220, 53, 69, 0.4);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.logout-icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* Main Cards Container */
@@ -337,6 +371,7 @@
   .logo-header {
     flex-direction: column;
     text-align: center;
+    gap: 1rem;
   }
 
   .logo {
@@ -345,6 +380,11 @@
 
   .page-title {
     font-size: 1.5rem;
+  }
+
+  .logout-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
   }
 
   .card-image {
