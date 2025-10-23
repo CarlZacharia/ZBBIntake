@@ -3,8 +3,8 @@
   <aside class="sidebar">
     <div class="profile-section">
       <img src="ZBLogo.jpg" alt="Profile" class="profile-image">
-      <h4 class="profile-name">Client Name</h4>
-      <p class="profile-email">client&#64;email.com</p>
+      <h4 class="profile-name">{{authService.currentUser()?.first_name}} {{authService.currentUser()?.last_name}}</h4>
+      <p class="profile-email">{{authService.currentUser()?.email}}</p>
     </div>
 
 
