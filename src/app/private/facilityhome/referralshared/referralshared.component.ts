@@ -21,6 +21,7 @@ import {
 })
 export class ReferralsharedComponent implements OnChanges {
   @Input() prefillData: ReferralPrefillData | null = null;
+  @Input() showHeroBar = true;
 
   readonly referralData = signal({
     facilityName: '',

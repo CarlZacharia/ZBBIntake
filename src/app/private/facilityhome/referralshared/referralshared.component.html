@@ -1,5 +1,5 @@
 <section class="referral-form">
-  <nav class="referral-nav">
+  <nav class="referral-nav" *ngIf="showHeroBar">
     <div class="nav-left">
       <div class="logo-placeholder">ZB</div>
       <div>
@@ -17,7 +17,13 @@
 
   <header>
     <div class="header-main">
-      <h1>Facility Name: {{ referralData().facilityName }}</h1>
+      <ng-container *ngIf="showHeroBar; else residentHeading">
+        <h1>Facility Name: {{ referralData().facilityName }}</h1>
+      </ng-container>
+      <ng-template #residentHeading>
+        <h1>{{ referralData().fullLegalName || 'Referral Details' }}</h1>
+        <p class="eyebrow secondary">Facility: {{ referralData().facilityName || '—' }}</p>
+      </ng-template>
       <hr class="divider">
 
       <div class="eyebrow">Referral Type</div>
