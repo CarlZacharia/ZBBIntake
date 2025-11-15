@@ -142,5 +142,20 @@ export class GuardianshipComponent implements OnChanges {
       return copy;
     });
   }
+
+  getState(): GuardianshipFormData {
+    const state = this.guardianshipState();
+    return {
+      estatePlan: Array.from(state.estatePlan),
+      guardianType: state.guardianType,
+      interestedFamily: state.interestedFamily,
+      interestedPersons: state.interestedPersons,
+      repPayeeStatus: state.repPayee,
+      awareOfAssets: state.awareOfAssets,
+      assetNotes: state.assetNotes,
+      notes: state.notes,
+      familyContacts: this.familyContacts()
+    };
+  }
 }
 

@@ -184,6 +184,11 @@
   gap: 1rem;
 }
 
+.sidebar-list.drafts .referral-entry {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .empty-search {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
@@ -225,6 +230,14 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+.status.draft {
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  color: #f8e08e;
+  padding: 0.1rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.12);
+}
+
 .pill-meta {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.65);
@@ -234,6 +247,12 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.entry-meta {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.25rem;
 }
 
 .progress-block p {

@@ -24,6 +24,13 @@
         <h1>{{ referralData().fullLegalName || 'Referral Details' }}</h1>
         <p class="eyebrow secondary">Facility: {{ referralData().facilityName || '—' }}</p>
       </ng-template>
+      <div class="form-status">
+        <span class="status-pill" [attr.data-status]="lastSavedStatus()">
+          {{ lastSavedStatus() === 'draft' ? 'Draft' : 'Submitted' }}
+        </span>
+        <small *ngIf="lastSavedAt()">Updated {{ lastSavedAt() | date: 'short' }}</small>
+        <span class="status-message" *ngIf="saveMessage()">{{ saveMessage() }}</span>
+      </div>
       <hr class="divider">
 
       <div class="eyebrow">Referral Type</div>
@@ -85,7 +92,7 @@
 
     <label>
       Marital Status
-      <select [ngModel]="referralData().maritalStatus" (ngModelChange)="updateField('maritalStatus', $event)">
+      <select [ngModel]="referralData().maritalStatus" (ngModelChange)="updateMaritalStatus($event)">
         <option value="" disabled>Select</option>
         @for (status of maritalStatuses; track status) {
         <option [value]="status">{{ status }}</option>
@@ -98,6 +105,84 @@
       <input type="text" [ngModel]="referralData().monthlyIncome" (ngModelChange)="updateField('monthlyIncome', $event)">
     </label>
   </div>
+
+  <section class="spouse-card" *ngIf="referralData().maritalStatus === 'Married'">
+    <div class="spouse-header">
+      <div>
+        <p class="eyebrow secondary">Spouse Information</p>
+        <h3>Details About the Spouse</h3>
+      </div>
+      <span class="spouse-tag">Married</span>
+    </div>
+
+    <div class="grid two-col">
+      <label>
+        Spouse Full Name
+        <input type="text" [ngModel]="referralData().spouseName"
+          (ngModelChange)="updateField('spouseName', $event)">
+      </label>
+
+      <label>
+        Spouse Email
+        <input type="email" [ngModel]="referralData().spouseEmail"
+          (ngModelChange)="updateField('spouseEmail', $event)">
+      </label>
+
+      <label>
+        Spouse Phone
+        <input type="tel" [ngModel]="referralData().spousePhone"
+          (ngModelChange)="updateField('spousePhone', $event)">
+      </label>
+
+      <label>
+        Living Conditions
+        <select [ngModel]="referralData().spouseLivingConditions"
+          (ngModelChange)="updateField('spouseLivingConditions', $event)">
+          <option value="" disabled>Select</option>
+          @for (option of spouseLivingOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="grid three-col">
+      <label>
+        Date of Birth
+        <input type="date" [ngModel]="referralData().spouseDob"
+          (ngModelChange)="updateField('spouseDob', $event)">
+      </label>
+
+      <label>
+        Age
+        <input type="number" min="0" [ngModel]="referralData().spouseAge"
+          (ngModelChange)="updateField('spouseAge', $event)">
+      </label>
+
+      <label>
+        Sex
+        <select [ngModel]="referralData().spouseSex" (ngModelChange)="updateField('spouseSex', $event)">
+          <option value="" disabled>Select</option>
+          @for (sex of sexOptions; track sex) {
+          <option [value]="sex">{{ sex }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <label class="full">
+      Spouse Address
+      <textarea rows="2" [ngModel]="referralData().spouseAddress"
+        (ngModelChange)="updateField('spouseAddress', $event)"></textarea>
+    </label>
+
+    <label class="full">
+      General Health Summary
+      <textarea rows="3" [ngModel]="referralData().spouseHealth"
+        (ngModelChange)="updateField('spouseHealth', $event)"
+        placeholder="Describe overall health, mobility, chronic conditions, etc."></textarea>
+    </label>
+  </section>
 
   <div class="grid two-col">
     <label>
@@ -228,7 +313,10 @@
   </section>
 
   <div class="form-actions">
-    <button type="button" class="btn btn-primary" (click)="submitReferral()">Submit Referral</button>
+    <button type="button" class="btn btn-secondary" [disabled]="isSaving()" (click)="saveDraft()">Save Draft</button>
+    <button type="button" class="btn btn-primary" [disabled]="isSaving()" (click)="submitReferral()">
+      {{ isSaving() ? 'Saving…' : 'Submit Referral' }}
+    </button>
   </div>
 </section>
 

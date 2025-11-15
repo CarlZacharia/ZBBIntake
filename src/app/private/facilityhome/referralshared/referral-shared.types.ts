@@ -1,4 +1,5 @@
 export type CaseType = 'Guardianship' | 'Medicaid' | 'Both';
+export type SubmissionStatus = 'draft' | 'submitted';
 
 export interface ReferralContact {
   name: string;
@@ -27,6 +28,18 @@ export interface GuardianshipFormData {
 export type ApplicationType = 'new' | 'renewal' | null;
 export type MedicaidStatus = 'notFiled' | 'filed' | 'pending' | 'denied' | 'unsure' | null;
 
+export interface SpouseInfo {
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  dob?: string;
+  age?: string | number;
+  sex?: string;
+  livingConditions?: string;
+  health?: string;
+}
+
 export interface MedicaidFormData {
   applicationType?: ApplicationType;
   filedBy?: string;
@@ -42,6 +55,9 @@ export interface MedicaidFormData {
 }
 
 export interface ReferralPrefillData {
+  referralId?: number | string;
+  submissionStatus?: SubmissionStatus;
+  createdAt?: string;
   facilityName?: string;
   caseType: CaseType | null;
   fullLegalName: string;
@@ -65,5 +81,6 @@ export interface ReferralPrefillData {
   contacts?: ReferralContact[];
   guardianship?: GuardianshipFormData | null;
   medicaid?: MedicaidFormData | null;
+  spouse?: SpouseInfo | null;
 }
 

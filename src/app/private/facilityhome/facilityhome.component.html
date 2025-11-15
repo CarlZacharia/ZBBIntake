@@ -33,6 +33,34 @@
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-heading">
+        <p class="eyebrow">Unsubmitted Drafts</p>
+        <h3>In Progress</h3>
+      </div>
+
+      <div class="sidebar-list drafts">
+        @if (!filteredDrafts().length) {
+        <p class="empty-search">No unsubmitted drafts right now.</p>
+        }
+        @for (referral of filteredDrafts(); track referral.id) {
+        <article class="referral-entry draft" [class.active]="selectedReferralId() === referral.id"
+          (click)="selectReferral(referral.id)">
+          <div>
+            <span class="resident">{{ referral.resident || 'Unnamed Resident' }}</span>
+            <p class="pill-meta">{{ referral.type || 'Unspecified' }} • {{ referral.submitted }}</p>
+          </div>
+          <span class="status draft">Draft</span>
+          <div class="entry-meta">
+            <p>{{ referral.shared.reason || 'Details pending' }}</p>
+          </div>
+          <div class="entry-actions">
+            <button type="button" class="btn btn-light"
+              (click)="selectReferral(referral.id); $event.stopPropagation()">Resume Draft</button>
+          </div>
+        </article>
+        }
+      </div>
+
+      <div class="sidebar-heading">
         <p class="eyebrow">Submitted Residents</p>
         <h3>Previous Referrals</h3>
       </div>
@@ -44,20 +72,22 @@
       </div>
 
       <div class="sidebar-list">
-        @if (!filteredReferrals().length) {
+        @if (!filteredSubmissions().length) {
         <p class="empty-search">No residents found with that name.</p>
         }
-        @for (referral of filteredReferrals(); track referral.id) {
-        <article class="referral-entry" [class.active]="selectedReferralId() === referral.id">
-          <div class="entry-header" (click)="selectReferral(referral.id)" (click)="selectReferral(referral.id)">
+        @for (referral of filteredSubmissions(); track referral.id) {
+        <article class="referral-entry" [class.active]="selectedReferralId() === referral.id"
+          (click)="selectReferral(referral.id)">
+          <div class="entry-header">
             <div>
               <span class="resident">{{ referral.resident }}</span>
-              <p class="pill-meta">{{ referral.type }} • {{ referral.submitted }}</p>
+              <p class="pill-meta">{{ referral.type || 'Unspecified' }} • {{ referral.submitted }}</p>
             </div>
             <span class="status" [attr.data-status]="referral.status">{{ referral.status }}</span>
           </div>
 
-          <div class="progress-block" *ngIf="referral.type !== 'Medicaid' && referral.guardianshipProgress !== undefined" >
+          <div class="progress-block"
+            *ngIf="referral.type !== 'Medicaid' && referral.guardianshipProgress !== undefined">
             <p>Guardianship Progress</p>
             <div class="progress-bar">
               <span [style.width.%]="referral.guardianshipProgress"></span>
@@ -65,7 +95,8 @@
             <small>{{ referral.guardianshipProgress }}% Complete</small>
           </div>
 
-          <div class="progress-block" *ngIf="referral.type !== 'Guardianship' && referral.medicaidProgress !== undefined">
+          <div class="progress-block"
+            *ngIf="referral.type !== 'Guardianship' && referral.medicaidProgress !== undefined">
             <p>Medicaid Progress</p>
             <div class="progress-bar medicaid">
               <span [style.width.%]="referral.medicaidProgress"></span>
@@ -74,7 +105,8 @@
           </div>
 
           <div class="entry-actions">
-            <button type="button" class="btn btn-light" (click)="selectReferral(referral.id)">Review Referral</button>
+            <button type="button" class="btn btn-light"
+              (click)="selectReferral(referral.id); $event.stopPropagation()">Review Referral</button>
             <button type="button" class="btn btn-outline-light">Review Case Updates</button>
           </div>
         </article>

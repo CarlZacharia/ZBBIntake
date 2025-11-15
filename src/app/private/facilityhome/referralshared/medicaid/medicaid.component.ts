@@ -74,5 +74,22 @@ export class MedicaidComponent implements OnChanges {
       [key]: value
     }));
   }
+
+  getState(): MedicaidFormData {
+    const state = this.medicaidState();
+    return {
+      applicationType: state.applicationType,
+      filedBy: state.filedBy,
+      caseNumber: state.caseNumber,
+      applicationNumber: state.applicationNumber,
+      dateOfApplication: state.dateOfApplication,
+      dateNeeded: state.dateNeeded,
+      privatePayEstimate: state.privatePayEstimate,
+      status: state.status,
+      lastNoca: state.lastNoca,
+      nocaContents: state.nocaContents,
+      notes: state.nocaNotes
+    };
+  }
 }
 

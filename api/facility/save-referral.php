@@ -28,39 +28,75 @@ try {
         Response::error('Invalid JSON payload', 400);
     }
 
-    $caseType = $input['caseType'] ?? null;
-    $allowedCaseTypes = ['Guardianship', 'Medicaid', 'Both'];
-    if (!in_array($caseType, $allowedCaseTypes)) {
-        Response::error('Invalid case type supplied', 400);
+$submissionStatus = $input['submissionStatus'] ?? 'submitted';
+$allowedStatuses = ['draft', 'submitted'];
+if (!in_array($submissionStatus, $allowedStatuses, true)) {
+    Response::error('Invalid submission status provided', 400);
+}
+
+$caseType = $input['caseType'] ?? null;
+$allowedCaseTypes = ['Guardianship', 'Medicaid', 'Both'];
+if ($submissionStatus === 'submitted' && !in_array($caseType, $allowedCaseTypes)) {
+    Response::error('Invalid case type supplied', 400);
+}
+if ($submissionStatus === 'draft' && $caseType !== null && !in_array($caseType, $allowedCaseTypes)) {
+    Response::error('Invalid case type supplied for draft', 400);
     }
 
-    $sharedData = [
-        'portal_user_id' => $portalUserId,
-        'facility_name' => Validator::sanitize($input['facilityName'] ?? ''),
-        'case_type' => $caseType,
-        'full_legal_name' => Validator::sanitize($input['fullLegalName'] ?? ''),
-        'date_of_birth' => $input['dateOfBirth'] ?? null,
-        'age' => $input['age'] ?? null,
-        'ssn' => $input['ssn'] ?? null,
-        'sex' => $input['sex'] ?? null,
-        'home_address' => $input['homeAddress'] ?? null,
-        'current_address' => $input['currentAddress'] ?? null,
-        'marital_status' => $input['maritalStatus'] ?? null,
-        'monthly_income' => $input['monthlyIncome'] ?? null,
-        'physical_condition' => $input['physicalCondition'] ?? null,
-        'mental_condition' => $input['mentalCondition'] ?? null,
-        'existing_estate_plan' => $input['existingEstatePlan'] ?? null,
-        'reason_for_assistance' => $input['reasonForNeed'] ?? null,
-        'deemed_incapacitated' => $input['deemedIncapacitated'] ?? false,
-        'incapacity_date' => $input['incapacityDate'] ?? null,
-        'medical_insurance' => $input['medicalInsurance'] ?? [],
-        'issues' => $input['issues'] ?? null,
-        'comments' => $input['comments'] ?? null
-    ];
+$sharedData = [
+    'portal_user_id' => $portalUserId,
+    'referral_id' => $input['referralId'] ?? null,
+    'facility_name' => Validator::sanitize($input['facilityName'] ?? ''),
+    'case_type' => $caseType,
+    'full_legal_name' => Validator::sanitize($input['fullLegalName'] ?? ''),
+    'date_of_birth' => $input['dateOfBirth'] ?? null,
+    'age' => $input['age'] ?? null,
+    'ssn' => $input['ssn'] ?? null,
+    'sex' => $input['sex'] ?? null,
+    'home_address' => $input['homeAddress'] ?? null,
+    'current_address' => $input['currentAddress'] ?? null,
+    'marital_status' => $input['maritalStatus'] ?? null,
+    'monthly_income' => $input['monthlyIncome'] ?? null,
+    'physical_condition' => $input['physicalCondition'] ?? null,
+    'mental_condition' => $input['mentalCondition'] ?? null,
+    'existing_estate_plan' => $input['existingEstatePlan'] ?? null,
+    'reason_for_assistance' => Validator::sanitize($input['reasonForNeed'] ?? ''),
+    'deemed_incapacitated' => $input['deemedIncapacitated'] ?? false,
+    'incapacity_date' => $input['incapacityDate'] ?? null,
+    'spouse_name' => Validator::sanitize($input['spouseName'] ?? ''),
+    'spouse_address' => Validator::sanitize($input['spouseAddress'] ?? ''),
+    'spouse_phone' => Validator::sanitize($input['spousePhone'] ?? ''),
+    'spouse_email' => Validator::sanitize($input['spouseEmail'] ?? ''),
+    'spouse_dob' => $input['spouseDob'] ?? null,
+    'spouse_age' => $input['spouseAge'] ?? null,
+    'spouse_sex' => $input['spouseSex'] ?? null,
+    'spouse_living_conditions' => Validator::sanitize($input['spouseLivingConditions'] ?? ''),
+    'spouse_health' => $input['spouseHealth'] ?? null,
+    'medical_insurance' => $input['medicalInsurance'] ?? [],
+    'issues' => $input['issues'] ?? null,
+    'comments' => $input['comments'] ?? null
+];
 
     if (empty($sharedData['full_legal_name'])) {
         Response::error('Full legal name is required', 400);
     }
+if ($submissionStatus === 'submitted' && empty($sharedData['case_type'])) {
+    Response::error('Case type is required to submit the referral', 400);
+}
+if (!is_array($sharedData['medical_insurance'])) {
+    $sharedData['medical_insurance'] = [];
+}
+if (($sharedData['marital_status'] ?? '') !== 'Married') {
+    $sharedData['spouse_name'] = null;
+    $sharedData['spouse_address'] = null;
+    $sharedData['spouse_phone'] = null;
+    $sharedData['spouse_email'] = null;
+    $sharedData['spouse_dob'] = null;
+    $sharedData['spouse_age'] = null;
+    $sharedData['spouse_sex'] = null;
+    $sharedData['spouse_living_conditions'] = null;
+    $sharedData['spouse_health'] = null;
+}
 
     $contacts = [];
     if (!empty($input['contacts']) && is_array($input['contacts'])) {
@@ -77,14 +113,14 @@ try {
     $guardianship = null;
     if (!empty($input['guardianship'])) {
         $guardianship = [
-            'estate_plan' => $input['guardianship']['estatePlan'] ?? [],
-            'guardian_type' => $input['guardianship']['guardianType'] ?? null,
-            'interested_family' => $input['guardianship']['interestedFamily'] ?? null,
-            'interested_persons' => $input['guardianship']['interestedPersons'] ?? null,
-            'rep_payee_status' => $input['guardianship']['repPayeeStatus'] ?? null,
-            'aware_of_assets' => $input['guardianship']['awareOfAssets'] ?? null,
-            'asset_notes' => $input['guardianship']['assetNotes'] ?? null,
-            'notes' => $input['guardianship']['notes'] ?? null
+        'estate_plan' => $input['guardianship']['estatePlan'] ?? [],
+        'guardian_type' => $input['guardianship']['guardianType'] ?? null,
+        'interested_family' => $input['guardianship']['interestedFamily'] ?? null,
+        'interested_persons' => $input['guardianship']['interestedPersons'] ?? null,
+        'rep_payee_status' => $input['guardianship']['repPayeeStatus'] ?? null,
+        'aware_of_assets' => $input['guardianship']['awareOfAssets'] ?? null,
+        'asset_notes' => $input['guardianship']['assetNotes'] ?? null,
+        'notes' => $input['guardianship']['notes'] ?? null
         ];
     }
 
@@ -106,9 +142,9 @@ try {
     }
 
     $model = new FacilityReferral();
-    $referralId = $model->createReferral($sharedData, $contacts, $guardianship, $medicaid);
+$referralId = $model->saveReferral($sharedData, $contacts, $guardianship, $medicaid, $submissionStatus);
 
-    Response::success('Referral saved successfully', [
+Response::success($submissionStatus === 'draft' ? 'Draft saved successfully' : 'Referral saved successfully', [
         'referral_id' => $referralId
     ], 201);
 
