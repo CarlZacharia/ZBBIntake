@@ -1,18 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-type GuardianType = 'person' | 'property' | 'plenary';
-type YesNo = 'yes' | 'no';
-type RepPayeeStatus = 'yes' | 'no' | 'applied';
-type AssetAwareness = 'yes' | 'no' | 'unsure';
-
-interface FamilyContact {
-  name: string;
-  address: string;
-  email: string;
-  telephone: string;
-}
+import {
+  AssetAwareness,
+  GuardianshipFormData,
+  RepPayeeStatus,
+  GuardianType,
+  YesNo,
+  ReferralContact
+} from '../referral-shared.types';
 
 @Component({
   selector: 'app-guardianship',
@@ -21,7 +17,9 @@ interface FamilyContact {
   templateUrl: './guardianship.component.html',
   styleUrl: './guardianship.component.css'
 })
-export class GuardianshipComponent {
+export class GuardianshipComponent implements OnChanges {
+  @Input() initialState: GuardianshipFormData | null = null;
+
   readonly estatePlanOptions = [
     'Power of Attorney',
     'Health Care Surrogate',
@@ -42,9 +40,46 @@ export class GuardianshipComponent {
     notes: ''
   });
 
-  readonly familyContacts = signal<FamilyContact[]>([
+  readonly familyContacts = signal<ReferralContact[]>([
     { name: '', address: '', email: '', telephone: '' }
   ]);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialState']) {
+      this.applyInitialState(changes['initialState'].currentValue as GuardianshipFormData | null);
+    }
+  }
+
+  private applyInitialState(state: GuardianshipFormData | null): void {
+    if (!state) {
+      return;
+    }
+
+    this.guardianshipState.update(current => ({
+      ...current,
+      estatePlan: new Set(state.estatePlan ?? []),
+      guardianType: state.guardianType ?? null,
+      interestedFamily: state.interestedFamily ?? null,
+      interestedPersons: state.interestedPersons ?? '',
+      repPayee: state.repPayeeStatus ?? null,
+      awareOfAssets: state.awareOfAssets ?? null,
+      assetNotes: state.assetNotes ?? '',
+      notes: state.notes ?? ''
+    }));
+
+    if (state.familyContacts && state.familyContacts.length) {
+      this.familyContacts.set(
+        state.familyContacts.map(contact => ({
+          name: contact.name || '',
+          address: contact.address || '',
+          email: contact.email || '',
+          telephone: contact.telephone || ''
+        }))
+      );
+    } else {
+      this.familyContacts.set([{ name: '', address: '', email: '', telephone: '' }]);
+    }
+  }
 
   toggleEstatePlan(option: string): void {
     this.guardianshipState.update(state => {
@@ -100,7 +135,7 @@ export class GuardianshipComponent {
     this.familyContacts.update(list => list.filter((_, i) => i !== index));
   }
 
-  updateFamilyContact(index: number, field: keyof FamilyContact, value: string): void {
+  updateFamilyContact(index: number, field: keyof ReferralContact, value: string): void {
     this.familyContacts.update(list => {
       const copy = [...list];
       copy[index] = { ...copy[index], [field]: value };

@@ -33,9 +33,9 @@
       <h2>Alleged Incapacitated / Applicant Details</h2>
     </div>
   </header>
-  
+
   <div class="grid two-col">
- 
+
     <label>
       Full Legal Name
       <input type="text" [ngModel]="referralData().fullLegalName" (ngModelChange)="updateField('fullLegalName', $event)">
@@ -201,15 +201,15 @@
   <section class="case-dynamic">
     @switch (referralData().caseType) {
     @case ('Guardianship') {
-    <app-guardianship />
+    <app-guardianship [initialState]="guardianshipPrefill()" />
     }
     @case ('Medicaid') {
-    <app-medicaid />
+    <app-medicaid [initialState]="medicaidPrefill()" />
     }
     @case ('Both') {
     <div class="case-stack">
-      <app-guardianship />
-      <app-medicaid />
+      <app-guardianship [initialState]="guardianshipPrefill()" />
+      <app-medicaid [initialState]="medicaidPrefill()" />
     </div>
     }
     @default {

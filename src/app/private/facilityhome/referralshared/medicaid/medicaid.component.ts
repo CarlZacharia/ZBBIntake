@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-type ApplicationType = 'new' | 'renewal';
-type StatusType = 'notFiled' | 'filed' | 'pending' | 'denied' | 'unsure';
+import { ApplicationType, MedicaidFormData, MedicaidStatus } from '../referral-shared.types';
 
 @Component({
   selector: 'app-medicaid',
@@ -12,20 +10,49 @@ type StatusType = 'notFiled' | 'filed' | 'pending' | 'denied' | 'unsure';
   templateUrl: './medicaid.component.html',
   styleUrl: './medicaid.component.css'
 })
-export class MedicaidComponent {
+export class MedicaidComponent implements OnChanges {
+  @Input() initialState: MedicaidFormData | null = null;
+
   readonly medicaidState = signal({
-    applicationType: null as ApplicationType | null,
+    applicationType: null as ApplicationType,
     filedBy: '',
     caseNumber: '',
     applicationNumber: '',
     dateOfApplication: '',
     dateNeeded: '',
     privatePayEstimate: '',
-    status: null as StatusType | null,
+    status: null as MedicaidStatus,
     lastNoca: '',
     nocaContents: '',
     nocaNotes: ''
   });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialState']) {
+      this.applyInitialState(changes['initialState'].currentValue as MedicaidFormData | null);
+    }
+  }
+
+  private applyInitialState(state: MedicaidFormData | null): void {
+    if (!state) {
+      return;
+    }
+
+    this.medicaidState.update(current => ({
+      ...current,
+      applicationType: state.applicationType ?? null,
+      filedBy: state.filedBy ?? '',
+      caseNumber: state.caseNumber ?? '',
+      applicationNumber: state.applicationNumber ?? '',
+      dateOfApplication: state.dateOfApplication ?? '',
+      dateNeeded: state.dateNeeded ?? '',
+      privatePayEstimate: state.privatePayEstimate ?? '',
+      status: state.status ?? null,
+      lastNoca: state.lastNoca ?? '',
+      nocaContents: state.nocaContents ?? '',
+      nocaNotes: state.notes ?? ''
+    }));
+  }
 
   setApplicationType(type: ApplicationType): void {
     this.medicaidState.update(state => ({
@@ -34,7 +61,7 @@ export class MedicaidComponent {
     }));
   }
 
-  setStatus(status: StatusType): void {
+  setStatus(status: MedicaidStatus): void {
     this.medicaidState.update(state => ({
       ...state,
       status
