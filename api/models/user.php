@@ -8,7 +8,7 @@ require_once '../config/database.php';
 
 class User {
     private $conn;
-    private $table_name = "users";
+    private $table_name = "portal_users";
 
     public function __construct() {
         $database = new Database();
@@ -20,9 +20,9 @@ class User {
      */
     public function create($userData) {
         $query = "INSERT INTO " . $this->table_name . "
-                  (email, password_hash, first_name, middle_name, last_name, suffix, phone, preferred_contact_method)
+                  (email, password_hash, first_name, middle_name, last_name, suffix, phone, preferred_contact_method, user_category, facility_name)
                   VALUES
-                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method)";
+                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method, :user_category, :facility_name)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -35,6 +35,8 @@ class User {
         $stmt->bindParam(':suffix', $userData['suffix']);
         $stmt->bindParam(':phone', $userData['phone']);
         $stmt->bindParam(':preferred_contact_method', $userData['preferred_contact_method']);
+        $stmt->bindParam(':user_category', $userData['user_category']);
+        $stmt->bindParam(':facility_name', $userData['facility_name']);
 
         if ($stmt->execute()) {
             return $this->conn->lastInsertId();
@@ -47,8 +49,8 @@ class User {
      * Find user by email
      */
     public function findByEmail($email) {
-        $query = "SELECT user_id, email, password_hash, first_name, middle_name, last_name, suffix, phone,
-                         preferred_contact_method, date_created, last_login, is_active, email_verified, profile_completed
+        $query = "SELECT portal_user_id, email, password_hash, first_name, middle_name, last_name, suffix, phone,
+                         preferred_contact_method, user_category, facility_name, date_created, last_login, is_active, email_verified, profile_completed
                   FROM " . $this->table_name . "
                   WHERE email = :email AND is_active = 1";
 
@@ -63,10 +65,10 @@ class User {
      * Find user by ID
      */
     public function findById($user_id) {
-        $query = "SELECT user_id, email, first_name, middle_name, last_name, suffix, phone,
-                         preferred_contact_method, date_created, last_login, is_active, email_verified, profile_completed
+        $query = "SELECT portal_user_id, email, first_name, middle_name, last_name, suffix, phone,
+                         preferred_contact_method, user_category, facility_name, date_created, last_login, is_active, email_verified, profile_completed
                   FROM " . $this->table_name . "
-                  WHERE user_id = :user_id AND is_active = 1";
+                  WHERE portal_user_id = :user_id AND is_active = 1";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
@@ -81,7 +83,7 @@ class User {
     public function updateLastLogin($user_id) {
         $query = "UPDATE " . $this->table_name . "
                   SET last_login = CURRENT_TIMESTAMP
-                  WHERE user_id = :user_id";
+                  WHERE portal_user_id = :user_id";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
@@ -93,7 +95,7 @@ class User {
      * Check if email exists
      */
     public function emailExists($email) {
-        $query = "SELECT user_id FROM " . $this->table_name . " WHERE email = :email";
+        $query = "SELECT portal_user_id FROM " . $this->table_name . " WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -126,8 +128,10 @@ class User {
                       suffix = :suffix,
                       phone = :phone,
                       preferred_contact_method = :preferred_contact_method,
+                      facility_name = :facility_name,
+                      user_category = :user_category,
                       updated_at = CURRENT_TIMESTAMP
-                  WHERE user_id = :user_id";
+                  WHERE portal_user_id = :user_id";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
@@ -137,6 +141,8 @@ class User {
         $stmt->bindParam(':suffix', $userData['suffix']);
         $stmt->bindParam(':phone', $userData['phone']);
         $stmt->bindParam(':preferred_contact_method', $userData['preferred_contact_method']);
+        $stmt->bindParam(':facility_name', $userData['facility_name']);
+        $stmt->bindParam(':user_category', $userData['user_category']);
 
         return $stmt->execute();
     }

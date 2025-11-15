@@ -19,10 +19,10 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'https://zbplans.com/api/auth'; // Remote PHP backend URL
-  private readonly TOKEN_KEY = 'zbb_auth_token';
-  private readonly REFRESH_TOKEN_KEY = 'zbb_refresh_token';
-  private readonly USER_KEY = 'zbb_user';
+  private readonly API_URL = 'https://www.zacbrownportal.com/api/auth'; // Remote PHP backend URL
+  private readonly TOKEN_KEY = 'zacbrownportal_auth_token';
+  private readonly REFRESH_TOKEN_KEY = 'zacbrownportal_refresh_token';
+  private readonly USER_KEY = 'zacbrownportal_user';
 
   // Primary authentication state signal
   private _authState = signal<IAuthState>({
@@ -342,7 +342,6 @@ export class AuthService {
     // Store in localStorage
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    console.log(user, this)
     if (refreshToken) {
       localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
     }

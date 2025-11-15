@@ -5,11 +5,11 @@
  */
 
 class Database {
-    // Update these settings for zbplans.com hosting environment
+    // Update these settings for zbbintake.com hosting environment
     private $host = 'localhost';           // Your DB host (usually 'localhost')
-    private $db_name = 'zbplans';          // Your database name (might have a prefix)
-    private $username = 'zbplansuser';     // Your database username (might have a prefix)
-    private $password = 'ZB3ld3rl@w!';     // Your actual database password
+    private $db_name = 'zbbintake';          // Your database name (might have a prefix)
+    private $username = 'zbbintakeuser';     // Your database username (might have a prefix)
+    private $password = 'zbbShakur~94';     // Your actual database password
     private $port = 3306;
     private $conn;
 

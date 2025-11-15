@@ -1,0 +1,79 @@
+.medicaid-headline {
+  margin-top: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.medicaid-card {
+  margin-top: 1rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  padding: 1.5rem;
+  background: #f8fbff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.radio-group.wrap {
+  gap: 0.75rem 1.5rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nested {
+  margin-left: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.two-col {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.three-col {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+textarea,
+input {
+  border-radius: 12px;
+  border: 1px solid #cbd5f5;
+  padding: 0.75rem;
+  background: #fff;
+  width: 100%;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+

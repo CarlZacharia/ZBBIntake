@@ -1,0 +1,84 @@
+<div class="facilityhome">
+  <header class="facility-hero">
+    <div class="hero-primary">
+      <p class="eyebrow">Facility Partner</p>
+      <div class="hero-title">
+        <h1>{{ facilityDetails().name }}</h1>
+        <span class="hero-chip">Active</span>
+      </div>
+      <p class="hero-meta">
+        {{ facilityDetails().address }}
+      </p>
+    </div>
+    <div class="hero-contact">
+      <p class="label">Main Facility Contact</p>
+      <h3>{{ facilityDetails().contact }}</h3>
+      <p>{{ facilityDetails().contactEmail }}</p>
+      <p>{{ facilityDetails().contactPhone }}</p>
+      <a routerLink="/intakehub" class="link">Back to Intake Hub</a>
+    </div>
+  </header>
+
+  <section class="contact-strip">
+    <article class="contact-card">
+      <p class="label">Facility Contact</p>
+      <h4>{{ facilityDetails().contact }}</h4>
+      <p>{{ facilityDetails().contactEmail }}</p>
+      <p>{{ facilityDetails().contactPhone }}</p>
+    </article>
+
+    <article class="contact-card">
+      <p class="label">Your Account</p>
+      <h4>{{ loggedInContact().name }}</h4>
+      <p>{{ loggedInContact().email }}</p>
+      <p>{{ loggedInContact().phone }}</p>
+    </article>
+  </section>
+
+  <section class="intake-launcher">
+    <div class="launcher-text">
+      <h2>Resident Intake</h2>
+      <p>Initiate a new guardianship or Medicaid engagement for this facility.</p>
+    </div>
+    <div class="launcher-actions">
+      <a class="btn btn-primary" routerLink="/referral">
+        Add New Intake
+      </a>
+      <button class="btn btn-secondary" type="button">Share Checklist</button>
+    </div>
+  </section>
+
+  <section class="intake-history">
+    <header>
+      <div>
+        <p class="eyebrow">Previous Intakes</p>
+        <h2>Submitted Residents</h2>
+      </div>
+      <button class="btn btn-outline">Export CSV</button>
+    </header>
+
+    <div class="history-list">
+      @for (intake of previousIntakes(); track intake.resident) {
+      <article class="history-card">
+        <div>
+          <p class="label">Resident</p>
+          <h3>{{ intake.resident }}</h3>
+        </div>
+        <div>
+          <p class="label">Type</p>
+          <span class="type-pill" [attr.data-type]="intake.type">{{ intake.type }}</span>
+        </div>
+        <div>
+          <p class="label">Submitted</p>
+          <p>{{ intake.submitted }}</p>
+        </div>
+        <div>
+          <p class="label">Status</p>
+          <p class="status">{{ intake.status }}</p>
+        </div>
+      </article>
+      }
+    </div>
+  </section>
+</div>
+

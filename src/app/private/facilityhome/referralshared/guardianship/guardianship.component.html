@@ -1,0 +1,155 @@
+<div class="guardianship-headline">Guardianship Intake Details</div>
+<section class="guardianship-card">
+
+  <div class="form-section">
+    <label>Existing Estate Plan</label>
+    <div class="chip-group">
+      @for (option of estatePlanOptions; track option) {
+      <button type="button" class="chip" [class.active]="guardianshipState().estatePlan.has(option)"
+        (click)="toggleEstatePlan(option)">
+        {{ option }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="form-section">
+    <label>Guardian Type Needed</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="guardianType" value="person" (change)="setGuardianType('person')"
+          [checked]="guardianshipState().guardianType === 'person'">
+        Person
+      </label>
+      <label>
+        <input type="radio" name="guardianType" value="property" (change)="setGuardianType('property')"
+          [checked]="guardianshipState().guardianType === 'property'">
+        Property
+      </label>
+      <label>
+        <input type="radio" name="guardianType" value="plenary" (change)="setGuardianType('plenary')"
+          [checked]="guardianshipState().guardianType === 'plenary'">
+        Plenary
+      </label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <label>Is there an interested family member?</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="interestedFamily" value="yes" (change)="setInterestedFamily('yes')"
+          [checked]="guardianshipState().interestedFamily === 'yes'">
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="interestedFamily" value="no" (change)="setInterestedFamily('no')"
+          [checked]="guardianshipState().interestedFamily === 'no'">
+        No
+      </label>
+    </div>
+
+    @if (guardianshipState().interestedFamily === 'yes') {
+    <label class="nested">
+      Who is/are the interested person(s)?
+      <input type="text" [ngModel]="guardianshipState().interestedPersons"
+        (ngModelChange)="updateField('interestedPersons', $event)">
+    </label>
+    }
+  </div>
+
+  <div class="form-section">
+    <label>Is the facility Rep Payee?</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="repPayee" value="yes" (change)="setRepPayee('yes')"
+          [checked]="guardianshipState().repPayee === 'yes'">
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="repPayee" value="no" (change)="setRepPayee('no')"
+          [checked]="guardianshipState().repPayee === 'no'">
+        No
+      </label>
+      <label>
+        <input type="radio" name="repPayee" value="applied" (change)="setRepPayee('applied')"
+          [checked]="guardianshipState().repPayee === 'applied'">
+        Applied For
+      </label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="heading-row">
+      <label>Known Family Members or interested persons</label>
+      <button class="btn btn-secondary small" type="button" (click)="addFamilyContact()">Add Contact</button>
+    </div>
+    <div class="contact-list">
+      @for (contact of familyContacts(); track i; let i = $index) {
+      <article class="contact-card">
+        <div class="contact-header">
+          <h4>Contact {{ i + 1 }}</h4>
+          <button class="icon-button" type="button" (click)="removeFamilyContact(i)" [disabled]="familyContacts().length === 1">
+            ×
+          </button>
+        </div>
+        <div class="grid two-col">
+          <label>
+            Name
+            <input type="text" [ngModel]="contact.name" (ngModelChange)="updateFamilyContact(i, 'name', $event)">
+          </label>
+          <label>
+            Telephone
+            <input type="text" [ngModel]="contact.telephone"
+              (ngModelChange)="updateFamilyContact(i, 'telephone', $event)">
+          </label>
+          <label>
+            Address
+            <input type="text" [ngModel]="contact.address" (ngModelChange)="updateFamilyContact(i, 'address', $event)">
+          </label>
+          <label>
+            Email
+            <input type="email" [ngModel]="contact.email" (ngModelChange)="updateFamilyContact(i, 'email', $event)">
+          </label>
+        </div>
+      </article>
+      }
+    </div>
+  </div>
+
+  <div class="form-section">
+    <label>Are you aware of any assets owned by the person?</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="assetAware" value="yes" (change)="setAssetAwareness('yes')"
+          [checked]="guardianshipState().awareOfAssets === 'yes'">
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="assetAware" value="no" (change)="setAssetAwareness('no')"
+          [checked]="guardianshipState().awareOfAssets === 'no'">
+        No
+      </label>
+      <label>
+        <input type="radio" name="assetAware" value="unsure" (change)="setAssetAwareness('unsure')"
+          [checked]="guardianshipState().awareOfAssets === 'unsure'">
+        Unsure
+      </label>
+    </div>
+
+    @if (guardianshipState().awareOfAssets === 'yes') {
+    <label class="nested">
+      If Yes
+      <textarea rows="3" placeholder="Asset types and estimated values" [ngModel]="guardianshipState().assetNotes"
+        (ngModelChange)="updateField('assetNotes', $event)"></textarea>
+    </label>
+    }
+  </div>
+
+  <div class="form-section">
+    <label>Notes / Comments</label>
+    <textarea rows="3" placeholder="Additional guardianship notes"
+      [ngModel]="guardianshipState().notes" (ngModelChange)="updateField('notes', $event)"></textarea>
+  </div>
+</section>
+

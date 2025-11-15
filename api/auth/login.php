@@ -71,17 +71,19 @@ try {
     }
 
     // Update last login
-    $user->updateLastLogin($userData['user_id']);
+    $user->updateLastLogin($userData['portal_user_id']);
 
     // Remove sensitive data
     unset($userData['password_hash']);
 
     // Create JWT payload
     $jwt_payload = [
-        'user_id' => $userData['user_id'],
+        'user_id' => $userData['portal_user_id'],
         'email' => $userData['email'],
         'first_name' => $userData['first_name'],
-        'last_name' => $userData['last_name']
+        'last_name' => $userData['last_name'],
+        'user_category' => $userData['user_category'],
+        'facility_name' => $userData['facility_name']
     ];
 
     // Generate JWT token

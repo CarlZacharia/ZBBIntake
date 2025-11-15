@@ -4,13 +4,24 @@
  * Handles database connection for ZBB Intake system
  */
 
+require_once __DIR__ . '/../helpers/env.php';
+
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'zbpcahos_zbplans';
-    private $username = 'zbpcahos_zbplansuser';
-    private $password = 'ZB3ld3rl@w!';
-    private $port = 3306;
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
+    private $port;
     private $conn;
+
+    public function __construct() {
+        Env::load();
+        $this->host = Env::get('DB_HOST', 'localhost');
+        $this->db_name = Env::get('DB_NAME', 'zbbintake');
+        $this->username = Env::get('DB_USER', 'zbbintakeuser');
+        $this->password = Env::get('DB_PASS', '');
+        $this->port = (int) Env::get('DB_PORT', 3306);
+    }
 
     /**
      * Get database connection
@@ -19,7 +30,12 @@ class Database {
         $this->conn = null;
 
         try {
-            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name . ";charset=utf8mb4";
+            $dsn = sprintf(
+                'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+                $this->host,
+                $this->port,
+                $this->db_name
+            );
 
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

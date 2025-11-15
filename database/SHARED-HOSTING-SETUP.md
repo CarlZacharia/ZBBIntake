@@ -51,8 +51,8 @@ Use these database connection details in your backend:
 ```env
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=zbplans
-DB_USER=zbplansuser
+DB_NAME=zbbintake
+DB_USER=zbbintakeuser
 DB_PASSWORD=ZB3ld3rl@w!
 ```
 

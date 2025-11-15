@@ -4,8 +4,17 @@
  * Simple JWT implementation without external dependencies
  */
 
+require_once __DIR__ . '/env.php';
+
 class JWT {
-    private static $secret_key = "your_jwt_secret_key_here_make_it_long_and_secure";
+    private static function secretKey(): string {
+        $secret = Env::get('JWT_SECRET');
+        if (empty($secret)) {
+            throw new Exception('JWT secret key is not configured. Set JWT_SECRET in your .env file.');
+        }
+        return $secret;
+    }
+
     private static $algorithm = 'HS256';
     private static $expiration_time = 86400; // 24 hours
 
@@ -24,7 +33,7 @@ class JWT {
         $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
         $base64Payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
 
-        $signature = hash_hmac('sha256', $base64Header . "." . $base64Payload, self::$secret_key, true);
+        $signature = hash_hmac('sha256', $base64Header . "." . $base64Payload, self::secretKey(), true);
         $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
 
         return $base64Header . "." . $base64Payload . "." . $base64Signature;
@@ -46,7 +55,7 @@ class JWT {
 
         // Verify signature
         $expectedSignature = str_replace(['+', '/', '='], ['-', '_', ''],
-            base64_encode(hash_hmac('sha256', $tokenParts[0] . "." . $tokenParts[1], self::$secret_key, true)));
+            base64_encode(hash_hmac('sha256', $tokenParts[0] . "." . $tokenParts[1], self::secretKey(), true)));
 
         if ($signature !== $expectedSignature) {
             throw new Exception('Invalid token signature');

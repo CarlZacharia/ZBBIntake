@@ -1,0 +1,229 @@
+<section class="referral-form">
+  <nav class="referral-nav">
+    <div class="nav-left">
+      <div class="logo-placeholder">ZB</div>
+      <div>
+        <p class="firm-name">Zacharia Brown &amp; Bratkovich</p>
+        <small class="firm-tagline">Estate &amp; Elder Law</small>
+      </div>
+    </div>
+    <div class="nav-center">
+      <span>Guardianship / Medicaid Intake Form</span>
+    </div>
+    <div class="nav-right">
+      <a routerLink="/facilityhome" class="btn btn-secondary small">Back to Main Menu</a>
+    </div>
+  </nav>
+
+  <header>
+    <div class="header-main">
+      <h1>Facility Name: {{ referralData().facilityName }}</h1>
+      <hr class="divider">
+
+      <div class="eyebrow">Referral Type</div>
+      <div class="case-toggle">
+        @for (type of caseTypes; track type) {
+        <button type="button" class="case-pill" [class.active]="referralData().caseType === type"
+          (click)="setCaseType(type)">
+          {{ type }}
+        </button>
+        }
+      </div>
+      <p class="eyebrow secondary">Shared Referral Intake</p>
+      <h2>Alleged Incapacitated / Applicant Details</h2>
+    </div>
+  </header>
+  
+  <div class="grid two-col">
+ 
+    <label>
+      Full Legal Name
+      <input type="text" [ngModel]="referralData().fullLegalName" (ngModelChange)="updateField('fullLegalName', $event)">
+    </label>
+
+    <label>
+      Date of Birth
+      <input type="date" [ngModel]="referralData().dateOfBirth" (ngModelChange)="updateField('dateOfBirth', $event)">
+    </label>
+
+    <label>
+      Age
+      <input type="number" min="0" [ngModel]="referralData().age" (ngModelChange)="updateField('age', $event)">
+    </label>
+
+    <label>
+      Social Security Number
+      <input type="text" placeholder="XXX-XX-XXXX" [ngModel]="referralData().ssn" (ngModelChange)="updateField('ssn', $event)">
+    </label>
+
+    <label>
+      Sex
+      <select [ngModel]="referralData().sex" (ngModelChange)="updateField('sex', $event)">
+        <option value="" disabled>Select</option>
+        @for (sex of sexOptions; track sex) {
+        <option [value]="sex">{{ sex }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="full">
+      Home Address
+      <textarea rows="2" [ngModel]="referralData().homeAddress" (ngModelChange)="updateField('homeAddress', $event)"></textarea>
+    </label>
+
+    <label class="full">
+      Current Address
+      <textarea rows="2" [ngModel]="referralData().currentAddress"
+        (ngModelChange)="updateField('currentAddress', $event)"></textarea>
+    </label>
+
+    <label>
+      Marital Status
+      <select [ngModel]="referralData().maritalStatus" (ngModelChange)="updateField('maritalStatus', $event)">
+        <option value="" disabled>Select</option>
+        @for (status of maritalStatuses; track status) {
+        <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Monthly Income
+      <input type="text" [ngModel]="referralData().monthlyIncome" (ngModelChange)="updateField('monthlyIncome', $event)">
+    </label>
+  </div>
+
+  <div class="grid two-col">
+    <label>
+      Physical Condition
+      <textarea rows="3" [ngModel]="referralData().physicalCondition"
+        (ngModelChange)="updateField('physicalCondition', $event)"></textarea>
+    </label>
+
+    <label>
+      Mental Condition
+      <textarea rows="3" [ngModel]="referralData().mentalCondition"
+        (ngModelChange)="updateField('mentalCondition', $event)"></textarea>
+    </label>
+  </div>
+
+  <label class="full">
+    Existing Estate Plan
+    <textarea rows="3" [ngModel]="referralData().existingEstatePlan"
+      (ngModelChange)="updateField('existingEstatePlan', $event)"></textarea>
+  </label>
+
+  <label class="full">
+    Reason for Need of Legal Assistance
+    <textarea rows="3" [ngModel]="referralData().reasonForAssistance"
+      (ngModelChange)="updateField('reasonForAssistance', $event)"></textarea>
+  </label>
+
+  <div class="grid three-col">
+    <label class="checkbox-label">
+      <input type="checkbox" [ngModel]="referralData().deemedIncapacitated"
+        (ngModelChange)="updateField('deemedIncapacitated', $event)">
+      Deemed Incapacitated
+    </label>
+
+    <label>
+      Date of Incapacity Determination
+      <input type="date" [disabled]="!referralData().deemedIncapacitated" [ngModel]="referralData().incapacityDate"
+        (ngModelChange)="updateField('incapacityDate', $event)">
+    </label>
+  </div>
+
+  <div class="medical-insurance">
+    <h3>Medical Insurance</h3>
+    <div class="grid three-col">
+      @for (insurance of referralData().medicalInsurance; track index; let index = $index) {
+      <label>
+        Option {{ index + 1 }}
+        <input type="text" [ngModel]="insurance" (ngModelChange)="updateMedicalInsurance(index, $event)">
+      </label>
+      }
+    </div>
+  </div>
+
+  <section class="next-of-kin">
+    <header>
+      <div>
+        <p class="eyebrow">Family & Next of Kin</p>
+        <h3>Primary Contacts</h3>
+      </div>
+      <button type="button" class="btn btn-secondary" (click)="addNextOfKin()">Add Contact</button>
+    </header>
+
+    <div class="contact-list">
+      @for (contact of nextOfKinContacts(); track trackByIndex($index); let i = $index) {
+      <article class="contact-card">
+        <div class="contact-header">
+          <h4>Contact {{ i + 1 }}</h4>
+          <button type="button" class="icon-button" (click)="removeNextOfKin(i)" [disabled]="nextOfKinContacts().length === 1">
+            ×
+          </button>
+        </div>
+        <div class="grid two-col">
+          <label>
+            Name
+            <input type="text" [ngModel]="contact.name" (ngModelChange)="updateNextOfKin(i, 'name', $event)">
+          </label>
+          <label>
+            Telephone
+            <input type="text" [ngModel]="contact.telephone" (ngModelChange)="updateNextOfKin(i, 'telephone', $event)">
+          </label>
+          <label>
+            Address
+            <input type="text" [ngModel]="contact.address" (ngModelChange)="updateNextOfKin(i, 'address', $event)">
+          </label>
+          <label>
+            Email
+            <input type="email" [ngModel]="contact.email" (ngModelChange)="updateNextOfKin(i, 'email', $event)">
+          </label>
+        </div>
+      </article>
+      }
+    </div>
+  </section>
+
+  <div class="grid two-col">
+    <label>
+      Issues to be Aware Of
+      <textarea rows="3" [ngModel]="referralData().issues" (ngModelChange)="updateField('issues', $event)"></textarea>
+    </label>
+
+    <label>
+      Comments
+      <textarea rows="3" [ngModel]="referralData().comments" (ngModelChange)="updateField('comments', $event)"></textarea>
+    </label>
+  </div>
+
+  <section class="case-dynamic">
+    @switch (referralData().caseType) {
+    @case ('Guardianship') {
+    <app-guardianship />
+    }
+    @case ('Medicaid') {
+    <app-medicaid />
+    }
+    @case ('Both') {
+    <div class="case-stack">
+      <app-guardianship />
+      <app-medicaid />
+    </div>
+    }
+    @default {
+    <div class="dynamic-card dual">
+      <h3>Select Referral Type</h3>
+      <p>Choose Guardianship, Medicaid, or Both to continue the intake process.</p>
+    </div>
+    }
+    }
+  </section>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-primary" (click)="submitReferral()">Submit Referral</button>
+  </div>
+</section>
+
+

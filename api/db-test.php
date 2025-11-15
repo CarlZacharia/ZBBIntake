@@ -7,9 +7,9 @@
 // Database configuration
 $host = 'localhost';
 $port = 3306;
-$db_name = 'zbpcahos_zbplans';
-$username = 'zbpcahos_zbplansuser';
-$password = 'ZB3ld3rl@w!';
+$db_name = 'zbpcahos_zbbintake';
+$username = 'zbpcahos_zbbintakeuser';
+$password = 'zbbShakur~94';
 
 echo "<h2>ZBB Intake Database Connection Test</h2>\n";
 
@@ -59,7 +59,7 @@ try {
             echo "- $dbname<br>\n";
 
             // Check if this is our target database
-            if (strpos($dbname, 'zbplans') !== false) {
+            if (strpos($dbname, 'zbbintake') !== false) {
                 echo "  <span style='color: green;'>👆 This looks like our database!</span><br>\n";
             }
         }
@@ -138,22 +138,22 @@ echo "<p><strong>Based on your error pattern, here's what to check:</strong></p>
 echo "<ol>\n";
 echo "<li><strong>In your hosting control panel (cPanel/Plesk):</strong><br>\n";
 echo "   - Go to MySQL Databases section<br>\n";
-echo "   - Verify database 'zbpcahos_zbplans' exists<br>\n";
-echo "   - Verify user 'zbpcahos_zbplansuser' exists<br>\n";
+echo "   - Verify database 'zbpcahos_zbbintake' exists<br>\n";
+echo "   - Verify user 'zbpcahos_zbbintakeuser' exists<br>\n";
 echo "   - <strong>IMPORTANT:</strong> Make sure the user is assigned to the database!<br>\n";
 echo "   - Look for 'Add User to Database' or similar option</li>\n";
 echo "<li><strong>Check database name variations:</strong><br>\n";
-echo "   - Try: zbpcahos_zbplans<br>\n";
-echo "   - Try: zbplans (without prefix)<br>\n";
+echo "   - Try: zbpcahos_zbbintake<br>\n";
+echo "   - Try: zbbintake (without prefix)<br>\n";
 echo "   - Check if there's a different prefix</li>\n";
 echo "<li><strong>Alternative database names to try:</strong><br>\n";
 
 // Test common database name patterns
 $db_patterns = [
-    'zbplans',
-    'zbpcahos_zbplans',
-    'zbpcahoscom_zbplans',
-    $username . '_zbplans'
+    'zbbintake',
+    'zbpcahos_zbbintake',
+    'zbpcahoscom_zbbintake',
+    $username . '_zbbintake'
 ];
 
 foreach ($db_patterns as $test_db) {
@@ -168,15 +168,15 @@ echo "<p>If you're using a hosting provider, you might need to:</p>\n";
 echo "<ul>\n";
 echo "<li>Use a different host (not 'localhost')</li>\n";
 echo "<li>Use your hosting provider's database credentials</li>\n";
-echo "<li>Use a database prefix (like youruser_zbplans)</li>\n";
+echo "<li>Use a database prefix (like youruser_zbbintake)</li>\n";
 echo "</ul>\n";
 
 echo "<p><strong>Common hosting patterns:</strong></p>\n";
 echo "<pre>\n";
 echo "// For shared hosting\n";
 echo "private \$host = 'localhost'; // or your DB host\n";
-echo "private \$db_name = 'youraccount_zbplans';\n";
-echo "private \$username = 'youraccount_zbplansuser';\n";
+echo "private \$db_name = 'youraccount_zbbintake';\n";
+echo "private \$username = 'youraccount_zbbintakeuser';\n";
 echo "private \$password = 'your_actual_password';\n";
 echo "</pre>\n";
 

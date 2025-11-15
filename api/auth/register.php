@@ -42,6 +42,8 @@ $lastName = Validator::sanitize($input['lastName']);
 $suffix = isset($input['suffix']) ? Validator::sanitize($input['suffix']) : null;
 $phone = isset($input['phone']) ? Validator::sanitize($input['phone']) : null;
 $preferredContact = isset($input['preferredContactMethod']) ? $input['preferredContactMethod'] : 'email';
+$userCategory = isset($input['userCategory']) ? strtolower(trim($input['userCategory'])) : 'enduser';
+$facilityName = isset($input['facilityName']) ? Validator::sanitize($input['facilityName']) : null;
 
 // Additional validation
 $errors = [];
@@ -85,6 +87,15 @@ if (!in_array($preferredContact, $allowed_contact_methods)) {
     $errors[] = 'Invalid preferred contact method';
 }
 
+$allowed_categories = ['admin', 'zbb', 'enduser', 'facility'];
+if (!in_array($userCategory, $allowed_categories)) {
+    $userCategory = 'enduser';
+}
+
+if ($userCategory === 'facility' && empty($facilityName)) {
+    $errors[] = 'Facility name is required for facility registrations';
+}
+
 if (!empty($errors)) {
     Response::error('Validation failed', 400, $errors);
 }
@@ -107,7 +118,9 @@ try {
         'last_name' => $lastName,
         'suffix' => $suffix,
         'phone' => $phone,
-        'preferred_contact_method' => $preferredContact
+        'preferred_contact_method' => $preferredContact,
+        'user_category' => $userCategory,
+        'facility_name' => $facilityName
     ];
 
     // Create the user

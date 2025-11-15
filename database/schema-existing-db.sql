@@ -35,6 +35,29 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_created (date_created)
 );
 
+CREATE TABLE IF NOT EXISTS portal_users (
+    portal_user_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
+    last_name VARCHAR(100) NOT NULL,
+    suffix VARCHAR(10),
+    phone VARCHAR(20),
+    preferred_contact_method ENUM('email', 'phone', 'text') DEFAULT 'email',
+    user_category ENUM('admin','zbb','enduser','facility') DEFAULT 'enduser',
+    facility_name VARCHAR(255),
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    email_verified BOOLEAN DEFAULT FALSE,
+    profile_completed BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_portal_email (email),
+    INDEX idx_portal_category (user_category)
+);
+
 -- Cases table (Main case records)
 CREATE TABLE IF NOT EXISTS cases (
     case_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -478,6 +501,80 @@ CREATE TABLE IF NOT EXISTS other_assets (
     INDEX idx_type (asset_type),
     INDEX idx_owner (owned_by),
     INDEX idx_heirloom (is_heirloom)
+);
+
+CREATE TABLE IF NOT EXISTS facility_referrals (
+    referral_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    portal_user_id INT NULL,
+    facility_name VARCHAR(255),
+    case_type ENUM('Guardianship','Medicaid','Both') NOT NULL,
+    full_legal_name VARCHAR(255) NOT NULL,
+    date_of_birth DATE,
+    age INT,
+    ssn_encrypted TEXT,
+    sex VARCHAR(20),
+    home_address_encrypted TEXT,
+    current_address_encrypted TEXT,
+    marital_status VARCHAR(50),
+    monthly_income VARCHAR(50),
+    physical_condition_encrypted TEXT,
+    mental_condition_encrypted TEXT,
+    existing_estate_plan_encrypted TEXT,
+    reason_for_assistance_encrypted TEXT,
+    deemed_incapacitated BOOLEAN DEFAULT FALSE,
+    incapacity_date DATE,
+    medical_insurance_json JSON,
+    issues_encrypted TEXT,
+    comments_encrypted TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (portal_user_id) REFERENCES portal_users(portal_user_id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS facility_contacts (
+    contact_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    referral_id BIGINT NOT NULL,
+    name_encrypted TEXT,
+    telephone_encrypted TEXT,
+    address_encrypted TEXT,
+    email_encrypted TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (referral_id) REFERENCES facility_referrals(referral_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS guardianship_details (
+    guardianship_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    referral_id BIGINT NOT NULL,
+    estate_plan_json JSON,
+    guardian_type ENUM('person','property','plenary'),
+    interested_family BOOLEAN,
+    interested_persons_encrypted TEXT,
+    rep_payee_status ENUM('yes','no','applied'),
+    aware_of_assets ENUM('yes','no','unsure'),
+    asset_notes_encrypted TEXT,
+    notes_encrypted TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (referral_id) REFERENCES facility_referrals(referral_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS medicaid_details (
+    medicaid_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    referral_id BIGINT NOT NULL,
+    application_type ENUM('new','renewal'),
+    filed_by_encrypted TEXT,
+    medicaid_case_number_encrypted TEXT,
+    medicaid_application_number_encrypted TEXT,
+    date_of_application DATE,
+    date_needed DATE,
+    private_pay_estimate DECIMAL(12,2),
+    current_status ENUM('notFiled','filed','pending','denied','unsure'),
+    last_noca_received DATE,
+    noca_contents_encrypted TEXT,
+    notes_encrypted TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (referral_id) REFERENCES facility_referrals(referral_id) ON DELETE CASCADE
 );
 
 -- =====================================================

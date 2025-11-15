@@ -11,33 +11,33 @@ $configs_to_test = [
         'host' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'db_name' => 'zbplans'
+        'db_name' => 'zbbintake'
     ],
     [
         'name' => 'Local Development (Custom)',
         'host' => 'localhost',
-        'username' => 'zbplansuser',
-        'password' => 'ZB3ld3rl@w!',
-        'db_name' => 'zbplans'
+        'username' => 'zbbintakeuser',
+        'password' => 'zbbShakur~94',
+        'db_name' => 'zbbintake'
     ],
     [
         'name' => 'Shared Hosting (cPanel style)',
         'host' => 'localhost',
-        'username' => 'zbplans_user', // Common pattern: accountname_username
-        'password' => 'ZB3ld3rl@w!',
-        'db_name' => 'zbplans_zbplans' // Common pattern: accountname_dbname
+        'username' => 'zbbintake_user', // Common pattern: accountname_username
+        'password' => 'zbbShakur~94',
+        'db_name' => 'zbbintake_zbbintake' // Common pattern: accountname_dbname
     ],
     [
         'name' => 'Remote Database',
-        'host' => 'zbplans.com', // Or your actual DB host
-        'username' => 'zbplansuser',
-        'password' => 'ZB3ld3rl@w!',
-        'db_name' => 'zbplans'
+        'host' => 'zbbintake.com', // Or your actual DB host
+        'username' => 'zbbintakeuser',
+        'password' => 'zbbShakur~94',
+        'db_name' => 'zbbintake'
     ]
 ];
 
 echo "<h2>Database Configuration Helper</h2>\n";
-echo "<p>Testing different database configurations for zbplans.com...</p>\n";
+echo "<p>Testing different database configurations for zbbintake.com...</p>\n";
 
 foreach ($configs_to_test as $index => $config) {
     echo "<h3>Config " . ($index + 1) . ": " . $config['name'] . "</h3>\n";
@@ -92,12 +92,12 @@ echo "<li><strong>Common locations:</strong> cPanel â†’ MySQL Databases, Plesk â
 echo "<li><strong>Contact your hosting provider</strong> if you can't find database credentials</li>\n";
 echo "</ol>\n";
 
-echo "<h3>For zbplans.com specifically:</h3>\n";
-echo "<p>Since this is running on zbplans.com, you likely need to:</p>\n";
+echo "<h3>For zbbintake.com specifically:</h3>\n";
+echo "<p>Since this is running on zbbintake.com, you likely need to:</p>\n";
 echo "<ul>\n";
 echo "<li>Log into your hosting control panel (cPanel, Plesk, etc.)</li>\n";
 echo "<li>Find the MySQL/Database section</li>\n";
-echo "<li>Create a database named 'zbplans' (or similar)</li>\n";
+echo "<li>Create a database named 'zbbintake' (or similar)</li>\n";
 echo "<li>Create a database user with full permissions to that database</li>\n";
 echo "<li>Import the schema.sql file to create the tables</li>\n";
 echo "</ul>\n";
