@@ -22,7 +22,7 @@ class User {
         $query = "INSERT INTO " . $this->table_name . "
                   (email, password_hash, first_name, middle_name, last_name, suffix, phone, preferred_contact_method, user_category, provider_name, provider_type)
                   VALUES
-                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method, :user_category, :provider_name, provider_type)";
+                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method, :user_category, :provider_name, :provider_type)";
 
         $stmt = $this->conn->prepare($query);
 

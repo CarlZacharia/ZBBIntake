@@ -143,7 +143,10 @@ export class AuthService {
       lastName: registerData.last_name,
       suffix: registerData.suffix,
       phone: registerData.phone,
-      preferredContactMethod: registerData.preferred_contact_method
+      preferredContactMethod: registerData.preferred_contact_method,
+      userCategory: registerData.user_category,
+      providerName: registerData.provider_name,
+      providerType: registerData.provider_type
     };
 
     return this.http.post<any>(`${this.API_URL}/register.php`, phpData).pipe(

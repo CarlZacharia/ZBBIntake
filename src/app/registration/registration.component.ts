@@ -82,7 +82,7 @@ export class RegistrationComponent {
     this.isLoading.set(true);
     this.error.set(null);
     this.fieldErrors.set({});
-
+console.log('Submitting registration:', this.registerData());
     this.authService.register(this.registerData()).subscribe({
       next: (response) => {
         if (response.success) {

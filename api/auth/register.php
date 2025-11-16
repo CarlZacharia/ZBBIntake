@@ -87,13 +87,13 @@ if (!in_array($preferredContact, $allowed_contact_methods)) {
     $errors[] = 'Invalid preferred contact method';
 }
 
-$allowed_categories = ['admin', 'zbb', 'enduser', 'facility'];
+$allowed_categories = ['admin', 'zbb', 'enduser', 'provider'];
 if (!in_array($userCategory, $allowed_categories)) {
     $userCategory = 'enduser';
 }
 
-if ($userCategory === 'facility' && empty($providerName)) {
-    $errors[] = 'Facility name is required for facility registrations';
+if ($userCategory === 'provider' && empty($providerName)) {
+    $errors[] = 'Provider name is required for provider registrations';
 }
 
 if (!empty($errors)) {
@@ -121,11 +121,27 @@ try {
         'preferred_contact_method' => $preferredContact,
         'user_category' => $userCategory,
         'provider_name' => $providerName,
-        'provider_type' => isset($input['providerType']) ? Validator::sanitize($input['providerType']) : null
+        'provider_type' => $providerType
     ];
 
     // Create the user
     $user_id = $user->create($userData);
+
+    // If provider, insert into provider_contacts
+    if ($user_id && $userCategory === 'provider') {
+        require_once '../models/provider_contacts.php';
+        require_once '../helpers/crypto.php';
+        $providerContacts = new ProviderContacts();
+        $contactData = [
+            'name_encrypted' => Crypto::encrypt(trim($providerName)),
+            'telephone_encrypted' => Crypto::encrypt($phone),
+            'address_encrypted' => Crypto::encrypt($input['providerAddress'] ?? ''),
+            'email_encrypted' => Crypto::encrypt($email),
+            'csz_encrypted' => Crypto::encrypt($input['providerCSZ'] ?? ''),
+            'county_encrypted' => Crypto::encrypt($input['providerCounty'] ?? '')
+        ];
+        $providerContacts->create($contactData);
+    }
 
     if ($user_id) {
         // Get the created user data (without password)

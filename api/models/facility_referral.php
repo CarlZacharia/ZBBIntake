@@ -41,7 +41,7 @@ class FacilityReferral {
         if ($referralId) {
             $existingStmt = $this->conn->prepare("
                 SELECT portal_user_id, submission_status, submitted_at
-                FROM facility_referrals
+                FROM provider_referrals
                 WHERE referral_id = :referral_id
             ");
             $existingStmt->execute([':referral_id' => $referralId]);
@@ -63,7 +63,7 @@ class FacilityReferral {
             }
 
             $updateStmt = $this->conn->prepare("
-                UPDATE facility_referrals SET
+                UPDATE provider_referrals SET
                     provider_name = :provider_name, provider_type,
                     case_type = :case_type,
                     full_legal_name = :full_legal_name,
@@ -112,7 +112,7 @@ class FacilityReferral {
             $this->deleteChildRecords($referralId);
         } else {
             $insertStmt = $this->conn->prepare("
-                INSERT INTO facility_referrals (
+                INSERT INTO provider_referrals (
                     portal_user_id, provider_name, provider_type, case_type, full_legal_name, date_of_birth, age,
                     ssn_encrypted, sex, home_address_encrypted, current_address_encrypted,
                     marital_status, monthly_income, physical_condition_encrypted,
@@ -168,7 +168,7 @@ class FacilityReferral {
     public function getReferralsByUser(int $portalUserId): array {
         $stmt = $this->conn->prepare("
             SELECT *
-            FROM facility_referrals
+            FROM provider_referrals
             WHERE portal_user_id = :portal_user_id
             ORDER BY submission_status ASC, updated_at DESC
         ");
@@ -263,7 +263,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
 }
 
     private function deleteChildRecords(int $referralId): void {
-        $this->conn->prepare("DELETE FROM facility_contacts WHERE referral_id = :referral_id")
+        $this->conn->prepare("DELETE FROM provider_contacts WHERE referral_id = :referral_id")
             ->execute([':referral_id' => $referralId]);
         $this->conn->prepare("DELETE FROM guardianship_details WHERE referral_id = :referral_id")
             ->execute([':referral_id' => $referralId]);
@@ -273,7 +273,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
 
     private function insertContacts(int $referralId, array $contacts): void {
         $stmt = $this->conn->prepare("
-            INSERT INTO facility_contacts (
+            INSERT INTO provider_contacts (
                 referral_id, name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
             ) VALUES (
                 :referral_id, :name_encrypted, :telephone_encrypted, :address_encrypted, :csz_encrypted, :county_encrypted, :email_encrypted
@@ -351,7 +351,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
     private function fetchContacts(int $referralId): array {
         $stmt = $this->conn->prepare("
             SELECT name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
-            FROM facility_contacts
+            FROM provider_contacts
             WHERE referral_id = :referral_id
             ORDER BY contact_id ASC
         ");

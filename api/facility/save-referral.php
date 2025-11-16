@@ -8,7 +8,7 @@ require_once '../cors.php';
 require_once '../helpers/response.php';
 require_once '../helpers/validator.php';
 require_once '../helpers/jwt.php';
-require_once '../models/facility_referral.php';
+require_once '../models/provider_referral.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     Response::error('Method not allowed', 405);
