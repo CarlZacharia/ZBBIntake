@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../services/auth.service';
 import { ReferralsharedComponent } from './referralshared/referralshared.component';
+// import { FacilityProfileComponent } from './facilityprofile.component';
 import {
   CaseType,
   ReferralPrefillData,
@@ -27,7 +28,8 @@ interface ReferralRecord {
   submissionStatus: SubmissionStatus;
   createdAt?: string;
   submittedAt?: string | null;
-  facilityName?: string | null;
+  providerName?: string | null;
+  providerType?: string | null;
   guardianshipProgress?: number;
   medicaidProgress?: number;
   shared: {
@@ -85,7 +87,8 @@ interface ReferralRecord {
 export class FacilityhomeComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   readonly facilityDetails = signal({
-    name: 'Balanced Healthcare',
+    provider_name: 'Balanced Healthcare',
+    provider_type: 'Skilled Nursing Facility',
     address: '4250 66th St N, St Petersburg, FL 33709 #110',
     contact: 'Lisa Haney',
     contactEmail: 'LHaney@bhochg.com',
@@ -541,13 +544,14 @@ export class FacilityhomeComponent implements OnInit {
       };
     }
 
-    const facilityName = referral.facilityName ?? facility.name;
+    const providerName = referral.providerName ?? facility.provider_name;
 
     return {
       referralId: referral.id,
       submissionStatus: referral.submissionStatus,
       createdAt: referral.createdAt,
-      facilityName,
+      providerName: referral.providerName ?? facility.provider_name,
+      providerType: referral.providerType ?? facility.provider_type ?? null,
       caseType: referral.type ?? null,
       fullLegalName: referral.resident,
       dateOfBirth: referral.shared.dob ?? '',

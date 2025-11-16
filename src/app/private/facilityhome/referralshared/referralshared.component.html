@@ -18,11 +18,11 @@
   <header>
     <div class="header-main">
       <ng-container *ngIf="showHeroBar; else residentHeading">
-        <h1>Facility Name: {{ referralData().facilityName }}</h1>
+        <h1>Facility Name: {{ referralData().providerName }}</h1>
       </ng-container>
       <ng-template #residentHeading>
         <h1>{{ referralData().fullLegalName || 'Referral Details' }}</h1>
-        <p class="eyebrow secondary">Facility: {{ referralData().facilityName || '—' }}</p>
+        <p class="eyebrow secondary">Facility: {{ referralData().providerName || '—' }}</p>
       </ng-template>
       <div class="form-status">
         <span class="status-pill" [attr.data-status]="lastSavedStatus()">

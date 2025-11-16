@@ -58,7 +58,8 @@ export interface ReferralPrefillData {
   referralId?: number | string;
   submissionStatus?: SubmissionStatus;
   createdAt?: string;
-  facilityName?: string;
+  providerName?: string;
+  providerType?: string | null;
   caseType: CaseType | null;
   fullLegalName: string;
   dateOfBirth?: string;

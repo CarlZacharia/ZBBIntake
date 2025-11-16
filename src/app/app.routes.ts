@@ -6,6 +6,7 @@ import { IntakehubComponent } from './private/intakehub/intakehub.component';
 import { MainintakeComponent } from './private/mainintake/mainintake.component';
 import { MedicaidintakeComponent } from './private/elderlaw/medicaidintake/medicaidintake.component';
 import { FacilityhomeComponent } from './private/facilityhome/facilityhome.component';
+import { FacilityProfileComponent } from './private/facilityhome/facilityprofile.component';
 import { ReferralsharedComponent } from './private/facilityhome/referralshared/referralshared.component';
 import { ProfileDashboardComponent } from './profile/pages/profile-dashboard.component';
 import { authGuard, guestGuard } from './guards/auth.guard';
@@ -48,6 +49,11 @@ export const routes: Routes = [
   {
     path: 'facilityhome',
     component: FacilityhomeComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'facilityprofile',
+    component: FacilityProfileComponent,
     canActivate: [authGuard]
   },
   {

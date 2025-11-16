@@ -17,7 +17,39 @@
     <form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)" class="registration-form">
       <div class="form-row">
         <div class="form-group">
-          <label for="firstName">First Name *</label>
+          <label>Registration Type *</label>
+          <div class="badge-radio-group">
+            <label class="badge-radio enduser" [class.selected]="registrationType === 'enduser'">
+              <input type="radio" name="registrationType" value="enduser" [(ngModel)]="registrationType" />
+              End User
+            </label>
+            <label class="badge-radio provider" [class.selected]="registrationType === 'provider'">
+              <input type="radio" name="registrationType" value="provider" [(ngModel)]="registrationType" />
+              Health Care Provider
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row provider-row" *ngIf="registrationType === 'provider'">
+        <div class="form-group provider-name-group">
+          <label for="providerName">Provider Name *</label>
+          <input type="text" id="providerName" name="providerName" [(ngModel)]="providerName" required>
+        </div>
+        <div class="form-group provider-type-group">
+          <label for="providerType">Provider Type *</label>
+          <select id="providerType" name="providerType" [(ngModel)]="providerType" required>
+            <option value="Nursing Home">Nursing Home</option>
+            <option value="Assisted Living">Assisted Living</option>
+            <option value="Hospital">Hospital</option>
+            <option value="PACE Program">PACE Program</option>
+            <option value="Waiver Program">Waiver Program</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">{{ registrationType === 'provider' ? 'Primary Contact First Name *' : 'First Name *' }}</label>
           <input type="text" id="firstName" name="firstName" placeholder="First name"
             [value]="registerData().first_name" (input)="onInputChange('first_name', $event)"
             [class.error]="hasFieldError('first_name')" required>
@@ -29,7 +61,7 @@
         </div>
 
         <div class="form-group">
-          <label for="middleName">Middle Name</label>
+          <label for="middleName">{{ registrationType === 'provider' ? 'Primary Contact Middle Name' : 'Middle Name' }}</label>
           <input type="text" id="middleName" name="middleName" placeholder="Middle name"
             [value]="registerData().middle_name || ''" (input)="onInputChange('middle_name', $event)">
         </div>
@@ -37,7 +69,7 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="lastName">Last Name *</label>
+          <label for="lastName">{{ registrationType === 'provider' ? 'Primary Contact Last Name *' : 'Last Name *' }}</label>
           <input type="text" id="lastName" name="lastName" placeholder="Last name" [value]="registerData().last_name"
             (input)="onInputChange('last_name', $event)" [class.error]="hasFieldError('last_name')" required>
           @if (hasFieldError('last_name')) {

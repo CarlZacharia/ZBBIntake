@@ -19,7 +19,8 @@ interface ApiResponse<T> {
 export interface FacilityReferralDto {
   referralId: number;
   submissionStatus: SubmissionStatus;
-  facilityName: string | null;
+  providerName: string | null;
+  providerType: string | null;
   caseType: CaseType | null;
   fullLegalName: string;
   dateOfBirth?: string | null;
@@ -48,7 +49,8 @@ export interface FacilityReferralDto {
 
 export interface ReferralSavePayload {
   referralId?: number | string;
-  facilityName?: string;
+  providerName?: string;
+  providerType?: string;
   caseType: CaseType | null;
   fullLegalName: string;
   dateOfBirth?: string;

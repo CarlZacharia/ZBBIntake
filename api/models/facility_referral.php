@@ -64,7 +64,7 @@ class FacilityReferral {
 
             $updateStmt = $this->conn->prepare("
                 UPDATE facility_referrals SET
-                    facility_name = :facility_name,
+                    provider_name = :provider_name, provider_type,
                     case_type = :case_type,
                     full_legal_name = :full_legal_name,
                     date_of_birth = :date_of_birth,
@@ -113,7 +113,7 @@ class FacilityReferral {
         } else {
             $insertStmt = $this->conn->prepare("
                 INSERT INTO facility_referrals (
-                    portal_user_id, facility_name, case_type, full_legal_name, date_of_birth, age,
+                    portal_user_id, provider_name, provider_type, case_type, full_legal_name, date_of_birth, age,
                     ssn_encrypted, sex, home_address_encrypted, current_address_encrypted,
                     marital_status, monthly_income, physical_condition_encrypted,
                     mental_condition_encrypted, existing_estate_plan_encrypted,
@@ -124,7 +124,7 @@ class FacilityReferral {
                     medical_insurance_json, issues_encrypted, comments_encrypted,
                     submission_status, submitted_at
                 ) VALUES (
-                    :portal_user_id, :facility_name, :case_type, :full_legal_name, :date_of_birth, :age,
+                    :portal_user_id, :provider_name, provider_type, :case_type, :full_legal_name, :date_of_birth, :age,
                     :ssn_encrypted, :sex, :home_address_encrypted, :current_address_encrypted,
                     :marital_status, :monthly_income, :physical_condition_encrypted,
                     :mental_condition_encrypted, :existing_estate_plan_encrypted,
@@ -182,7 +182,8 @@ class FacilityReferral {
             $results[] = [
                 'referralId' => $referralId,
                 'submissionStatus' => $row['submission_status'] ?? 'draft',
-                'facilityName' => $row['facility_name'],
+                'providerName' => $row['provider_name'],
+                'providerType' => $row['provider_type'],
                 'caseType' => $row['case_type'],
                 'fullLegalName' => $row['full_legal_name'],
                 'dateOfBirth' => $row['date_of_birth'],
@@ -223,7 +224,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
 
     $payload = [
         ':portal_user_id' => $referralData['portal_user_id'] ?? null,
-        ':facility_name' => $referralData['facility_name'] ?? null,
+        ':provider_name' => $referralData['provider_name'] ?? null,
         ':case_type' => $referralData['case_type'] ?? null,
         ':full_legal_name' => $referralData['full_legal_name'],
         ':date_of_birth' => $referralData['date_of_birth'] ?? null,
@@ -273,9 +274,9 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
     private function insertContacts(int $referralId, array $contacts): void {
         $stmt = $this->conn->prepare("
             INSERT INTO facility_contacts (
-                referral_id, name_encrypted, telephone_encrypted, address_encrypted, email_encrypted
+                referral_id, name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
             ) VALUES (
-                :referral_id, :name_encrypted, :telephone_encrypted, :address_encrypted, :email_encrypted
+                :referral_id, :name_encrypted, :telephone_encrypted, :address_encrypted, :csz_encrypted, :county_encrypted, :email_encrypted
             )
         ");
 
@@ -349,7 +350,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
 
     private function fetchContacts(int $referralId): array {
         $stmt = $this->conn->prepare("
-            SELECT name_encrypted, telephone_encrypted, address_encrypted, email_encrypted
+            SELECT name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
             FROM facility_contacts
             WHERE referral_id = :referral_id
             ORDER BY contact_id ASC

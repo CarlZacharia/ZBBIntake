@@ -1,0 +1,38 @@
+
+<div class="facility-profile-container">
+  <header class="profile-header">
+    <a class="btn btn-outline" role="button" (click)="goBack()">&larr; Back</a>
+    <h1 class="facility-title">{{ providerName || 'Facility Name' }}</h1>
+  </header>
+  <form>
+    <div class="form-group">
+      <label for="providerName">Facility Name</label>
+      <input id="providerName" name="providerName" type="text" [(ngModel)]="providerName" />
+    </div>
+    <div class="form-group">
+      <label for="facilityAddress">Address</label>
+      <input id="facilityAddress" name="facilityAddress" type="text" [(ngModel)]="facilityAddress" />
+    </div>
+    <div class="form-group">
+      <label for="facilityCsz">City, State, Zip</label>
+      <input id="facilityCsz" name="facilityCsz" type="text" [(ngModel)]="facilityCsz" />
+    </div>
+    <div class="form-group">
+      <label for="facilityCounty">County</label>
+      <input id="facilityCounty" name="facilityCounty" type="text" [(ngModel)]="facilityCounty" />
+    </div>
+    <div class="form-group">
+      <label for="facilityContact">Contact Person</label>
+      <input id="facilityContact" name="facilityContact" type="text" [(ngModel)]="facilityContact" />
+    </div>
+    <div class="form-group">
+      <label for="facilityEmail">Contact Email</label>
+      <input id="facilityEmail" name="facilityEmail" type="email" [(ngModel)]="facilityEmail" />
+    </div>
+    <div class="form-group">
+      <label for="facilityPhone">Contact Phone</label>
+      <input id="facilityPhone" name="facilityPhone" type="tel" [(ngModel)]="facilityPhone" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</div>

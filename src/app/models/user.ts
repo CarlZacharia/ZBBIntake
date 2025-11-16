@@ -41,6 +41,9 @@ export interface IRegisterData {
   preferred_contact_method?: 'email' | 'phone' | 'text';
   terms_accepted: boolean;
   privacy_accepted: boolean;
+  user_category?: string;
+  provider_name?: string;
+  provider_type?: string;
 }
 
 export interface IPasswordReset {

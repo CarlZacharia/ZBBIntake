@@ -43,8 +43,8 @@ $suffix = isset($input['suffix']) ? Validator::sanitize($input['suffix']) : null
 $phone = isset($input['phone']) ? Validator::sanitize($input['phone']) : null;
 $preferredContact = isset($input['preferredContactMethod']) ? $input['preferredContactMethod'] : 'email';
 $userCategory = isset($input['userCategory']) ? strtolower(trim($input['userCategory'])) : 'enduser';
-$facilityName = isset($input['facilityName']) ? Validator::sanitize($input['facilityName']) : null;
-
+$providerName = isset($input['providerName']) ? Validator::sanitize($input['providerName']) : null;
+$providerType = isset($input['providerType']) ? Validator::sanitize($input['providerType']) : null;
 // Additional validation
 $errors = [];
 
@@ -92,7 +92,7 @@ if (!in_array($userCategory, $allowed_categories)) {
     $userCategory = 'enduser';
 }
 
-if ($userCategory === 'facility' && empty($facilityName)) {
+if ($userCategory === 'facility' && empty($providerName)) {
     $errors[] = 'Facility name is required for facility registrations';
 }
 
@@ -120,7 +120,8 @@ try {
         'phone' => $phone,
         'preferred_contact_method' => $preferredContact,
         'user_category' => $userCategory,
-        'facility_name' => $facilityName
+        'provider_name' => $providerName,
+        'provider_type' => isset($input['providerType']) ? Validator::sanitize($input['providerType']) : null
     ];
 
     // Create the user

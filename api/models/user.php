@@ -20,9 +20,9 @@ class User {
      */
     public function create($userData) {
         $query = "INSERT INTO " . $this->table_name . "
-                  (email, password_hash, first_name, middle_name, last_name, suffix, phone, preferred_contact_method, user_category, facility_name)
+                  (email, password_hash, first_name, middle_name, last_name, suffix, phone, preferred_contact_method, user_category, provider_name, provider_type)
                   VALUES
-                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method, :user_category, :facility_name)";
+                  (:email, :password_hash, :first_name, :middle_name, :last_name, :suffix, :phone, :preferred_contact_method, :user_category, :provider_name, provider_type)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -36,8 +36,8 @@ class User {
         $stmt->bindParam(':phone', $userData['phone']);
         $stmt->bindParam(':preferred_contact_method', $userData['preferred_contact_method']);
         $stmt->bindParam(':user_category', $userData['user_category']);
-        $stmt->bindParam(':facility_name', $userData['facility_name']);
-
+        $stmt->bindParam(':provider_name', $userData['provider_name']);
+        $stmt->bindParam(':provider_type', $userData['provider_type']);
         if ($stmt->execute()) {
             return $this->conn->lastInsertId();
         }
@@ -50,7 +50,7 @@ class User {
      */
     public function findByEmail($email) {
         $query = "SELECT portal_user_id, email, password_hash, first_name, middle_name, last_name, suffix, phone,
-                         preferred_contact_method, user_category, facility_name, date_created, last_login, is_active, email_verified, profile_completed
+                         preferred_contact_method, user_category, provider_name, provider_type, date_created, last_login, is_active, email_verified, profile_completed
                   FROM " . $this->table_name . "
                   WHERE email = :email AND is_active = 1";
 
@@ -66,7 +66,7 @@ class User {
      */
     public function findById($user_id) {
         $query = "SELECT portal_user_id, email, first_name, middle_name, last_name, suffix, phone,
-                         preferred_contact_method, user_category, facility_name, date_created, last_login, is_active, email_verified, profile_completed
+                         preferred_contact_method, user_category, provider_name, provider_type, date_created, last_login, is_active, email_verified, profile_completed
                   FROM " . $this->table_name . "
                   WHERE portal_user_id = :user_id AND is_active = 1";
 
@@ -128,7 +128,8 @@ class User {
                       suffix = :suffix,
                       phone = :phone,
                       preferred_contact_method = :preferred_contact_method,
-                      facility_name = :facility_name,
+                      provider_name = :provider_name,
+                      provider_type = :provider_type,
                       user_category = :user_category,
                       updated_at = CURRENT_TIMESTAMP
                   WHERE portal_user_id = :user_id";
@@ -141,7 +142,8 @@ class User {
         $stmt->bindParam(':suffix', $userData['suffix']);
         $stmt->bindParam(':phone', $userData['phone']);
         $stmt->bindParam(':preferred_contact_method', $userData['preferred_contact_method']);
-        $stmt->bindParam(':facility_name', $userData['facility_name']);
+        $stmt->bindParam(':provider_name', $userData['provider_name']);
+        $stmt->bindParam(':provider_type', $userData['provider_type']);
         $stmt->bindParam(':user_category', $userData['user_category']);
 
         return $stmt->execute();

@@ -42,7 +42,8 @@ export class ReferralsharedComponent implements OnChanges {
   private currentReferralId: number | string | null = null;
 
   readonly referralData = signal({
-    facilityName: '',
+    providerName: '',
+    providerType: '' as string | null,
     caseType: null as CaseType | null,
     fullLegalName: '',
     dateOfBirth: '',
@@ -154,7 +155,8 @@ export class ReferralsharedComponent implements OnChanges {
 
     this.referralData.update(current => ({
       ...current,
-      facilityName: prefill.facilityName ?? '',
+      providerName: prefill.providerName ?? '',
+      providerType: prefill.providerType ?? null,
       caseType: prefill.caseType ?? null,
       fullLegalName: prefill.fullLegalName ?? '',
       dateOfBirth: prefill.dateOfBirth ?? '',
@@ -368,7 +370,8 @@ export class ReferralsharedComponent implements OnChanges {
 
     return {
       referralId: this.currentReferralId ?? undefined,
-      facilityName: shared.facilityName,
+      providerName: shared.providerName,
+      providerType: shared.providerType || undefined,
       caseType: shared.caseType,
       fullLegalName: shared.fullLegalName,
       dateOfBirth: shared.dateOfBirth || undefined,
