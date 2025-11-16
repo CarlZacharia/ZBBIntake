@@ -160,6 +160,7 @@ export class ReferralsharedComponent implements OnChanges {
   }
 
   saveDraft(): void {
+    console.log('Current Referral ID:', this.currentReferralId);
     this.persistReferral('draft');
   }
 

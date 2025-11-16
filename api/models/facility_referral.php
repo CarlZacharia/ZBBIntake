@@ -23,143 +23,147 @@ class FacilityReferral {
         return $value ? Crypto::decrypt($value) : null;
     }
 
-    public function saveReferral(
-        array $referralData,
-        array $contacts = [],
-        ?array $guardianship = null,
-        ?array $medicaid = null,
-        string $submissionStatus = 'submitted'
-    ) {
-        $submissionStatus = $submissionStatus === 'draft' ? 'draft' : 'submitted';
+  public function saveReferral(
+    array $referralData,
+    array $contacts = [],
+    ?array $guardianship = null,
+    ?array $medicaid = null,
+    string $submissionStatus = 'submitted'
+) {
+    $submissionStatus = $submissionStatus === 'draft' ? 'draft' : 'submitted';
 
-        try {
-            $this->conn->beginTransaction();
+    try {
+        $this->conn->beginTransaction();
 
-            $referralId = $referralData['referral_id'] ?? null;
-            $submittedAt = $submissionStatus === 'submitted' ? date('Y-m-d H:i:s') : null;
+        $referralId = $referralData['referral_id'] ?? null;
+        $submittedAt = $submissionStatus === 'submitted' ? date('Y-m-d H:i:s') : null;
 
-            if ($referralId) {
-                $existingStmt = $this->conn->prepare("
-                    SELECT portal_user_id, submission_status, submitted_at
-                    FROM facility_referrals
-                    WHERE referral_id = :referral_id
-                ");
-                $existingStmt->execute([':referral_id' => $referralId]);
-                $existing = $existingStmt->fetch(PDO::FETCH_ASSOC);
+        if ($referralId) {
+            $existingStmt = $this->conn->prepare("
+                SELECT portal_user_id, submission_status, submitted_at
+                FROM facility_referrals
+                WHERE referral_id = :referral_id
+            ");
+            $existingStmt->execute([':referral_id' => $referralId]);
+            $existing = $existingStmt->fetch(PDO::FETCH_ASSOC);
 
-                if (!$existing) {
-                    throw new Exception('Referral not found');
-                }
+            if (!$existing) {
+                throw new Exception('Referral not found');
+            }
 
-                // Prevent submitted referrals from reverting to draft
-                if ($existing['submission_status'] === 'submitted') {
-                    $submissionStatus = 'submitted';
-                }
+            // Prevent submitted referrals from reverting to draft
+            if ($existing['submission_status'] === 'submitted') {
+                $submissionStatus = 'submitted';
+            }
 
-                if ($submissionStatus === 'submitted') {
-                    $submittedAt = $existing['submitted_at'] ?? $submittedAt;
-                } else {
-                    $submittedAt = null;
-                }
-
-                $updateStmt = $this->conn->prepare("
-                    UPDATE facility_referrals SET
-                        facility_name = :facility_name,
-                        case_type = :case_type,
-                        full_legal_name = :full_legal_name,
-                        date_of_birth = :date_of_birth,
-                        age = :age,
-                        ssn_encrypted = :ssn_encrypted,
-                        sex = :sex,
-                        home_address_encrypted = :home_address_encrypted,
-                        current_address_encrypted = :current_address_encrypted,
-                        marital_status = :marital_status,
-                        monthly_income = :monthly_income,
-                        physical_condition_encrypted = :physical_condition_encrypted,
-                        mental_condition_encrypted = :mental_condition_encrypted,
-                        existing_estate_plan_encrypted = :existing_estate_plan_encrypted,
-                        reason_for_assistance_encrypted = :reason_for_assistance_encrypted,
-                        deemed_incapacitated = :deemed_incapacitated,
-                        incapacity_date = :incapacity_date,
-                        spouse_name_encrypted = :spouse_name_encrypted,
-                        spouse_address_encrypted = :spouse_address_encrypted,
-                        spouse_phone_encrypted = :spouse_phone_encrypted,
-                        spouse_email_encrypted = :spouse_email_encrypted,
-                        spouse_dob = :spouse_dob,
-                        spouse_age = :spouse_age,
-                        spouse_sex = :spouse_sex,
-                        spouse_living_conditions = :spouse_living_conditions,
-                        spouse_health_encrypted = :spouse_health_encrypted,
-                        medical_insurance_json = :medical_insurance_json,
-                        issues_encrypted = :issues_encrypted,
-                        comments_encrypted = :comments_encrypted,
-                        submission_status = :submission_status,
-                        submitted_at = :submitted_at,
-                        updated_at = CURRENT_TIMESTAMP
-                    WHERE referral_id = :referral_id
-                ");
-
-                $updateStmt->execute($this->buildReferralParams($referralData, [
-                    ':submission_status' => $submissionStatus,
-                    ':submitted_at' => $submittedAt,
-                    ':referral_id' => $referralId
-                ]));
-
-                $this->deleteChildRecords($referralId);
+            if ($submissionStatus === 'submitted') {
+                $submittedAt = $existing['submitted_at'] ?? $submittedAt;
             } else {
-                $insertStmt = $this->conn->prepare("
-                    INSERT INTO facility_referrals (
-                        portal_user_id, facility_name, case_type, full_legal_name, date_of_birth, age,
-                        ssn_encrypted, sex, home_address_encrypted, current_address_encrypted,
-                        marital_status, monthly_income, physical_condition_encrypted,
-                        mental_condition_encrypted, existing_estate_plan_encrypted,
-                        reason_for_assistance_encrypted, deemed_incapacitated, incapacity_date,
-                        spouse_name_encrypted, spouse_address_encrypted, spouse_phone_encrypted,
-                        spouse_email_encrypted, spouse_dob, spouse_age, spouse_sex,
-                        spouse_living_conditions, spouse_health_encrypted,
-                        medical_insurance_json, issues_encrypted, comments_encrypted,
-                        submission_status, submitted_at
-                    ) VALUES (
-                        :portal_user_id, :facility_name, :case_type, :full_legal_name, :date_of_birth, :age,
-                        :ssn_encrypted, :sex, :home_address_encrypted, :current_address_encrypted,
-                        :marital_status, :monthly_income, :physical_condition_encrypted,
-                        :mental_condition_encrypted, :existing_estate_plan_encrypted,
-                        :reason_for_assistance_encrypted, :deemed_incapacitated, :incapacity_date,
-                        :spouse_name_encrypted, :spouse_address_encrypted, :spouse_phone_encrypted,
-                        :spouse_email_encrypted, :spouse_dob, :spouse_age, :spouse_sex,
-                        :spouse_living_conditions, :spouse_health_encrypted,
-                        :medical_insurance_json, :issues_encrypted, :comments_encrypted,
-                        :submission_status, :submitted_at
-                    )
-                ");
-
-                $insertStmt->execute($this->buildReferralParams($referralData, [
-                    ':submission_status' => $submissionStatus,
-                    ':submitted_at' => $submittedAt
-                ]));
-
-                $referralId = (int)$this->conn->lastInsertId();
+                $submittedAt = null;
             }
 
-            if (!empty($contacts)) {
-                $this->insertContacts($referralId, $contacts);
-            }
+            $updateStmt = $this->conn->prepare("
+                UPDATE facility_referrals SET
+                    facility_name = :facility_name,
+                    case_type = :case_type,
+                    full_legal_name = :full_legal_name,
+                    date_of_birth = :date_of_birth,
+                    age = :age,
+                    ssn_encrypted = :ssn_encrypted,
+                    sex = :sex,
+                    home_address_encrypted = :home_address_encrypted,
+                    current_address_encrypted = :current_address_encrypted,
+                    marital_status = :marital_status,
+                    monthly_income = :monthly_income,
+                    physical_condition_encrypted = :physical_condition_encrypted,
+                    mental_condition_encrypted = :mental_condition_encrypted,
+                    existing_estate_plan_encrypted = :existing_estate_plan_encrypted,
+                    reason_for_assistance_encrypted = :reason_for_assistance_encrypted,
+                    deemed_incapacitated = :deemed_incapacitated,
+                    incapacity_date = :incapacity_date,
+                    spouse_name_encrypted = :spouse_name_encrypted,
+                    spouse_address_encrypted = :spouse_address_encrypted,
+                    spouse_phone_encrypted = :spouse_phone_encrypted,
+                    spouse_email_encrypted = :spouse_email_encrypted,
+                    spouse_dob = :spouse_dob,
+                    spouse_age = :spouse_age,
+                    spouse_sex = :spouse_sex,
+                    spouse_living_conditions = :spouse_living_conditions,
+                    spouse_health_encrypted = :spouse_health_encrypted,
+                    medical_insurance_json = :medical_insurance_json,
+                    issues_encrypted = :issues_encrypted,
+                    comments_encrypted = :comments_encrypted,
+                    submission_status = :submission_status,
+                    submitted_at = :submitted_at,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE referral_id = :referral_id
+            ");
 
-            if ($guardianship) {
-                $this->insertGuardianship($referralId, $guardianship);
-            }
+            // Build params and remove portal_user_id since UPDATE doesn't use it
+            $params = $this->buildReferralParams($referralData, [
+                ':submission_status' => $submissionStatus,
+                ':submitted_at' => $submittedAt,
+                ':referral_id' => $referralId
+            ]);
+            unset($params[':portal_user_id']);
 
-            if ($medicaid) {
-                $this->insertMedicaid($referralId, $medicaid);
-            }
+            $updateStmt->execute($params);
 
-            $this->conn->commit();
-            return $referralId;
-        } catch (Exception $e) {
-            $this->conn->rollBack();
-            throw $e;
+            $this->deleteChildRecords($referralId);
+        } else {
+            $insertStmt = $this->conn->prepare("
+                INSERT INTO facility_referrals (
+                    portal_user_id, facility_name, case_type, full_legal_name, date_of_birth, age,
+                    ssn_encrypted, sex, home_address_encrypted, current_address_encrypted,
+                    marital_status, monthly_income, physical_condition_encrypted,
+                    mental_condition_encrypted, existing_estate_plan_encrypted,
+                    reason_for_assistance_encrypted, deemed_incapacitated, incapacity_date,
+                    spouse_name_encrypted, spouse_address_encrypted, spouse_phone_encrypted,
+                    spouse_email_encrypted, spouse_dob, spouse_age, spouse_sex,
+                    spouse_living_conditions, spouse_health_encrypted,
+                    medical_insurance_json, issues_encrypted, comments_encrypted,
+                    submission_status, submitted_at
+                ) VALUES (
+                    :portal_user_id, :facility_name, :case_type, :full_legal_name, :date_of_birth, :age,
+                    :ssn_encrypted, :sex, :home_address_encrypted, :current_address_encrypted,
+                    :marital_status, :monthly_income, :physical_condition_encrypted,
+                    :mental_condition_encrypted, :existing_estate_plan_encrypted,
+                    :reason_for_assistance_encrypted, :deemed_incapacitated, :incapacity_date,
+                    :spouse_name_encrypted, :spouse_address_encrypted, :spouse_phone_encrypted,
+                    :spouse_email_encrypted, :spouse_dob, :spouse_age, :spouse_sex,
+                    :spouse_living_conditions, :spouse_health_encrypted,
+                    :medical_insurance_json, :issues_encrypted, :comments_encrypted,
+                    :submission_status, :submitted_at
+                )
+            ");
+
+            $insertStmt->execute($this->buildReferralParams($referralData, [
+                ':submission_status' => $submissionStatus,
+                ':submitted_at' => $submittedAt
+            ]));
+
+            $referralId = (int)$this->conn->lastInsertId();
         }
+
+        if (!empty($contacts)) {
+            $this->insertContacts($referralId, $contacts);
+        }
+
+        if ($guardianship) {
+            $this->insertGuardianship($referralId, $guardianship);
+        }
+
+        if ($medicaid) {
+            $this->insertMedicaid($referralId, $medicaid);
+        }
+
+        $this->conn->commit();
+        return $referralId;
+    } catch (Exception $e) {
+        $this->conn->rollBack();
+        throw $e;
     }
+}
 
     public function getReferralsByUser(int $portalUserId): array {
         $stmt = $this->conn->prepare("
@@ -209,47 +213,53 @@ class FacilityReferral {
         return $results;
     }
 
-    private function buildReferralParams(array $referralData, array $extra = []): array {
-        $age = $referralData['age'] ?? null;
-        if ($age === '' || $age === null) {
-            $age = null;
-        }
+private function buildReferralParams(array $referralData, array $extra = []): array {
+    error_log('buildReferralParams - Input keys: ' . implode(', ', array_keys($referralData)));
 
-        $payload = [
-            ':portal_user_id' => $referralData['portal_user_id'] ?? null,
-            ':facility_name' => $referralData['facility_name'] ?? null,
-            ':case_type' => $referralData['case_type'] ?? null,
-            ':full_legal_name' => $referralData['full_legal_name'],
-            ':date_of_birth' => $referralData['date_of_birth'] ?? null,
-            ':age' => $age !== null ? (int)$age : null,
-            ':ssn_encrypted' => $this->enc($referralData['ssn'] ?? null),
-            ':sex' => $referralData['sex'] ?? null,
-            ':home_address_encrypted' => $this->enc($referralData['home_address'] ?? null),
-            ':current_address_encrypted' => $this->enc($referralData['current_address'] ?? null),
-            ':marital_status' => $referralData['marital_status'] ?? null,
-            ':monthly_income' => $referralData['monthly_income'] ?? null,
-            ':physical_condition_encrypted' => $this->enc($referralData['physical_condition'] ?? null),
-            ':mental_condition_encrypted' => $this->enc($referralData['mental_condition'] ?? null),
-            ':existing_estate_plan_encrypted' => $this->enc($referralData['existing_estate_plan'] ?? null),
-            ':reason_for_assistance_encrypted' => $this->enc($referralData['reason_for_assistance'] ?? null),
-            ':deemed_incapacitated' => !empty($referralData['deemed_incapacitated']),
-            ':incapacity_date' => $referralData['incapacity_date'] ?? null,
-            ':spouse_name_encrypted' => $this->enc($referralData['spouse_name'] ?? null),
-            ':spouse_address_encrypted' => $this->enc($referralData['spouse_address'] ?? null),
-            ':spouse_phone_encrypted' => $this->enc($referralData['spouse_phone'] ?? null),
-            ':spouse_email_encrypted' => $this->enc($referralData['spouse_email'] ?? null),
-            ':spouse_dob' => $referralData['spouse_dob'] ?? null,
-            ':spouse_age' => isset($referralData['spouse_age']) && $referralData['spouse_age'] !== '' ? (int)$referralData['spouse_age'] : null,
-            ':spouse_sex' => $referralData['spouse_sex'] ?? null,
-            ':spouse_living_conditions' => $referralData['spouse_living_conditions'] ?? null,
-            ':spouse_health_encrypted' => $this->enc($referralData['spouse_health'] ?? null),
-            ':medical_insurance_json' => isset($referralData['medical_insurance']) ? json_encode($referralData['medical_insurance']) : null,
-            ':issues_encrypted' => $this->enc($referralData['issues'] ?? null),
-            ':comments_encrypted' => $this->enc($referralData['comments'] ?? null)
-        ];
-
-        return array_merge($payload, $extra);
+    $age = $referralData['age'] ?? null;
+    if ($age === '' || $age === null) {
+        $age = null;
     }
+
+    $payload = [
+        ':portal_user_id' => $referralData['portal_user_id'] ?? null,
+        ':facility_name' => $referralData['facility_name'] ?? null,
+        ':case_type' => $referralData['case_type'] ?? null,
+        ':full_legal_name' => $referralData['full_legal_name'],
+        ':date_of_birth' => $referralData['date_of_birth'] ?? null,
+        ':age' => $age !== null ? (int)$age : null,
+        ':ssn_encrypted' => $this->enc($referralData['ssn'] ?? null),
+        ':sex' => $referralData['sex'] ?? null,
+        ':home_address_encrypted' => $this->enc($referralData['home_address'] ?? null),
+        ':current_address_encrypted' => $this->enc($referralData['current_address'] ?? null),
+        ':marital_status' => $referralData['marital_status'] ?? null,
+        ':monthly_income' => $referralData['monthly_income'] ?? null,
+        ':physical_condition_encrypted' => $this->enc($referralData['physical_condition'] ?? null),
+        ':mental_condition_encrypted' => $this->enc($referralData['mental_condition'] ?? null),
+        ':existing_estate_plan_encrypted' => $this->enc($referralData['existing_estate_plan'] ?? null),
+        ':reason_for_assistance_encrypted' => $this->enc($referralData['reason_for_assistance'] ?? null),
+        ':deemed_incapacitated' => !empty($referralData['deemed_incapacitated']),
+        ':incapacity_date' => $referralData['incapacity_date'] ?? null,
+        ':spouse_name_encrypted' => $this->enc($referralData['spouse_name'] ?? null),
+        ':spouse_address_encrypted' => $this->enc($referralData['spouse_address'] ?? null),
+        ':spouse_phone_encrypted' => $this->enc($referralData['spouse_phone'] ?? null),
+        ':spouse_email_encrypted' => $this->enc($referralData['spouse_email'] ?? null),
+        ':spouse_dob' => $referralData['spouse_dob'] ?? null,
+        ':spouse_age' => isset($referralData['spouse_age']) && $referralData['spouse_age'] !== '' ? (int)$referralData['spouse_age'] : null,
+        ':spouse_sex' => $referralData['spouse_sex'] ?? null,
+        ':spouse_living_conditions' => $referralData['spouse_living_conditions'] ?? null,
+        ':spouse_health_encrypted' => $this->enc($referralData['spouse_health'] ?? null),
+        ':medical_insurance_json' => json_encode($referralData['medical_insurance'] ?? []),  // CHANGED: Added json_encode()
+        ':issues_encrypted' => $this->enc($referralData['issues'] ?? null),
+        ':comments_encrypted' => $this->enc($referralData['comments'] ?? null)
+    ];
+
+    $result = array_merge($payload, $extra);
+    error_log('buildReferralParams - Output keys: ' . implode(', ', array_keys($result)));
+    error_log('buildReferralParams - Output count: ' . count($result));
+
+    return $result;
+}
 
     private function deleteChildRecords(int $referralId): void {
         $this->conn->prepare("DELETE FROM facility_contacts WHERE referral_id = :referral_id")

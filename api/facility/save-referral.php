@@ -72,7 +72,7 @@ $sharedData = [
     'spouse_sex' => $input['spouseSex'] ?? null,
     'spouse_living_conditions' => Validator::sanitize($input['spouseLivingConditions'] ?? ''),
     'spouse_health' => $input['spouseHealth'] ?? null,
-    'medical_insurance' => $input['medicalInsurance'] ?? [],
+    'medical_insurance' => json_encode($input['medicalInsurance'] ?? []),
     'issues' => $input['issues'] ?? null,
     'comments' => $input['comments'] ?? null
 ];
