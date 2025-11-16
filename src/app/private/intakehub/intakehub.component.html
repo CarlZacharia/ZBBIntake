@@ -37,13 +37,14 @@
 
 
     <div class="cards-container">
-      <div class="card">
+
+      <div class="card" [routerLink]="['/facilityhome']" routerLinkActive="router-link-active">
         <div class="card-image">
-          <img src="/library.jpg" alt="Education Center">
+          <img src="/facility.svg" alt="Facility Intake">
         </div>
         <div class="card-content">
-          <h2 class="card-title">Education Center</h2>
-          <p class="card-description">Access educational resources and materials</p>
+          <h2 class="card-title">Facility Intake</h2>
+          <p class="card-description">Coordinate facility onboarding and resident data</p>
         </div>
       </div>
 
@@ -69,15 +70,16 @@
         </div>
       </div>
 
-      <div class="card" [routerLink]="['/facilityhome']" routerLinkActive="router-link-active">
+      <div class="card">
         <div class="card-image">
-          <img src="/facility.svg" alt="Facility Intake">
+          <img src="/library.jpg" alt="Education Center">
         </div>
         <div class="card-content">
-          <h2 class="card-title">Facility Intake</h2>
-          <p class="card-description">Coordinate facility onboarding and resident data</p>
+          <h2 class="card-title">Education Center</h2>
+          <p class="card-description">Access educational resources and materials</p>
         </div>
       </div>
+
     </div>
 
 

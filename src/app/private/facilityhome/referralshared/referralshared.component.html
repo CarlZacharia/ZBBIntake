@@ -278,12 +278,13 @@
               </div>
             </article>
           }
+
+        </ng-container>
           <div class="mt-2">
             <button type="button" class="btn" style="background-color:darkblue; color:white;" (click)="addNextOfKin()">Add Contact</button>
           </div>
-        </ng-container>
         <ng-template #noContacts>
-          <div class="no-contacts-message">There have been no contacts entered.</div>
+          <div class="no-contacts-message" style="color:red">There have been no contacts entered.</div>
         </ng-template>
     </div>
   </section>

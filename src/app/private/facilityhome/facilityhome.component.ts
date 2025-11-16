@@ -396,6 +396,10 @@ export class FacilityhomeComponent implements OnInit {
       });
   }
 
+  onReferralSubmitted(): void {
+    this.loadReferrals();
+  }
+
   private initializeSelection(): void {
     const first = this.draftReferrals()[0] ?? this.submittedReferrals()[0] ?? null;
     this.selectedReferralId.set(first?.id ?? null);
