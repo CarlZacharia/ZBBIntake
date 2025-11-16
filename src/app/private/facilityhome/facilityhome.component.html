@@ -116,7 +116,7 @@
 
     <main class="referral-panel">
       <ng-container *ngIf="selectedReferralPrefill() as prefill; else emptyState">
-        <app-referralshared [prefillData]="prefill" [showHeroBar]="false"></app-referralshared>
+        <app-referralshared [prefillData]="prefill" [showHeroBar]="false" (referralSubmitted)="onReferralSubmitted()"></app-referralshared>
       </ng-container>
     </main>
   </div>

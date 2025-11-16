@@ -61,12 +61,12 @@
 
     <label>
       Age
-      <input type="number" min="0" [ngModel]="referralData().age" (ngModelChange)="updateField('age', $event)">
+      <input type="number" min="0" [value]="referralData().age" readonly>
     </label>
 
     <label>
       Social Security Number
-      <input type="text" placeholder="XXX-XX-XXXX" [ngModel]="referralData().ssn" (ngModelChange)="updateField('ssn', $event)">
+      <input type="text" placeholder="SSN" [ngModel]="referralData().ssn" (ngModelChange)="updateField('ssn', $event)">
     </label>
 
     <label>
@@ -102,7 +102,21 @@
 
     <label>
       Monthly Income
-      <input type="text" [ngModel]="referralData().monthlyIncome" (ngModelChange)="updateField('monthlyIncome', $event)">
+      <input type="text" [ngModel]="referralData().monthlyIncome" (ngModelChange)="updateField('monthlyIncome', $event)" placeholder="$0.00">
+    </label>
+  </div>
+
+    <div class="grid two-col">
+    <label>
+      Physical Condition
+      <textarea rows="3" [ngModel]="referralData().physicalCondition"
+        (ngModelChange)="updateField('physicalCondition', $event)"></textarea>
+    </label>
+
+    <label>
+      Mental Condition
+      <textarea rows="3" [ngModel]="referralData().mentalCondition"
+        (ngModelChange)="updateField('mentalCondition', $event)"></textarea>
     </label>
   </div>
 
@@ -130,7 +144,7 @@
 
       <label>
         Spouse Phone
-        <input type="tel" [ngModel]="referralData().spousePhone"
+        <input type="tel" placeholder="Phone" [ngModel]="referralData().spousePhone"
           (ngModelChange)="updateField('spousePhone', $event)">
       </label>
 
@@ -155,8 +169,7 @@
 
       <label>
         Age
-        <input type="number" min="0" [ngModel]="referralData().spouseAge"
-          (ngModelChange)="updateField('spouseAge', $event)">
+        <input type="number" min="0" [value]="referralData().spouseAge" readonly>
       </label>
 
       <label>
@@ -184,19 +197,7 @@
     </label>
   </section>
 
-  <div class="grid two-col">
-    <label>
-      Physical Condition
-      <textarea rows="3" [ngModel]="referralData().physicalCondition"
-        (ngModelChange)="updateField('physicalCondition', $event)"></textarea>
-    </label>
 
-    <label>
-      Mental Condition
-      <textarea rows="3" [ngModel]="referralData().mentalCondition"
-        (ngModelChange)="updateField('mentalCondition', $event)"></textarea>
-    </label>
-  </div>
 
   <label class="full">
     Existing Estate Plan
@@ -217,11 +218,13 @@
       Deemed Incapacitated
     </label>
 
-    <label>
-      Date of Incapacity Determination
-      <input type="date" [disabled]="!referralData().deemedIncapacitated" [ngModel]="referralData().incapacityDate"
-        (ngModelChange)="updateField('incapacityDate', $event)">
-    </label>
+    <ng-container *ngIf="referralData().deemedIncapacitated">
+      <label>
+        Date of Incapacity Determination
+        <input type="date" [ngModel]="referralData().incapacityDate"
+          (ngModelChange)="updateField('incapacityDate', $event)">
+      </label>
+    </ng-container>
   </div>
 
   <div class="medical-insurance">
@@ -242,49 +245,57 @@
         <p class="eyebrow">Family & Next of Kin</p>
         <h3>Primary Contacts</h3>
       </div>
-      <button type="button" class="btn btn-secondary" (click)="addNextOfKin()">Add Contact</button>
+
     </header>
 
     <div class="contact-list">
-      @for (contact of nextOfKinContacts(); track trackByIndex($index); let i = $index) {
-      <article class="contact-card">
-        <div class="contact-header">
-          <h4>Contact {{ i + 1 }}</h4>
-          <button type="button" class="icon-button" (click)="removeNextOfKin(i)" [disabled]="nextOfKinContacts().length === 1">
-            ×
-          </button>
-        </div>
-        <div class="grid two-col">
-          <label>
-            Name
-            <input type="text" [ngModel]="contact.name" (ngModelChange)="updateNextOfKin(i, 'name', $event)">
-          </label>
-          <label>
-            Telephone
-            <input type="text" [ngModel]="contact.telephone" (ngModelChange)="updateNextOfKin(i, 'telephone', $event)">
-          </label>
-          <label>
-            Address
-            <input type="text" [ngModel]="contact.address" (ngModelChange)="updateNextOfKin(i, 'address', $event)">
-          </label>
-          <label>
-            Email
-            <input type="email" [ngModel]="contact.email" (ngModelChange)="updateNextOfKin(i, 'email', $event)">
-          </label>
-        </div>
-      </article>
-      }
+        <ng-container *ngIf="nextOfKinContacts().length > 0; else noContacts">
+          @for (contact of nextOfKinContacts(); track trackByIndex($index); let i = $index) {
+            <article class="contact-card">
+              <div class="contact-header">
+                <h4>Contact {{ i + 1 }}</h4>
+                <button type="button" class="icon-button" (click)="removeNextOfKin(i)" [disabled]="nextOfKinContacts().length === 1">
+                  ×
+                </button>
+              </div>
+              <div>
+                <label>
+                  Name
+                  <input type="text" [ngModel]="contact.name" (ngModelChange)="updateNextOfKin(i, 'name', $event)">
+                </label>
+                <label>
+                  Telephone
+                  <input type="text" [ngModel]="contact.telephone" (ngModelChange)="updateNextOfKin(i, 'telephone', $event)">
+                </label>
+                <label>
+                  Address
+                  <input type="text" [ngModel]="contact.address" (ngModelChange)="updateNextOfKin(i, 'address', $event)">
+                </label>
+                <label>
+                  Email
+                  <input type="email" [ngModel]="contact.email" (ngModelChange)="updateNextOfKin(i, 'email', $event)">
+                </label>
+              </div>
+            </article>
+          }
+          <div class="mt-2">
+            <button type="button" class="btn" style="background-color:darkblue; color:white;" (click)="addNextOfKin()">Add Contact</button>
+          </div>
+        </ng-container>
+        <ng-template #noContacts>
+          <div class="no-contacts-message">There have been no contacts entered.</div>
+        </ng-template>
     </div>
   </section>
 
-  <div class="grid two-col">
+  <div >
     <label>
-      Issues to be Aware Of
+      Are there any Issues we should be Aware Of?
       <textarea rows="3" [ngModel]="referralData().issues" (ngModelChange)="updateField('issues', $event)"></textarea>
     </label>
 
-    <label>
-      Comments
+    <label class="mt-3">
+      Any Additional Comments?
       <textarea rows="3" [ngModel]="referralData().comments" (ngModelChange)="updateField('comments', $event)"></textarea>
     </label>
   </div>

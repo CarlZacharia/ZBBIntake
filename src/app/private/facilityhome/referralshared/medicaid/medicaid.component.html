@@ -7,12 +7,12 @@
       <label>
         <input type="radio" name="applicationType" value="new" (change)="setApplicationType('new')"
           [checked]="medicaidState().applicationType === 'new'">
-        New Application
+          <span style="white-space: nowrap;">New Application</span>
       </label>
       <label>
         <input type="radio" name="applicationType" value="renewal" (change)="setApplicationType('renewal')"
           [checked]="medicaidState().applicationType === 'renewal'">
-        Renewal
+          <span style="white-space: nowrap;">Renewal</span>
       </label>
     </div>
     <label class="nested">
@@ -53,7 +53,7 @@
   <div class="form-section">
     <label>Current Status</label>
     <div class="radio-group wrap">
-      <label>
+      <label style="white-space: nowrap;">
         <input type="radio" name="medicaidStatus" value="notFiled" (change)="setStatus('notFiled')"
           [checked]="medicaidState().status === 'notFiled'">
         Not Filed

@@ -1,5 +1,6 @@
+
 import { CommonModule } from '@angular/common';
-import { Component, Input, signal, OnChanges, SimpleChanges, ViewChild, DestroyRef, inject } from '@angular/core';
+import { Component, Input, signal, OnChanges, SimpleChanges, ViewChild, DestroyRef, inject, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -26,10 +27,15 @@ import {
   styleUrl: './referralshared.component.css'
 })
 export class ReferralsharedComponent implements OnChanges {
+  @Output() referralSubmitted = new EventEmitter<void>();
   @Input() prefillData: ReferralPrefillData | null = null;
   @Input() showHeroBar = true;
   @ViewChild(GuardianshipComponent) guardianshipSection?: GuardianshipComponent;
   @ViewChild(MedicaidComponent) medicaidSection?: MedicaidComponent;
+
+  get hasNonEmptyNextOfKinContact(): boolean {
+    return this.nextOfKinContacts().some(c => c.name || c.telephone || c.address || c.email);
+  }
 
   private readonly referralService = inject(FacilityReferralService);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
@@ -67,9 +73,47 @@ export class ReferralsharedComponent implements OnChanges {
     spouseHealth: ''
   });
 
-  readonly nextOfKinContacts = signal<ReferralContact[]>([
-    { name: '', telephone: '', address: '', email: '' }
-  ]);
+    // Format phone number to (999)999-9999
+    formatPhone(phone: string): string {
+      if (!phone) return '';
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 6) return `(${digits.slice(0,3)})${digits.slice(3)}`;
+      return `(${digits.slice(0,3)})${digits.slice(3,6)}-${digits.slice(6,10)}`;
+    }
+
+    // Format SSN to 999-99-9999
+    formatSSN(ssn: string): string {
+      if (!ssn) return '';
+      const digits = ssn.replace(/\D/g, '');
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 5) return `${digits.slice(0,3)}-${digits.slice(3)}`;
+      return `${digits.slice(0,3)}-${digits.slice(3,5)}-${digits.slice(5,9)}`;
+    }
+
+
+
+  formatCurrency(value: string | number | null): string {
+    const num = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.]/g, '')) : value;
+    if (!num || isNaN(num)) return '';
+    const formatted = num.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return formatted;
+  }
+
+    // Calculate age from date of birth string (YYYY-MM-DD)
+    calculateAge(dob: string): number {
+      if (!dob) return 0;
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+
+  readonly nextOfKinContacts = signal<ReferralContact[]>([]);
 
   readonly guardianshipPrefill = signal<GuardianshipFormData | null>(null);
   readonly medicaidPrefill = signal<MedicaidFormData | null>(null);
@@ -168,10 +212,51 @@ export class ReferralsharedComponent implements OnChanges {
     field: T,
     value: ReturnType<typeof this.referralData>[T]
   ): void {
-    this.referralData.update(current => ({
-      ...current,
-      [field]: value
-    }));
+    this.referralData.update(current => {
+      let updated = { ...current, [field]: value };
+      if (field === 'dateOfBirth') {
+        updated.age = String(this.calculateAge(value as string));
+      }
+      if (field === 'spouseDob') {
+        updated.spouseAge = String(this.calculateAge(value as string));
+      }
+      if (field === 'ssn') {
+        updated.ssn = this.formatSSN(String(value));
+      }
+      if (field === 'spousePhone') {
+        updated.spousePhone = this.formatPhone(String(value));
+      }
+      if (field === 'spouseEmail') {
+        updated.spouseEmail = value == null ? '' : String(value);
+      }
+      if (field === 'spouseName') {
+        updated.spouseName = value == null ? '' : String(value);
+      }
+      if (field === 'spouseAddress') {
+        updated.spouseAddress = value == null ? '' : String(value);
+      }
+      if (field === 'spouseSex') {
+        updated.spouseSex = value == null ? '' : String(value);
+      }
+      if (field === 'spouseLivingConditions') {
+        updated.spouseLivingConditions = value == null ? '' : String(value);
+      }
+      if (field === 'spouseHealth') {
+        updated.spouseHealth = value == null ? '' : String(value);
+      }
+        if (field === 'monthlyIncome') {
+          const strValue = value == null ? '' : String(value);
+          // Accept only valid currency format: digits, optional dot, up to 2 digits
+          if (/^\d+(\.\d{0,2})?$/.test(strValue)) {
+            updated.monthlyIncome = strValue;
+          } else {
+            // Optionally, keep previous value or set to empty
+            // updated.monthlyIncome = current.monthlyIncome;
+            updated.monthlyIncome = '';
+          }
+      }
+      return updated;
+    });
   }
 
   updateMaritalStatus(status: string): void {
@@ -199,10 +284,8 @@ export class ReferralsharedComponent implements OnChanges {
   }
 
   addNextOfKin(): void {
-    this.nextOfKinContacts.update(list => [
-      ...list,
-      { name: '', telephone: '', address: '', email: '' }
-    ]);
+    const newContact = { name: '', telephone: '', address: '', email: '' };
+    this.nextOfKinContacts.update(list => [...list, newContact]);
   }
 
   removeNextOfKin(index: number): void {
@@ -234,11 +317,12 @@ export class ReferralsharedComponent implements OnChanges {
       alert('Please select a referral type before submitting your intake.');
       return;
     }
-
-    this.persistReferral('submitted');
+    this.persistReferral('submitted', () => {
+      this.referralSubmitted.emit();
+    });
   }
 
-  private persistReferral(status: SubmissionStatus): void {
+  private persistReferral(status: SubmissionStatus, callback?: () => void): void {
     if (this.isSaving()) {
       return;
     }
@@ -264,6 +348,7 @@ export class ReferralsharedComponent implements OnChanges {
           this.saveMessage.set(message);
           setTimeout(() => this.saveMessage.set(null), 4000);
           this.isSaving.set(false);
+          if (callback) callback();
         },
         error: () => {
           this.isSaving.set(false);

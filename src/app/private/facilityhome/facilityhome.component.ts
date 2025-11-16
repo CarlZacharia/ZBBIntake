@@ -348,6 +348,8 @@ export class FacilityhomeComponent implements OnInit {
     this.loadReferrals();
   }
 
+
+
   selectReferral(id: string): void {
     this.selectedReferralId.set(id);
   }

@@ -74,7 +74,7 @@
       <label>
         <input type="radio" name="repPayee" value="applied" (change)="setRepPayee('applied')"
           [checked]="guardianshipState().repPayee === 'applied'">
-        Applied For
+          <span style="white-space: nowrap;">Applied For</span>
       </label>
     </div>
   </div>
@@ -82,7 +82,7 @@
   <div class="form-section">
     <div class="heading-row">
       <label>Known Family Members or interested persons</label>
-      <button class="btn btn-secondary small" type="button" (click)="addFamilyContact()">Add Contact</button>
+        <button class="btn btn-secondary small" type="button" (click)="addFamilyContact()" style="background-color: #1976d2; color: #fff; border: none">Add Contact</button>
     </div>
     <div class="contact-list">
       @for (contact of familyContacts(); track i; let i = $index) {
