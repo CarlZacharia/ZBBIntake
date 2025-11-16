@@ -64,7 +64,8 @@ class FacilityReferral {
 
             $updateStmt = $this->conn->prepare("
                 UPDATE provider_referrals SET
-                    provider_name = :provider_name, provider_type,
+                    provider_name = :provider_name,
+                    provider_type = :provider_type,
                     case_type = :case_type,
                     full_legal_name = :full_legal_name,
                     date_of_birth = :date_of_birth,
@@ -124,7 +125,7 @@ class FacilityReferral {
                     medical_insurance_json, issues_encrypted, comments_encrypted,
                     submission_status, submitted_at
                 ) VALUES (
-                    :portal_user_id, :provider_name, provider_type, :case_type, :full_legal_name, :date_of_birth, :age,
+                    :portal_user_id, :provider_name, :provider_type, :case_type, :full_legal_name, :date_of_birth, :age,
                     :ssn_encrypted, :sex, :home_address_encrypted, :current_address_encrypted,
                     :marital_status, :monthly_income, :physical_condition_encrypted,
                     :mental_condition_encrypted, :existing_estate_plan_encrypted,
@@ -137,10 +138,12 @@ class FacilityReferral {
                 )
             ");
 
-            $insertStmt->execute($this->buildReferralParams($referralData, [
+            $insertParams = $this->buildReferralParams($referralData, [
                 ':submission_status' => $submissionStatus,
                 ':submitted_at' => $submittedAt
-            ]));
+            ]);
+            unset($insertParams[':referral_id']);
+            $insertStmt->execute($insertParams);
 
             $referralId = (int)$this->conn->lastInsertId();
         }
@@ -225,6 +228,7 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
     $payload = [
         ':portal_user_id' => $referralData['portal_user_id'] ?? null,
         ':provider_name' => $referralData['provider_name'] ?? null,
+        ':provider_type' => $referralData['provider_type'] ?? null,
         ':case_type' => $referralData['case_type'] ?? null,
         ':full_legal_name' => $referralData['full_legal_name'],
         ':date_of_birth' => $referralData['date_of_birth'] ?? null,
@@ -271,25 +275,27 @@ private function buildReferralParams(array $referralData, array $extra = []): ar
             ->execute([':referral_id' => $referralId]);
     }
 
-    private function insertContacts(int $referralId, array $contacts): void {
-        $stmt = $this->conn->prepare("
-            INSERT INTO provider_contacts (
-                referral_id, name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
-            ) VALUES (
-                :referral_id, :name_encrypted, :telephone_encrypted, :address_encrypted, :csz_encrypted, :county_encrypted, :email_encrypted
-            )
-        ");
+private function insertContacts(int $referralId, array $contacts): void {
+    $stmt = $this->conn->prepare("
+        INSERT INTO provider_contacts (
+            referral_id, name_encrypted, telephone_encrypted, address_encrypted, csz_encrypted, county_encrypted, email_encrypted
+        ) VALUES (
+            :referral_id, :name_encrypted, :telephone_encrypted, :address_encrypted, :csz_encrypted, :county_encrypted, :email_encrypted
+        )
+    ");
 
-        foreach ($contacts as $contact) {
-            $stmt->execute([
-                ':referral_id' => $referralId,
-                ':name_encrypted' => $this->enc($contact['name'] ?? null),
-                ':telephone_encrypted' => $this->enc($contact['telephone'] ?? null),
-                ':address_encrypted' => $this->enc($contact['address'] ?? null),
-                ':email_encrypted' => $this->enc($contact['email'] ?? null)
-            ]);
-        }
+    foreach ($contacts as $contact) {
+        $stmt->execute([
+            ':referral_id' => $referralId,
+            ':name_encrypted' => $this->enc($contact['name'] ?? null),
+            ':telephone_encrypted' => $this->enc($contact['telephone'] ?? null),
+            ':address_encrypted' => $this->enc($contact['address'] ?? null),
+            ':csz_encrypted' => $this->enc($contact['csz'] ?? null),
+            ':county_encrypted' => $this->enc($contact['county'] ?? null),
+            ':email_encrypted' => $this->enc($contact['email'] ?? null)
+        ]);
     }
+}
 
     private function insertGuardianship(int $referralId, array $guardianship): void {
         $stmt = $this->conn->prepare("
