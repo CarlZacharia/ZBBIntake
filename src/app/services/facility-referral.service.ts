@@ -8,7 +8,7 @@ import {
   ReferralContact,
   SubmissionStatus,
   SpouseInfo
-} from './referralshared/referral-shared.types';
+} from '../private/facilityhome/referralshared/referral-shared.types';
 
 interface ApiResponse<T> {
   success: boolean;

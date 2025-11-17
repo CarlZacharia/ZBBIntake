@@ -17,7 +17,7 @@ import {
 import {
   FacilityReferralService,
   ReferralSavePayload
-} from '../facility-referral.service';
+} from '../../../services/facility-referral.service';
 
 @Component({
   selector: 'app-referralshared',

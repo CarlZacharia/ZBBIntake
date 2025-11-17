@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FacilityService, FacilityProfile } from './facility.service';
+import { FacilityService, FacilityProfile } from '../../../services/facility.service';
 
 @Component({
   selector: 'app-facilityprofile',

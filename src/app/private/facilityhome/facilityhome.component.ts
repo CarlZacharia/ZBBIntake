@@ -17,7 +17,7 @@ import {
 import {
   FacilityReferralDto,
   FacilityReferralService
-} from './facility-referral.service';
+} from '../../services/facility-referral.service';
 
 interface ReferralRecord {
   id: string;
