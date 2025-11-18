@@ -16,22 +16,10 @@
 
   <div class="facility-body">
     <aside class="referral-sidebar">
-            <a class="btn btn-primary" routerLink="/referral">Add New Intake</a>
-      <div class="sidebar-card emphasis">
-        <p class="label">Facility Contact</p>
-        <h4>{{ facilityDetails().contact }}</h4>
-        <p>{{ facilityDetails().contactEmail }}</p>
-        <p>{{ facilityDetails().contactPhone }}</p>
-      </div>
+      <a class="btn btn-primary" routerLink="/referral">Add New Intake</a>
 
-      <div class="sidebar-card emphasis">
-        <p class="label">Your Account</p>
-        <h4>{{ loggedInContact().name }}</h4>
-        <p>{{ loggedInContact().email }}</p>
-        <p>{{ loggedInContact().phone }}</p>
-      </div>
 
-      <div class="sidebar-divider"></div>
+      <div class="sidebar-divider my-3"></div>
 
       <div class="sidebar-heading">
         <p class="eyebrow">Unsubmitted Drafts</p>
@@ -60,6 +48,7 @@
         </article>
         }
       </div>
+      <div class="sidebar-divider" style="width:100%; height:12px; margin-top:15px; margin-bottom:15px"> </div>
 
       <div class="sidebar-heading">
         <p class="eyebrow">Submitted Residents</p>

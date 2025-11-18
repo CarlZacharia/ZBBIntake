@@ -137,9 +137,9 @@
 }
 
 .sidebar-divider {
-  height: 2px;
+  height: 12px;
   background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  margin: 0.5rem 0 0.25rem;
+  margin: 0.5rem 0 0.75rem;
 }
 
 .sidebar-heading h3 {
