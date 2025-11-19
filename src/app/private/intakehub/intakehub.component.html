@@ -1,0 +1,116 @@
+<div class="intakehub-container">
+  <!-- Sidebar: Profile & Previous Intakes -->
+  <aside class="sidebar">
+    <div class="profile-section">
+      <img src="/ZBLogo.jpg" alt="Profile" class="profile-image">
+      <h4 class="profile-name">{{authService.currentUser()?.first_name}} {{authService.currentUser()?.last_name}}</h4>
+      <p class="profile-email">{{authService.currentUser()?.email}}</p>
+    </div>
+
+
+    <div class="previous-intakes">
+      <h4>Previous Intakes</h4>
+      <ul class="intake-list">
+        <li class="intake-item">Estate Planning - 01/15/2025</li>
+        <li class="intake-item">Elder Law - 12/20/2024</li>
+        <li class="intake-item">Guardianship - 11/10/2024</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="logo-header">
+      <img src="/ZBLogo.jpg" alt="ZBB Logo" class="logo">
+      <h1 class="page-title">Zacharia Brown & Bratkovich</h1>
+      <button class="logout-button" (click)="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="logout-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+            clip-rule="evenodd" />
+        </svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- Main Cards -->
+
+
+    <div class="cards-container">
+
+      <div class="card" [routerLink]="['/facilityhome']" routerLinkActive="router-link-active">
+        <div class="card-image">
+          <img src="/facility.svg" alt="Facility Intake">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Facility Intake</h2>
+          <p class="card-description">Coordinate facility onboarding and resident data</p>
+        </div>
+      </div>
+
+      <div class="card" [routerLink]="['/mainintake']" routerLinkActive="router-link-active">
+        <div class="card-image">
+          <img src="/intakeform.jpg" alt="New Intake">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">New Estate Planning Intake</h2>
+          <p class="card-description">Start a new client intake form</p>
+        </div>
+      </div>
+
+
+
+      <div class="card" [routerLink]="['/medicaidintake']" routerLinkActive="router-link-active">
+        <div class="card-image">
+          <img src="/medicaid.jpg" alt="Medicaid Intake">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Medicaid Application Approval Plan</h2>
+          <p class="card-description">Intake Form for MAAP (Florida)</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <img src="/library.jpg" alt="Education Center">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Education Center</h2>
+          <p class="card-description">Access educational resources and materials</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- New Intake Options (8 cards) -->
+    <div class="intake-options" *ngIf="showIntakeOptions">
+
+      <div class="form-section">
+        <div class="form-group">
+          <label for="state">State</label>
+          <select id="state" name="state">
+            <option value="">Select a state</option>
+            <option value="florida">Florida</option>
+            <option value="pennsylvania">Pennsylvania</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comments">Comments</label>
+          <textarea id="comments" name="comments" rows="4"
+            placeholder="Enter any additional comments or information..."></textarea>
+        </div>
+
+        <div class="continue-section">
+          <button class="btn-continue">
+            Continue
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
