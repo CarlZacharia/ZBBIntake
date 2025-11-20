@@ -4,7 +4,8 @@
   <!-- Add Asset Buttons -->
   <div class="add-buttons-row">
     <button class="btn btn-add" (click)="openAddModal('real_estate')">+ Real Estate</button>
-    <button class="btn btn-add" (click)="openAddModal('financial_account')">+ Financial Account</button>
+    <button class="btn btn-add" (click)="openAddModal('bank_account')">+ Bank Account</button>
+    <button class="btn btn-add" (click)="openAddModal('nq_account')">+ NQ Account</button>
     <button class="btn btn-add" (click)="openAddModal('retirement_account')">+ Retirement Account</button>
     <button class="btn btn-add" (click)="openAddModal('life_insurance')">+ Life Insurance</button>
     <button class="btn btn-add" (click)="openAddModal('business_interest')">+ Business Interest</button>
@@ -47,9 +48,9 @@
       </table>
     </div>
 
-    <!-- Financial Accounts -->
-    <div class="asset-category" *ngIf="getAllAssets('financial_account').length > 0">
-      <h4>Financial Accounts</h4>
+    <!-- Bank Accounts -->
+    <div class="asset-category" *ngIf="getAllAssets('bank_account').length > 0">
+      <h4>Bank Accounts</h4>
       <table class="assets-table">
         <thead>
           <tr>
@@ -59,19 +60,50 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let asset of getAllAssets('financial_account'); let i = index"
-            (click)="openEditModal('financial_account', i)" class="clickable-row">
-            <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
-            <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+          <tr *ngFor="let asset of getAllAssets('bank_account'); let i = index"
+            (click)="openEditModal('bank_account', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
             <td class="actions" (click)="$event.stopPropagation()">
-              <button class="btn-small btn-delete" (click)="deleteAsset('financial_account', i)">Delete</button>
+              <button class="btn-small btn-delete" (click)="deleteAsset('bank_account', i)">Delete</button>
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr class="subtotal-row">
-            <td><strong>Financial Accounts Total</strong></td>
-            <td><strong>{{ formatCurrency(getTotalValue('financial_account')) }}</strong></td>
+            <td><strong>Bank Accounts Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('bank_account')) }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- NQ Accounts -->
+    <div class="asset-category" *ngIf="getAllAssets('nq_account').length > 0">
+      <h4>NQ Accounts</h4>
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of getAllAssets('nq_account'); let i = index"
+            (click)="openEditModal('nq_account', i)" class="clickable-row">
+            <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
+            <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
+            <td class="actions" (click)="$event.stopPropagation()">
+              <button class="btn-small btn-delete" (click)="deleteAsset('nq_account', i)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal-row">
+            <td><strong>NQ Accounts Total</strong></td>
+            <td><strong>{{ formatCurrency(getTotalValue('nq_account')) }}</strong></td>
             <td></td>
           </tr>
         </tfoot>
@@ -269,8 +301,8 @@
         </table>
       </div>
 
-      <div class="asset-category" *ngIf="getClientAssets('financial_account').length > 0">
-        <h4>Financial Accounts</h4>
+      <div class="asset-category" *ngIf="getClientAssets('bank_account').length > 0">
+        <h4>Bank Accounts</h4>
         <table class="assets-table">
           <thead>
             <tr>
@@ -280,13 +312,37 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let asset of getClientAssets('financial_account'); let i = index"
-              (click)="openEditModal('financial_account', i, 'client')" class="clickable-row">
-              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
-              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+            <tr *ngFor="let asset of getClientAssets('bank_account'); let i = index"
+              (click)="openEditModal('bank_account', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('financial_account', i, 'client')">Delete</button>
+                  (click)="deleteAsset('bank_account', i, 'client')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getClientAssets('nq_account').length > 0">
+        <h4>NQ Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getClientAssets('nq_account'); let i = index"
+              (click)="openEditModal('nq_account', i, 'client')" class="clickable-row">
+              <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('nq_account', i, 'client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -443,8 +499,8 @@
         </table>
       </div>
 
-      <div class="asset-category" *ngIf="getSpouseAssets('financial_account').length > 0">
-        <h4>Financial Accounts</h4>
+      <div class="asset-category" *ngIf="getSpouseAssets('bank_account').length > 0">
+        <h4>Bank Accounts</h4>
         <table class="assets-table">
           <thead>
             <tr>
@@ -454,13 +510,37 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let asset of getSpouseAssets('financial_account'); let i = index"
-              (click)="openEditModal('financial_account', i, 'spouse')" class="clickable-row">
-              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
-              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+            <tr *ngFor="let asset of getSpouseAssets('bank_account'); let i = index"
+              (click)="openEditModal('bank_account', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('financial_account', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('bank_account', i, 'spouse')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getSpouseAssets('nq_account').length > 0">
+        <h4>NQ Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getSpouseAssets('nq_account'); let i = index"
+              (click)="openEditModal('nq_account', i, 'spouse')" class="clickable-row">
+              <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete"
+                  (click)="deleteAsset('nq_account', i, 'spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -617,8 +697,8 @@
         </table>
       </div>
 
-      <div class="asset-category" *ngIf="getJointAssets('financial_account').length > 0">
-        <h4>Financial Accounts</h4>
+      <div class="asset-category" *ngIf="getJointAssets('bank_account').length > 0">
+        <h4>Bank Accounts</h4>
         <table class="assets-table">
           <thead>
             <tr>
@@ -628,12 +708,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let asset of getJointAssets('financial_account'); let i = index"
-              (click)="openEditModal('financial_account', i, null)" class="clickable-row">
-              <td>{{ getAssetDisplayName('financial_account', asset) }}</td>
-              <td>{{ formatCurrency(getAssetValue('financial_account', asset)) }}</td>
+            <tr *ngFor="let asset of getJointAssets('bank_account'); let i = index"
+              (click)="openEditModal('bank_account', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('financial_account', i, null)">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('bank_account', i, null)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="asset-category" *ngIf="getJointAssets('nq_account').length > 0">
+        <h4>NQ Accounts</h4>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asset of getJointAssets('nq_account'); let i = index"
+              (click)="openEditModal('nq_account', i, null)" class="clickable-row">
+              <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
+              <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn-small btn-delete" (click)="deleteAsset('nq_account', i, null)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -1043,52 +1146,51 @@
   </div>
 </div>
 
-<!-- Financial Account Add Modal -->
-<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'financial_account'" (click)="closeAddModal()">
+
+<!-- Bank Account Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'bank_account'" (click)="closeAddModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
-      <h3>Add Financial Account</h3>
+      <h3>Add Bank Account</h3>
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
-    <div class="modal-body" *ngIf="editingFinancialAccount">
+    <div class="modal-body" *ngIf="editingBankAccount">
       <form>
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
-          <input type="text" [(ngModel)]="editingFinancialAccount.institution_name" name="institution_name" required>
+          <input type="text" [(ngModel)]="editingBankAccount.institution_name" name="institution_name" required>
         </div>
 
         <!-- Account Type -->
         <div class="form-row">
           <div class="form-group">
             <label>Account Type *</label>
-            <select [(ngModel)]="editingFinancialAccount.account_type" name="account_type" required>
+            <select [(ngModel)]="editingBankAccount.account_type" name="account_type" required>
               <option value="checking">Checking</option>
               <option value="savings">Savings</option>
               <option value="money_market">Money Market</option>
               <option value="cd">CD</option>
-              <option value="brokerage">Brokerage</option>
-              <option value="other_investment">Other Investment</option>
             </select>
           </div>
 
           <div class="form-group">
             <label>Account Number (last 4 digits)</label>
-            <input type="text" [(ngModel)]="editingFinancialAccount.account_number_encrypted" name="account_number" maxlength="4">
+            <input type="text" [(ngModel)]="editingBankAccount.account_number_encrypted" name="account_number" maxlength="4">
           </div>
         </div>
 
         <!-- Balance -->
         <div class="form-group">
           <label>Approximate Balance</label>
-          <input type="number" [(ngModel)]="editingFinancialAccount.approximate_balance" name="approximate_balance">
+          <input type="number" [(ngModel)]="editingBankAccount.approximate_balance" name="approximate_balance">
         </div>
 
         <!-- Title Type -->
         <div class="form-row">
           <div class="form-group">
             <label>Title Type *</label>
-            <select [(ngModel)]="editingFinancialAccount.title_type" name="title_type" required>
+            <select [(ngModel)]="editingBankAccount.title_type" name="title_type" required>
               <option value="individual">Individual</option>
               <option value="joint">Joint</option>
               <option value="pod">POD (Payable on Death)</option>
@@ -1098,16 +1200,16 @@
             </select>
           </div>
 
-          <div class="form-group" *ngIf="editingFinancialAccount.title_type === 'joint'">
+          <div class="form-group" *ngIf="editingBankAccount.title_type === 'joint'">
             <label>Joint Owner Name</label>
-            <input type="text" [(ngModel)]="editingFinancialAccount.joint_owner_name" name="joint_owner_name">
+            <input type="text" [(ngModel)]="editingBankAccount.joint_owner_name" name="joint_owner_name">
           </div>
         </div>
 
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingFinancialAccount.owned_by" name="owned_by">
+          <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
             <option value="client">Client</option>
             <option value="spouse">Spouse</option>
@@ -1117,13 +1219,13 @@
         <!-- Beneficiary Information -->
         <div class="form-group">
           <label>Beneficiary Last Reviewed</label>
-          <input type="date" [(ngModel)]="editingFinancialAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+          <input type="date" [(ngModel)]="editingBankAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
         </div>
 
         <!-- Notes -->
         <div class="form-group">
           <label>Notes</label>
-          <textarea [(ngModel)]="editingFinancialAccount.notes" name="notes" rows="3"></textarea>
+          <textarea [(ngModel)]="editingBankAccount.notes" name="notes" rows="3"></textarea>
         </div>
       </form>
     </div>
@@ -1134,52 +1236,50 @@
   </div>
 </div>
 
-<!-- Financial Account Edit Modal -->
-<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'financial_account'" (click)="closeEditModal()">
+<!-- Bank Account Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'bank_account'" (click)="closeEditModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
-      <h3>Edit Financial Account</h3>
+      <h3>Edit Bank Account</h3>
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
-    <div class="modal-body" *ngIf="editingFinancialAccount">
+    <div class="modal-body" *ngIf="editingBankAccount">
       <form>
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
-          <input type="text" [(ngModel)]="editingFinancialAccount.institution_name" name="institution_name" required>
+          <input type="text" [(ngModel)]="editingBankAccount.institution_name" name="institution_name" required>
         </div>
 
         <!-- Account Type -->
         <div class="form-row">
           <div class="form-group">
             <label>Account Type *</label>
-            <select [(ngModel)]="editingFinancialAccount.account_type" name="account_type" required>
+            <select [(ngModel)]="editingBankAccount.account_type" name="account_type" required>
               <option value="checking">Checking</option>
               <option value="savings">Savings</option>
               <option value="money_market">Money Market</option>
               <option value="cd">CD</option>
-              <option value="brokerage">Brokerage</option>
-              <option value="other_investment">Other Investment</option>
             </select>
           </div>
 
           <div class="form-group">
             <label>Account Number (last 4 digits)</label>
-            <input type="text" [(ngModel)]="editingFinancialAccount.account_number_encrypted" name="account_number" maxlength="4">
+            <input type="text" [(ngModel)]="editingBankAccount.account_number_encrypted" name="account_number" maxlength="4">
           </div>
         </div>
 
         <!-- Balance -->
         <div class="form-group">
           <label>Approximate Balance</label>
-          <input type="number" [(ngModel)]="editingFinancialAccount.approximate_balance" name="approximate_balance">
+          <input type="number" [(ngModel)]="editingBankAccount.approximate_balance" name="approximate_balance">
         </div>
 
         <!-- Title Type -->
         <div class="form-row">
           <div class="form-group">
             <label>Title Type *</label>
-            <select [(ngModel)]="editingFinancialAccount.title_type" name="title_type" required>
+            <select [(ngModel)]="editingBankAccount.title_type" name="title_type" required>
               <option value="individual">Individual</option>
               <option value="joint">Joint</option>
               <option value="pod">POD (Payable on Death)</option>
@@ -1189,16 +1289,16 @@
             </select>
           </div>
 
-          <div class="form-group" *ngIf="editingFinancialAccount.title_type === 'joint'">
+          <div class="form-group" *ngIf="editingBankAccount.title_type === 'joint'">
             <label>Joint Owner Name</label>
-            <input type="text" [(ngModel)]="editingFinancialAccount.joint_owner_name" name="joint_owner_name">
+            <input type="text" [(ngModel)]="editingBankAccount.joint_owner_name" name="joint_owner_name">
           </div>
         </div>
 
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingFinancialAccount.owned_by" name="owned_by">
+          <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
             <option value="client">Client</option>
             <option value="spouse">Spouse</option>
@@ -1208,13 +1308,187 @@
         <!-- Beneficiary Information -->
         <div class="form-group">
           <label>Beneficiary Last Reviewed</label>
-          <input type="date" [(ngModel)]="editingFinancialAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+          <input type="date" [(ngModel)]="editingBankAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
         </div>
 
         <!-- Notes -->
         <div class="form-group">
           <label>Notes</label>
-          <textarea [(ngModel)]="editingFinancialAccount.notes" name="notes" rows="3"></textarea>
+          <textarea [(ngModel)]="editingBankAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditAsset()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- NQ Account Add Modal -->
+<div class="modal-overlay" *ngIf="showAddModal && currentAssetType === 'nq_account'" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header add-modal-header">
+      <h3>Add NQ Account</h3>
+      <button class="close-btn" (click)="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingNQAccount">
+      <form>
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingNQAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Account Type *</label>
+            <select [(ngModel)]="editingNQAccount.account_type" name="account_type" required>
+              <option value="brokerage">Brokerage</option>
+              <option value="other_investment">Other Investment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Account Number (last 4 digits)</label>
+            <input type="text" [(ngModel)]="editingNQAccount.account_number_encrypted" name="account_number" maxlength="4">
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Balance</label>
+          <input type="number" [(ngModel)]="editingNQAccount.approximate_balance" name="approximate_balance">
+        </div>
+
+        <!-- Title Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Type *</label>
+            <select [(ngModel)]="editingNQAccount.title_type" name="title_type" required>
+              <option value="individual">Individual</option>
+              <option value="joint">Joint</option>
+              <option value="pod">POD (Payable on Death)</option>
+              <option value="tod">TOD (Transfer on Death)</option>
+              <option value="trust">Trust</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingNQAccount.title_type === 'joint'">
+            <label>Joint Owner Name</label>
+            <input type="text" [(ngModel)]="editingNQAccount.joint_owner_name" name="joint_owner_name">
+          </div>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingNQAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingNQAccount.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- NQ Account Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal && currentAssetType === 'nq_account'" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header edit-modal-header">
+      <h3>Edit NQ Account</h3>
+      <button class="close-btn" (click)="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingNQAccount">
+      <form>
+        <!-- Institution Name -->
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input type="text" [(ngModel)]="editingNQAccount.institution_name" name="institution_name" required>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Account Type *</label>
+            <select [(ngModel)]="editingNQAccount.account_type" name="account_type" required>
+              <option value="brokerage">Brokerage</option>
+              <option value="other_investment">Other Investment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Account Number (last 4 digits)</label>
+            <input type="text" [(ngModel)]="editingNQAccount.account_number_encrypted" name="account_number" maxlength="4">
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="form-group">
+          <label>Approximate Balance</label>
+          <input type="number" [(ngModel)]="editingNQAccount.approximate_balance" name="approximate_balance">
+        </div>
+
+        <!-- Title Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title Type *</label>
+            <select [(ngModel)]="editingNQAccount.title_type" name="title_type" required>
+              <option value="individual">Individual</option>
+              <option value="joint">Joint</option>
+              <option value="pod">POD (Payable on Death)</option>
+              <option value="tod">TOD (Transfer on Death)</option>
+              <option value="trust">Trust</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingNQAccount.title_type === 'joint'">
+            <label>Joint Owner Name</label>
+            <input type="text" [(ngModel)]="editingNQAccount.joint_owner_name" name="joint_owner_name">
+          </div>
+        </div>
+
+        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Owned By</label>
+          <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
+            <option [ngValue]="null">Joint/Both</option>
+            <option value="client">Client</option>
+            <option value="spouse">Spouse</option>
+          </select>
+        </div>
+
+        <!-- Beneficiary Information -->
+        <div class="form-group">
+          <label>Beneficiary Last Reviewed</label>
+          <input type="date" [(ngModel)]="editingNQAccount.beneficiary_last_reviewed" name="beneficiary_last_reviewed">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingNQAccount.notes" name="notes" rows="3"></textarea>
         </div>
       </form>
     </div>

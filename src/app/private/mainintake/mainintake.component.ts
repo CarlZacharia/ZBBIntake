@@ -1,4 +1,5 @@
 import { Component, computed } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
@@ -16,8 +17,12 @@ import { ICaseData } from '../../models/case_data';
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
+
 export class MainintakeComponent {
   activeSection: string = 'personal';
+  constructor(public ds: DataService, private authService: AuthService, private cdr: ChangeDetectorRef) {
+    // No assetsChanged observable; rely on Angular reactivity
+  }
 
   // Computed signals for reactive data access
   readonly casedata = computed(() => this.ds.casedata());
@@ -51,9 +56,14 @@ export class MainintakeComponent {
       total += re.estimated_value || 0;
     });
 
-    // Financial Accounts
-    assets.financial_account_holdings.forEach(fa => {
-      total += fa.approximate_balance || 0;
+    // Bank Accounts
+    assets.bank_account_holdings.forEach(ba => {
+      total += ba.approximate_balance || 0;
+    });
+
+    // Non-Qualified Accounts
+    assets.nq_account_holdings.forEach(nq => {
+      total += nq.approximate_balance || 0;
     });
 
     // Retirement Accounts
@@ -89,7 +99,7 @@ export class MainintakeComponent {
     return this.casedata();
   }
 
-  constructor(public ds: DataService, private authService: AuthService) { }
+  // (moved to above)
 
   setActiveSection(section: string) {
     this.activeSection = section;

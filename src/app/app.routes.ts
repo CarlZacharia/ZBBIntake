@@ -5,6 +5,7 @@ import { RegistrationComponent } from './registration/registration.component';
 import { MedicaidintakeComponent } from './private/elderlaw/medicaidintake/medicaidintake.component';
 import { authGuard, guestGuard } from './guards/auth.guard';
 import { IntakehubComponent } from './private/intakehub/intakehub.component';
+import { MainintakeComponent } from './private/mainintake/mainintake.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,11 @@ export const routes: Routes = [
   },
   {
     path: 'mainintake',
+    component: MainintakeComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'medicaidintake',
     component: MedicaidintakeComponent,
     canActivate: [authGuard]
   },

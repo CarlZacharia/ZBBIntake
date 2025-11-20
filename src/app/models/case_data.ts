@@ -23,10 +23,27 @@ export interface IRealEstate {
 /**
  * Interface for a single Financial Account asset.
  */
-export interface IFinancialAccount {
+export interface IBankAccount {
   account_id: number | null;
   institution_name: string;
   account_type: 'checking' | 'savings' | 'money_market' | 'cd' | 'brokerage' | 'other_investment';
+  account_number_encrypted: string | null;
+  approximate_balance: number | null;
+  title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
+  joint_owner_name: string | null;
+  primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
+  beneficiary_last_reviewed: string | null;
+  notes: string | null;
+  owned_by: 'client' | 'spouse' | null;
+  ownership_percentage: number | null;
+  other_owners: string | null;
+}
+
+export interface INQAccount {
+  account_id: number | null;
+  institution_name: string;
+  account_type: 'mutual fund' | 'stocks' | 'bons' | 'money market' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
   approximate_balance: number | null;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
@@ -164,7 +181,8 @@ export interface IBeneficiary {
  */
 export interface IAssets {
   real_estate_holdings: IRealEstate[];
-  financial_account_holdings: IFinancialAccount[];
+  bank_account_holdings: IBankAccount[];
+  nq_account_holdings: INQAccount[];
   retirement_account_holdings: IRetirementAccount[];
   life_insurance_holdings: ILifeInsurance[];
   business_interest_holdings: IBusinessInterest[];

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IFinancialAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 
 
 // --- DATA SERVICE ---
@@ -91,12 +91,13 @@ export class DataService {
     // Initializing the new assets object with empty arrays
     assets: {
       real_estate_holdings: [],
-      financial_account_holdings: [],
+      bank_account_holdings: [],      // <-- Add this line
+      nq_account_holdings: [],        // <-- Add this line
       retirement_account_holdings: [],
       life_insurance_holdings: [],
       business_interest_holdings: [],
       digital_asset_holdings: [],
-      other_asset_holdings: [],
+      other_asset_holdings: []
     }
   });
 
@@ -340,34 +341,66 @@ export class DataService {
     }));
   }
 
-  addFinancialAccount(asset: IFinancialAccount) {
+  addBankAccount(asset: IBankAccount) {
     this._casedata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        financial_account_holdings: [...current.assets.financial_account_holdings, asset]
+        bank_account_holdings: [...current.assets.bank_account_holdings, asset]
       }
     }));
   }
 
-  updateFinancialAccount(index: number, updates: Partial<IFinancialAccount>) {
+  updateBankAccount(index: number, updates: Partial<IBankAccount>) {
     this._casedata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        financial_account_holdings: current.assets.financial_account_holdings.map((asset, i) =>
+        bank_account_holdings: current.assets.bank_account_holdings.map((asset, i) =>
           i === index ? { ...asset, ...updates } : asset
         )
       }
     }));
   }
 
-  removeFinancialAccount(index: number) {
+  removeBankAccount(index: number) {
     this._casedata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        financial_account_holdings: current.assets.financial_account_holdings.filter((_, i) => i !== index)
+        bank_account_holdings: current.assets.bank_account_holdings.filter((_, i) => i !== index)
+      }
+    }));
+  }
+
+  addNQAccount(asset: INQAccount) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        nq_account_holdings: [...current.assets.nq_account_holdings, asset]
+      }
+    }));
+  }
+
+  updateNQAccount(index: number, updates: Partial<INQAccount>) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        nq_account_holdings: current.assets.nq_account_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  removeNQAccount(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        nq_account_holdings: current.assets.nq_account_holdings.filter((_, i) => i !== index)
       }
     }));
   }
@@ -659,10 +692,27 @@ export class DataService {
     ownership_value: null
   };
 
-  public financialAccount: IFinancialAccount = {
+  public bankAccount: IBankAccount = {
     account_id: null,
     institution_name: '',
     account_type: 'checking',
+    account_number_encrypted: null,
+    approximate_balance: null,
+    title_type: 'individual',
+    joint_owner_name: null,
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
+    beneficiary_last_reviewed: null,
+    notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null
+  };
+
+    public nqAccount: INQAccount = {
+    account_id: null,
+    institution_name: '',
+    account_type: 'mutual fund',
     account_number_encrypted: null,
     approximate_balance: null,
     title_type: 'individual',
@@ -863,7 +913,8 @@ export class DataService {
       },
       assets: {
         real_estate_holdings: [],
-        financial_account_holdings: [],
+        bank_account_holdings: [],
+        nq_account_holdings: [],
         retirement_account_holdings: [],
         life_insurance_holdings: [],
         business_interest_holdings: [],
