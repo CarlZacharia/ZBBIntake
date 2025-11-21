@@ -383,7 +383,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('bank_account'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().bank_account_holdings">
           <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
-          <div class="asset-value">{{formatCurrency(asset.approximate_balance)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.title_type">Title: {{asset.title_type}}</span>
             <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
@@ -397,7 +397,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('nq_account'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().nq_account_holdings">
           <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
-          <div class="asset-value">{{formatCurrency(asset.approximate_balance)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.title_type">Title: {{asset.title_type}}</span>
             <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
