@@ -1,3 +1,4 @@
+
 import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -114,10 +115,10 @@ export class AssetsComponent {
           value = asset.ownership_value || asset.net_value || asset.estimated_value || 0;
           break;
         case 'bank_account':
-          value = asset.approximate_balance || 0;
+          value = asset.approximate_value || 0;
           break;
         case 'nq_account':
-          value = asset.approximate_balance || 0;
+          value = asset.approximate_value || 0;
           break;
         case 'retirement_account':
           value = asset.approximate_value || 0;
@@ -171,6 +172,8 @@ export class AssetsComponent {
     this.setEditingAsset(assetType, { ...asset });
     this.showEditModal = true;
   }
+
+
 
   private initializeEditingAsset(assetType: AssetType) {
     switch (assetType) {
@@ -241,12 +244,10 @@ export class AssetsComponent {
         this.ds.addRealEstate(asset as IRealEstate);
         break;
       case 'bank_account':
-        if (!this.ds.assets().bank_account_holdings) this.ds.assets().bank_account_holdings = [];
-        this.ds.assets().bank_account_holdings.push(asset as IBankAccount);
+        this.ds.addBankAccount(asset as IBankAccount);
         break;
       case 'nq_account':
-        if (!this.ds.assets().nq_account_holdings) this.ds.assets().nq_account_holdings = [];
-        this.ds.assets().nq_account_holdings.push(asset as INQAccount);
+        this.ds.addNQAccount(asset as INQAccount);
         break;
       case 'retirement_account':
         this.ds.addRetirementAccount(asset as IRetirementAccount);
@@ -279,12 +280,10 @@ export class AssetsComponent {
         this.ds.updateRealEstate(this.editingIndex, asset as IRealEstate);
         break;
       case 'bank_account':
-        if (this.ds.assets().bank_account_holdings)
-          this.ds.assets().bank_account_holdings[this.editingIndex] = asset as IBankAccount;
+          this.ds.updateBankAccount(this.editingIndex, asset as IBankAccount);
         break;
       case 'nq_account':
-        if (this.ds.assets().nq_account_holdings)
-          this.ds.assets().nq_account_holdings[this.editingIndex] = asset as INQAccount;
+          this.ds.updateNQAccount(this.editingIndex, asset as INQAccount);
         break;
       case 'retirement_account':
         this.ds.updateRetirementAccount(this.editingIndex, asset as IRetirementAccount);
@@ -367,35 +366,7 @@ export class AssetsComponent {
     this.clearEditingAssets();
   }
 
-  closeEditModal() {
-    this.showEditModal = false;
-    this.currentAssetType = null;
-    this.editingIndex = -1;
-    this.clearEditingAssets();
-  }
 
-  private clearEditingAssets() {
-    this.editingRealEstate = null;
-    this.editingBankAccount = null;
-    this.editingNQAccount = null;
-    this.editingRetirementAccount = null;
-    this.editingLifeInsurance = null;
-    this.editingBusinessInterest = null;
-    this.editingDigitalAsset = null;
-    this.editingOtherAsset = null;
-  }
-
-  // --- Formatting Methods ---
-
-  formatCurrency(value: number | null): string {
-    if (!value) return '$0';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
-  }
 
   getAssetDisplayName(assetType: string, asset: any): string {
     switch (assetType) {
@@ -425,9 +396,9 @@ export class AssetsComponent {
       case 'real_estate':
         return asset.ownership_value || asset.net_value || asset.estimated_value || 0;
       case 'bank_account':
-        return asset.approximate_balance || 0;
+        return asset.approximate_value || 0;
       case 'nq_account':
-        return asset.approximate_balance || 0;
+        return asset.approximate_value || 0;
       case 'retirement_account':
         return asset.approximate_value || 0;
       case 'life_insurance':
@@ -441,5 +412,23 @@ export class AssetsComponent {
       default:
         return 0;
     }
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.currentAssetType = null;
+    this.editingIndex = -1;
+    this.clearEditingAssets();
+  }
+
+  clearEditingAssets() {
+    this.editingRealEstate = null;
+    this.editingBankAccount = null;
+    this.editingNQAccount = null;
+    this.editingRetirementAccount = null;
+    this.editingLifeInsurance = null;
+    this.editingBusinessInterest = null;
+    this.editingDigitalAsset = null;
+    this.editingOtherAsset = null;
   }
 }
