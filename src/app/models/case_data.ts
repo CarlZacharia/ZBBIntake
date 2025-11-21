@@ -28,7 +28,7 @@ export interface IBankAccount {
   institution_name: string;
   account_type: 'checking' | 'savings' | 'money_market' | 'cd' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
-  approximate_balance: number | null;
+  approximate_value: number | null;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
@@ -45,7 +45,7 @@ export interface INQAccount {
   institution_name: string;
   account_type: 'mutual fund' | 'stocks' | 'bons' | 'money market' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
-  approximate_balance: number | null;
+  approximate_value: number | null;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];

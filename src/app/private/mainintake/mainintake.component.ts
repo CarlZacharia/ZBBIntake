@@ -58,12 +58,12 @@ export class MainintakeComponent {
 
     // Bank Accounts
     assets.bank_account_holdings.forEach(ba => {
-      total += ba.approximate_balance || 0;
+      total += ba.approximate_value || 0;
     });
 
     // Non-Qualified Accounts
     assets.nq_account_holdings.forEach(nq => {
-      total += nq.approximate_balance || 0;
+      total += nq.approximate_value || 0;
     });
 
     // Retirement Accounts

@@ -63,6 +63,15 @@ export class AssetsComponent {
     return this.isMarriedSignal();
   }
 
+
+    formatCurrency(value: number): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  }
   // --- Asset Filtering Methods ---
 
   getClientAssets(assetType: string): any[] {
@@ -400,7 +409,7 @@ export class AssetsComponent {
       case 'nq_account':
         return asset.approximate_value || 0;
       case 'retirement_account':
-        return asset.approximate_value || 0;
+        return asset.apprfoximate_value || 0;
       case 'life_insurance':
         return asset.death_benefit || 0;
       case 'business_interest':

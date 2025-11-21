@@ -32,11 +32,11 @@ export class SummaryComponent {
     });
 
     assets.bank_account_holdings.forEach(ba => {
-      total += ba.approximate_balance || 0;
+      total += ba.approximate_value || 0;
     });
 
     assets.nq_account_holdings.forEach(nq => {
-      total += nq.approximate_balance || 0;
+      total += nq.approximate_value || 0;
     });
 
     assets.retirement_account_holdings.forEach(ra => {
@@ -100,10 +100,10 @@ export class SummaryComponent {
         assets.real_estate_holdings.forEach(a => total += a.ownership_value || a.net_value || a.estimated_value || 0);
         break;
       case 'bank_account':
-        assets.bank_account_holdings.forEach(a => total += a.approximate_balance || 0);
+        assets.bank_account_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'nq_account':
-        assets.nq_account_holdings.forEach(a => total += a.approximate_balance || 0);
+        assets.nq_account_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'retirement':
         assets.retirement_account_holdings.forEach(a => total += a.approximate_value || 0);
