@@ -7,6 +7,7 @@
 
   <!-- Personal Information Section -->
   <section class="summary-section">
+    <h2 class="section-title">Assets Overview</h2>
     <h2 class="section-title">Personal Information</h2>
     <div class="info-grid">
       <div class="info-item">
@@ -362,7 +363,158 @@
         <span class="total-label">Total Estimated Value:</span>
         <span class="total-value">{{formatCurrency(getTotalAssetValue())}}</span>
       </div>
+    </div>
 
+    <!-- Real Estate -->
+    <div class="asset-category" *ngIf="ds.assets().real_estate_holdings.length > 0">
+      <h3 class="category-title">Real Estate ({{ds.assets().real_estate_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('real_estate'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().real_estate_holdings">
+        <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
+        <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.estimated_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
+          <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Accounts -->
+    <div class="asset-category" *ngIf="ds.assets().bank_account_holdings.length > 0">
+      <h3 class="category-title">Bank Accounts ({{ds.assets().bank_account_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('bank_account'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().bank_account_holdings">
+        <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.title_type">Title: {{asset.title_type}}</span>
+          <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NQ Accounts -->
+    <div class="asset-category" *ngIf="ds.assets().nq_account_holdings.length > 0">
+      <h3 class="category-title">NQ Accounts ({{ds.assets().nq_account_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('nq_account'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().nq_account_holdings">
+        <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.title_type">Title: {{asset.title_type}}</span>
+          <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retirement Accounts -->
+    <div class="asset-category" *ngIf="ds.assets().retirement_account_holdings.length > 0">
+      <h3 class="category-title">Retirement Accounts ({{ds.assets().retirement_account_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('retirement'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().retirement_account_holdings">
+        <div class="asset-name">{{asset.institution_name}} - {{asset.account_type}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.owned_by">Owned by: {{asset.owned_by}}</span>
+          <span *ngIf="asset.rmd_age_reached"> | RMD Age Reached</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Life Insurance -->
+    <div class="asset-category" *ngIf="ds.assets().life_insurance_holdings.length > 0">
+      <h3 class="category-title">Life Insurance ({{ds.assets().life_insurance_holdings.length}})</h3>
+      <div class="category-total">Total Death Benefit: {{formatCurrency(getAssetCategoryTotal('insurance'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().life_insurance_holdings">
+        <div class="asset-name">{{asset.insurance_company}} - {{asset.policy_type}}</div>
+        <div class="asset-value">Death Benefit: {{formatCurrency(asset.death_benefit)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.cash_value">Cash Value: {{formatCurrency(asset.cash_value)}}</span>
+          <span *ngIf="asset.owned_by_trust"> | Owned by Trust: {{asset.trust_name}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Interests -->
+    <div class="asset-category" *ngIf="ds.assets().business_interest_holdings.length > 0">
+      <h3 class="category-title">Business Interests ({{ds.assets().business_interest_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('business'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().business_interest_holdings">
+        <div class="asset-name">{{asset.business_name}} ({{asset.business_type}})</div>
+        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.ownership_percentage">Ownership: {{asset.ownership_percentage}}%</span>
+          <span *ngIf="asset.buy_sell_agreement_exists"> | Buy-Sell Agreement Exists</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Digital Assets -->
+    <div class="asset-category" *ngIf="ds.assets().digital_asset_holdings.length > 0">
+      <h3 class="category-title">Digital Assets ({{ds.assets().digital_asset_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('digital'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().digital_asset_holdings">
+        <div class="asset-name">{{asset.asset_name}} ({{asset.asset_type}})</div>
+        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.platform_or_service">Platform: {{asset.platform_or_service}}</span>
+          <span *ngIf="asset.intended_disposition"> | Disposition: {{asset.intended_disposition}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Assets -->
+    <div class="asset-category" *ngIf="ds.assets().other_asset_holdings.length > 0">
+      <h3 class="category-title">Other Assets ({{ds.assets().other_asset_holdings.length}})</h3>
+      <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('other'))}}</div>
+      <div class="asset-item" *ngFor="let asset of ds.assets().other_asset_holdings">
+        <div class="asset-name">{{asset.description}} ({{asset.asset_type}})</div>
+        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-details">
+          <span *ngIf="asset.is_heirloom">Heirloom</span>
+          <span *ngIf="asset.intended_recipient"> | Intended Recipient: {{asset.intended_recipient}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="getTotalAssetValue() === 0" class="no-data">No assets recorded</div>
+  </section>
+
+  <section class="summary-section">
+    <h2 class="section-title">Debts Overview</h2>
+    <div class="debt-summary">
+      <div class="total-debts">
+        <span class="total-label">Total Debts:</span>
+        <span class="total-value">{{formatCurrency(ds.totalDebts())}}</span>
+      </div>
+      <table class="debts-table" *ngIf="ds.debts().length > 0">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Creditor</th>
+            <th>Account #</th>
+            <th>Current Balance</th>
+            <th>Monthly Payment</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let debt of ds.debts()">
+            <td>{{debt.debt_type}}</td>
+            <td>{{debt.creditor_name}}</td>
+            <td>{{debt.account_number}}</td>
+            <td>{{formatCurrency(debt.current_balance)}}</td>
+            <td>{{formatCurrency(debt.monthly_payment)}}</td>
+            <td>{{debt.notes}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="ds.debts().length === 0" class="no-data">No debts recorded</div>
+    </div>
+  </section>
+
+  <section class="summary-section">
+       <h2 class="section-title">Asset Categories Overview</h2>
       <!-- Real Estate -->
       <div class="asset-category" *ngIf="ds.assets().real_estate_holdings.length > 0">
         <h3 class="category-title">Real Estate ({{ds.assets().real_estate_holdings.length}})</h3>
@@ -476,7 +628,7 @@
       </div>
 
       <div *ngIf="getTotalAssetValue() === 0" class="no-data">No assets recorded</div>
-    </div>
+
   </section>
 
   <!-- Fiduciaries Section -->

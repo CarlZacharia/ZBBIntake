@@ -1,0 +1,140 @@
+<div class="debts-container">
+  <h2>Debts</h2>
+  <div class="debts-note">
+    <strong>Note:</strong> Mortgages and vehicle loans should be entered in the section for that asset (Real Estate or Other Asset) and <u>not</u> entered or duplicated here.
+  </div>
+
+  <div class="add-buttons-row">
+    <button class="btn btn-add" (click)="openAddModal()">+ New Debt</button>
+  </div>
+
+  <table class="debts-table" *ngIf="debts().length > 0">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Creditor</th>
+        <th>Account #</th>
+        <th>Current Balance</th>
+        <th>Monthly Payment</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let debt of debts(); let i = index" (click)="openEditModal(i)" class="clickable-row">
+        <td>{{ debt.debt_type }}</td>
+        <td>{{ debt.creditor_name }}</td>
+        <td>{{ debt.account_number }}</td>
+        <td>{{ debt.current_balance | currency:'USD':'symbol':'1.0-0' }}</td>
+        <td>{{ debt.monthly_payment | currency:'USD':'symbol':'1.0-0' }}</td>
+        <td class="actions" (click)="$event.stopPropagation()">
+          <button class="btn-small btn-delete" (click)="deleteDebt(i)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add Debt Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header add-modal-header">
+        <h3>Add Debt</h3>
+        <button class="close-btn" (click)="closeAddModal()">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="editingDebt">
+        <form>
+          <div class="form-group">
+            <label>Debt Type *</label>
+            <select [(ngModel)]="editingDebt.debt_type" name="debt_type" required>
+              <option value="credit_card">Credit Card</option>
+              <option value="student_loan">Student Loan</option>
+              <option value="personal_loan">Personal Loan</option>
+              <option value="medical">Medical</option>
+              <option value="business_loan">Business Loan</option>
+              <option value="tax">Tax</option>
+              <option value="co-signer">Co-signer</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Creditor Name *</label>
+            <input type="text" [(ngModel)]="editingDebt.creditor_name" name="creditor_name" required>
+          </div>
+          <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" [(ngModel)]="editingDebt.account_number" name="account_number">
+          </div>
+          <div class="form-group">
+            <label>Current Balance *</label>
+            <input type="number" [(ngModel)]="editingDebt.current_balance" name="current_balance" required>
+          </div>
+          <div class="form-group">
+            <label>Monthly Payment</label>
+            <input type="number" [(ngModel)]="editingDebt.monthly_payment" name="monthly_payment">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea [(ngModel)]="editingDebt.notes" name="notes" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveNewDebt()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Debt Modal -->
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header edit-modal-header">
+        <h3>Edit Debt</h3>
+        <button class="close-btn" (click)="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="editingDebt">
+        <form>
+          <div class="form-group">
+            <label>Debt Type *</label>
+            <select [(ngModel)]="editingDebt.debt_type" name="debt_type" required>
+              <option value="credit_card">Credit Card</option>
+              <option value="student_loan">Student Loan</option>
+              <option value="personal_loan">Personal Loan</option>
+              <option value="medical">Medical</option>
+              <option value="business_loan">Business Loan</option>
+              <option value="tax">Tax</option>
+              <option value="co-signer">Co-signer</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Creditor Name *</label>
+            <input type="text" [(ngModel)]="editingDebt.creditor_name" name="creditor_name" required>
+          </div>
+          <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" [(ngModel)]="editingDebt.account_number" name="account_number">
+          </div>
+          <div class="form-group">
+            <label>Current Balance *</label>
+            <input type="number" [(ngModel)]="editingDebt.current_balance" name="current_balance" required>
+          </div>
+          <div class="form-group">
+            <label>Monthly Payment</label>
+            <input type="number" [(ngModel)]="editingDebt.monthly_payment" name="monthly_payment">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea [(ngModel)]="editingDebt.notes" name="notes" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveEditDebt()">Save</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="debts().length >= 0" class="section-total">
+    Total Debts: <strong>{{ totalDebts() | currency:'USD':'symbol':'1.0-0' }}</strong>
+  </div>
+</div>

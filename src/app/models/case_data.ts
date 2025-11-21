@@ -150,6 +150,8 @@ export interface IOtherAsset {
   asset_type: 'vehicle' | 'boat' | 'rv' | 'motorcycle' | 'aircraft' | 'art' | 'antiques' | 'jewelry' | 'collectibles' | 'wine' | 'precious_metals' | 'intellectual_property' | 'livestock' | 'farm_equipment' | 'timeshare' | 'other';
   description: string;
   estimated_value: number | null;
+  debtOwed: number | null; // Amount of debt associated with the asset (e.g., vehicle loan)
+  netValue: number | null; // estimated_value - debtOwed
   is_heirloom: boolean;
   intended_recipient: string | null;
   special_instructions: string | null;
@@ -158,6 +160,21 @@ export interface IOtherAsset {
   owned_by: 'client' | 'spouse' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
+}
+
+/**
+ * Interface for Debts
+ */
+export interface IDebt {
+  debt_id: number | null;
+  debt_type: 'credit_card' | 'student_loan' | 'personal_loan' | 'medical' | 'business_loan' | 'tax' | 'co-signer' | 'other';
+  creditor_name: string;
+  account_number: string | null;
+  original_amount: number | null;
+  current_balance: number | null;
+  monthly_payment: number | null;
+  notes: string | null;
+  owned_by: 'client' | 'spouse' | 'joint' | null;
 }
 
 /**
@@ -382,5 +399,6 @@ export interface ICaseData {
   charities: ICharity[];
   fiduciaries: IFiduciary[];
   guardian_preferences: IGuardianPreferences;
-  assets: IAssets; // <-- Added assets object
+  assets: IAssets;
+  debts: IDebt[];
 }

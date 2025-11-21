@@ -1095,11 +1095,11 @@
         <div class="form-row">
           <div class="form-group">
             <label>Estimated Value</label>
-            <input type="number" [(ngModel)]="editingRealEstate.estimated_value" name="estimated_value">
+            <input type="number" [(ngModel)]="editingRealEstate.estimated_value" name="estimated_value" (ngModelChange)="onRealEstateValueChange()">
           </div>
           <div class="form-group">
             <label>Mortgage Balance</label>
-            <input type="number" [(ngModel)]="editingRealEstate.mortgage_balance" name="mortgage_balance">
+            <input type="number" [(ngModel)]="editingRealEstate.mortgage_balance" name="mortgage_balance" (ngModelChange)="onRealEstateValueChange()">
           </div>
         </div>
 
@@ -2376,6 +2376,16 @@
           <label>Estimated Value</label>
           <input type="number" [(ngModel)]="editingOtherAsset.estimated_value" name="estimated_value">
         </div>
+        <!-- Vehicle Loan (only for vehicles) -->
+        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'vehicle'">
+          <label>Vehicle Loan</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.debtOwed" name="debtOwed" placeholder="Amount of vehicle loan" (ngModelChange)="onOtherAssetValueChange()">
+        </div>
+        <!-- Net Value (auto-calculated) -->
+        <div class="form-group">
+          <label>Net Value</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.netValue" name="netValue" placeholder="Net value (estimated - debt)" readonly>
+        </div>
 
         <!-- Heirloom Status -->
         <div class="form-group">
@@ -2469,7 +2479,17 @@
         <!-- Estimated Value -->
         <div class="form-group">
           <label>Estimated Value</label>
-          <input type="number" [(ngModel)]="editingOtherAsset.estimated_value" name="estimated_value">
+          <input type="number" [(ngModel)]="editingOtherAsset.estimated_value" name="estimated_value" (ngModelChange)="onOtherAssetValueChange()">
+        </div>
+        <!-- Vehicle Loan (only for vehicles) -->
+        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'vehicle'">
+          <label>Vehicle Loan</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.debtOwed" name="debtOwed" placeholder="Amount of vehicle loan" (ngModelChange)="onOtherAssetValueChange()">
+        </div>
+        <!-- Net Value (auto-calculated) -->
+        <div class="form-group">
+          <label>Net Value</label>
+          <input type="number" [(ngModel)]="editingOtherAsset.netValue" name="netValue" placeholder="Net value (estimated - debt)" readonly>
         </div>
 
         <!-- Heirloom Status -->

@@ -4,6 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { IDebt } from '../models/case_data';
+// ...existing code...
+// Add IDebt to the import list above
 
 
 // --- DATA SERVICE ---
@@ -91,14 +94,15 @@ export class DataService {
     // Initializing the new assets object with empty arrays
     assets: {
       real_estate_holdings: [],
-      bank_account_holdings: [],      // <-- Add this line
-      nq_account_holdings: [],        // <-- Add this line
+      bank_account_holdings: [],
+      nq_account_holdings: [],
       retirement_account_holdings: [],
       life_insurance_holdings: [],
       business_interest_holdings: [],
       digital_asset_holdings: [],
       other_asset_holdings: []
-    }
+    },
+    debts: []
   });
 
   // Computed signals for reactive derived state
@@ -108,6 +112,14 @@ export class DataService {
   readonly maritalInfo = computed(() => this._casedata().marital_info);
   readonly children = computed(() => this._casedata().children);
   readonly assets = computed(() => this._casedata().assets);
+  readonly debts = computed(() => this._casedata().debts);
+
+  // Computed signal for total debts
+  readonly totalDebts = computed(() => {
+    const debts = this.debts();
+    if (!debts || debts.length === 0) return 0;
+    return debts.reduce((sum, debt) => sum + (Number(debt.current_balance) || 0), 0);
+  });
 
   // Computed signals for validation and completion tracking
   readonly isPersonalInfoComplete = computed(() => {
@@ -804,6 +816,8 @@ export class DataService {
     asset_type: 'other',
     description: '',
     estimated_value: null,
+    debtOwed: 0,
+    netValue: null,
     is_heirloom: false,
     intended_recipient: null,
     special_instructions: null,
@@ -920,7 +934,8 @@ export class DataService {
         business_interest_holdings: [],
         digital_asset_holdings: [],
         other_asset_holdings: [],
-      }
+      },
+      debts: []
     });
   }
 
@@ -983,6 +998,35 @@ export class DataService {
         throw error;
       })
     );
+  }
+
+  /** CRUD for Debts
+   * Add, Update, Remove methods for debts can be implemented here
+  */
+
+    // Debts CRUD methods
+  addDebt(debt: IDebt) {
+    this._casedata.update(current => ({
+      ...current,
+      debts: [...current.debts, debt]
+    }));
+    this.autoSave();
+  }
+
+  updateDebt(index: number, updates: Partial<IDebt>) {
+    this._casedata.update(current => ({
+      ...current,
+      debts: current.debts.map((debt, i) => i === index ? { ...debt, ...updates } : debt)
+    }));
+    this.autoSave();
+  }
+
+  removeDebt(index: number) {
+    this._casedata.update(current => ({
+      ...current,
+      debts: current.debts.filter((_, i) => i !== index)
+    }));
+    this.autoSave();
   }
 
   /**

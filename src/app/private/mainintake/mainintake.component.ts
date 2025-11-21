@@ -7,13 +7,14 @@ import { ChildrenComponent } from '../children/children.component';
 import { CharitiesComponent } from '../charities/charities.component';
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
+import { DebtsComponent } from '../debts/debts.component';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { ICaseData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, SummaryComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, DebtsComponent, SummaryComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })

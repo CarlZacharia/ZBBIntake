@@ -24,6 +24,23 @@ type AssetType = 'real_estate' | 'bank_account' | 'nq_account' | 'retirement_acc
   styleUrls: ['./assets.component.css']
 })
 export class AssetsComponent {
+  // Auto-calculate netValue for real estate
+  onRealEstateValueChange() {
+    if (this.editingRealEstate) {
+      const est = Number(this.editingRealEstate.estimated_value) || 0;
+      const mort = Number(this.editingRealEstate.mortgage_balance) || 0;
+      this.editingRealEstate.net_value = est - mort;
+    }
+  }
+
+  // Auto-calculate netValue for other assets
+  onOtherAssetValueChange() {
+    if (this.editingOtherAsset) {
+      const est = Number(this.editingOtherAsset.estimated_value) || 0;
+      const debt = Number(this.editingOtherAsset.debtOwed) || 0;
+      this.editingOtherAsset.netValue = est - debt;
+    }
+  }
 
   // Modal visibility flags
   showAddModal = false;
@@ -142,7 +159,8 @@ export class AssetsComponent {
           value = asset.estimated_value || 0;
           break;
         case 'other_asset':
-          value = asset.estimated_value || 0;
+          // Use netValue if present, else estimated_value
+          value = (asset.netValue != null ? asset.netValue : asset.estimated_value) || 0;
           break;
       }
       return total + value;
@@ -417,7 +435,7 @@ export class AssetsComponent {
       case 'digital_asset':
         return asset.estimated_value || 0;
       case 'other_asset':
-        return asset.estimated_value || 0;
+        return (asset.netValue != null ? asset.netValue : asset.estimated_value) || 0;
       default:
         return 0;
     }
