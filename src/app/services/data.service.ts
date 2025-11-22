@@ -4,6 +4,19 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+// Combined interface for client-centric data
+export interface IClientData {
+  client: IClient;
+  personal: IPersonal;
+  marital_info: IMaritalInfo;
+  children: IChild[];
+  family_members: IFamilyMember[];
+  charities: ICharity[];
+  fiduciaries: IFiduciary[];
+  guardian_preferences: IGuardianPreferences;
+  assets: IAssets;
+  debts: IDebt[];
+}
 import { IDebt } from '../models/case_data';
 // ...existing code...
 // Add IDebt to the import list above
@@ -15,12 +28,12 @@ import { IDebt } from '../models/case_data';
   providedIn: 'root'
 })
 export class DataService {
-  private readonly API_URL = 'http://localhost:3000/api/cases'; // Replace with your API URL
+  private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
   private readonly authService = inject(AuthService);
   private readonly http = inject(HttpClient);
 
   // Primary signals for reactive state management
-  private _casedata = signal<ICaseData>({
+  private _casedata = signal<IClientData>({
     client: {
       client_id: null,
       user_account_id: null,
@@ -144,9 +157,6 @@ export class DataService {
 
   // Methods to update specific parts of the case data
   updatePersonal(updates: Partial<IPersonal>) {
-    if (!this.authService.isAuthenticated()) {
-      throw new Error('User must be authenticated to update data');
-    }
 
     this._casedata.update(current => ({
       ...current,
@@ -157,9 +167,6 @@ export class DataService {
   }
 
   updateMaritalInfo(updates: Partial<IMaritalInfo>) {
-    if (!this.authService.isAuthenticated()) {
-      throw new Error('User must be authenticated to update data');
-    }
 
     this._casedata.update(current => ({
       ...current,
@@ -170,9 +177,6 @@ export class DataService {
   }
 
   updatePersonalAddress(updates: Partial<IAddress>) {
-    if (!this.authService.isAuthenticated()) {
-      throw new Error('User must be authenticated to update data');
-    }
 
     this._casedata.update(current => ({
       ...current,
@@ -186,9 +190,6 @@ export class DataService {
   }
 
   addPreviousAddress(address: IAddress) {
-    if (!this.authService.isAuthenticated()) {
-      throw new Error('User must be authenticated to update data');
-    }
 
     this._casedata.update(current => ({
       ...current,
@@ -225,22 +226,19 @@ export class DataService {
 
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
+
+
+
+
     try {
-      if (!this.authService.isAuthenticated()) {
-        throw new Error('User must be authenticated to save data');
-      }
-
       console.log('Saving personal information:', this.personal());
-
       // Use the new saveCaseData method
       const savedData = await this.saveCaseData().toPromise();
-
       if (savedData) {
-        // Update local state with saved data
-        this._casedata.set(savedData);
+        // Update local state with saved data (cast to IClientData)
+        this._casedata.set(savedData as IClientData);
         return true;
       }
-
       return false;
     } catch (error) {
       console.error('Failed to save personal info:', error);
@@ -841,13 +839,10 @@ export class DataService {
   }
 
   /**
-   * Check if current user can access this case data
+   * Check if current user is authenticated (client-based)
    */
-  canAccessCaseData(): boolean {
-    const userId = this.authService.getCurrentUserId();
-    const caseUserId = this._casedata().client.user_account_id;
-
-    return !!(userId && caseUserId && userId === caseUserId);
+  isClientAuthenticated(): boolean {
+    return !!this.authService.getCurrentUserId();
   }
 
   /**
@@ -942,7 +937,7 @@ export class DataService {
   /**
    * Force save case data immediately (bypass auto-save delay)
    */
-  forceSave(): Observable<ICaseData> {
+  forceSave(): Observable<IClientData> {
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
       this.saveTimeout = undefined;
@@ -988,11 +983,12 @@ export class DataService {
       return throwError(() => new Error('User not authenticated'));
     }
 
-    return this.http.get<ICaseData>(`${this.API_URL}/user/${userId}`).pipe(
+    // Fetch combined client data for the current user
+    return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
       map(response => response || null),
       catchError(error => {
         if (error.status === 404) {
-          // No case data exists yet - this is normal for new users
+          // No client data exists yet - this is normal for new users
           return [null];
         }
         throw error;
@@ -1032,30 +1028,27 @@ export class DataService {
   /**
    * Save case data to server
    */
-  saveCaseData(): Observable<ICaseData> {
+  saveCaseData(): Observable<IClientData> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
-      return throwError(() => new Error('User not authenticated'));
+      // Silently skip saving if no user is authenticated
+      return new Observable<IClientData>(observer => {
+        observer.complete();
+      });
     }
 
-    const caseData = this._casedata();
-
-    // Ensure user_account_id is set
+    const clientData = this._casedata();
+    // Ensure user_account_id is set in client section
     const dataToSave = {
-      ...caseData,
+      ...clientData,
       client: {
-        ...caseData.client,
+        ...clientData.client,
         user_account_id: userId
       }
     };
 
-    if (caseData.client.client_id) {
-      // Update existing case
-      return this.http.put<ICaseData>(`${this.API_URL}/${caseData.client.client_id}`, dataToSave);
-    } else {
-      // Create new case
-      return this.http.post<ICaseData>(`${this.API_URL}`, dataToSave);
-    }
+    // Save the full client data object (POST to clientdata.php)
+    return this.http.post<IClientData>(`${this.API_URL}?id=${userId}`, dataToSave);
   }
 
   /**
@@ -1064,9 +1057,6 @@ export class DataService {
   private saveTimeout?: any;
 
   private autoSave(): void {
-    if (!this.authService.isAuthenticated()) {
-      return;
-    }
 
     // Clear existing timeout
     if (this.saveTimeout) {
@@ -1077,9 +1067,9 @@ export class DataService {
     this.saveTimeout = setTimeout(() => {
       this.saveCaseData().subscribe({
         next: (savedData) => {
-          // Update local data with server response (includes IDs)
-          this._casedata.set(savedData);
-          console.log('Case data auto-saved successfully');
+          // Update local client data with server response (includes IDs)
+          this._casedata.set(savedData as IClientData);
+          console.log('Client data auto-saved successfully');
         },
         error: (error) => {
           console.error('Auto-save failed:', error);

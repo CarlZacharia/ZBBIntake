@@ -49,9 +49,10 @@ export class LoginComponent {
     this.fieldErrors.set({});
 
     this.authService.login(this.loginData()).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.success) {
           // Successful login - redirect to return URL
+          console.log(this.authService);
           this.router.navigate([this.returnUrl]);
         } else {
           this.error.set(response.message || 'Login failed. Please try again.');

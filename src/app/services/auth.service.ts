@@ -19,7 +19,7 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'https://www.zacbrownportal.com/api/auth'; // Remote PHP backend URL
+  private readonly API_URL = 'https://zacbrownportal.com/api/auth'; // Remote PHP backend URL
   private readonly TOKEN_KEY = 'zacbrownportal_auth_token';
   private readonly REFRESH_TOKEN_KEY = 'zacbrownportal_refresh_token';
   private readonly USER_KEY = 'zacbrownportal_user';
@@ -144,9 +144,7 @@ export class AuthService {
       suffix: registerData.suffix,
       phone: registerData.phone,
       preferredContactMethod: registerData.preferred_contact_method,
-      userCategory: registerData.user_category,
-      providerName: registerData.provider_name,
-      providerType: registerData.provider_type
+      userCategory: registerData.user_category
     };
 
     return this.http.post<any>(`${this.API_URL}/register.php`, phpData).pipe(

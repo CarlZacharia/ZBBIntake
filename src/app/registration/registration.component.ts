@@ -12,10 +12,7 @@ import { IRegisterData, IAuthError } from '../models/user';
   styleUrl: './registration.component.css'
 })
 export class RegistrationComponent {
-  // Registration type and provider fields
-  registrationType: 'enduser' | 'provider' = 'enduser';
-  providerName: string = '';
-  providerType: string = '';
+
 
   // Form data signal
   registerData = signal<IRegisterData>({
@@ -31,8 +28,6 @@ export class RegistrationComponent {
     terms_accepted: false,
     privacy_accepted: false,
     user_category: 'enduser',
-    provider_name: '',
-    provider_type: ''
   });
 
   // State signals
@@ -55,14 +50,6 @@ export class RegistrationComponent {
       this.markFormGroupTouched(form);
       return;
     }
-
-    // Set user_category, provider_name, and provider_type based on registration type
-    this.registerData.update(data => ({
-      ...data,
-      user_category: this.registrationType,
-      provider_name: this.registrationType === 'provider' ? this.providerName : '',
-      provider_type: this.registrationType === 'provider' ? this.providerType : ''
-    }));
 
     // Validate passwords match
     if (this.registerData().password !== this.registerData().confirmPassword) {

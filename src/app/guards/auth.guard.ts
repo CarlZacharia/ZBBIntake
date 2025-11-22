@@ -48,6 +48,7 @@ export const emailVerifiedGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
 
     const user = authService.currentUser();
+    console.log('Email Verified Guard - Current User:', user);
 
     if (!authService.isAuthenticated()) {
         router.navigate(['/login']);
