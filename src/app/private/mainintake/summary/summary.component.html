@@ -37,9 +37,9 @@
       <div class="info-item full-width">
         <span class="info-label">Current Address:</span>
         <span class="info-value">
-          {{ds.personal().current_address.address_line1}}
-          <span *ngIf="ds.personal().current_address.address_line2">, {{ds.personal().current_address.address_line2}}</span>,
-          {{ds.personal().current_address.city}}, {{ds.personal().current_address.state}} {{ds.personal().current_address.zip}}
+          {{ds.personal().address_line1}}
+          <span *ngIf="ds.personal().address_line2">, {{ds.personal().address_line2}}</span>,
+          {{ds.personal().city}}, {{ds.personal().state}} {{ds.personal().zip}}
         </span>
       </div>
       <div class="info-item">

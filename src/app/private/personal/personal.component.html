@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6" *ngIf="personal() && maritalInfo()">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
@@ -139,7 +139,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 1 *</span>
                 </label>
-                <input type="text" [value]="(personal().current_address.address_line1) || ''"
+                <input type="text" [value]="(personal().address_line1) || ''"
                   (input)="onInputChange('address_line1', $event, updateAddress.bind(this))" name="address_line1"
                   placeholder="Street address" class="input input-bordered w-full" />
               </div>
@@ -149,7 +149,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 2</span>
                 </label>
-                <input type="text" [value]="(personal().current_address.address_line2) || ''"
+                <input type="text" [value]="(personal().address_line2) || ''"
                   (input)="onInputChange('address_line2', $event, updateAddress.bind(this))" name="address_line2"
                   placeholder="Apt, Suite, Unit, etc." class="input input-bordered w-full" />
               </div>
@@ -159,7 +159,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">City *</span>
                 </label>
-                <input type="text" [value]="(personal().current_address.city) || ''"
+                <input type="text" [value]="(personal().city) || ''"
                   (input)="onInputChange('city', $event, updateAddress.bind(this))" name="city" placeholder="City"
                   class="input input-bordered w-full" />
               </div>
@@ -169,7 +169,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">State *</span>
                 </label>
-                <select [value]="(personal().current_address.state) || ''"
+                <select [value]="(personal().state) || ''"
                   (input)="onInputChange('state', $event, updateAddress.bind(this))" name="state"
                   class="select select-bordered w-full">
                   <option value="">Select state...</option>
@@ -182,7 +182,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">ZIP Code *</span>
                 </label>
-                <input type="text" [value]="(personal().current_address.zip) || ''"
+                <input type="text" [value]="(personal().zip) || ''"
                   (input)="onInputChange('zip', $event, updateAddress.bind(this))" name="zip" placeholder="12345"
                   class="input input-bordered w-full" />
               </div>

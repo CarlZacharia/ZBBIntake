@@ -11,16 +11,16 @@ import { DataService } from '../../../services/data.service';
 export class SummaryComponent {
 
   // Computed signals for reactive data access
-  readonly casedata = computed(() => this.ds.casedata());
+  readonly clientdata = computed(() => this.ds.clientdata());
   readonly assets = computed(() => this.ds.assets());
   readonly personal = computed(() => this.ds.personal());
   readonly maritalInfo = computed(() => this.ds.maritalInfo());
 
   // Computed signals for individual arrays
-  readonly children = computed(() => this.ds.casedata().children);
-  readonly charities = computed(() => this.ds.casedata().charities);
-  readonly fiduciaries = computed(() => this.ds.casedata().fiduciaries);
-  readonly familyMembers = computed(() => this.ds.casedata().family_members);
+  readonly children = computed(() => this.ds.clientdata().children);
+  readonly charities = computed(() => this.ds.clientdata().charities);
+  readonly fiduciaries = computed(() => this.ds.clientdata().fiduciaries);
+  readonly familyMembers = computed(() => this.ds.clientdata().family_members);
 
   // Computed signal for total asset value
   readonly totalAssetValue = computed(() => {

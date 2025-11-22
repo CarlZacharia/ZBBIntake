@@ -362,8 +362,12 @@ export interface IPersonal {
   date_of_birth: string | null;
   ssn_encrypted: string | null;
   us_citizen: boolean | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state: string | null;
+  zip: string | null;
   citizenship_country: string | null;
-  current_address: IAddress;
   years_at_address: number | null;
   previous_addresses: IAddress[];
   mobile_phone: string | null;
@@ -390,7 +394,7 @@ export interface IClient {
 /**
  * Main data structure that combines all related objects.
  */
-export interface ICaseData {
+export interface IClientData {
   client: IClient;
   personal: IPersonal;
   marital_info: IMaritalInfo;
@@ -398,7 +402,7 @@ export interface ICaseData {
   family_members: IFamilyMember[];
   charities: ICharity[];
   fiduciaries: IFiduciary[];
-  guardian_preferences: IGuardianPreferences;
+  guardianship_preferences: IGuardianPreferences;
   assets: IAssets;
   debts: IDebt[];
 }

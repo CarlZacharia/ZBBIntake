@@ -26,7 +26,7 @@ export class ChildrenComponent {
 
   // Reactive data access
   readonly children = computed(() => this.ds.children());
-  readonly familyMembers = computed(() => this.ds.casedata().family_members);
+  readonly familyMembers = computed(() => this.ds.clientdata().family_members);
 
   // US States array for dropdowns
   states = [

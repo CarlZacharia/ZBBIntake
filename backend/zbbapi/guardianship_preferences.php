@@ -9,18 +9,21 @@ function getInput() {
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO guardianship_preferences (case_id, child_raising_values, location_importance, religious_upbringing_preferences, education_priorities, other_preferences) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO guardianship_preferences (portal_user_id, child_raising_values, location_importance, religious_upbringing_preferences, education_priorities, other_preferences) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("isssss",
-        $data['case_id'],
-        $data['child_raising_values'],
-        $data['location_importance'],
-        $data['religious_upbringing_preferences'],
-        $data['education_priorities'],
-        $data['other_preferences']
+        $data['portal_user_id'] ?? null,
+        $data['child_raising_values'] ?? null,
+        $data['location_importance'] ?? null,
+        $data['religious_upbringing_preferences'] ?? null,
+        $data['education_priorities'] ?? null,
+        $data['other_preferences'] ?? null
     );
     $stmt->execute();
-    echo json_encode(['preference_id' => $stmt->insert_id]);
+    $new_id = $stmt->insert_id;
     $stmt->close();
+    // Return the full inserted object
+    $result = $conn->query("SELECT * FROM guardianship_preferences WHERE preference_id = $new_id");
+    echo json_encode($result->fetch_assoc());
 }
 
 // READ ALL

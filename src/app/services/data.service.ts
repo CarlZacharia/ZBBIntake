@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { ICaseData, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IClient, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import { IClient, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
 // Combined interface for client-centric data
 export interface IClientData {
   client: IClient;
@@ -13,7 +13,7 @@ export interface IClientData {
   family_members: IFamilyMember[];
   charities: ICharity[];
   fiduciaries: IFiduciary[];
-  guardian_preferences: IGuardianPreferences;
+  guardianship_preferences: IGuardianPreferences;
   assets: IAssets;
   debts: IDebt[];
 }
@@ -33,7 +33,7 @@ export class DataService {
   private readonly http = inject(HttpClient);
 
   // Primary signals for reactive state management
-  private _casedata = signal<IClientData>({
+  private _clientdata = signal<IClientData>({
     client: {
       client_id: null,
       user_account_id: null,
@@ -53,13 +53,11 @@ export class DataService {
       ssn_encrypted: null,
       us_citizen: null,
       citizenship_country: 'USA',
-      current_address: {
-        address_line1: '',
-        address_line2: null,
-        city: '',
-        state: '',
-        zip: ''
-      },
+      address_line1: '',
+      address_line2: null,
+      city: '',
+      state: '',
+      zip: '',
       years_at_address: null,
       previous_addresses: [],
       mobile_phone: null,
@@ -96,7 +94,7 @@ export class DataService {
     family_members: [],
     charities: [],
     fiduciaries: [],
-    guardian_preferences: {
+    guardianship_preferences: {
       preference_id: null,
       child_raising_values: null,
       location_importance: null,
@@ -119,13 +117,13 @@ export class DataService {
   });
 
   // Computed signals for reactive derived state
-  readonly casedata = this._casedata.asReadonly();
-  readonly personal = computed(() => this._casedata().personal);
-  readonly client = computed(() => this._casedata().client);
-  readonly maritalInfo = computed(() => this._casedata().marital_info);
-  readonly children = computed(() => this._casedata().children);
-  readonly assets = computed(() => this._casedata().assets);
-  readonly debts = computed(() => this._casedata().debts);
+  readonly clientdata = this._clientdata.asReadonly();
+  readonly personal = computed(() => this._clientdata().personal);
+  readonly client = computed(() => this._clientdata().client);
+  readonly maritalInfo = computed(() => this._clientdata().marital_info);
+  readonly children = computed(() => this._clientdata().children);
+  readonly assets = computed(() => this._clientdata().assets);
+  readonly debts = computed(() => this._clientdata().debts);
 
   // Computed signal for total debts
   readonly totalDebts = computed(() => {
@@ -140,10 +138,10 @@ export class DataService {
     return !!(personal.legal_first_name &&
       personal.legal_last_name &&
       personal.date_of_birth &&
-      personal.current_address.address_line1 &&
-      personal.current_address.city &&
-      personal.current_address.state &&
-      personal.current_address.zip);
+      personal.address_line1 &&
+      personal.city &&
+      personal.state &&
+      personal.zip);
   });
 
   readonly completionPercentage = computed(() => {
@@ -158,7 +156,7 @@ export class DataService {
   // Methods to update specific parts of the case data
   updatePersonal(updates: Partial<IPersonal>) {
 
-    this._casedata.update(current => ({
+  this._clientdata.update(current => ({
       ...current,
       personal: { ...current.personal, ...updates }
     }));
@@ -168,7 +166,7 @@ export class DataService {
 
   updateMaritalInfo(updates: Partial<IMaritalInfo>) {
 
-    this._casedata.update(current => ({
+  this._clientdata.update(current => ({
       ...current,
       marital_info: { ...current.marital_info, ...updates }
     }));
@@ -178,11 +176,11 @@ export class DataService {
 
   updatePersonalAddress(updates: Partial<IAddress>) {
 
-    this._casedata.update(current => ({
+  this._clientdata.update(current => ({
       ...current,
       personal: {
         ...current.personal,
-        current_address: { ...current.personal.current_address, ...updates }
+        current_address: { ...current.personal, ...updates }
       }
     }));
 
@@ -191,7 +189,7 @@ export class DataService {
 
   addPreviousAddress(address: IAddress) {
 
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       personal: {
         ...current.personal,
@@ -203,7 +201,7 @@ export class DataService {
   }
 
   removePreviousAddress(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       personal: {
         ...current.personal,
@@ -213,7 +211,7 @@ export class DataService {
   }
 
   updatePreviousAddress(index: number, updates: Partial<IAddress>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       personal: {
         ...current.personal,
@@ -232,11 +230,11 @@ export class DataService {
 
     try {
       console.log('Saving personal information:', this.personal());
-      // Use the new saveCaseData method
-      const savedData = await this.saveCaseData().toPromise();
+      // Use the new saveclientdata method
+      const savedData = await this.saveclientdata().toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
-        this._casedata.set(savedData as IClientData);
+  this._clientdata.set(savedData as IClientData);
         return true;
       }
       return false;
@@ -248,14 +246,14 @@ export class DataService {
 
   // Methods for managing children
   addChild(child: IChild) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       children: [...current.children, child]
     }));
   }
 
   updateChild(index: number, updates: Partial<IChild>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       children: current.children.map((child, i) =>
         i === index ? { ...child, ...updates } : child
@@ -264,7 +262,7 @@ export class DataService {
   }
 
   removeChild(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       children: current.children.filter((_, i) => i !== index)
     }));
@@ -272,14 +270,14 @@ export class DataService {
 
   // Methods for managing family members
   addFamilyMember(familyMember: IFamilyMember) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       family_members: [...current.family_members, familyMember]
     }));
   }
 
   updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       family_members: current.family_members.map((member, i) =>
         i === index ? { ...member, ...updates } : member
@@ -288,7 +286,7 @@ export class DataService {
   }
 
   removeFamilyMember(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       family_members: current.family_members.filter((_, i) => i !== index)
     }));
@@ -296,14 +294,14 @@ export class DataService {
 
   // Methods for managing charities
   addCharity(charity: ICharity) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       charities: [...current.charities, charity]
     }));
   }
 
   updateCharity(index: number, updates: Partial<ICharity>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       charities: current.charities.map((charity, i) =>
         i === index ? { ...charity, ...updates } : charity
@@ -312,7 +310,7 @@ export class DataService {
   }
 
   removeCharity(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       charities: current.charities.filter((_, i) => i !== index)
     }));
@@ -320,7 +318,7 @@ export class DataService {
 
   // Methods for managing assets
   addRealEstate(asset: IRealEstate) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -330,7 +328,7 @@ export class DataService {
   }
 
   updateRealEstate(index: number, updates: Partial<IRealEstate>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -342,7 +340,7 @@ export class DataService {
   }
 
   removeRealEstate(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -352,7 +350,7 @@ export class DataService {
   }
 
   addBankAccount(asset: IBankAccount) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -362,7 +360,7 @@ export class DataService {
   }
 
   updateBankAccount(index: number, updates: Partial<IBankAccount>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -374,7 +372,7 @@ export class DataService {
   }
 
   removeBankAccount(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -384,7 +382,7 @@ export class DataService {
   }
 
   addNQAccount(asset: INQAccount) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -394,7 +392,7 @@ export class DataService {
   }
 
   updateNQAccount(index: number, updates: Partial<INQAccount>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -406,7 +404,7 @@ export class DataService {
   }
 
   removeNQAccount(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -416,7 +414,7 @@ export class DataService {
   }
 
   addRetirementAccount(asset: IRetirementAccount) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -426,7 +424,7 @@ export class DataService {
   }
 
   updateRetirementAccount(index: number, updates: Partial<IRetirementAccount>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -438,7 +436,7 @@ export class DataService {
   }
 
   removeRetirementAccount(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -448,7 +446,7 @@ export class DataService {
   }
 
   addLifeInsurance(asset: ILifeInsurance) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -458,7 +456,7 @@ export class DataService {
   }
 
   updateLifeInsurance(index: number, updates: Partial<ILifeInsurance>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -470,7 +468,7 @@ export class DataService {
   }
 
   removeLifeInsurance(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -480,7 +478,7 @@ export class DataService {
   }
 
   addBusinessInterest(asset: IBusinessInterest) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -490,7 +488,7 @@ export class DataService {
   }
 
   updateBusinessInterest(index: number, updates: Partial<IBusinessInterest>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -502,7 +500,7 @@ export class DataService {
   }
 
   removeBusinessInterest(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -512,7 +510,7 @@ export class DataService {
   }
 
   addDigitalAsset(asset: IDigitalAsset) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -522,7 +520,7 @@ export class DataService {
   }
 
   updateDigitalAsset(index: number, updates: Partial<IDigitalAsset>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -534,7 +532,7 @@ export class DataService {
   }
 
   removeDigitalAsset(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -544,7 +542,7 @@ export class DataService {
   }
 
   addOtherAsset(asset: IOtherAsset) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -554,7 +552,7 @@ export class DataService {
   }
 
   updateOtherAsset(index: number, updates: Partial<IOtherAsset>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -566,7 +564,7 @@ export class DataService {
   }
 
   removeOtherAsset(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
@@ -828,7 +826,7 @@ export class DataService {
 
   constructor() {
     // Initialize case data with user context when available
-    this.initializeCaseData();
+    this.initializeClientData();
   }
 
   /**
@@ -848,8 +846,8 @@ export class DataService {
   /**
    * Reset case data (for logout or new user)
    */
-  resetCaseData(): void {
-    this._casedata.set({
+  resetclientdata(): void {
+    this._clientdata.set({
       client: {
         client_id: null,
         user_account_id: this.authService.getCurrentUserId(),
@@ -869,13 +867,11 @@ export class DataService {
         ssn_encrypted: null,
         us_citizen: null,
         citizenship_country: 'USA',
-        current_address: {
-          address_line1: '',
-          address_line2: null,
-          city: '',
-          state: '',
-          zip: ''
-        },
+        address_line1: '',
+        address_line2: null,
+        city: '',
+        state: '',
+        zip: '',
         years_at_address: null,
         previous_addresses: [],
         mobile_phone: null,
@@ -912,7 +908,7 @@ export class DataService {
       family_members: [],
       charities: [],
       fiduciaries: [],
-      guardian_preferences: {
+      guardianship_preferences: {
         preference_id: null,
         child_raising_values: null,
         location_importance: null,
@@ -943,16 +939,19 @@ export class DataService {
       this.saveTimeout = undefined;
     }
 
-    return this.saveCaseData();
+    return this.saveclientdata();
   }
 
   /**
    * Initialize case data with current user context
    */
-  private initializeCaseData(): void {
+  /**
+   * Initialize client data with current user context
+   */
+  private initializeClientData(): void {
     const userId = this.authService.getCurrentUserId();
     if (userId) {
-      this._casedata.update(current => ({
+      this._clientdata.update(current => ({
         ...current,
         client: {
           ...current.client,
@@ -960,15 +959,15 @@ export class DataService {
         }
       }));
 
-      // Load existing case data for this user
-      this.loadCaseData().subscribe({
-        next: (caseData) => {
-          if (caseData) {
-            this._casedata.set(caseData);
+      // Load existing client data for this user
+      this.loadClientData().subscribe({
+        next: (clientData) => {
+          if (clientData) {
+            this._clientdata.set(clientData);
           }
         },
         error: (error) => {
-          console.warn('Could not load existing case data:', error);
+          console.warn('Could not load existing client data:', error);
         }
       });
     }
@@ -977,7 +976,10 @@ export class DataService {
   /**
    * Load case data from server for current user
    */
-  loadCaseData(): Observable<ICaseData | null> {
+  /**
+   * Load client data from server for current user
+   */
+  loadClientData(): Observable<IClientData | null> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
       return throwError(() => new Error('User not authenticated'));
@@ -1002,7 +1004,7 @@ export class DataService {
 
     // Debts CRUD methods
   addDebt(debt: IDebt) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       debts: [...current.debts, debt]
     }));
@@ -1010,7 +1012,7 @@ export class DataService {
   }
 
   updateDebt(index: number, updates: Partial<IDebt>) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       debts: current.debts.map((debt, i) => i === index ? { ...debt, ...updates } : debt)
     }));
@@ -1018,7 +1020,7 @@ export class DataService {
   }
 
   removeDebt(index: number) {
-    this._casedata.update(current => ({
+    this._clientdata.update(current => ({
       ...current,
       debts: current.debts.filter((_, i) => i !== index)
     }));
@@ -1028,7 +1030,7 @@ export class DataService {
   /**
    * Save case data to server
    */
-  saveCaseData(): Observable<IClientData> {
+  saveclientdata(): Observable<IClientData> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
       // Silently skip saving if no user is authenticated
@@ -1037,7 +1039,7 @@ export class DataService {
       });
     }
 
-    const clientData = this._casedata();
+    const clientData = this._clientdata();
     // Ensure user_account_id is set in client section
     const dataToSave = {
       ...clientData,
@@ -1065,10 +1067,10 @@ export class DataService {
 
     // Set new timeout for 2 seconds
     this.saveTimeout = setTimeout(() => {
-      this.saveCaseData().subscribe({
+      this.saveclientdata().subscribe({
         next: (savedData) => {
           // Update local client data with server response (includes IDs)
-          this._casedata.set(savedData as IClientData);
+          this._clientdata.set(savedData as IClientData);
           console.log('Client data auto-saved successfully');
         },
         error: (error) => {

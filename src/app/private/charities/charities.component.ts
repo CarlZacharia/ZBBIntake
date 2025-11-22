@@ -21,7 +21,7 @@ export class CharitiesComponent {
   editingCharityIndex: number = -1;
 
   // Reactive data access
-  readonly charities = computed(() => this.ds.casedata().charities);
+  readonly charities = computed(() => this.ds.clientdata().charities);
 
   // US States array for dropdowns
   states = [

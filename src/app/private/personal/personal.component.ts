@@ -2,7 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { ICaseData, IAddress } from '../../models/case_data';
+import { IClientData, IAddress } from '../../models/case_data';
 
 @Component({
   selector: 'app-personal',
@@ -38,7 +38,7 @@ export class PersonalComponent {
   // Reactive computed properties from the data service
   readonly personal = computed(() => this.ds.personal());
   readonly maritalInfo = computed(() => this.ds.maritalInfo());
-  readonly casedata = computed(() => this.ds.casedata());
+  readonly clientdata = computed(() => this.ds.clientdata());
   readonly isPersonalInfoComplete = computed(() => this.ds.isPersonalInfoComplete());
   readonly completionPercentage = computed(() => this.ds.completionPercentage());
 
@@ -54,18 +54,18 @@ export class PersonalComponent {
     const personal = this.personal();
     if (!personal.legal_first_name) return 'First name is required';
     if (!personal.legal_last_name) return 'Last name is required';
-    if (!personal.current_address.address_line1) return 'Address is required';
-    if (!personal.current_address.city) return 'City is required';
-    if (!personal.current_address.state) return 'State is required';
-    if (!personal.current_address.zip) return 'ZIP code is required';
+    if (!personal.address_line1) return 'Address is required';
+    if (!personal.city) return 'City is required';
+    if (!personal.state) return 'State is required';
+    if (!personal.zip) return 'ZIP code is required';
     return null;
   });
 
   constructor(public ds: DataService) { }
 
   // Backwards compatibility getter - can be removed if not used elsewhere
-  get csd(): ICaseData {
-    return this.ds.casedata();
+  get csd(): IClientData {
+    return this.ds.clientdata();
   }
 
   // Methods using the new signal-based data service

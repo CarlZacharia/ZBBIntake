@@ -10,7 +10,7 @@ import { SummaryComponent } from './summary/summary.component';
 import { DebtsComponent } from '../debts/debts.component';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
-import { ICaseData } from '../../models/case_data';
+import { IClientData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
@@ -26,7 +26,7 @@ export class MainintakeComponent {
   }
 
   // Computed signals for reactive data access
-  readonly casedata = computed(() => this.ds.casedata());
+  readonly clientdata = computed(() => this.ds.clientdata());
   readonly personal = computed(() => this.ds.personal());
   readonly maritalInfo = computed(() => this.ds.maritalInfo());
   readonly children = computed(() => this.ds.children());
@@ -43,10 +43,10 @@ export class MainintakeComponent {
     return info;
   });
 
-  readonly childrenCount = computed(() => this.casedata().children.length);
-  readonly familyMembersCount = computed(() => this.casedata().family_members.length);
-  readonly charitiesCount = computed(() => this.casedata().charities.length);
-  readonly fiduciariesCount = computed(() => this.casedata().fiduciaries.length);
+  readonly childrenCount = computed(() => this.clientdata().children.length);
+  readonly familyMembersCount = computed(() => this.clientdata().family_members.length);
+  readonly charitiesCount = computed(() => this.clientdata().charities.length);
+  readonly fiduciariesCount = computed(() => this.clientdata().fiduciaries.length);
 
   readonly totalAssetValue = computed(() => {
     let total = 0;
@@ -96,8 +96,8 @@ export class MainintakeComponent {
   });
 
   // Backwards compatibility getter
-  get csd(): ICaseData {
-    return this.casedata();
+  get csd(): IClientData {
+    return this.clientdata();
   }
 
   // (moved to above)
