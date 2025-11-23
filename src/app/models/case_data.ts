@@ -361,7 +361,7 @@ export interface IPersonal {
   preferred_name: string | null;
   date_of_birth: string | null;
   ssn_encrypted: string | null;
-  us_citizen: number | string | null;
+  us_citizen: 'Yes' | 'No' | null;
   address_line1: string | null;
   address_line2: string | null;
   city: string | null;
@@ -376,7 +376,7 @@ export interface IPersonal {
   occupation: string | null;
   employer_name: string | null;
   employer_address: string | null;
-  military_service: boolean | number | string | null;
+  military_service: 'Yes' | 'No' | null;
   military_branch: string | null;
   military_service_dates: string | null;
 }

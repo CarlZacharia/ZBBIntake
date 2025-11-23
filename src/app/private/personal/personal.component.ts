@@ -96,11 +96,12 @@ export class PersonalComponent {
     updateFn(field, target.value || null);
   }
 
-  onCheckboxChange(field: string, event: Event, updateFn: (field: string, value: any) => void) {
-    const target = event.target as HTMLInputElement;
-    updateFn(field, target.checked);
-  }
 
+
+  onCheckboxChange(field: string, event: any, callback: Function) {
+  const value = event.target.checked ? 'Yes' : 'No';
+  callback(field, value);
+}
   async savePersonalInfo() {
     if (!this.canSave()) return;
 
@@ -144,4 +145,5 @@ export class PersonalComponent {
       this._isSaving.set(false);
     }
   }
+
 }

@@ -28,9 +28,9 @@
       </div>
       <div class="info-item">
         <span class="info-label">US Citizen:</span>
-        <span class="info-value">{{ds.personal().us_citizen === true ? 'Yes' : ds.personal().us_citizen === false ? 'No' : 'N/A'}}</span>
+        <span class="info-value">{{ds.personal().us_citizen == 'Yes' ? 'Yes' : ds.personal().us_citizen == 'No' ? 'No' : 'N/A'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.personal().us_citizen === false">
+      <div class="info-item" *ngIf="ds.personal().us_citizen == 'No'">
         <span class="info-label">Citizenship Country:</span>
         <span class="info-value">{{ds.personal().citizenship_country || 'N/A'}}</span>
       </div>

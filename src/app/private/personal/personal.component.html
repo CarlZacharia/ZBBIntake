@@ -89,14 +89,14 @@
               <!-- US Citizen -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">US Citizen?</span>
+                  <span class="label-text font-semibold">US Citizen? [{{personal().us_citizen}}]</span>
                 </label>
                 <select [(ngModel)]="personal().us_citizen"
                   (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
                   name="us_citizen" class="select select-bordered w-full">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="1">Yes</option>
-                  <option [ngValue]="0">No</option>
+                  <option [ngValue]="'Yes'">Yes</option>
+                  <option [ngValue]="'No'">No</option>
                 </select>
               </div>
 
@@ -118,7 +118,7 @@
               </div>
 
               <!-- Citizenship Country -->
-              <div class="form-control" *ngIf="personal().us_citizen === 0">
+              <div class="form-control" *ngIf="personal().us_citizen == 'No'">
                 <label class="label">
                   <span class="label-text font-semibold">Citizenship Country</span>
                 </label>

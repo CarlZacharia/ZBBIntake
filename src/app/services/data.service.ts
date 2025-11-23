@@ -31,10 +31,13 @@ export class DataService {
   /**
    * Public setter for clientdata (used after login)
    */
+
   public setClientData(data: IClientData) {
-  console.log('setClientData called. ssn_encrypted:', data.personal?.ssn_encrypted);
-  this._clientdata.set(data);
+    console.log('setClientData called. ssn_encrypted:', data.personal?.us_citizen);
+    this._clientdata.set(data);
   }
+
+
   private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
   private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
   public pui: number | null = null;
@@ -68,7 +71,7 @@ export class DataService {
       preferred_name: null,
       date_of_birth: null,
       ssn_encrypted: null,
-      us_citizen: null,
+      us_citizen: 'Yes',
       citizenship_country: 'USA',
       address_line1: '',
       address_line2: null,
@@ -83,7 +86,7 @@ export class DataService {
       occupation: null,
       employer_name: null,
       employer_address: null,
-      military_service: false,
+      military_service: 'No',
       military_branch: null,
       military_service_dates: null,
     },
@@ -950,7 +953,7 @@ export class DataService {
         preferred_name: null,
         date_of_birth: null,
         ssn_encrypted: null,
-        us_citizen: null,
+        us_citizen: 'Yes',
         citizenship_country: 'USA',
         address_line1: '',
         address_line2: null,
@@ -965,7 +968,7 @@ export class DataService {
         occupation: null,
         employer_name: null,
         employer_address: null,
-        military_service: false,
+        military_service: 'No',
         military_branch: null,
         military_service_dates: null,
       },
@@ -1048,11 +1051,11 @@ export class DataService {
         next: (clientData) => {
           if (clientData) {
             console.log('Setting clientdata after initializeClientData:', clientData);
-this._clientdata.set(clientData);
+            this._clientdata.set(clientData);
 
-if (clientData && clientData.client && clientData.client.client_id) {
-  this.pui = clientData.client.client_id;
-}
+          if (clientData && clientData.client && clientData.client.client_id) {
+            this.pui = clientData.client.client_id;
+          }
           }
         },
         error: (error) => {
@@ -1068,24 +1071,22 @@ if (clientData && clientData.client && clientData.client.client_id) {
   /**
    * Load client data from server for current user
    */
-  loadClientData(): Observable<IClientData | null> {
-    const userId = this.authService.getCurrentUserId();
-    if (!userId) {
-      return throwError(() => new Error('User not authenticated'));
-    }
-
-    // Fetch combined client data for the current user
-    return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
-      map(response => response || null),
-      catchError(error => {
-        if (error.status === 404) {
-          // No client data exists yet - this is normal for new users
-          return [null];
-        }
-        throw error;
-      })
-    );
+loadClientData(): Observable<IClientData | null> {
+  const userId = this.authService.getCurrentUserId();
+  if (!userId) {
+    return throwError(() => new Error('User not authenticated'));
   }
+
+  return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
+    map(response => response || null),
+    catchError(error => {
+      if (error.status === 404) {
+        return [null];
+      }
+      throw error;
+    })
+  );
+}
 
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here
@@ -1129,13 +1130,27 @@ if (clientData && clientData.client && clientData.client.client_id) {
     }
 
     const clientData = this._clientdata();
+    console.log('Saving client data to server:', clientData);
     // Ensure user_account_id is set in client section
     const dataToSave = {
       ...clientData,
       client: {
         ...clientData.client,
         user_account_id: userId
+      },
+      personal: {
+        ...clientData.personal,
+        user_account_id: userId
+      },
+      marital_info: {
+        ...clientData.marital_info,
+        user_account_id: userId
+      },
+      guardianship_preferences: {
+        ...clientData.guardianship_preferences,
+        user_account_id: userId
       }
+
     };
 
     // Save the full client data object (POST to clientdata.php)
@@ -1148,25 +1163,28 @@ if (clientData && clientData.client && clientData.client.client_id) {
   private saveTimeout?: any;
 
   private autoSave(): void {
+console.log("Line 1165", this.personal().us_citizen);
 
     // Clear existing timeout
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
     }
-
+console.log("Line 1169", this.personal().us_citizen);
     // Set new timeout for 2 seconds
     this.saveTimeout = setTimeout(() => {
       this.saveclientdata().subscribe({
         next: (savedData) => {
+          console.log('Auto-save response received:', savedData);
           // Update local client data with server response (includes IDs)
-          console.log('Setting clientdata after autoSave:', savedData);
-this._clientdata.set(savedData as IClientData);
-          console.log('Client data auto-saved successfully');
+      this._clientdata.set(savedData as IClientData);
+          console.log('Client data auto-saved successfully', this.personal().us_citizen, this.pui);
         },
         error: (error) => {
           console.error('Auto-save failed:', error);
         }
       });
     }, 2000);
+console.log("Line 1184", this.personal().us_citizen);
   }
+
 }

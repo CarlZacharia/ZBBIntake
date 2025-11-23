@@ -45,6 +45,10 @@ class User {
         return false;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     /**
      * Find user by email
      */
