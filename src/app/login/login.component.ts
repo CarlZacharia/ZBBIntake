@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ILoginCredentials, IAuthError } from '../models/user';
-
+import { DataService } from '../services/data.service';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -29,7 +29,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public dataService: DataService
   ) {
     // Get return URL from query params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/intakehub';
@@ -51,8 +52,22 @@ export class LoginComponent {
     this.authService.login(this.loginData()).subscribe({
       next: (response: any) => {
         if (response.success) {
+          // Set portal_user_id for DataService
+          if (response.user && response.user.user_id) {
+            this.dataService.pui = response.user.user_id;
+            // Load all client data for this user
+            this.dataService.loadClientData().subscribe({
+              next: (clientData) => {
+                if (clientData) {
+                  this.dataService.setClientData(clientData);
+                }
+              },
+              error: (err) => {
+                console.warn('Failed to load client data after login:', err);
+              }
+            });
+          }
           // Successful login - redirect to return URL
-          console.log(this.authService);
           this.router.navigate([this.returnUrl]);
         } else {
           this.error.set(response.message || 'Login failed. Please try again.');

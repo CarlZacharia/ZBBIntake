@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { IClientData, IAddress } from '../../models/case_data';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-personal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxMaskDirective],
   templateUrl: './personal.component.html',
   styleUrl: './personal.component.css'
 })
@@ -75,6 +76,7 @@ export class PersonalComponent {
   }
 
   updateMaritalInfo(field: string, value: any) {
+    console.log('Updating marital info:', field, value);
     this.ds.updateMaritalInfo({ [field]: value });
   }
 
@@ -112,6 +114,28 @@ export class PersonalComponent {
         setTimeout(() => this._saveMessage.set(null), 3000);
       } else {
         this._saveMessage.set('Failed to save personal information. Please try again.');
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      this._saveMessage.set('An error occurred while saving. Please try again.');
+    } finally {
+      this._isSaving.set(false);
+    }
+  }
+
+    async saveMaritalInfo() {
+    if (!this.canSave()) return;
+
+    this._isSaving.set(true);
+    this._saveMessage.set(null);
+
+    try {
+      const success = await this.ds.saveMaritalInfo();
+      if (success) {
+        this._saveMessage.set('Marital information saved successfully!');
+        setTimeout(() => this._saveMessage.set(null), 3000);
+      } else {
+        this._saveMessage.set('Failed to save marital information. Please try again.');
       }
     } catch (error) {
       console.error('Save error:', error);

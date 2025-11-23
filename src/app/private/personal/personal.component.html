@@ -21,8 +21,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Legal First Name *</span>
                 </label>
-                <input type="text" [value]="personal().legal_first_name"
-                  (input)="onInputChange('legal_first_name', $event, updatePersonalInfo.bind(this))" name="legal_first_name"
+                <input type="text" [(ngModel)]="personal().legal_first_name"
+                  (ngModelChange)="updatePersonalInfo('legal_first_name', $event)" name="legal_first_name"
                   placeholder="First name" class="input input-bordered w-full" />
               </div>
 
@@ -31,8 +31,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Legal Middle Name</span>
                 </label>
-                <input type="text" [value]="personal().legal_middle_name || ''"
-                  (input)="onInputChange('legal_middle_name', $event, updatePersonalInfo.bind(this))"
+                <input type="text" [(ngModel)]="personal().legal_middle_name"
+                  (ngModelChange)="updatePersonalInfo('legal_middle_name', $event)"
                   name="legal_middle_name" placeholder="Middle name" class="input input-bordered w-full" />
               </div>
 
@@ -41,8 +41,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Legal Last Name *</span>
                 </label>
-                <input type="text" [value]="personal().legal_last_name"
-                  (input)="onInputChange('legal_last_name', $event, updatePersonalInfo.bind(this))" name="legal_last_name"
+                <input type="text" [(ngModel)]="personal().legal_last_name"
+                  (ngModelChange)="updatePersonalInfo('legal_last_name', $event)" name="legal_last_name"
                   placeholder="Last name" class="input input-bordered w-full" />
               </div>
 
@@ -51,8 +51,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Suffix</span>
                 </label>
-                <input type="text" [value]="personal().suffix || ''"
-                  (input)="onInputChange('suffix', $event, updatePersonalInfo.bind(this))" name="suffix"
+                <input type="text" [(ngModel)]="personal().suffix"
+                  (ngModelChange)="updatePersonalInfo('suffix', $event)" name="suffix"
                   placeholder="Jr., Sr., III, etc." class="input input-bordered w-full" />
               </div>
 
@@ -61,8 +61,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Preferred Name</span>
                 </label>
-                <input type="text" [value]="personal().preferred_name || ''"
-                  (input)="onInputChange('preferred_name', $event, updatePersonalInfo.bind(this))" name="preferred_name"
+                <input type="text" [(ngModel)]="personal().preferred_name"
+                  (ngModelChange)="updatePersonalInfo('preferred_name', $event)" name="preferred_name"
                   placeholder="What do you go by?" class="input input-bordered w-full" />
               </div>
 
@@ -71,8 +71,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Date of Birth</span>
                 </label>
-                <input type="date" [value]="personal().date_of_birth || ''"
-                  (input)="onInputChange('date_of_birth', $event, updatePersonalInfo.bind(this))" name="date_of_birth"
+                <input type="date" [(ngModel)]="personal().date_of_birth"
+                  (ngModelChange)="updatePersonalInfo('date_of_birth', $event)" name="date_of_birth"
                   class="input input-bordered w-full" />
               </div>
 
@@ -81,9 +81,9 @@
                 <label class="label">
                   <span class="label-text font-semibold">Social Security Number</span>
                 </label>
-                <input type="text" [value]="personal().ssn_encrypted || ''"
-                  (input)="onInputChange('ssn_encrypted', $event, updatePersonalInfo.bind(this))" name="ssn_encrypted"
-                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full" />
+                <input type="text" [(ngModel)]="personal().ssn_encrypted"
+                  (ngModelChange)="updatePersonalInfo('ssn_encrypted', $event)" name="ssn_encrypted"
+                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full" mask="000-00-0000" [showMaskTyped]="false" />
               </div>
 
               <!-- US Citizen -->
@@ -91,12 +91,12 @@
                 <label class="label">
                   <span class="label-text font-semibold">US Citizen?</span>
                 </label>
-                <select [value]="personal().us_citizen"
-                  (change)="onSelectChange('us_citizen', $event, updatePersonalInfo.bind(this))"
+                <select [(ngModel)]="personal().us_citizen"
+                  (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
                   name="us_citizen" class="select select-bordered w-full">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="true">Yes</option>
-                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="1">Yes</option>
+                  <option [ngValue]="0">No</option>
                 </select>
               </div>
 
@@ -105,8 +105,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Marital Status</span>
                 </label>
-                <select [value]="maritalInfo().marital_status"
-                  (change)="onSelectChange('marital_status', $event, updateMaritalInfo.bind(this))" name="marital_status"
+                <select [(ngModel)]="maritalInfo().marital_status"
+                  (ngModelChange)="updateMaritalInfo('marital_status', $event)" name="marital_status"
                   class="select select-bordered w-full">
                   <option [ngValue]="null">Select...</option>
                   <option value="single">Single</option>
@@ -118,12 +118,12 @@
               </div>
 
               <!-- Citizenship Country -->
-              <div class="form-control" *ngIf="personal().us_citizen === false">
+              <div class="form-control" *ngIf="personal().us_citizen === 0">
                 <label class="label">
                   <span class="label-text font-semibold">Citizenship Country</span>
                 </label>
-                <input type="text" [value]="(personal().citizenship_country) || ''"
-                  (input)="onInputChange('citizenship_country', $event, updatePersonalInfo.bind(this))" name="citizenship_country"
+                <input type="text" [(ngModel)]="personal().citizenship_country"
+                  (ngModelChange)="updatePersonalInfo('citizenship_country', $event)" name="citizenship_country"
                   placeholder="Country of citizenship" class="input input-bordered w-full" />
               </div>
             </div>
@@ -139,8 +139,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 1 *</span>
                 </label>
-                <input type="text" [value]="(personal().address_line1) || ''"
-                  (input)="onInputChange('address_line1', $event, updateAddress.bind(this))" name="address_line1"
+                <input type="text" [(ngModel)]="personal().address_line1"
+                  (ngModelChange)="updateAddress('address_line1', $event)" name="address_line1"
                   placeholder="Street address" class="input input-bordered w-full" />
               </div>
 
@@ -149,8 +149,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 2</span>
                 </label>
-                <input type="text" [value]="(personal().address_line2) || ''"
-                  (input)="onInputChange('address_line2', $event, updateAddress.bind(this))" name="address_line2"
+                <input type="text" [(ngModel)]="personal().address_line2"
+                  (ngModelChange)="updateAddress('address_line2', $event)" name="address_line2"
                   placeholder="Apt, Suite, Unit, etc." class="input input-bordered w-full" />
               </div>
 
@@ -159,8 +159,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">City *</span>
                 </label>
-                <input type="text" [value]="(personal().city) || ''"
-                  (input)="onInputChange('city', $event, updateAddress.bind(this))" name="city" placeholder="City"
+                <input type="text" [(ngModel)]="personal().city"
+                  (ngModelChange)="updateAddress('city', $event)" name="city" placeholder="City"
                   class="input input-bordered w-full" />
               </div>
 
@@ -169,11 +169,11 @@
                 <label class="label">
                   <span class="label-text font-semibold">State *</span>
                 </label>
-                <select [value]="(personal().state) || ''"
-                  (input)="onInputChange('state', $event, updateAddress.bind(this))" name="state"
+                <select [(ngModel)]="personal().state"
+                  (ngModelChange)="updateAddress('state', $event)" name="state"
                   class="select select-bordered w-full">
-                  <option value="">Select state...</option>
-                  <option *ngFor="let state of states" [value]="state">{{state}}</option>
+                  <option [ngValue]="null">Select state...</option>
+                  <option *ngFor="let state of states" [ngValue]="state">{{state}}</option>
                 </select>
               </div>
 
@@ -182,8 +182,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">ZIP Code *</span>
                 </label>
-                <input type="text" [value]="(personal().zip) || ''"
-                  (input)="onInputChange('zip', $event, updateAddress.bind(this))" name="zip" placeholder="12345"
+                <input type="text" [(ngModel)]="personal().zip"
+                  (ngModelChange)="updateAddress('zip', $event)" name="zip" placeholder="12345"
                   class="input input-bordered w-full" />
               </div>
 
@@ -192,8 +192,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Years at This Address</span>
                 </label>
-                <input type="number" [value]="(personal().years_at_address) || ''"
-                  (input)="onInputChange('years_at_address', $event, updatePersonalInfo.bind(this))" name="years_at_address"
+                <input type="number" [(ngModel)]="personal().years_at_address"
+                  (ngModelChange)="updatePersonalInfo('years_at_address', $event)" name="years_at_address"
                   placeholder="0" class="input input-bordered w-full" />
               </div>
             </div>
@@ -261,8 +261,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">First Marriage?</span>
                 </label>
-                <select [value]="maritalInfo().first_marriage"
-                  (change)="onCheckboxChange('first_marriage', $event, updateMaritalInfo.bind(this))" name="first_marriage"
+                <select [(ngModel)]="maritalInfo().first_marriage"
+                  (ngModelChange)="updateMaritalInfo('first_marriage', $event)" name="first_marriage"
                   class="select select-bordered w-full">
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="true">Yes</option>
@@ -291,8 +291,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Spouse Has Children from Prior Relationship?</span>
                 </label>
-                <select [value]="maritalInfo().spouse_has_other_children"
-                  (change)="onCheckboxChange('spouse_has_other_children', $event, updateMaritalInfo.bind(this))"
+                <select [(ngModel)]="maritalInfo().spouse_has_other_children"
+                  (ngModelChange)="updateMaritalInfo('spouse_has_other_children', $event)"
                   name="spouse_has_other_children" class="select select-bordered w-full">
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="true">Yes</option>
@@ -303,7 +303,7 @@
               <!-- Prenup Exists -->
               <div class="form-control">
                 <label class="label cursor-pointer justify-start gap-4">
-                  <input type="checkbox" [checked]="maritalInfo().prenup_exists"
+                  <input type="checkbox" [checked]="maritalInfo().prenup_exists == '1'"
                     (change)="onCheckboxChange('prenup_exists', $event, updateMaritalInfo.bind(this))" name="prenup_exists"
                     class="checkbox checkbox-primary" />
                   <span class="label-text font-semibold">Prenuptial Agreement Exists</span>
@@ -358,9 +358,9 @@
                 <label class="label">
                   <span class="label-text font-semibold">Mobile Phone</span>
                 </label>
-                <input type="tel" [value]="(personal().mobile_phone) || ''"
-                  (input)="onInputChange('mobile_phone', $event, updatePersonalInfo.bind(this))" name="mobile_phone"
-                  placeholder="(555) 555-5555" class="input input-bordered w-full" />
+                <input type="tel" [(ngModel)]="personal().mobile_phone"
+                  (ngModelChange)="updatePersonalInfo('mobile_phone', $event)" name="mobile_phone"
+                  placeholder="(555) 555-5555" mask="(000) 000-0000" [showMaskTyped]="false" class="input input-bordered w-full" />
               </div>
 
               <!-- Home Phone -->
@@ -368,9 +368,9 @@
                 <label class="label">
                   <span class="label-text font-semibold">Home Phone</span>
                 </label>
-                <input type="tel" [value]="(personal().home_phone) || ''"
-                  (input)="onInputChange('home_phone', $event, updatePersonalInfo.bind(this))" name="home_phone"
-                  placeholder="(555) 555-5555" class="input input-bordered w-full" />
+                <input type="tel" [(ngModel)]="personal().home_phone"
+                  (ngModelChange)="updatePersonalInfo('home_phone', $event)" name="home_phone"
+                  placeholder="(555) 555-5555" class="input input-bordered w-full" mask="(000) 000-0000" [showMaskTyped]="false" />
               </div>
 
               <!-- Email -->
@@ -378,8 +378,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Email</span>
                 </label>
-                <input type="email" [value]="(personal().email) || ''"
-                  (input)="onInputChange('email', $event, updatePersonalInfo.bind(this))" name="email"
+                <input type="email" [(ngModel)]="personal().email"
+                  (ngModelChange)="updatePersonalInfo('email', $event)" name="email"
                   placeholder="email@example.com" class="input input-bordered w-full" />
               </div>
 
@@ -388,13 +388,14 @@
                 <label class="label">
                   <span class="label-text font-semibold">Preferred Contact Method</span>
                 </label>
-                <select [value]="(personal().preferred_contact_method) || ''"
-                  (input)="onInputChange('preferred_contact_method', $event, updatePersonalInfo.bind(this))"
+                <select [(ngModel)]="personal().preferred_contact_method"
+                  (ngModelChange)="updatePersonalInfo('preferred_contact_method', $event)"
                   name="preferred_contact_method" class="select select-bordered w-full">
-                  <option value="mobile">Mobile Phone</option>
-                  <option value="home">Home Phone</option>
-                  <option value="email">Email</option>
-                  <option value="text">Text Message</option>
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'mobile'">Mobile Phone</option>
+                  <option [ngValue]="'home'">Home Phone</option>
+                  <option [ngValue]="'email'">Email</option>
+                  <option [ngValue]="'text'">Text Message</option>
                 </select>
               </div>
             </div>
@@ -411,8 +412,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Occupation</span>
                 </label>
-                <input type="text" [value]="(personal().occupation) || ''"
-                  (input)="onInputChange('occupation', $event, updatePersonalInfo.bind(this))" name="occupation"
+                <input type="text" [(ngModel)]="personal().occupation"
+                  (ngModelChange)="updatePersonalInfo('occupation', $event)" name="occupation"
                   placeholder="Your occupation" class="input input-bordered w-full" />
               </div>
 
@@ -421,8 +422,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Employer Name</span>
                 </label>
-                <input type="text" [value]="(personal().employer_name) || ''"
-                  (input)="onInputChange('employer_name', $event, updatePersonalInfo.bind(this))" name="employer_name"
+                <input type="text" [(ngModel)]="personal().employer_name"
+                  (ngModelChange)="updatePersonalInfo('employer_name', $event)" name="employer_name"
                   placeholder="Company name" class="input input-bordered w-full" />
               </div>
 
@@ -431,8 +432,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Employer Address</span>
                 </label>
-                <input type="text" [value]="(personal().employer_address) || ''"
-                  (input)="onInputChange('employer_address', $event, updatePersonalInfo.bind(this))" name="employer_address"
+                <input type="text" [(ngModel)]="personal().employer_address"
+                  (ngModelChange)="updatePersonalInfo('employer_address', $event)" name="employer_address"
                   placeholder="Full address" class="input input-bordered w-full" />
               </div>
             </div>
@@ -458,11 +459,11 @@
                 <label class="label">
                   <span class="label-text font-semibold">Branch of Service</span>
                 </label>
-                <select [value]="(personal().military_branch) || ''"
-                  (input)="onInputChange('military_branch', $event, updatePersonalInfo.bind(this))" name="military_branch"
+                <select [(ngModel)]="personal().military_branch"
+                  (ngModelChange)="updatePersonalInfo('military_branch', $event)" name="military_branch"
                   class="select select-bordered w-full">
-                  <option value="">Select branch...</option>
-                  <option *ngFor="let branch of militaryBranches" [value]="branch">{{branch}}</option>
+                  <option [ngValue]="null">Select branch...</option>
+                  <option *ngFor="let branch of militaryBranches" [ngValue]="branch">{{branch}}</option>
                 </select>
               </div>
 
@@ -471,8 +472,8 @@
                 <label class="label">
                   <span class="label-text font-semibold">Service Dates</span>
                 </label>
-                <input type="text" [value]="(personal().military_service_dates) || ''"
-                  (input)="onInputChange('military_service_dates', $event, updatePersonalInfo.bind(this))"
+                <input type="text" [(ngModel)]="personal().military_service_dates"
+                  (ngModelChange)="updatePersonalInfo('military_service_dates', $event)"
                   name="military_service_dates" placeholder="e.g., 2000-2004" class="input input-bordered w-full" />
               </div>
             </div>
@@ -481,12 +482,12 @@
           <!-- Action Buttons -->
           <div class="flex justify-end gap-4 mt-8 pt-6 border-t-2">
             <button type="button" class="btn btn-outline">Cancel</button>
-            <button type="button" (click)="savePersonalInfo()" class="btn btn-primary">
+            <button type="button" (click)="savePersonalInfo();saveMaritalInfo()" class="btn btn-primary">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
               </svg>
-              Save Personal Information
+              Save Personal and Marital Information
             </button>
           </div>
         </form>

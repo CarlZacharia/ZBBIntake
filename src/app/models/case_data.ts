@@ -69,7 +69,7 @@ export interface IRetirementAccount {
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
-  rmd_age_reached: boolean;
+  rmd_age_reached: boolean | number | string | null;
   notes: string | null;
   owned_by: 'client' | 'spouse' | null;
   ownership_percentage: number | null;
@@ -89,7 +89,7 @@ export interface ILifeInsurance {
   cash_value: number | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
-  owned_by_trust: boolean;
+  owned_by_trust: boolean | number | string | null;
   trust_name: string | null;
   annual_premium: number | null;
   notes: string | null;
@@ -107,15 +107,15 @@ export interface IBusinessInterest {
   business_type: 'llc' | 's_corp' | 'c_corp' | 'partnership' | 'sole_prop' | 'other';
   ownership_percentage: number | null;
   estimated_value: number | null;
-  has_other_owners: boolean;
+  has_other_owners: boolean | number | string | null;
   other_owners_names: string | null;
-  buy_sell_agreement_exists: boolean;
+  buy_sell_agreement_exists: boolean | number | string | null;
   buy_sell_document_id: number | null;
-  succession_plan_exists: boolean;
+  succession_plan_exists: boolean | number | string | null;
   business_vision_after_death: string | null;
   intended_successor: string | null;
-  successor_is_family: boolean | null;
-  should_business_be_sold: boolean | null;
+  successor_is_family: boolean | number | string | null;
+  should_business_be_sold: boolean | number | string | null;
   notes: string | null;
   owned_by: 'client' | 'spouse' | null;
   other_owners: string | null;
@@ -152,10 +152,10 @@ export interface IOtherAsset {
   estimated_value: number | null;
   debtOwed: number | null; // Amount of debt associated with the asset (e.g., vehicle loan)
   netValue: number | null; // estimated_value - debtOwed
-  is_heirloom: boolean;
+  is_heirloom: boolean | number | string | null;
   intended_recipient: string | null;
   special_instructions: string | null;
-  appraisal_exists: boolean;
+  appraisal_exists: boolean | number | string | null;
   appraisal_date: string | null;
   owned_by: 'client' | 'spouse' | null;
   ownership_percentage: number | null;
@@ -189,7 +189,7 @@ export interface IBeneficiary {
   other_name: string | null;         // For non-family beneficiaries
   percentage: number;                 // Percentage allocation
   calculated_value: number | null;    // Calculated dollar value based on percentage
-  per_stirpes: boolean;              // Whether inheritance passes to descendants if beneficiary is deceased
+  per_stirpes: boolean | number | string | null;              // Whether inheritance passes to descendants if beneficiary is deceased
   notes: string | null;
 }
 
@@ -238,18 +238,18 @@ export interface IChild {
   state: string | null;
   zip: string | null;
   marital_status: 'single' | 'married' | 'divorced' | 'widowed' | null;
-  has_children: boolean;
-  special_needs: boolean;
+  has_children: boolean | number | string | null;
+  special_needs: boolean | number | string | null;
   special_needs_description: string | null;
   disabilities: string | null;
   relationship_quality: 'close' | 'good' | 'distant' | 'estranged' | 'complicated' | null;
   financially_responsible: 'very' | 'somewhat' | 'not_really' | 'concerning' | null;
-  substance_abuse_concerns: boolean;
-  gambling_concerns: boolean;
+  substance_abuse_concerns: boolean | number | string | null;
+  gambling_concerns: boolean | number | string | null;
   other_concerns: string | null;
-  excluded_or_reduced: boolean;
+  excluded_or_reduced: boolean | number | string | null;
   exclusion_reason: string | null;
-  is_deceased: boolean;
+  is_deceased: boolean | number | string | null;
   date_of_death: string | null;
   surviving_spouse: string | null;
 }
@@ -259,16 +259,16 @@ export interface IFamilyMember {
   relationship: 'parent' | 'sibling' | 'other_dependent' | 'close_friend' | 'godchild' | 'other';
   legal_name: string;
   date_of_birth: string | null;
-  is_living: boolean;
+  is_living: boolean | number | string | null;
   date_of_death: string | null;
   address: string | null;
   city: string | null;
   state: string | null;
   zip: string | null;
-  financial_support: boolean;
+  financial_support: boolean | number | string | null;
   support_amount_monthly: number | null;
-  special_needs: boolean;
-  caregiving_responsibilities: boolean;
+  special_needs: boolean | number | string | null;
+  caregiving_responsibilities: boolean | number | string | null;
   notes: string | null;
 }
 
@@ -286,7 +286,7 @@ export interface ICharity {
   contact_person: string | null;
   contact_phone: string | null;
   contact_email: string | null;
-  current_donor: boolean;
+  current_donor: boolean | number | string | null;
   annual_contribution_amount: number | null;
   years_supporting: number | null;
   personal_connection: string | null;
@@ -295,9 +295,9 @@ export interface ICharity {
   intended_dollar_amount: number | null;
   intended_asset_description: string | null;
   gift_restrictions: string | null;
-  memorial_gift: boolean;
+  memorial_gift: boolean | number | string | null;
   memorial_name: string | null;
-  endowment_fund: boolean;
+  endowment_fund: boolean | number | string | null;
   endowment_purpose: string | null;
   recognition_preferences: 'anonymous' | 'public' | 'family_only' | null;
   notes: string | null;
@@ -315,12 +315,12 @@ export interface IFiduciary {
   address: string | null;
   reasons_for_selection: string | null;
   limitations_or_instructions: string | null;
-  act_jointly: boolean | null;
-  compensation_desired: boolean | null;
-  discussed_with_appointee: boolean;
+  act_jointly: boolean | number | string | null;
+  compensation_desired: boolean | number | string | null;
+  discussed_with_appointee: boolean | number | string | null;
   health_concerns: string | null;
   conflict_concerns: string | null;
-  effective_immediately: boolean | null;
+  effective_immediately: boolean | number | string | null;
 }
 
 export interface IGuardianPreferences {
@@ -340,12 +340,12 @@ export interface IMaritalInfo {
   spouse_ssn_encrypted: string | null;
   marriage_date: string | null;
   marriage_location: string | null;
-  first_marriage: boolean | null;
-  prenup_exists: boolean;
+  first_marriage: boolean | number | string | null;
+  prenup_exists: boolean | number | string | null;
   prenup_document_id: number | null;
-  postnup_exists: boolean;
+  postnup_exists: boolean | number | string | null;
   postnup_document_id: number | null;
-  spouse_has_other_children: boolean | null;
+  spouse_has_other_children: boolean | number | string | null;
   relationship_quality: 'excellent' | 'good' | 'strained' | 'complicated' | null;
   previous_marriages: IPreviousMarriage[];
   divorce_obligations: string | null;
@@ -361,7 +361,7 @@ export interface IPersonal {
   preferred_name: string | null;
   date_of_birth: string | null;
   ssn_encrypted: string | null;
-  us_citizen: boolean | null;
+  us_citizen: number | string | null;
   address_line1: string | null;
   address_line2: string | null;
   city: string | null;
@@ -376,7 +376,7 @@ export interface IPersonal {
   occupation: string | null;
   employer_name: string | null;
   employer_address: string | null;
-  military_service: boolean;
+  military_service: boolean | number | string | null;
   military_branch: string | null;
   military_service_dates: string | null;
 }

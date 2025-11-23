@@ -28,8 +28,16 @@ import { IDebt } from '../models/case_data';
   providedIn: 'root'
 })
 export class DataService {
+  /**
+   * Public setter for clientdata (used after login)
+   */
+  public setClientData(data: IClientData) {
+  console.log('setClientData called. ssn_encrypted:', data.personal?.ssn_encrypted);
+  this._clientdata.set(data);
+  }
   private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
-    private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
+  private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
+  public pui: number | null = null;
   /**
    * Save a section of client data to the backend (clientupdate.php)
    * @param table The table name to update
@@ -81,7 +89,7 @@ export class DataService {
     },
     marital_info: {
       marital_id: null,
-      marital_status: 'single',
+      marital_status: null,
       spouse_legal_name: null,
       spouse_dob: null,
       spouse_ssn_encrypted: null,
@@ -122,6 +130,7 @@ export class DataService {
       other_asset_holdings: []
     },
     debts: []
+
   });
 
   // Computed signals for reactive derived state
@@ -169,9 +178,8 @@ export class DataService {
       personal: { ...current.personal, ...updates }
     }));
     // Save to backend
-  const portal_user_id = this._clientdata().personal.personal_id;
-  this.saveClientSection('personal', { ...this._clientdata().personal, portal_user_id }).subscribe();
-
+    const portal_user_id = this.pui;
+    this.saveSection('personal', this._clientdata().personal, portal_user_id);
     this.autoSave();
   }
 
@@ -181,10 +189,13 @@ export class DataService {
       ...current,
       marital_info: { ...current.marital_info, ...updates }
     }));
-    // Save to backend
-  const portal_user_id = this._clientdata().marital_info.marital_id;
-  this.saveClientSection('marital_info', { ...this._clientdata().marital_info, portal_user_id }).subscribe();
-
+    // Save to backend with correct portal_user_id
+    const portal_user_id = this.pui;
+    if (!portal_user_id) {
+      console.warn('Cannot update marital_info: portal_user_id is not set');
+      return;
+    }
+    this.saveSection('marital_info', this._clientdata().marital_info, portal_user_id);
     this.autoSave();
   }
 
@@ -197,11 +208,24 @@ export class DataService {
         ...updates
       }
     }));
-    // Save to backend
-  const portal_user_id = this._clientdata().personal.personal_id;
-  this.saveClientSection('personal', { ...this._clientdata().personal, portal_user_id }).subscribe();
-      this.autoSave();
+  // Save to backend using portal_user_id
+  const portal_user_id = this.pui;
+  this.saveSection('personal', this._clientdata().personal, portal_user_id);
+  this.autoSave();
     }
+  /**
+   * Dynamically save a section to the correct table
+   */
+  saveSection(table: string, sectionData: any, portal_user_id: any) {
+    // Use pui if not provided
+    const id = portal_user_id || this.pui;
+    if (!id) {
+      console.warn(`Cannot update ${table}: portal_user_id is not set`);
+      return;
+    }
+    const payload = { ...sectionData, portal_user_id: id };
+    this.saveClientSection(table, payload).subscribe();
+  }
 
     // --- Deduplicated updateClient ---
     updateClient(updates: Partial<IClient>) {
@@ -230,22 +254,72 @@ export class DataService {
 
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
-
-
-
-
     try {
       console.log('Saving personal information:', this.personal());
       // Use the new saveclientdata method
       const savedData = await this.saveclientdata().toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
-  this._clientdata.set(savedData as IClientData);
+        console.log('Setting clientdata after savePersonalInfo:', savedData);
+        this._clientdata.set(savedData as IClientData);
         return true;
       }
       return false;
     } catch (error) {
       console.error('Failed to save personal info:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Save marital_info section to backend and update local state
+   */
+  async saveMaritalInfo(): Promise<boolean> {
+    try {
+      console.log('Saving marital information:', this.maritalInfo());
+      // Save only the marital_info section using saveSection
+      const portal_user_id = this.pui;
+      if (!portal_user_id) {
+        console.warn('Cannot save marital_info: portal_user_id is not set');
+        return false;
+      }
+      // Save to backend and await response
+      const savedData = await this.saveClientSection('marital_info', { ...this.maritalInfo(), portal_user_id }).toPromise();
+      if (savedData) {
+        // Update local state with saved data (cast to IClientData)
+        console.log('Setting clientdata after saveMaritalInfo:', savedData);
+        this._clientdata.set(savedData as IClientData);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to save marital info:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Save guardianship_preferences section to backend and update local state
+   */
+  async saveGuardianPreferences(): Promise<boolean> {
+    try {
+      console.log('Saving guardianship preferences:', this.guardianPreferences);
+      const portal_user_id = this.pui;
+      if (!portal_user_id) {
+        console.warn('Cannot save guardianship_preferences: portal_user_id is not set');
+        return false;
+      }
+      // Save to backend and await response
+      const savedData = await this.saveClientSection('guardianship_preferences', { ...this.guardianPreferences, portal_user_id }).toPromise();
+      if (savedData) {
+        // Update local state with saved data (cast to IClientData)
+        console.log('Setting clientdata after saveGuardianPreferences:', savedData);
+        this._clientdata.set(savedData as IClientData);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to save guardianship preferences:', error);
       return false;
     }
   }
@@ -830,6 +904,11 @@ export class DataService {
     other_owners: null
   };
 
+  /**
+   * Holds the portal_user_id for use in updates
+   */
+
+
   constructor() {
     // Initialize case data with user context when available
     this.initializeClientData();
@@ -968,7 +1047,12 @@ export class DataService {
       this.loadClientData().subscribe({
         next: (clientData) => {
           if (clientData) {
-            this._clientdata.set(clientData);
+            console.log('Setting clientdata after initializeClientData:', clientData);
+this._clientdata.set(clientData);
+
+if (clientData && clientData.client && clientData.client.client_id) {
+  this.pui = clientData.client.client_id;
+}
           }
         },
         error: (error) => {
@@ -1075,7 +1159,8 @@ export class DataService {
       this.saveclientdata().subscribe({
         next: (savedData) => {
           // Update local client data with server response (includes IDs)
-          this._clientdata.set(savedData as IClientData);
+          console.log('Setting clientdata after autoSave:', savedData);
+this._clientdata.set(savedData as IClientData);
           console.log('Client data auto-saved successfully');
         },
         error: (error) => {
