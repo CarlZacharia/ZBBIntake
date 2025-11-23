@@ -29,6 +29,15 @@ import { IDebt } from '../models/case_data';
 })
 export class DataService {
   private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
+    private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
+  /**
+   * Save a section of client data to the backend (clientupdate.php)
+   * @param table The table name to update
+   * @param data The data object (must include portal_user_id)
+   */
+  saveClientSection(table: string, data: any): Observable<any> {
+    return this.http.post(this.UPDATE_URL, { table, data });
+  }
   private readonly authService = inject(AuthService);
   private readonly http = inject(HttpClient);
 
@@ -59,7 +68,6 @@ export class DataService {
       state: '',
       zip: '',
       years_at_address: null,
-      previous_addresses: [],
       mobile_phone: null,
       home_phone: null,
       email: null,
@@ -160,6 +168,9 @@ export class DataService {
       ...current,
       personal: { ...current.personal, ...updates }
     }));
+    // Save to backend
+  const portal_user_id = this._clientdata().personal.personal_id;
+  this.saveClientSection('personal', { ...this._clientdata().personal, portal_user_id }).subscribe();
 
     this.autoSave();
   }
@@ -170,57 +181,52 @@ export class DataService {
       ...current,
       marital_info: { ...current.marital_info, ...updates }
     }));
+    // Save to backend
+  const portal_user_id = this._clientdata().marital_info.marital_id;
+  this.saveClientSection('marital_info', { ...this._clientdata().marital_info, portal_user_id }).subscribe();
 
     this.autoSave();
   }
 
   updatePersonalAddress(updates: Partial<IAddress>) {
 
-  this._clientdata.update(current => ({
-      ...current,
-      personal: {
-        ...current.personal,
-        current_address: { ...current.personal, ...updates }
-      }
-    }));
-
-    this.autoSave();
-  }
-
-  addPreviousAddress(address: IAddress) {
-
     this._clientdata.update(current => ({
       ...current,
       personal: {
         ...current.personal,
-        previous_addresses: [...current.personal.previous_addresses, address]
+        ...updates
       }
     }));
+    // Save to backend
+  const portal_user_id = this._clientdata().personal.personal_id;
+  this.saveClientSection('personal', { ...this._clientdata().personal, portal_user_id }).subscribe();
+      this.autoSave();
+    }
 
-    this.autoSave();
-  }
+    // --- Deduplicated updateClient ---
+    updateClient(updates: Partial<IClient>) {
+        this._clientdata.update(current => ({
+            ...current,
+            client: { ...current.client, ...updates }
+        }));
+        // Save to backend
+        const portal_user_id = this._clientdata().client.client_id;
+        this.saveClientSection('client', { ...this._clientdata().client, portal_user_id }).subscribe();
+        this.autoSave();
+    }
 
-  removePreviousAddress(index: number) {
-    this._clientdata.update(current => ({
-      ...current,
-      personal: {
-        ...current.personal,
-        previous_addresses: current.personal.previous_addresses.filter((_, i) => i !== index)
-      }
-    }));
-  }
+    // --- Deduplicated updateGuardianPreferences ---
+    updateGuardianPreferences(updates: Partial<IGuardianPreferences>) {
+        this._clientdata.update(current => ({
+            ...current,
+            guardianship_preferences: { ...current.guardianship_preferences, ...updates }
+        }));
+        // Save to backend
+        const portal_user_id = this._clientdata().guardianship_preferences.preference_id;
+        this.saveClientSection('guardianship_preferences', { ...this._clientdata().guardianship_preferences, portal_user_id }).subscribe();
+        this.autoSave();
+    }
 
-  updatePreviousAddress(index: number, updates: Partial<IAddress>) {
-    this._clientdata.update(current => ({
-      ...current,
-      personal: {
-        ...current.personal,
-        previous_addresses: current.personal.previous_addresses.map((addr, i) =>
-          i === index ? { ...addr, ...updates } : addr
-        )
-      }
-    }));
-  }
 
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
@@ -873,7 +879,6 @@ export class DataService {
         state: '',
         zip: '',
         years_at_address: null,
-        previous_addresses: [],
         mobile_phone: null,
         home_phone: null,
         email: null,

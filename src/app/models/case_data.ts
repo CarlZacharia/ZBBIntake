@@ -369,7 +369,6 @@ export interface IPersonal {
   zip: string | null;
   citizenship_country: string | null;
   years_at_address: number | null;
-  previous_addresses: IAddress[];
   mobile_phone: string | null;
   home_phone: string | null;
   email: string | null;

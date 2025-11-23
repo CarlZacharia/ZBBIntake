@@ -48,7 +48,6 @@ export class PersonalComponent {
     return !!(personal.legal_first_name && personal.legal_last_name) && !this.isSaving();
   });
 
-  readonly previousAddressesCount = computed(() => this.personal().previous_addresses.length);
 
   readonly formValidationMessage = computed(() => {
     const personal = this.personal();
@@ -69,20 +68,7 @@ export class PersonalComponent {
   }
 
   // Methods using the new signal-based data service
-  addPreviousAddress() {
-    const newAddress: IAddress = {
-      address_line1: '',
-      address_line2: null,
-      city: '',
-      state: '',
-      zip: ''
-    };
-    this.ds.addPreviousAddress(newAddress);
-  }
 
-  removePreviousAddress(index: number) {
-    this.ds.removePreviousAddress(index);
-  }
 
   updatePersonalInfo(field: string, value: any) {
     this.ds.updatePersonal({ [field]: value });
@@ -96,9 +82,6 @@ export class PersonalComponent {
     this.ds.updatePersonalAddress({ [field]: value });
   }
 
-  updatePreviousAddress(index: number, field: string, value: any) {
-    this.ds.updatePreviousAddress(index, { [field]: value });
-  }
 
   // Event handler methods for type safety
   onInputChange(field: string, event: Event, updateFn: (field: string, value: any) => void) {

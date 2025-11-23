@@ -1,4 +1,5 @@
 import { Component, computed } from '@angular/core';
+import { PipesModule } from '../../pipes/pipes.module';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -14,7 +15,7 @@ import { IClientData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, DebtsComponent, SummaryComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, DebtsComponent, SummaryComponent, PipesModule],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })

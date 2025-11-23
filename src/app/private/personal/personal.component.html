@@ -345,76 +345,7 @@
             </div>
           </div>
 
-          <!-- Previous Addresses Section -->
-          <div class="mb-8" *ngIf="personal().previous_addresses.length > 0">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Previous Addresses
-            </h2>
 
-            <div *ngFor="let prevAddr of personal().previous_addresses; let i = index"
-              class="mb-6 p-4 bg-slate-50 rounded-lg">
-              <div class="flex justify-between items-center mb-3">
-                <h3 class="text-lg font-semibold text-slate-600">Previous Address {{i + 1}}</h3>
-                <button type="button" (click)="removePreviousAddress(i)"
-                  class="btn btn-sm btn-error btn-outline">Remove</button>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control md:col-span-2">
-                  <label class="label">
-                    <span class="label-text font-semibold">Address Line 1</span>
-                  </label>
-                  <input type="text" [(ngModel)]="prevAddr.address_line1" [name]="'prev_address_line1_' + i"
-                    placeholder="Street address" class="input input-bordered w-full" />
-                </div>
-
-                <div class="form-control md:col-span-2">
-                  <label class="label">
-                    <span class="label-text font-semibold">Address Line 2</span>
-                  </label>
-                  <input type="text" [(ngModel)]="prevAddr.address_line2" [name]="'prev_address_line2_' + i"
-                    placeholder="Apt, Suite, Unit, etc." class="input input-bordered w-full" />
-                </div>
-
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">City</span>
-                  </label>
-                  <input type="text" [(ngModel)]="prevAddr.city" [name]="'prev_city_' + i" placeholder="City"
-                    class="input input-bordered w-full" />
-                </div>
-
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">State</span>
-                  </label>
-                  <select [(ngModel)]="prevAddr.state" [name]="'prev_state_' + i" class="select select-bordered w-full">
-                    <option value="">Select state...</option>
-                    <option *ngFor="let state of states" [value]="state">{{state}}</option>
-                  </select>
-                </div>
-
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">ZIP Code</span>
-                  </label>
-                  <input type="text" [(ngModel)]="prevAddr.zip" [name]="'prev_zip_' + i" placeholder="12345"
-                    class="input input-bordered w-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Add Previous Address Button -->
-          <div class="mb-8">
-            <button type="button" (click)="addPreviousAddress()" class="btn btn-outline btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                  clip-rule="evenodd" />
-              </svg>
-              Add Previous Address
-            </button>
-          </div>
 
           <!-- Contact Information Section -->
           <div class="mb-8">
