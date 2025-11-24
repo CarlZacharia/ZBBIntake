@@ -41,12 +41,17 @@ export class DataService {
   private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
   private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
   public pui: number | null = null;
+
+
+
   /**
    * Save a section of client data to the backend (clientupdate.php)
    * @param table The table name to update
    * @param data The data object (must include portal_user_id)
    */
+
   saveClientSection(table: string, data: any): Observable<any> {
+    console.log(`Saving section ${table} with data:`, data);
     return this.http.post(this.UPDATE_URL, { table, data });
   }
   private readonly authService = inject(AuthService);
@@ -100,9 +105,9 @@ export class DataService {
       marriage_date: null,
       marriage_location: null,
       first_marriage: null,
-      prenup_exists: false,
+      prenup_exists: null,
       prenup_document_id: null,
-      postnup_exists: false,
+      postnup_exists: null,
       postnup_document_id: null,
       spouse_has_other_children: null,
       relationship_quality: null,
@@ -217,6 +222,8 @@ export class DataService {
   this.saveSection('personal', this._clientdata().personal, portal_user_id);
   this.autoSave();
     }
+
+
   /**
    * Dynamically save a section to the correct table
    */
@@ -983,9 +990,9 @@ export class DataService {
         marriage_date: null,
         marriage_location: null,
         first_marriage: null,
-        prenup_exists: false,
+        prenup_exists: null,
         prenup_document_id: null,
-        postnup_exists: false,
+        postnup_exists: null,
         postnup_document_id: null,
         spouse_has_other_children: null,
         relationship_quality: null,

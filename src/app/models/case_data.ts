@@ -340,12 +340,12 @@ export interface IMaritalInfo {
   spouse_ssn_encrypted: string | null;
   marriage_date: string | null;
   marriage_location: string | null;
-  first_marriage: boolean | number | string | null;
-  prenup_exists: boolean | number | string | null;
+  first_marriage: string | null;
+  prenup_exists: string | null;
   prenup_document_id: number | null;
-  postnup_exists: boolean | number | string | null;
+  postnup_exists: string | null;
   postnup_document_id: number | null;
-  spouse_has_other_children: boolean | number | string | null;
+  spouse_has_other_children: string | null;
   relationship_quality: 'excellent' | 'good' | 'strained' | 'complicated' | null;
   previous_marriages: IPreviousMarriage[];
   divorce_obligations: string | null;

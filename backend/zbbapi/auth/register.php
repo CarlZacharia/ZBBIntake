@@ -182,7 +182,7 @@ function initializeEstateIntake($conn, $portal_user_id) {
 
         // 3. Insert into marital_info
         $stmt = $conn->prepare("INSERT INTO marital_info (portal_user_id, marital_status, spouse_first_name, spouse_middle_name, spouse_last_name, spouse_suffix, marriage_date, first_marriage, previous_marriages_count, prenup_exists, prenup_location, postnup_exists, postnup_location, spouse_has_other_children, spouse_other_children_names, community_property_state)
-                                VALUES (:client_id, 'single', NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 0, NULL, 0, NULL, NULL)");
+                                VALUES (:client_id, 'single', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)");
         $stmt->bindParam(':client_id', $client_id, PDO::PARAM_INT);
 
         if (!$stmt->execute()) {

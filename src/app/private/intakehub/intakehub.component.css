@@ -134,8 +134,8 @@
 
 /* Main Cards Container */
 .cards-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  justify-content: center;
   gap: 2rem;
   max-width: 1000px;
 }

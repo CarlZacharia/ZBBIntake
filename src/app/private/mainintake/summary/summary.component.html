@@ -111,7 +111,7 @@
       </div>
       <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
         <span class="info-label">First Marriage:</span>
-        <span class="info-value">{{ds.maritalInfo().first_marriage === true ? 'Yes' : ds.maritalInfo().first_marriage === false ? 'No' : 'N/A'}}</span>
+        <span class="info-value">{{ds.maritalInfo().first_marriage == 'Yes' ? 'Yes' : ds.maritalInfo().first_marriage == 'No' ? 'No' : 'N/A'}}</span>
       </div>
       <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
         <span class="info-label">Relationship Quality:</span>
@@ -127,13 +127,13 @@
       </div>
       <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
         <span class="info-label">Spouse Has Other Children:</span>
-        <span class="info-value">{{ds.maritalInfo().spouse_has_other_children === true ? 'Yes' : ds.maritalInfo().spouse_has_other_children === false ? 'No' : 'N/A'}}</span>
+        <span class="info-value">{{ds.maritalInfo().spouse_has_other_children == 'Yes' : ds.maritalInfo().spouse_has_other_children == 'No' ? 'No' : 'N/A'}}</span>
       </div>
-      <div class="info-item full-width" *ngIf="ds.maritalInfo().first_marriage === false && ds.maritalInfo().divorce_obligations">
+      <div class="info-item full-width" *ngIf="ds.maritalInfo().first_marriage == 'No' && ds.maritalInfo().divorce_obligations">
         <span class="info-label">Divorce Obligations:</span>
         <span class="info-value">{{ds.maritalInfo().divorce_obligations}}</span>
       </div>
-      <div class="info-item full-width" *ngIf="ds.maritalInfo().first_marriage === false && ds.maritalInfo().divorce_decree_restrictions">
+      <div class="info-item full-width" *ngIf="ds.maritalInfo().first_marriage == 'No' && ds.maritalInfo().divorce_decree_restrictions">
         <span class="info-label">Divorce Decree Restrictions:</span>
         <span class="info-value">{{ds.maritalInfo().divorce_decree_restrictions}}</span>
       </div>

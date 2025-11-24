@@ -89,7 +89,7 @@
               <!-- US Citizen -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">US Citizen? [{{personal().us_citizen}}]</span>
+                  <span class="label-text font-semibold">US Citizen?</span>
                 </label>
                 <select [(ngModel)]="personal().us_citizen"
                   (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
@@ -265,8 +265,8 @@
                   (ngModelChange)="updateMaritalInfo('first_marriage', $event)" name="first_marriage"
                   class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="true">Yes</option>
-                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="Yes">Yes</option>
+                  <option [ngValue]="No">No</option>
                 </select>
               </div>
 
@@ -295,8 +295,8 @@
                   (ngModelChange)="updateMaritalInfo('spouse_has_other_children', $event)"
                   name="spouse_has_other_children" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="true">Yes</option>
-                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="Yes">Yes</option>
+                  <option [ngValue]="No">No</option>
                 </select>
               </div>
 
@@ -321,7 +321,7 @@
               </div>
 
               <!-- Divorce Obligations -->
-              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === false">
+              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === 'No'">
                 <label class="label">
                   <span class="label-text font-semibold">Divorce Obligations (from previous marriage)</span>
                 </label>
@@ -332,7 +332,7 @@
               </div>
 
               <!-- Divorce Decree Restrictions -->
-              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === false">
+              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === 'No'">
                 <label class="label">
                   <span class="label-text font-semibold">Divorce Decree Restrictions</span>
                 </label>

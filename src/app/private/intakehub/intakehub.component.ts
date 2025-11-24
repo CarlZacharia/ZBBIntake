@@ -18,18 +18,6 @@ export class IntakehubComponent {
       const currentUser = this.authService.currentUser();
       const isAuthenticated = this.authService.isAuthenticated();
       const userId = this.authService.getCurrentUserId();
-
-      console.log('=== Auth Data (from effect) ===');
-      console.log('Is Authenticated:', isAuthenticated);
-      console.log('Current User:', currentUser);
-      console.log('User ID:', userId);
-
-      if (currentUser) {
-        console.log('User Name:', `${currentUser.first_name} ${currentUser.last_name}`);
-        console.log('User Email:', currentUser.email);
-        console.log('User Phone:', currentUser.phone);
-      }
-      console.log('==============================');
     });
 
     // Method 2: Log auth data immediately on component initialization
@@ -46,28 +34,6 @@ export class IntakehubComponent {
     const token = this.authService.token();
     const userId = this.authService.getCurrentUserId();
 
-    console.log('Full Auth State:', authState);
-    console.log('Is Authenticated:', isAuthenticated);
-    console.log('Current User Object:', currentUser);
-    console.log('User ID:', userId);
-    console.log('Token (first 20 chars):', token?.substring(0, 20) + '...');
-
-    if (currentUser) {
-      console.log('User Details:');
-      console.log('  - Name:', `${currentUser.first_name} ${currentUser.last_name}`);
-      console.log('  - Email:', currentUser.email);
-      console.log('  - Phone:', currentUser.phone);
-      console.log('  - User ID:', currentUser.user_id);
-      console.log('  - Preferred Contact:', currentUser.preferred_contact_method);
-      console.log('  - Date Created:', currentUser.date_created);
-      console.log('  - Last Login:', currentUser.last_login);
-      console.log('  - Email Verified:', currentUser.email_verified);
-      console.log('  - Profile Completed:', currentUser.profile_completed);
-    } else {
-      console.log('No user data available');
-    }
-
-    console.log('===============================');
   }
 
   toggleIntakeOptions(opt: boolean) {
