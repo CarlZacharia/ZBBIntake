@@ -40,7 +40,7 @@ export class MainintakeComponent {
     const personal = this.personal();
     const marital = this.maritalInfo();
     let info = `${personal.legal_first_name} ${personal.legal_last_name}`;
-    if (marital.marital_status === 'married' && marital.spouse_legal_name) {
+    if (marital.marital_status === 'Married' && marital.spouse_legal_name) {
       info += ` & ${marital.spouse_legal_name}`;
     }
     return info;

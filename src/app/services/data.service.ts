@@ -341,50 +341,75 @@ export class DataService {
 
   // Methods for managing children
   addChild(child: IChild) {
-    this._clientdata.update(current => ({
-      ...current,
-      children: [...current.children, child]
-    }));
+      this._clientdata.update(current => ({
+        ...current,
+        children: [...current.children, child]
+      }));
+      // Save only the new child to backend as INSERT
+      const portal_user_id = this.pui;
+      const newChild = { ...child, child_id: null, action: 'insert' };
+      this.saveSection('child', newChild, portal_user_id);
   }
 
   updateChild(index: number, updates: Partial<IChild>) {
-    this._clientdata.update(current => ({
-      ...current,
-      children: current.children.map((child, i) =>
-        i === index ? { ...child, ...updates } : child
-      )
-    }));
+      this._clientdata.update(current => ({
+        ...current,
+        children: current.children.map((child, i) =>
+          i === index ? { ...child, ...updates } : child
+        )
+      }));
+      // Save only the updated child to backend
+      const portal_user_id = this.pui;
+      const updatedChild = this._clientdata().children[index];
+      this.saveSection('child', updatedChild, portal_user_id);
   }
 
   removeChild(index: number) {
-    this._clientdata.update(current => ({
-      ...current,
-      children: current.children.filter((_, i) => i !== index)
-    }));
+      const removedChild = this._clientdata().children[index];
+      this._clientdata.update(current => ({
+        ...current,
+        children: current.children.filter((_, i) => i !== index)
+      }));
+      // Optionally send the removed child to backend for deletion
+      const portal_user_id = this.pui;
+      this.saveSection('child_remove', removedChild, portal_user_id);
   }
 
   // Methods for managing family members
   addFamilyMember(familyMember: IFamilyMember) {
-    this._clientdata.update(current => ({
-      ...current,
-      family_members: [...current.family_members, familyMember]
-    }));
+    console.log(familyMember);
+      this._clientdata.update(current => ({
+        ...current,
+        family_members: [...current.family_members, familyMember]
+      }));
+      // Save only the new family member to backend as INSERT
+      const portal_user_id = this.pui;
+      const newFamilyMember = { ...familyMember, family_member_id: null, action: 'insert' };
+      this.saveSection('family_member', newFamilyMember, portal_user_id);
   }
 
   updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-    this._clientdata.update(current => ({
-      ...current,
-      family_members: current.family_members.map((member, i) =>
-        i === index ? { ...member, ...updates } : member
-      )
-    }));
+      this._clientdata.update(current => ({
+        ...current,
+        family_members: current.family_members.map((member, i) =>
+          i === index ? { ...member, ...updates } : member
+        )
+      }));
+      // Save only the updated family member to backend
+      const portal_user_id = this.pui;
+      const updatedMember = this._clientdata().family_members[index];
+      this.saveSection('family_member', updatedMember, portal_user_id);
   }
 
   removeFamilyMember(index: number) {
-    this._clientdata.update(current => ({
-      ...current,
-      family_members: current.family_members.filter((_, i) => i !== index)
-    }));
+      const removedMember = this._clientdata().family_members[index];
+      this._clientdata.update(current => ({
+        ...current,
+        family_members: current.family_members.filter((_, i) => i !== index)
+      }));
+      // Optionally send the removed member to backend for deletion
+      const portal_user_id = this.pui;
+      this.saveSection('family_member_remove', removedMember, portal_user_id);
   }
 
   // Methods for managing charities
@@ -734,8 +759,8 @@ export class DataService {
   };
 
   public familyMember: IFamilyMember = {
-    family_id: null,
-    relationship: 'parent',
+    family_member_id: null,
+    relationship: 'Grandchild',
     legal_name: '',
     date_of_birth: null,
     is_living: true,
@@ -987,7 +1012,7 @@ export class DataService {
       },
       marital_info: {
         marital_id: null,
-        marital_status: 'single',
+        marital_status: 'Single',
         spouse_legal_name: null,
         spouse_dob: null,
         spouse_ssn_encrypted: null,

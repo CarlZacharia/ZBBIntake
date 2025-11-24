@@ -237,7 +237,7 @@ export interface IChild {
   city: string | null;
   state: string | null;
   zip: string | null;
-  marital_status: 'single' | 'married' | 'divorced' | 'widowed' | null;
+  marital_status: 'Single' | 'Married' | 'Divorced' | 'Widowed' | null;
   has_children: boolean | number | string | null;
   special_needs: boolean | number | string | null;
   special_needs_description: string | null;
@@ -255,8 +255,8 @@ export interface IChild {
 }
 
 export interface IFamilyMember {
-  family_id: number | null;
-  relationship: 'parent' | 'sibling' | 'other_dependent' | 'close_friend' | 'godchild' | 'other';
+  family_member_id: number | null;
+  relationship: 'Grandchild' | 'Parent' | 'Sibling' | 'Niece' | 'Nephew' | 'Aunt_uncle' | 'Cousin' | 'Other_dependent' | 'Close_friend' | 'Godchild' | 'Other';
   legal_name: string;
   date_of_birth: string | null;
   is_living: boolean | number | string | null;
@@ -334,7 +334,7 @@ export interface IGuardianPreferences {
 
 export interface IMaritalInfo {
   marital_id: number | null;
-  marital_status: 'single' | 'married' | 'widowed' | 'divorced' | 'domestic_partnership' | null;
+  marital_status: 'Single' | 'Married' | 'Widowed' | 'Divorced' | 'Domestic_partnership' | null;
   spouse_legal_name: string | null;
   spouse_dob: string | null;
   spouse_ssn_encrypted: string | null;

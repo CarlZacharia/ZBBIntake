@@ -3,7 +3,7 @@ export interface ClientProfile {
   fullName: string;
   avatarUrl?: string;
   domicileStates: ('FL' | 'PA')[];
-  maritalStatus: 'single' | 'married' | 'widowed' | 'divorced';
+  maritalStatus: 'Single' | 'Married' | 'Widowed' | 'Divorced';
   tracks: Array<'EstatePlanning' | 'ElderLaw' | 'Guardianship' | 'Probate' | 'Medicaid'>;
   confidenceScore: number; // 0-100
   nextAppointment?: CalendarEvent;

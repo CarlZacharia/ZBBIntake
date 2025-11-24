@@ -62,7 +62,7 @@ export class AssetsComponent {
   // Reactive data access
   readonly assets = computed(() => this.ds.assets());
   readonly maritalInfo = computed(() => this.ds.maritalInfo());
-  readonly isMarriedSignal = computed(() => this.maritalInfo().marital_status === 'married');
+  readonly isMarriedSignal = computed(() => this.maritalInfo().marital_status === 'Married');
 
   // US States for dropdowns
   states = [

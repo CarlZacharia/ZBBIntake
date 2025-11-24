@@ -93,39 +93,39 @@
         <span class="info-label">Marital Status:</span>
         <span class="info-value">{{ds.maritalInfo().marital_status}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Spouse/Partner Name:</span>
         <span class="info-value">{{ds.maritalInfo().spouse_legal_name || 'N/A'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Spouse DOB:</span>
         <span class="info-value">{{formatDate(ds.maritalInfo().spouse_dob)}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Marriage Date:</span>
         <span class="info-value">{{formatDate(ds.maritalInfo().marriage_date)}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Marriage Location:</span>
         <span class="info-value">{{ds.maritalInfo().marriage_location || 'N/A'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">First Marriage:</span>
         <span class="info-value">{{ds.maritalInfo().first_marriage == 'Yes' ? 'Yes' : ds.maritalInfo().first_marriage == 'No' ? 'No' : 'N/A'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Relationship Quality:</span>
         <span class="info-value">{{ds.maritalInfo().relationship_quality || 'N/A'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Prenuptial Agreement:</span>
         <span class="info-value">{{ds.maritalInfo().prenup_exists ? 'Yes' : 'No'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Postnuptial Agreement:</span>
         <span class="info-value">{{ds.maritalInfo().postnup_exists ? 'Yes' : 'No'}}</span>
       </div>
-      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'married' || ds.maritalInfo().marital_status === 'domestic_partnership'">
+      <div class="info-item" *ngIf="ds.maritalInfo().marital_status === 'Married' || ds.maritalInfo().marital_status === 'Domestic_partnership'">
         <span class="info-label">Spouse Has Other Children:</span>
           <span class="info-value">{{ ds.maritalInfo().spouse_has_other_children == 'Yes' ? 'Yes' : (ds.maritalInfo().spouse_has_other_children == 'No' ? 'No' : 'N/A') }}</span>
       </div>

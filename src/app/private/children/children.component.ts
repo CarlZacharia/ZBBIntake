@@ -161,8 +161,8 @@ export class ChildrenComponent {
 
   createEmptyFamilyMember(): IFamilyMember {
     return {
-      family_id: null,
-      relationship: 'other',
+      family_member_id: null,
+      relationship: 'Grandchild',
       legal_name: '',
       date_of_birth: null,
       is_living: true,
