@@ -42,8 +42,7 @@ export interface IRegisterData {
   terms_accepted: boolean;
   privacy_accepted: boolean;
   user_category?: string;
-  provider_name?: string;
-  provider_type?: string;
+
 }
 
 export interface IPasswordReset {

@@ -11,76 +11,76 @@
     <h2 class="section-title">Personal Information</h2>
     <div class="info-grid">
       <div class="info-item">
-        <span class="info-label">Full Legal Name:</span>
-        <span class="info-value">{{ds.personal().legal_first_name}} {{ds.personal().legal_middle_name}} {{ds.personal().legal_last_name}} {{ds.personal().suffix}}</span>
+  <span class="info-label">Full Legal Name:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().legal_first_name}} {{ds.personal().legal_middle_name}} {{ds.personal().legal_last_name}} {{ds.personal().suffix}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Preferred Name:</span>
-        <span class="info-value">{{ds.personal().preferred_name || 'N/A'}}</span>
+  <span class="info-label">Preferred Name:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().preferred_name || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Date of Birth:</span>
-        <span class="info-value">{{formatDate(ds.personal().date_of_birth)}}</span>
+  <span class="info-label">Date of Birth:</span>
+  <span class="info-value text-blue-900 font-bold">{{formatDate(ds.personal().date_of_birth)}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">SSN:</span>
-        <span class="info-value">{{ds.personal().ssn_encrypted || 'N/A'}}</span>
+  <span class="info-label">SSN:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().ssn_encrypted || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">US Citizen:</span>
-        <span class="info-value">{{ds.personal().us_citizen == 'Yes' ? 'Yes' : ds.personal().us_citizen == 'No' ? 'No' : 'N/A'}}</span>
+  <span class="info-label">US Citizen:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().us_citizen == 'Yes' ? 'Yes' : ds.personal().us_citizen == 'No' ? 'No' : 'N/A'}}</span>
       </div>
       <div class="info-item" *ngIf="ds.personal().us_citizen == 'No'">
-        <span class="info-label">Citizenship Country:</span>
-        <span class="info-value">{{ds.personal().citizenship_country || 'N/A'}}</span>
+  <span class="info-label">Citizenship Country:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().citizenship_country || 'N/A'}}</span>
       </div>
       <div class="info-item full-width">
         <span class="info-label">Current Address:</span>
-        <span class="info-value">
+        <span class="info-value text-blue-900 font-bold">
           {{ds.personal().address_line1}}
           <span *ngIf="ds.personal().address_line2">, {{ds.personal().address_line2}}</span>,
           {{ds.personal().city}}, {{ds.personal().state}} {{ds.personal().zip}}
         </span>
       </div>
       <div class="info-item">
-        <span class="info-label">Years at Address:</span>
-        <span class="info-value">{{ds.personal().years_at_address || 'N/A'}}</span>
+  <span class="info-label">Years at Address:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().years_at_address || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Mobile Phone:</span>
-        <span class="info-value">{{ds.personal().mobile_phone || 'N/A'}}</span>
+  <span class="info-label">Mobile Phone:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().mobile_phone || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Home Phone:</span>
-        <span class="info-value">{{ds.personal().home_phone || 'N/A'}}</span>
+  <span class="info-label">Home Phone:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().home_phone || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Email:</span>
-        <span class="info-value">{{ds.personal().email || 'N/A'}}</span>
+  <span class="info-label">Email:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().email || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Preferred Contact:</span>
-        <span class="info-value">{{ds.personal().preferred_contact_method || 'N/A'}}</span>
+  <span class="info-label">Preferred Contact:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().preferred_contact_method || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Occupation:</span>
-        <span class="info-value">{{ds.personal().occupation || 'N/A'}}</span>
+  <span class="info-label">Occupation:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().occupation || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Employer:</span>
-        <span class="info-value">{{ds.personal().employer_name || 'N/A'}}</span>
+  <span class="info-label">Employer:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().employer_name || 'N/A'}}</span>
       </div>
       <div class="info-item">
-        <span class="info-label">Military Service:</span>
-        <span class="info-value">{{ds.personal().military_service ? 'Yes' : 'No'}}</span>
+  <span class="info-label">Military Service:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().military_service ? 'Yes' : 'No'}}</span>
       </div>
       <div class="info-item" *ngIf="ds.personal().military_service">
-        <span class="info-label">Branch:</span>
-        <span class="info-value">{{ds.personal().military_branch || 'N/A'}}</span>
+  <span class="info-label">Branch:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().military_branch || 'N/A'}}</span>
       </div>
       <div class="info-item" *ngIf="ds.personal().military_service">
-        <span class="info-label">Service Dates:</span>
-        <span class="info-value">{{ds.personal().military_service_dates || 'N/A'}}</span>
+  <span class="info-label">Service Dates:</span>
+  <span class="info-value text-blue-900 font-bold">{{ds.personal().military_service_dates || 'N/A'}}</span>
       </div>
     </div>
   </section>

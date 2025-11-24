@@ -86,8 +86,7 @@ try {
         'first_name' => $userData['first_name'],
         'last_name' => $userData['last_name'],
         'user_category' => $userData['user_category'],
-        'provider_name' => $userData['provider_name'],
-        'provider_type' => $userData['provider_type'],
+
     ];
 
     // Generate JWT token

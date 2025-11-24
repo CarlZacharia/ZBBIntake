@@ -1,7 +1,30 @@
-/* stylelint-disable */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Universal dark blue and bold for form fields */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  color: #1e3a8a; /* Tailwind's blue-900 */
+  font-weight: bold;
+  border-color: #1e3a8a;
+}
+
+input[type="text"]::placeholder,
+input[type="number"]::placeholder,
+input[type="email"]::placeholder,
+input[type="tel"]::placeholder,
+textarea::placeholder {
+  color: #1e3a8a;
+  opacity: 1;
+}
+/* stylelint-disable */
+
 /* stylelint-enable */
 
 /* You can add global styles to this file, and also import other style files */

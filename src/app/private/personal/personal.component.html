@@ -23,7 +23,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().legal_first_name"
                   (ngModelChange)="updatePersonalInfo('legal_first_name', $event)" name="legal_first_name"
-                  placeholder="First name" class="input input-bordered w-full" />
+                  placeholder="First name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Legal Middle Name -->
@@ -33,7 +33,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().legal_middle_name"
                   (ngModelChange)="updatePersonalInfo('legal_middle_name', $event)"
-                  name="legal_middle_name" placeholder="Middle name" class="input input-bordered w-full" />
+                  name="legal_middle_name" placeholder="Middle name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Legal Last Name -->
@@ -43,7 +43,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().legal_last_name"
                   (ngModelChange)="updatePersonalInfo('legal_last_name', $event)" name="legal_last_name"
-                  placeholder="Last name" class="input input-bordered w-full" />
+                  placeholder="Last name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Suffix -->
@@ -53,7 +53,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().suffix"
                   (ngModelChange)="updatePersonalInfo('suffix', $event)" name="suffix"
-                  placeholder="Jr., Sr., III, etc." class="input input-bordered w-full" />
+                  placeholder="Jr., Sr., III, etc." class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Preferred Name -->
@@ -63,7 +63,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().preferred_name"
                   (ngModelChange)="updatePersonalInfo('preferred_name', $event)" name="preferred_name"
-                  placeholder="What do you go by?" class="input input-bordered w-full" />
+                  placeholder="What do you go by?" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Date of Birth -->
@@ -73,7 +73,7 @@
                 </label>
                 <input type="date" [(ngModel)]="personal().date_of_birth"
                   (ngModelChange)="updatePersonalInfo('date_of_birth', $event)" name="date_of_birth"
-                  class="input input-bordered w-full" />
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- SSN -->
@@ -83,7 +83,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().ssn_encrypted"
                   (ngModelChange)="updatePersonalInfo('ssn_encrypted', $event)" name="ssn_encrypted"
-                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full" mask="000-00-0000" [showMaskTyped]="false" />
+                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" mask="000-00-0000" [showMaskTyped]="false" />
               </div>
 
               <!-- US Citizen -->
@@ -93,7 +93,7 @@
                 </label>
                 <select [(ngModel)]="personal().us_citizen"
                   (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
-                  name="us_citizen" class="select select-bordered w-full">
+                  name="us_citizen" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="'Yes'">Yes</option>
                   <option [ngValue]="'No'">No</option>
@@ -107,7 +107,7 @@
                 </label>
                 <select [(ngModel)]="maritalInfo().marital_status"
                   (ngModelChange)="updateMaritalInfo('marital_status', $event)" name="marital_status"
-                  class="select select-bordered w-full">
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
                   <option value="single">Single</option>
                   <option value="married">Married</option>
@@ -124,7 +124,7 @@
                 </label>
                 <input type="text" [(ngModel)]="personal().citizenship_country"
                   (ngModelChange)="updatePersonalInfo('citizenship_country', $event)" name="citizenship_country"
-                  placeholder="Country of citizenship" class="input input-bordered w-full" />
+                  placeholder="Country of citizenship" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
             </div>
           </div>
@@ -213,7 +213,7 @@
                 </label>
                 <input type="text" [value]="(maritalInfo().spouse_legal_name) || ''"
                   (input)="onInputChange('spouse_legal_name', $event, updateMaritalInfo.bind(this))" name="spouse_legal_name"
-                  placeholder="Full legal name" class="input input-bordered w-full" />
+                  placeholder="Full legal name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Spouse Date of Birth -->
@@ -223,7 +223,7 @@
                 </label>
                 <input type="date" [value]="(maritalInfo().spouse_dob) || ''"
                   (input)="onInputChange('spouse_dob', $event, updateMaritalInfo.bind(this))" name="spouse_dob"
-                  class="input input-bordered w-full" />
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Spouse SSN -->
@@ -232,8 +232,8 @@
                   <span class="label-text font-semibold">Spouse/Partner SSN</span>
                 </label>
                 <input type="text" [value]="(maritalInfo().spouse_ssn_encrypted) || ''"
-                  (input)="onInputChange('spouse_ssn_encrypted', $event, updateMaritalInfo.bind(this))" name="spouse_ssn_encrypted"
-                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full" />
+                  (input)="onInputChange('spouse_ssn_encrypted', $event, updateMaritalInfo.bind(this))" name="spouse_ssn_encrypted" mask="000-00-0000"
+                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Marriage Date -->
@@ -243,7 +243,7 @@
                 </label>
                 <input type="date" [value]="(maritalInfo().marriage_date) || ''"
                   (input)="onInputChange('marriage_date', $event, updateMaritalInfo.bind(this))" name="marriage_date"
-                  class="input input-bordered w-full" />
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- Marriage Location -->
@@ -253,7 +253,7 @@
                 </label>
                 <input type="text" [value]="(maritalInfo().marriage_location) || ''"
                   (input)="onInputChange('marriage_location', $event, updateMaritalInfo.bind(this))" name="marriage_location"
-                  placeholder="City, State/Country" class="input input-bordered w-full" />
+                  placeholder="City, State/Country" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
               </div>
 
               <!-- First Marriage -->
@@ -263,7 +263,7 @@
                 </label>
                 <select [(ngModel)]="maritalInfo().first_marriage"
                   (ngModelChange)="updateMaritalInfo('first_marriage', $event)" name="first_marriage"
-                  class="select select-bordered w-full">
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="true">Yes</option>
                   <option [ngValue]="false">No</option>
@@ -277,7 +277,7 @@
                 </label>
                 <select [value]="(maritalInfo().relationship_quality) || ''"
                   (input)="onInputChange('relationship_quality', $event, updateMaritalInfo.bind(this))" name="relationship_quality"
-                  class="select select-bordered w-full">
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
                   <option value="excellent">Excellent</option>
                   <option value="good">Good</option>
@@ -293,7 +293,7 @@
                 </label>
                 <select [(ngModel)]="maritalInfo().spouse_has_other_children"
                   (ngModelChange)="updateMaritalInfo('spouse_has_other_children', $event)"
-                  name="spouse_has_other_children" class="select select-bordered w-full">
+                  name="spouse_has_other_children" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="true">Yes</option>
                   <option [ngValue]="false">No</option>
@@ -328,7 +328,7 @@
                 <textarea [value]="(maritalInfo().divorce_obligations) || ''"
                   (input)="onInputChange('divorce_obligations', $event, updateMaritalInfo.bind(this))" name="divorce_obligations"
                   rows="3" placeholder="Alimony, child support, property divisions, etc."
-                  class="textarea textarea-bordered w-full"></textarea>
+                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"></textarea>
               </div>
 
               <!-- Divorce Decree Restrictions -->
@@ -340,7 +340,7 @@
                   (input)="onInputChange('divorce_decree_restrictions', $event, updateMaritalInfo.bind(this))"
                   name="divorce_decree_restrictions" rows="3"
                   placeholder="Any restrictions or special provisions in divorce decree..."
-                  class="textarea textarea-bordered w-full"></textarea>
+                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"></textarea>
               </div>
             </div>
           </div>

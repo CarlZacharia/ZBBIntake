@@ -55,11 +55,12 @@ export class DataService {
   // Primary signals for reactive state management
   private _clientdata = signal<IClientData>({
     client: {
+      portal_user_id: null,
       client_id: null,
-      user_account_id: null,
       status: null,
       completion_percentage: 0,
       assigned_attorney_id: null,
+      office: null,
       referral_source: null,
     },
     personal: {
@@ -938,10 +939,11 @@ export class DataService {
     this._clientdata.set({
       client: {
         client_id: null,
-        user_account_id: this.authService.getCurrentUserId(),
+        portal_user_id: this.authService.getCurrentUserId(),
         status: null,
         completion_percentage: 0,
         assigned_attorney_id: null,
+        office: null,
         referral_source: null,
       },
       personal: {
@@ -1037,12 +1039,13 @@ export class DataService {
    */
   private initializeClientData(): void {
     const userId = this.authService.getCurrentUserId();
+    console.log('Initializing client data for user ID:', userId);
     if (userId) {
       this._clientdata.update(current => ({
         ...current,
         client: {
           ...current.client,
-          user_account_id: userId
+          client_id: userId
         }
       }));
 
@@ -1051,6 +1054,7 @@ export class DataService {
         next: (clientData) => {
           if (clientData) {
             console.log('Setting clientdata after initializeClientData:', clientData);
+            this.pui = clientData.client.portal_user_id;
             this._clientdata.set(clientData);
 
           if (clientData && clientData.client && clientData.client.client_id) {
@@ -1131,24 +1135,24 @@ loadClientData(): Observable<IClientData | null> {
 
     const clientData = this._clientdata();
     console.log('Saving client data to server:', clientData);
-    // Ensure user_account_id is set in client section
+    // Ensure client_id is set in client section
     const dataToSave = {
       ...clientData,
       client: {
         ...clientData.client,
-        user_account_id: userId
+        client_id: userId
       },
       personal: {
         ...clientData.personal,
-        user_account_id: userId
+        client_id: userId
       },
       marital_info: {
         ...clientData.marital_info,
-        user_account_id: userId
+        client_id: userId
       },
       guardianship_preferences: {
         ...clientData.guardianship_preferences,
-        user_account_id: userId
+        client_id: userId
       }
 
     };
@@ -1163,13 +1167,11 @@ loadClientData(): Observable<IClientData | null> {
   private saveTimeout?: any;
 
   private autoSave(): void {
-console.log("Line 1165", this.personal().us_citizen);
 
     // Clear existing timeout
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
     }
-console.log("Line 1169", this.personal().us_citizen);
     // Set new timeout for 2 seconds
     this.saveTimeout = setTimeout(() => {
       this.saveclientdata().subscribe({
@@ -1184,7 +1186,6 @@ console.log("Line 1169", this.personal().us_citizen);
         }
       });
     }, 2000);
-console.log("Line 1184", this.personal().us_citizen);
   }
 
 }

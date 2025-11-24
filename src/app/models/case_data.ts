@@ -382,11 +382,12 @@ export interface IPersonal {
 }
 
 export interface IClient {
+  portal_user_id: number | null;
   client_id: number | null;
-  user_account_id: number | null;
   status: string | null;
   completion_percentage: number;
   assigned_attorney_id: number | null;
+  office: string | null;
   referral_source: string | null;
 }
 

@@ -160,8 +160,8 @@ try {
 function initializeEstateIntake($conn, $portal_user_id) {
     try {
         // 1. Insert into client table
-        $stmt = $conn->prepare("INSERT INTO client (portal_user_id, user_account_id, status, completion_percentage, assigned_attorney_id, referral_source)
-                                VALUES (:portal_user_id, NULL, NULL, 0, NULL, NULL)");
+        $stmt = $conn->prepare("INSERT INTO client (portal_user_id, client_id, status, completion_percentage, assigned_attorney_id, referral_source)
+                                VALUES (:portal_user_id, :portal_user_id, NULL, 0, NULL, NULL)");
         $stmt->bindParam(':portal_user_id', $portal_user_id, PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
