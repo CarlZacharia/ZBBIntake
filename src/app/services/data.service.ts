@@ -33,7 +33,12 @@ export class DataService {
    */
 
   public setClientData(data: IClientData) {
-    console.log('setClientData called. ssn_encrypted:', data.personal?.us_citizen);
+      console.log('setClientData called. marital_info:', data.marital_info);
+      if (data.marital_info && 'spouse_ssn_encrypted' in data.marital_info) {
+        console.log('spouse_ssn_encrypted value:', data.marital_info.spouse_ssn_encrypted);
+      } else {
+        console.warn('spouse_ssn_encrypted is missing from marital_info:', data.marital_info);
+      }
     this._clientdata.set(data);
   }
 
@@ -51,7 +56,6 @@ export class DataService {
    */
 
   saveClientSection(table: string, data: any): Observable<any> {
-    console.log(`Saving section ${table} with data:`, data);
     return this.http.post(this.UPDATE_URL, { table, data });
   }
   private readonly authService = inject(AuthService);
@@ -1046,7 +1050,6 @@ export class DataService {
    */
   private initializeClientData(): void {
     const userId = this.authService.getCurrentUserId();
-    console.log('Initializing client data for user ID:', userId);
     if (userId) {
       this._clientdata.update(current => ({
         ...current,
@@ -1060,7 +1063,6 @@ export class DataService {
       this.loadClientData().subscribe({
         next: (clientData) => {
           if (clientData) {
-            console.log('Setting clientdata after initializeClientData:', clientData);
             this.pui = clientData.client.portal_user_id;
             this._clientdata.set(clientData);
 
@@ -1141,8 +1143,6 @@ loadClientData(): Observable<IClientData | null> {
     }
 
     const clientData = this._clientdata();
-    console.log('Saving client data to server:', clientData);
-    // Ensure client_id is set in client section
     const dataToSave = {
       ...clientData,
       client: {
@@ -1183,10 +1183,7 @@ loadClientData(): Observable<IClientData | null> {
     this.saveTimeout = setTimeout(() => {
       this.saveclientdata().subscribe({
         next: (savedData) => {
-          console.log('Auto-save response received:', savedData);
-          // Update local client data with server response (includes IDs)
       this._clientdata.set(savedData as IClientData);
-          console.log('Client data auto-saved successfully', this.personal().us_citizen, this.pui);
         },
         error: (error) => {
           console.error('Auto-save failed:', error);

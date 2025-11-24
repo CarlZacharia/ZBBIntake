@@ -231,9 +231,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">Spouse/Partner SSN</span>
                 </label>
-                <input type="text" [value]="(maritalInfo().spouse_ssn_encrypted) || ''"
-                  (input)="onInputChange('spouse_ssn_encrypted', $event, updateMaritalInfo.bind(this))" name="spouse_ssn_encrypted" mask="000-00-0000"
-                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+          <input type="text" [(ngModel)]="maritalInfo().spouse_ssn_encrypted" (ngModelChange)="updateMaritalInfo('spouse_ssn_encrypted', $event)" name="spouse_ssn_encrypted" mask="000-00-0000" placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"  />
               </div>
 
               <!-- Marriage Date -->
@@ -265,8 +263,8 @@
                   (ngModelChange)="updateMaritalInfo('first_marriage', $event)" name="first_marriage"
                   class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="Yes">Yes</option>
-                  <option [ngValue]="No">No</option>
+                  <option [ngValue]="'Yes'">Yes</option>
+                    <option [ngValue]="'No'">No</option>
                 </select>
               </div>
 
@@ -295,29 +293,33 @@
                   (ngModelChange)="updateMaritalInfo('spouse_has_other_children', $event)"
                   name="spouse_has_other_children" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
                   <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="Yes">Yes</option>
-                  <option [ngValue]="No">No</option>
+                  <option [ngValue]="'Yes'">Yes</option>
+                  <option [ngValue]="'No'">No</option>
                 </select>
               </div>
 
               <!-- Prenup Exists -->
               <div class="form-control">
-                <label class="label cursor-pointer justify-start gap-4">
-                  <input type="checkbox" [checked]="maritalInfo().prenup_exists == '1'"
-                    (change)="onCheckboxChange('prenup_exists', $event, updateMaritalInfo.bind(this))" name="prenup_exists"
-                    class="checkbox checkbox-primary" />
-                  <span class="label-text font-semibold">Prenuptial Agreement Exists</span>
-                </label>
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <div class="flex items-center gap-2">
+                      <input type="checkbox" [checked]="maritalInfo().prenup_exists == 'Yes'"
+                        (change)="onCheckboxChange('prenup_exists', $event, updateMaritalInfo.bind(this))" name="prenup_exists"
+                        class="checkbox checkbox-primary" />
+                      <span class="label-text font-semibold">Prenuptial Agreement Exists</span>
+                    </div>
+                  </label>
               </div>
 
               <!-- Postnup Exists -->
               <div class="form-control">
-                <label class="label cursor-pointer justify-start gap-4">
-                  <input type="checkbox" [checked]="maritalInfo().postnup_exists"
-                    (change)="onCheckboxChange('postnup_exists', $event, updateMaritalInfo.bind(this))" name="postnup_exists"
-                    class="checkbox checkbox-primary" />
-                  <span class="label-text font-semibold">Postnuptial Agreement Exists</span>
-                </label>
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <div class="flex items-center gap-2">
+                      <input type="checkbox" [checked]="maritalInfo().postnup_exists == 'Yes'"
+                        (change)="onCheckboxChange('postnup_exists', $event, updateMaritalInfo.bind(this))" name="postnup_exists"
+                        class="checkbox checkbox-primary" />
+                      <span class="label-text font-semibold">Postnuptial Agreement Exists</span>
+                    </div>
+                  </label>
               </div>
 
               <!-- Divorce Obligations -->
@@ -447,15 +449,17 @@
               <!-- Military Service Checkbox -->
               <div class="form-control">
                 <label class="label cursor-pointer justify-start gap-4">
-                  <input type="checkbox" [checked]="personal().military_service"
-                    (change)="onCheckboxChange('military_service', $event, updatePersonalInfo.bind(this))" name="military_service"
-                    class="checkbox checkbox-primary" />
-                  <span class="label-text font-semibold">Have you served in the military?</span>
+                    <div class="flex items-center gap-2">
+                      <input type="checkbox" [checked]="personal().military_service == 'Yes'"
+                        (change)="onCheckboxChange('military_service', $event, updatePersonalInfo.bind(this))" name="military_service"
+                        class="checkbox checkbox-primary" />
+                      <span class="label-text font-semibold">Have you served in the military?</span>
+                    </div>
                 </label>
               </div>
 
               <!-- Military Branch -->
-              <div class="form-control" *ngIf="personal().military_service">
+              <div class="form-control" *ngIf="personal().military_service == 'Yes'">
                 <label class="label">
                   <span class="label-text font-semibold">Branch of Service</span>
                 </label>
@@ -468,7 +472,7 @@
               </div>
 
               <!-- Service Dates -->
-              <div class="form-control" *ngIf="personal().military_service">
+              <div class="form-control" *ngIf="personal().military_service =='Yes'">
                 <label class="label">
                   <span class="label-text font-semibold">Service Dates</span>
                 </label>
@@ -480,16 +484,6 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex justify-end gap-4 mt-8 pt-6 border-t-2">
-            <button type="button" class="btn btn-outline">Cancel</button>
-            <button type="button" (click)="savePersonalInfo();saveMaritalInfo()" class="btn btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-              </svg>
-              Save Personal and Marital Information
-            </button>
-          </div>
         </form>
       </div>
     </div>
