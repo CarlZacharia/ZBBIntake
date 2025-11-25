@@ -55,42 +55,42 @@ export class MainintakeComponent {
 
     // Real Estate
     assets.real_estate_holdings.forEach(re => {
-      total += re.approximate_value || 0;
+      total += Number(re.approximate_value || 0);
     });
 
     // Bank Accounts
     assets.bank_account_holdings.forEach(ba => {
-      total += ba.approximate_value || 0;
+      total += Number(ba.approximate_value || 0);
     });
 
     // Non-Qualified Accounts
     assets.nq_account_holdings.forEach(nq => {
-      total += nq.approximate_value || 0;
+      total += Number(nq.approximate_value || 0);
     });
 
     // Retirement Accounts
     assets.retirement_account_holdings.forEach(ra => {
-      total += ra.approximate_value || 0;
+      total += Number(ra.approximate_value || 0);
     });
 
     // Life Insurance
     assets.life_insurance_holdings.forEach(li => {
-      total += li.approximate_value || 0;
+      total += Number(li.approximate_value || 0);
     });
 
     // Business Interests
     assets.business_interest_holdings.forEach(bi => {
-      total += bi.approximate_value || 0;
+      total += Number(bi.approximate_value || 0);
     });
 
     // Digital Assets
     assets.digital_asset_holdings.forEach(da => {
-      total += da.approximate_value || 0;
+      total += Number(da.approximate_value || 0);
     });
 
     // Other Assets
     assets.other_asset_holdings.forEach(oa => {
-      total += oa.approximate_value || 0;
+      total += Number(oa.approximate_value || 0);
     });
 
     return total;

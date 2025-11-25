@@ -537,6 +537,29 @@ export class DataService {
     }));
   }
 
+  updateRealEstate(asset: IRealEstate) {
+  const realEstateId = (asset as any).real_estate_id;
+    if (!realEstateId) {
+      console.warn('Cannot update: real_estate real_estate_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      real_estate_id: realEstateId
+    };
+    this.saveClientSection('real_estate_holdings', updatedAsset).subscribe();
+    // Update local state by real_estate_id
+    this._clientdata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        real_estate_holdings: current.assets.real_estate_holdings.map(a =>
+          a.real_estate_id === realEstateId ? { ...a, ...asset } : a
+        )
+      }
+    }));
+  }
 
   removeRealEstate(index: number) {
     const asset = this._clientdata().assets.real_estate_holdings[index];
@@ -613,6 +636,33 @@ export class DataService {
     }));
   }
 
+  /**
+   * Update a bank account holding in MariaDB
+   */
+  updateBankAccount(asset: IBankAccount) {
+    if (!asset.bank_account_id) {
+      console.warn('Cannot update: bank_account account_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      bank_account_id: asset.bank_account_id,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+    };
+    this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
+    // Update local state by account_id
+    this._clientdata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        bank_account_holdings: current.assets.bank_account_holdings.map(a =>
+          a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a
+        )
+      }
+    }));
+  }
 
   removeBankAccount(index: number) {
     const asset = this._clientdata().assets.bank_account_holdings[index];
@@ -1540,55 +1590,7 @@ loadClientData(): Observable<IClientData | null> {
     /**
    * Update a real estate holding in MariaDB
    */
-  updateRealEstate(asset: IRealEstate) {
-  const realEstateId = (asset as any).real_estate_id;
-    if (!realEstateId) {
-      console.warn('Cannot update: real_estate real_estate_id is missing.');
-      return;
-    }
-    const updatedAsset = {
-      ...asset,
-      action: 'update',
-      real_estate_id: realEstateId
-    };
-    this.saveClientSection('real_estate_holdings', updatedAsset).subscribe();
-    // Update local state by real_estate_id
-    this._clientdata.update(current => ({
-      ...current,
-      assets: {
-        ...current.assets,
-        real_estate_holdings: current.assets.real_estate_holdings.map(a =>
-          a.real_estate_id === realEstateId ? { ...a, ...asset } : a
-        )
-      }
-    }));
-  }
 
-  /**
-   * Update a bank account holding in MariaDB
-   */
-  updateBankAccount(asset: IBankAccount) {
-    if (!asset.bank_account_id) {
-      console.warn('Cannot update: bank_account account_id is missing.');
-      return;
-    }
-    const updatedAsset = {
-      ...asset,
-      action: 'update',
-      bank_account_id: asset.bank_account_id,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
-    };
-    this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
-    // Update local state by account_id
-    this._clientdata.update(current => ({
-      ...current,
-      assets: {
-        ...current.assets,
-        bank_account_holdings: current.assets.bank_account_holdings.map(a =>
-          a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a
-        )
-      }
-    }));
-  }
+
+
 }

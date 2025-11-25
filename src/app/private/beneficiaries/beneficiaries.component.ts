@@ -25,6 +25,7 @@ export class BeneficiariesComponent {
 
   loadBeneficiaries() {
     this.beneficiariesService.getChildren().subscribe(children => {
+      console.log('Fetched children:', children);
       this.children = children;
     });
     this.beneficiariesService.getFamilyMembers().subscribe(family => {

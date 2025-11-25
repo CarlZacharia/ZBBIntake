@@ -72,8 +72,8 @@
           </svg>
           <span class="nav-title">Assets</span>
         </div>
-        <div class="nav-card-info" *ngIf="getTotalAssetValue() > 0">
-          {{formatCurrency(getTotalAssetValue())}}
+        <div class="nav-card-status" *ngIf="getTotalAssetValue() > 0">
+          {{getTotalAssetValue() | currency}}
         </div>
         <div class="nav-card-info" *ngIf="getTotalAssetValue() === 0">
           No assets recorded
