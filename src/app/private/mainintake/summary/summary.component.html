@@ -371,7 +371,7 @@
       <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('real_estate'))}}</div>
       <div class="asset-item" *ngFor="let asset of ds.assets().real_estate_holdings">
         <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
-        <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.estimated_value)}}</div>
+        <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.approximate_value)}}</div>
         <div class="asset-details">
           <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
           <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
@@ -427,7 +427,7 @@
       <div class="category-total">Total Death Benefit: {{formatCurrency(getAssetCategoryTotal('insurance'))}}</div>
       <div class="asset-item" *ngFor="let asset of ds.assets().life_insurance_holdings">
         <div class="asset-name">{{asset.insurance_company}} - {{asset.policy_type}}</div>
-        <div class="asset-value">Death Benefit: {{formatCurrency(asset.death_benefit)}}</div>
+        <div class="asset-value">Death Benefit: {{formatCurrency(asset.approximate_value)}}</div>
         <div class="asset-details">
           <span *ngIf="asset.cash_value">Cash Value: {{formatCurrency(asset.cash_value)}}</span>
           <span *ngIf="asset.owned_by_trust"> | Owned by Trust: {{asset.trust_name}}</span>
@@ -441,7 +441,7 @@
       <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('business'))}}</div>
       <div class="asset-item" *ngFor="let asset of ds.assets().business_interest_holdings">
         <div class="asset-name">{{asset.business_name}} ({{asset.business_type}})</div>
-        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
         <div class="asset-details">
           <span *ngIf="asset.ownership_percentage">Ownership: {{asset.ownership_percentage}}%</span>
           <span *ngIf="asset.buy_sell_agreement_exists"> | Buy-Sell Agreement Exists</span>
@@ -455,7 +455,7 @@
       <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('digital'))}}</div>
       <div class="asset-item" *ngFor="let asset of ds.assets().digital_asset_holdings">
         <div class="asset-name">{{asset.asset_name}} ({{asset.asset_type}})</div>
-        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
         <div class="asset-details">
           <span *ngIf="asset.platform_or_service">Platform: {{asset.platform_or_service}}</span>
           <span *ngIf="asset.intended_disposition"> | Disposition: {{asset.intended_disposition}}</span>
@@ -469,7 +469,7 @@
       <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('other'))}}</div>
       <div class="asset-item" *ngFor="let asset of ds.assets().other_asset_holdings">
         <div class="asset-name">{{asset.description}} ({{asset.asset_type}})</div>
-        <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+        <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
         <div class="asset-details">
           <span *ngIf="asset.is_heirloom">Heirloom</span>
           <span *ngIf="asset.intended_recipient"> | Intended Recipient: {{asset.intended_recipient}}</span>
@@ -521,7 +521,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('real_estate'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().real_estate_holdings">
           <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
-          <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.estimated_value)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
             <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
@@ -577,7 +577,7 @@
         <div class="category-total">Total Death Benefit: {{formatCurrency(getAssetCategoryTotal('insurance'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().life_insurance_holdings">
           <div class="asset-name">{{asset.insurance_company}} - {{asset.policy_type}}</div>
-          <div class="asset-value">Death Benefit: {{formatCurrency(asset.death_benefit)}}</div>
+          <div class="asset-value">Death Benefit: {{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.cash_value">Cash Value: {{formatCurrency(asset.cash_value)}}</span>
             <span *ngIf="asset.owned_by_trust"> | Owned by Trust: {{asset.trust_name}}</span>
@@ -591,7 +591,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('business'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().business_interest_holdings">
           <div class="asset-name">{{asset.business_name}} ({{asset.business_type}})</div>
-          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.ownership_percentage">Ownership: {{asset.ownership_percentage}}%</span>
             <span *ngIf="asset.buy_sell_agreement_exists"> | Buy-Sell Agreement Exists</span>
@@ -605,7 +605,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('digital'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().digital_asset_holdings">
           <div class="asset-name">{{asset.asset_name}} ({{asset.asset_type}})</div>
-          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.platform_or_service">Platform: {{asset.platform_or_service}}</span>
             <span *ngIf="asset.intended_disposition"> | Disposition: {{asset.intended_disposition}}</span>
@@ -619,7 +619,7 @@
         <div class="category-total">Total: {{formatCurrency(getAssetCategoryTotal('other'))}}</div>
         <div class="asset-item" *ngFor="let asset of ds.assets().other_asset_holdings">
           <div class="asset-name">{{asset.description}} ({{asset.asset_type}})</div>
-          <div class="asset-value">{{formatCurrency(asset.estimated_value)}}</div>
+          <div class="asset-value">{{formatCurrency(asset.approximate_value)}}</div>
           <div class="asset-details">
             <span *ngIf="asset.is_heirloom">Heirloom</span>
             <span *ngIf="asset.intended_recipient"> | Intended Recipient: {{asset.intended_recipient}}</span>

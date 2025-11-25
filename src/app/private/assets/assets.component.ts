@@ -27,7 +27,7 @@ export class AssetsComponent {
   // Auto-calculate netValue for real estate
   onRealEstateValueChange() {
     if (this.editingRealEstate) {
-      const est = Number(this.editingRealEstate.estimated_value) || 0;
+      const est = Number(this.editingRealEstate.approximate_value) || 0;
       const mort = Number(this.editingRealEstate.mortgage_balance) || 0;
       this.editingRealEstate.net_value = est - mort;
     }
@@ -36,7 +36,7 @@ export class AssetsComponent {
   // Auto-calculate netValue for other assets
   onOtherAssetValueChange() {
     if (this.editingOtherAsset) {
-      const est = Number(this.editingOtherAsset.estimated_value) || 0;
+      const est = Number(this.editingOtherAsset.approximate_value) || 0;
       const debt = Number(this.editingOtherAsset.debtOwed) || 0;
       this.editingOtherAsset.netValue = est - debt;
     }
@@ -138,7 +138,7 @@ export class AssetsComponent {
       let value = 0;
       switch (assetType) {
         case 'real_estate':
-          value = asset.ownership_value || asset.net_value || asset.estimated_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'bank_account':
           value = asset.approximate_value || 0;
@@ -150,17 +150,17 @@ export class AssetsComponent {
           value = asset.approximate_value || 0;
           break;
         case 'life_insurance':
-          value = asset.death_benefit || 0;
+          value = asset.approximate_value || 0;
           break;
         case 'business_interest':
-          value = asset.estimated_value || 0;
+          value = asset.approximate_value || 0;
           break;
         case 'digital_asset':
-          value = asset.estimated_value || 0;
+          value = asset.approximate_value || 0;
           break;
         case 'other_asset':
-          // Use netValue if present, else estimated_value
-          value = (asset.netValue != null ? asset.netValue : asset.estimated_value) || 0;
+          // Use netValue if present, else approximate_value
+          value = (asset.netValue != null ? asset.netValue : asset.approximate_value) || 0;
           break;
       }
       return total + value;
@@ -348,12 +348,10 @@ export class AssetsComponent {
         this.ds.removeRealEstate(actualIndex);
         break;
       case 'bank_account':
-        if (this.ds.assets().bank_account_holdings)
-          this.ds.assets().bank_account_holdings.splice(actualIndex, 1);
+        this.ds.removeBankAccount(actualIndex);
         break;
       case 'nq_account':
-        if (this.ds.assets().nq_account_holdings)
-          this.ds.assets().nq_account_holdings.splice(actualIndex, 1);
+        this.ds.removeNQAccount(actualIndex);
         break;
       case 'retirement_account':
         this.ds.removeRetirementAccount(actualIndex);
@@ -421,21 +419,21 @@ export class AssetsComponent {
   getAssetValue(assetType: string, asset: any): number {
     switch (assetType) {
       case 'real_estate':
-        return asset.ownership_value || asset.net_value || asset.estimated_value || 0;
+        return +asset.approximate_value || 0;
       case 'bank_account':
         return asset.approximate_value || 0;
       case 'nq_account':
         return asset.approximate_value || 0;
       case 'retirement_account':
-        return asset.apprfoximate_value || 0;
+        return asset.approximate_value || 0;
       case 'life_insurance':
-        return asset.death_benefit || 0;
+        return asset.approximate_value || 0;
       case 'business_interest':
-        return asset.estimated_value || 0;
+        return asset.approximate_value || 0;
       case 'digital_asset':
-        return asset.estimated_value || 0;
+        return asset.approximate_value || 0;
       case 'other_asset':
-        return (asset.netValue != null ? asset.netValue : asset.estimated_value) || 0;
+        return asset.approximate_value || 0;
       default:
         return 0;
     }

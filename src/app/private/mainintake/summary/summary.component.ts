@@ -28,7 +28,7 @@ export class SummaryComponent {
     const assets = this.assets();
 
     assets.real_estate_holdings.forEach(re => {
-      total += re.ownership_value || re.net_value || re.estimated_value || 0;
+      total += re.ownership_value || re.net_value || re.approximate_value || 0;
     });
 
     assets.bank_account_holdings.forEach(ba => {
@@ -44,19 +44,19 @@ export class SummaryComponent {
     });
 
     assets.life_insurance_holdings.forEach(li => {
-      total += li.death_benefit || 0;
+      total += li.approximate_value || 0;
     });
 
     assets.business_interest_holdings.forEach(bi => {
-      total += bi.estimated_value || 0;
+      total += bi.approximate_value || 0;
     });
 
     assets.digital_asset_holdings.forEach(da => {
-      total += da.estimated_value || 0;
+      total += da.approximate_value || 0;
     });
 
     assets.other_asset_holdings.forEach(oa => {
-      total += oa.estimated_value || 0;
+      total += oa.approximate_value || 0;
     });
 
     return total;
@@ -97,7 +97,7 @@ export class SummaryComponent {
 
     switch (category) {
       case 'real_estate':
-        assets.real_estate_holdings.forEach(a => total += a.ownership_value || a.net_value || a.estimated_value || 0);
+        assets.real_estate_holdings.forEach(a => total += a.ownership_value || a.net_value || a.approximate_value || 0);
         break;
       case 'bank_account':
         assets.bank_account_holdings.forEach(a => total += a.approximate_value || 0);
@@ -109,16 +109,16 @@ export class SummaryComponent {
         assets.retirement_account_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'insurance':
-        assets.life_insurance_holdings.forEach(a => total += a.death_benefit || 0);
+        assets.life_insurance_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'business':
-        assets.business_interest_holdings.forEach(a => total += a.estimated_value || 0);
+        assets.business_interest_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'digital':
-        assets.digital_asset_holdings.forEach(a => total += a.estimated_value || 0);
+        assets.digital_asset_holdings.forEach(a => total += a.approximate_value || 0);
         break;
       case 'other':
-        assets.other_asset_holdings.forEach(a => total += a.estimated_value || 0);
+        assets.other_asset_holdings.forEach(a => total += a.approximate_value || 0);
         break;
     }
 

@@ -8,7 +8,7 @@ export interface IRealEstate {
   zip: string;
   title_holding: 'client' | 'spouse' | 'joint_spouse' | 'tenants_common' | 'joint_rights_survivorship' | 'tod_deed' | 'trust' | 'llc' | 'other';
   title_details: string | null;
-  estimated_value: number | null;
+  approximate_value: number | null;
   mortgage_balance: number | null;
   net_value: number | null;              // estimated_value - mortgage_balance
   beneficiaries_on_deed: string | null;
@@ -29,6 +29,7 @@ export interface IBankAccount {
   account_type: 'checking' | 'savings' | 'money_market' | 'cd' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
   approximate_value: number | null;
+  balance: number | undefined;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
@@ -42,8 +43,10 @@ export interface IBankAccount {
 
 export interface INQAccount {
   account_id: number | null;
+  account_name: string;
+  balance: number | null;
   institution_name: string;
-  account_type: 'mutual fund' | 'stocks' | 'bons' | 'money market' | 'brokerage' | 'other_investment';
+  account_type: 'mutual fund' | 'stocks' | 'bonds' | 'annuity' | 'money market' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
   approximate_value: number | null;
   title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
@@ -62,6 +65,8 @@ export interface INQAccount {
  */
 export interface IRetirementAccount {
   retirement_id: number | null;
+  account_name: string;
+  balance: number | null;
   account_type: '401k' | '403b' | 'traditional_ira' | 'roth_ira' | 'sep_ira' | 'simple_ira' | 'pension' | 'annuity' | 'other';
   institution_name: string;
   account_number_encrypted: string | null;
@@ -72,8 +77,6 @@ export interface IRetirementAccount {
   rmd_age_reached: boolean | number | string | null;
   notes: string | null;
   owned_by: 'client' | 'spouse' | null;
-  ownership_percentage: number | null;
-  other_owners: string | null;
 }
 
 /**
@@ -85,7 +88,7 @@ export interface ILifeInsurance {
   policy_type: 'term' | 'whole_life' | 'universal' | 'variable' | 'other';
   policy_number: string | null;
   face_value: number;
-  death_benefit: number;
+  approximate_value: number;
   cash_value: number | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
@@ -104,9 +107,9 @@ export interface ILifeInsurance {
 export interface IBusinessInterest {
   business_id: number | null;
   business_name: string;
-  business_type: 'llc' | 's_corp' | 'c_corp' | 'partnership' | 'sole_prop' | 'other';
+  business_type: 'llc' | 's_corp' | 'c_corp' | 'partnership' | 'sole_prop' | 'ther';
   ownership_percentage: number | null;
-  estimated_value: number | null;
+  approximate_value: number | null;
   has_other_owners: boolean | number | string | null;
   other_owners_names: string | null;
   buy_sell_agreement_exists: boolean | number | string | null;
@@ -129,7 +132,7 @@ export interface IDigitalAsset {
   asset_type: 'email' | 'social_media' | 'cryptocurrency' | 'nft' | 'domain' | 'website' | 'online_business' | 'cloud_storage' | 'password_manager' | 'digital_media' | 'loyalty_programs' | 'other';
   asset_name: string;
   platform_or_service: string | null;
-  estimated_value: number | null;
+  approximate_value: number | null;
   username: string | null;
   access_location: string | null;
   wallet_type: string | null;
@@ -149,7 +152,7 @@ export interface IOtherAsset {
   asset_id: number | null;
   asset_type: 'vehicle' | 'boat' | 'rv' | 'motorcycle' | 'aircraft' | 'art' | 'antiques' | 'jewelry' | 'collectibles' | 'wine' | 'precious_metals' | 'intellectual_property' | 'livestock' | 'farm_equipment' | 'timeshare' | 'other';
   description: string;
-  estimated_value: number | null;
+  approximate_value: number | null;
   debtOwed: number | null; // Amount of debt associated with the asset (e.g., vehicle loan)
   netValue: number | null; // estimated_value - debtOwed
   is_heirloom: boolean | number | string | null;

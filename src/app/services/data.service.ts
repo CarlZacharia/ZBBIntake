@@ -29,11 +29,12 @@ import { IDebt } from '../models/case_data';
 })
 export class DataService {
   /**
+
+  /**
    * Public setter for clientdata (used after login)
    */
 
   public setClientData(data: IClientData) {
-      console.log('setClientData called. marital_info:', data.marital_info);
       if (data.marital_info && 'spouse_ssn_encrypted' in data.marital_info) {
         console.log('spouse_ssn_encrypted value:', data.marital_info.spouse_ssn_encrypted);
       } else {
@@ -146,6 +147,7 @@ export class DataService {
 
   });
 
+
   // Computed signals for reactive derived state
   readonly clientdata = this._clientdata.asReadonly();
   readonly personal = computed(() => this._clientdata().personal);
@@ -160,6 +162,46 @@ export class DataService {
     const debts = this.debts();
     if (!debts || debts.length === 0) return 0;
     return debts.reduce((sum, debt) => sum + (Number(debt.current_balance) || 0), 0);
+  });
+
+  // Computed signal for total asset value (sums balance and approximate_value for bank, NQ, retirement)
+  readonly totalAssetValue = computed(() => {
+    const assets = this.assets();
+    if (!assets) return 0;
+    let total = 0;
+    // Bank accounts
+    if (Array.isArray(assets.bank_account_holdings)) {
+      total += assets.bank_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+    }
+    // NQ accounts
+    if (Array.isArray(assets.nq_account_holdings)) {
+      total += assets.nq_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+    }
+    // Retirement accounts
+    if (Array.isArray(assets.retirement_account_holdings)) {
+      total += assets.retirement_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+    }
+    // Real estate
+    if (Array.isArray(assets.real_estate_holdings)) {
+      total += assets.real_estate_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+    }
+    // Life insurance
+    if (Array.isArray(assets.life_insurance_holdings)) {
+      total += assets.life_insurance_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+    }
+    // Business interests
+    if (Array.isArray(assets.business_interest_holdings)) {
+      total += assets.business_interest_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+    }
+    // Digital assets
+    if (Array.isArray(assets.digital_asset_holdings)) {
+      total += assets.digital_asset_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+    }
+    // Other assets
+    if (Array.isArray(assets.other_asset_holdings)) {
+      total += assets.other_asset_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+    }
+    return total;
   });
 
   // Computed signals for validation and completion tracking
@@ -437,27 +479,66 @@ export class DataService {
   }
 
   // Methods for managing assets
-  addRealEstate(asset: IRealEstate) {
+  addRealEstate(asset: Partial<IRealEstate> & { description?: string, value?: number }) {
+    // Prepare payload matching MariaDB table columns
+    const payload = {
+      real_estate_id: null,
+      portal_user_id: this.pui,
+      description: asset.description ?? '',
+      value: asset.value ?? null,
+      property_type: asset.property_type ?? '',
+      address_line1: asset.address_line1 ?? '',
+      address_line2: asset.address_line2 ?? '',
+      city: asset.city ?? '',
+      state: asset.state ?? '',
+      zip: asset.zip ?? '',
+      title_holding: asset.title_holding ?? '',
+      title_details: asset.title_details ?? '',
+      approximate_value: asset.approximate_value ?? null,
+      mortgage_balance: asset.mortgage_balance ?? null,
+      net_value: asset.net_value ?? null,
+      beneficiaries_on_deed: asset.beneficiaries_on_deed ?? '',
+      intended_beneficiary: asset.intended_beneficiary ?? '',
+      special_notes: asset.special_notes ?? '',
+      owned_by: asset.owned_by ?? '',
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? '',
+      ownership_value: asset.ownership_value ?? null,
+      action: 'insert'
+    };
+    // Save to backend
+    this.saveClientSection('real_estate_holdings', payload).subscribe();
+    // Update local state with a fully-typed IRealEstate object
+    const localAsset: IRealEstate = {
+      property_id: null,
+      property_type: asset.property_type ?? 'other',
+      address_line1: asset.address_line1 ?? '',
+      address_line2: asset.address_line2 ?? null,
+      city: asset.city ?? '',
+      state: asset.state ?? '',
+      zip: asset.zip ?? '',
+      title_holding: asset.title_holding ?? 'other',
+      title_details: asset.title_details ?? null,
+      approximate_value: asset.approximate_value ?? null,
+      mortgage_balance: asset.mortgage_balance ?? null,
+      net_value: asset.net_value ?? null,
+      beneficiaries_on_deed: asset.beneficiaries_on_deed ?? null,
+      intended_beneficiary: asset.intended_beneficiary ?? null,
+      special_notes: asset.special_notes ?? null,
+      owned_by: asset.owned_by ?? null,
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? null,
+      ownership_value: asset.ownership_value ?? null
+    };
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        real_estate_holdings: [...current.assets.real_estate_holdings, asset]
+        real_estate_holdings: [...current.assets.real_estate_holdings, localAsset]
       }
     }));
   }
 
-  updateRealEstate(index: number, updates: Partial<IRealEstate>) {
-    this._clientdata.update(current => ({
-      ...current,
-      assets: {
-        ...current.assets,
-        real_estate_holdings: current.assets.real_estate_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
-        )
-      }
-    }));
-  }
 
   removeRealEstate(index: number) {
     this._clientdata.update(current => ({
@@ -469,27 +550,60 @@ export class DataService {
     }));
   }
 
-  addBankAccount(asset: IBankAccount) {
+  addBankAccount(asset: Partial<IBankAccount> & {
+    institution_name?: string,
+    account_number?: string,
+    balance?: number
+  }) {
+    // Prepare payload matching MariaDB table columns
+    const payload = {
+      bank_account_id: null,
+      portal_user_id: this.pui,
+      account_number: asset.account_number ?? '',
+      balance: asset.balance ?? null,
+      institution_name: asset.institution_name ?? '',
+      account_type: asset.account_type ?? '',
+      account_number_encrypted: asset.account_number_encrypted ?? '',
+      approximate_value: asset.approximate_value ?? null,
+      title_type: asset.title_type ?? '',
+      joint_owner_name: asset.joint_owner_name ?? '',
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      notes: asset.notes ?? '',
+      owned_by: asset.owned_by ?? '',
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? '',
+      action: 'insert'
+    };
+    // Save to backend
+    this.saveClientSection('bank_account_holdings', payload).subscribe();
+    // Update local state with a fully-typed IBankAccount object
+    const localAsset: IBankAccount = {
+      account_id: null,
+      institution_name: asset.institution_name ?? '',
+      account_type: asset.account_type ?? 'checking',
+      account_number_encrypted: asset.account_number_encrypted ?? null,
+      approximate_value: asset.approximate_value ?? null,
+      balance: asset.balance ?? undefined,
+      title_type: asset.title_type ?? 'individual',
+      joint_owner_name: asset.joint_owner_name ?? null,
+      primary_beneficiaries: asset.primary_beneficiaries ?? [],
+      contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
+      beneficiary_last_reviewed: asset.beneficiary_last_reviewed ?? null,
+      notes: asset.notes ?? null,
+      owned_by: asset.owned_by ?? null,
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? null
+    };
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        bank_account_holdings: [...current.assets.bank_account_holdings, asset]
+        bank_account_holdings: [...current.assets.bank_account_holdings, localAsset]
       }
     }));
   }
 
-  updateBankAccount(index: number, updates: Partial<IBankAccount>) {
-    this._clientdata.update(current => ({
-      ...current,
-      assets: {
-        ...current.assets,
-        bank_account_holdings: current.assets.bank_account_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
-        )
-      }
-    }));
-  }
 
   removeBankAccount(index: number) {
     this._clientdata.update(current => ({
@@ -501,17 +615,82 @@ export class DataService {
     }));
   }
 
-  addNQAccount(asset: INQAccount) {
+
+  // --- NQ Account CRUD ---
+  addNQAccount(asset: Partial<INQAccount>) {
+    const payload = {
+      nq_account_id: null,
+      portal_user_id: this.pui,
+      account_name: asset.account_name ?? '',
+      balance: asset.balance ?? undefined,
+      institution_name: asset.institution_name ?? '',
+      account_type: asset.account_type ?? 'mutual fund',
+      account_number_encrypted: asset.account_number_encrypted ?? '',
+      approximate_value: asset.approximate_value ?? null,
+      title_type: asset.title_type ?? 'individual',
+      joint_owner_name: asset.joint_owner_name ?? '',
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      beneficiary_last_reviewed: asset.beneficiary_last_reviewed ?? '',
+      notes: asset.notes ?? '',
+      owned_by: asset.owned_by ?? null,
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? null,
+      action: 'insert'
+    };
+    this.saveClientSection('nq_account_holdings', payload).subscribe();
+    // Update local state with a fully-typed INQAccount object
+    const localAsset: INQAccount = {
+      account_id: null,
+      account_name: asset.account_name ?? '',
+      balance: asset.balance ?? null,
+      institution_name: asset.institution_name ?? '',
+      account_type: asset.account_type ?? 'mutual fund',
+      account_number_encrypted: asset.account_number_encrypted ?? null,
+      approximate_value: asset.approximate_value ?? null,
+      title_type: asset.title_type ?? 'individual',
+      joint_owner_name: asset.joint_owner_name ?? '',
+      primary_beneficiaries: asset.primary_beneficiaries ?? [],
+      contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
+      beneficiary_last_reviewed: asset.beneficiary_last_reviewed ?? null,
+      notes: asset.notes ?? null,
+      owned_by: asset.owned_by ?? null,
+      ownership_percentage: asset.ownership_percentage ?? null,
+      other_owners: asset.other_owners ?? null
+    };
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        nq_account_holdings: [...current.assets.nq_account_holdings, asset]
+        nq_account_holdings: [...current.assets.nq_account_holdings, localAsset]
       }
     }));
   }
 
   updateNQAccount(index: number, updates: Partial<INQAccount>) {
+    const currentAsset = this._clientdata().assets.nq_account_holdings[index];
+    const updatedAsset = {
+      nq_account_id: currentAsset.account_id,
+      portal_user_id: this.pui,
+      account_name: updates.account_name ?? currentAsset.account_name,
+      balance: updates.balance ?? currentAsset.balance,
+      institution_name: updates.institution_name ?? currentAsset.institution_name,
+      account_type: updates.account_type ?? currentAsset.account_type ?? 'mutual fund',
+      account_number_encrypted: updates.account_number_encrypted ?? currentAsset.account_number_encrypted,
+      approximate_value: updates.approximate_value ?? currentAsset.approximate_value,
+      title_type: updates.title_type ?? currentAsset.title_type ?? 'individual',
+      joint_owner_name: updates.joint_owner_name ?? currentAsset.joint_owner_name,
+      primary_beneficiaries: Array.isArray(updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries) ? JSON.stringify(updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries) : (updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries) ? JSON.stringify(updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries) : (updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries ?? ''),
+      beneficiary_last_reviewed: updates.beneficiary_last_reviewed ?? currentAsset.beneficiary_last_reviewed,
+      notes: updates.notes ?? currentAsset.notes,
+      owned_by: updates.owned_by ?? currentAsset.owned_by ?? null,
+      ownership_percentage: updates.ownership_percentage ?? currentAsset.ownership_percentage ?? null,
+      other_owners: updates.other_owners ?? currentAsset.other_owners ?? null,
+      action: 'update'
+    };
+    this.saveClientSection('nq_account_holdings', updatedAsset).subscribe();
+    // Update local state
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -524,6 +703,7 @@ export class DataService {
   }
 
   removeNQAccount(index: number) {
+    const removedAsset = this._clientdata().assets.nq_account_holdings[index];
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -531,19 +711,38 @@ export class DataService {
         nq_account_holdings: current.assets.nq_account_holdings.filter((_, i) => i !== index)
       }
     }));
+    this.saveSection('nq_account_holdings_remove', removedAsset, this.pui);
   }
 
-  addRetirementAccount(asset: IRetirementAccount) {
+  // --- Retirement Account CRUD ---
+  addRetirementAccount(asset: Partial<IRetirementAccount>) {
+    const payload = {
+      ...asset,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      retirement_id: null,
+      portal_user_id: this.pui,
+      action: 'insert'
+    };
+    this.saveClientSection('retirement_account_holdings', payload).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        retirement_account_holdings: [...current.assets.retirement_account_holdings, asset]
+        retirement_account_holdings: [...current.assets.retirement_account_holdings, asset as IRetirementAccount]
       }
     }));
   }
 
   updateRetirementAccount(index: number, updates: Partial<IRetirementAccount>) {
+    const currentAsset = this._clientdata().assets.retirement_account_holdings[index];
+    const updatedAsset = {
+      ...currentAsset,
+      ...updates,
+      action: 'update',
+      retirement_id: currentAsset.retirement_id
+    };
+    this.saveClientSection('retirement_account_holdings', updatedAsset).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -556,6 +755,7 @@ export class DataService {
   }
 
   removeRetirementAccount(index: number) {
+    const removedAsset = this._clientdata().assets.retirement_account_holdings[index];
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -563,6 +763,7 @@ export class DataService {
         retirement_account_holdings: current.assets.retirement_account_holdings.filter((_, i) => i !== index)
       }
     }));
+    this.saveSection('retirement_account_holdings_remove', removedAsset, this.pui);
   }
 
   addLifeInsurance(asset: ILifeInsurance) {
@@ -808,7 +1009,7 @@ export class DataService {
     zip: '',
     title_holding: 'client',
     title_details: null,
-    estimated_value: null,
+    approximate_value: null,
     mortgage_balance: null,
     net_value: null,
     beneficiaries_on_deed: null,
@@ -825,7 +1026,8 @@ export class DataService {
     institution_name: '',
     account_type: 'checking',
     account_number_encrypted: null,
-    approximate_value: null,
+    approximate_value: 0,
+    balance: 0,
     title_type: 'individual',
     joint_owner_name: null,
     primary_beneficiaries: [],
@@ -838,36 +1040,38 @@ export class DataService {
   };
 
     public nqAccount: INQAccount = {
-    account_id: null,
-    institution_name: '',
-    account_type: 'mutual fund',
-    account_number_encrypted: null,
-    approximate_value: null,
-    title_type: 'individual',
-    joint_owner_name: null,
-    primary_beneficiaries: [],
-    contingent_beneficiaries: [],
-    beneficiary_last_reviewed: null,
-    notes: null,
-    owned_by: null,
-    ownership_percentage: null,
-    other_owners: null
-  };
+      account_id: null,
+      account_name: '',
+      balance: null,
+      institution_name: '',
+      account_type: 'mutual fund',
+      account_number_encrypted: null,
+      approximate_value: 0,
+      title_type: 'individual',
+      joint_owner_name: null,
+      primary_beneficiaries: [],
+      contingent_beneficiaries: [],
+      beneficiary_last_reviewed: null,
+      notes: null,
+      owned_by: null,
+      ownership_percentage: null,
+      other_owners: null
+    };
 
   public retirementAccount: IRetirementAccount = {
     retirement_id: null,
+    account_name: '',
+    balance: null,
     account_type: '401k',
     institution_name: '',
     account_number_encrypted: null,
-    approximate_value: null,
+    approximate_value: 0,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
     beneficiary_last_reviewed: null,
     rmd_age_reached: false,
     notes: null,
-    owned_by: null,
-    ownership_percentage: null,
-    other_owners: null
+    owned_by: null
   };
 
   public businessInterest: IBusinessInterest = {
@@ -875,7 +1079,7 @@ export class DataService {
     business_name: '',
     business_type: 'llc',
     ownership_percentage: null,
-    estimated_value: null,
+    approximate_value: null,
     has_other_owners: false,
     other_owners_names: null,
     buy_sell_agreement_exists: false,
@@ -896,7 +1100,7 @@ export class DataService {
     policy_type: 'term',
     policy_number: null,
     face_value: 0,
-    death_benefit: 0,
+    approximate_value: 0, //death_benefit
     cash_value: 0,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
@@ -914,7 +1118,7 @@ export class DataService {
     asset_type: 'other',
     asset_name: '',
     platform_or_service: null,
-    estimated_value: null,
+    approximate_value: null,
     username: null,
     access_location: null,
     wallet_type: null,
@@ -931,7 +1135,7 @@ export class DataService {
     asset_id: null,
     asset_type: 'other',
     description: '',
-    estimated_value: null,
+    approximate_value: null,
     debtOwed: 0,
     netValue: null,
     is_heirloom: false,
@@ -1217,4 +1421,54 @@ loadClientData(): Observable<IClientData | null> {
     }, 2000);
   }
 
+    /**
+   * Update a real estate holding in MariaDB
+   */
+  updateRealEstate(index: number, updates: Partial<IRealEstate>) {
+    const currentAsset = this._clientdata().assets.real_estate_holdings[index];
+    const updatedAsset = {
+      ...currentAsset,
+      ...updates,
+      action: 'update',
+      real_estate_id: currentAsset.property_id
+    };
+    this.saveClientSection('real_estate_holdings', updatedAsset).subscribe();
+    // Update local state
+    this._clientdata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        real_estate_holdings: current.assets.real_estate_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
+
+  /**
+   * Update a bank account holding in MariaDB
+   */
+  updateBankAccount(index: number, updates: Partial<IBankAccount>) {
+    const currentAsset = this._clientdata().assets.bank_account_holdings[index];
+    const updatedAsset = {
+      ...currentAsset,
+      ...updates,
+      action: 'update',
+      bank_account_id: currentAsset.account_id,
+      // Ensure beneficiaries are sent as strings
+      primary_beneficiaries: Array.isArray(currentAsset.primary_beneficiaries) ? JSON.stringify(currentAsset.primary_beneficiaries) : (currentAsset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(currentAsset.contingent_beneficiaries) ? JSON.stringify(currentAsset.contingent_beneficiaries) : (currentAsset.contingent_beneficiaries ?? '')
+    };
+    this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
+    // Update local state
+    this._clientdata.update(current => ({
+      ...current,
+      assets: {
+        ...current.assets,
+        bank_account_holdings: current.assets.bank_account_holdings.map((asset, i) =>
+          i === index ? { ...asset, ...updates } : asset
+        )
+      }
+    }));
+  }
 }

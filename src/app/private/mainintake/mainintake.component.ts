@@ -57,7 +57,7 @@ export class MainintakeComponent {
 
     // Real Estate
     assets.real_estate_holdings.forEach(re => {
-      total += re.estimated_value || 0;
+      total += re.approximate_value || 0;
     });
 
     // Bank Accounts
@@ -77,22 +77,22 @@ export class MainintakeComponent {
 
     // Life Insurance
     assets.life_insurance_holdings.forEach(li => {
-      total += li.death_benefit || 0;
+      total += li.approximate_value || 0;
     });
 
     // Business Interests
     assets.business_interest_holdings.forEach(bi => {
-      total += bi.estimated_value || 0;
+      total += bi.approximate_value || 0;
     });
 
     // Digital Assets
     assets.digital_asset_holdings.forEach(da => {
-      total += da.estimated_value || 0;
+      total += da.approximate_value || 0;
     });
 
     // Other Assets
     assets.other_asset_holdings.forEach(oa => {
-      total += oa.estimated_value || 0;
+      total += oa.approximate_value || 0;
     });
 
     return total;
