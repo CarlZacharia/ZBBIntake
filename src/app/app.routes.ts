@@ -6,6 +6,7 @@ import { MedicaidintakeComponent } from './private/elderlaw/medicaidintake/medic
 import { authGuard, guestGuard } from './guards/auth.guard';
 import { IntakehubComponent } from './private/intakehub/intakehub.component';
 import { MainintakeComponent } from './private/mainintake/mainintake.component';
+import { BeneficiariesComponent } from './private/beneficiaries/beneficiaries.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,11 @@ export const routes: Routes = [
   {
     path: 'intakehub',
     component: IntakehubComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'beneficiaries',
+    component: BeneficiariesComponent,
     canActivate: [authGuard]
   },
   {

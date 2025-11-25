@@ -1,0 +1,13 @@
+.beneficiaries {
+  padding: 1rem;
+}
+.beneficiaries h2 {
+  margin-bottom: 1rem;
+}
+.beneficiaries ul {
+  list-style: none;
+  padding: 0;
+}
+.beneficiaries li {
+  margin-bottom: 0.5rem;
+}

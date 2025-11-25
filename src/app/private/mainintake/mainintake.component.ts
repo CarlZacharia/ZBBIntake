@@ -4,10 +4,8 @@ import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
-import { SsnFormatPipe } from '../../pipes/ssn-format.pipe';
-import { PhoneFormatPipe } from '../../pipes/phone-format.pipe';
-import { ChildrenComponent } from '../children/children.component';
-import { CharitiesComponent } from '../charities/charities.component';
+import { BeneficiariesComponent } from '../beneficiaries/beneficiaries.component';
+
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
 import { DebtsComponent } from '../debts/debts.component';
@@ -17,7 +15,7 @@ import { IClientData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, ChildrenComponent, CharitiesComponent, AssetsComponent, DebtsComponent, SummaryComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, BeneficiariesComponent, AssetsComponent, DebtsComponent, SummaryComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })

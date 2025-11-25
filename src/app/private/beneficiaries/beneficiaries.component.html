@@ -1,0 +1,58 @@
+<div class="beneficiaries">
+  <h2>Beneficiaries</h2>
+  <div class="add-buttons">
+    <button (click)="addChild()">Add Child</button>
+    <button (click)="addFamilyMember()">Add Family Member</button>
+    <button (click)="addCharity()">Add Charity</button>
+  </div>
+
+  <div class="beneficiary-section">
+    <h3>Children</h3>
+    <ul>
+      <li *ngFor="let child of children; let i = index">
+        {{ child.name || child.full_name }}
+        <button (click)="editChild(i)">Edit</button>
+        <button (click)="removeChild(i)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="beneficiary-section">
+    <h3>Family Members</h3>
+    <ul>
+      <li *ngFor="let member of familyMembers; let i = index">
+        {{ member.name || member.full_name }}
+        <button (click)="editFamilyMember(i)">Edit</button>
+        <button (click)="removeFamilyMember(i)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="beneficiary-section">
+    <h3>Charities</h3>
+    <ul>
+      <li *ngFor="let charity of charities; let i = index">
+        {{ charity.charity_name }}
+        <button (click)="editCharity(i)">Edit</button>
+        <button (click)="removeCharity(i)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Edit Modal/Form -->
+  <div *ngIf="editingType !== null" class="edit-modal">
+    <h3>Edit {{ editingType | titlecase }}</h3>
+    <form (ngSubmit)="saveEdit()">
+      <div *ngIf="editingType === 'child' || editingType === 'family'">
+        <label>Name:</label>
+        <input [(ngModel)]="editingItem.name" name="name" />
+      </div>
+      <div *ngIf="editingType === 'charity'">
+        <label>Charity Name:</label>
+        <input [(ngModel)]="editingItem.charity_name" name="charity_name" />
+      </div>
+      <button type="submit">Save</button>
+      <button type="button" (click)="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+</div>
