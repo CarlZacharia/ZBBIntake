@@ -25,7 +25,6 @@ export class IntakehubComponent {
   }
 
   logUserData(): void {
-    console.log('=== Manual Auth Data Access ===');
 
     // Access computed signals directly
     const authState = this.authService.authState();

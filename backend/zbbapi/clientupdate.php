@@ -37,13 +37,69 @@ if (!$table || !$data || !is_array($data)) {
 }
 
 
-// All keys are portal_user_id
-$primaryKey = 'portal_user_id';
-if (!isset($data[$primaryKey])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing portal_user_id']);
-    exit();
+
+
+// Use asset_id_type (e.g. bank_account_id) as the primary key for WHERE clause
+// Support asset_id_type and primary key value from both top-level and data object
+
+// Determine primary key name (e.g., real_estate_id) and value
+if (isset($input['asset_id_type'])) {
+    $primaryKey = $input['asset_id_type'];
+} elseif (isset($data['asset_id_type'])) {
+    $primaryKey = $data['asset_id_type'];
+} else {
+    // Fallback: set primaryKey based on table name
+    switch ($table) {
+        case 'real_estate_holdings':
+            $primaryKey = 'real_estate_id';
+            break;
+        case 'bank_account_holdings':
+            $primaryKey = 'bank_account_id';
+            break;
+        case 'nq_account_holdings':
+            $primaryKey = 'nq_account_id';
+            break;
+        case 'life_insurance_holdings':
+            $primaryKey = 'life_insurance_id';
+            break;
+        case 'retirement_account_holdings':
+            $primaryKey = 'retirement_account_id';
+            break;
+        case 'other_asset_holdings':
+            $primaryKey = 'other_asset_id';
+            break;
+        case 'business_interest_holdings':
+            $primaryKey = 'business_interest_id';
+            break;
+        // Add more cases as needed for other asset tables
+        default:
+            $primaryKey = null;
+    }
 }
+
+$primaryId = null;
+if ($primaryKey) {
+    if (isset($input[$primaryKey])) {
+        $primaryId = $input[$primaryKey];
+    } elseif (isset($data[$primaryKey])) {
+        $primaryId = $data[$primaryKey];
+    } elseif (isset($input['id'])) {
+        $primaryId = $input['id'];
+    } elseif (isset($data['id'])) {
+        $primaryId = $data['id'];
+    }
+}
+
+if (!$table || !$primaryKey || !$primaryId) {
+    // For tables like personal or marital_info, allow update/delete without primary key
+    $noPrimaryKeyTables = ['personal', 'marital_info'];
+    if (!in_array($table, $noPrimaryKeyTables)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing table, asset_id_type, or primary key value', 'table' => $table, 'primaryKey' => $primaryKey, 'primaryId' => $primaryId]);
+        exit();
+    }
+}
+
 
 
 
@@ -77,8 +133,21 @@ if ($action === 'insert') {
     }
 } else if ($action === 'delete') {
     // DELETE statement
-    $id = $conn->real_escape_string($data[$primaryKey]);
-    $sql = "DELETE FROM `$table` WHERE `$primaryKey` = '$id' LIMIT 1";
+    // To send a delete from the frontend, use:
+    // {
+    //   table: 'bank_account_holdings',
+    //   asset_id_type: 'bank_account_id',
+    //   id: 123,
+    //   action: 'delete'
+    // }
+    // For tables without a primary key, delete all rows (use with caution)
+    $noPrimaryKeyTables = ['personal', 'marital_info'];
+    if (in_array($table, $noPrimaryKeyTables)) {
+        $sql = "DELETE FROM `$table` LIMIT 1";
+    } else {
+        $id = $primaryId === null ? '' : $conn->real_escape_string($primaryId);
+        $sql = "DELETE FROM `$table` WHERE `$primaryKey` = '$id' LIMIT 1";
+    }
     $result = $conn->query($sql);
     if ($result) {
         echo json_encode([
@@ -105,8 +174,14 @@ if ($action === 'insert') {
         }
     }
     $setClause = implode(', ', $set);
-    $id = $conn->real_escape_string($data[$primaryKey]);
-    $sql = "UPDATE `$table` SET $setClause WHERE `$primaryKey` = '$id' LIMIT 1";
+    $noPrimaryKeyTables = ['personal', 'marital_info'];
+    if (in_array($table, $noPrimaryKeyTables)) {
+        // For tables without a primary key, update all rows (use with caution)
+        $sql = "UPDATE `$table` SET $setClause LIMIT 1";
+    } else {
+        $id = $primaryId === null ? '' : $conn->real_escape_string($primaryId);
+        $sql = "UPDATE `$table` SET $setClause WHERE `$primaryKey` = '$id' LIMIT 1";
+    }
     $result = $conn->query($sql);
     if ($result) {
         echo json_encode([

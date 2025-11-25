@@ -35,9 +35,7 @@ export class DataService {
    */
 
   public setClientData(data: IClientData) {
-      if (data.marital_info && 'spouse_ssn_encrypted' in data.marital_info) {
-        console.log('spouse_ssn_encrypted value:', data.marital_info.spouse_ssn_encrypted);
-      } else {
+      if (!data.marital_info) {
         console.warn('spouse_ssn_encrypted is missing from marital_info:', data.marital_info);
       }
     this._clientdata.set(data);
@@ -510,7 +508,7 @@ export class DataService {
     this.saveClientSection('real_estate_holdings', payload).subscribe();
     // Update local state with a fully-typed IRealEstate object
     const localAsset: IRealEstate = {
-      property_id: null,
+      real_estate_id: null,
       property_type: asset.property_type ?? 'other',
       address_line1: asset.address_line1 ?? '',
       address_line2: asset.address_line2 ?? null,
@@ -541,6 +539,17 @@ export class DataService {
 
 
   removeRealEstate(index: number) {
+    const asset = this._clientdata().assets.real_estate_holdings[index];
+    const realEstateId = (asset as any).real_estate_id;
+    if (!asset.real_estate_id) {
+      console.warn('Cannot delete: real_estate real_estate_id is missing.');
+      return;
+    }
+    this.saveClientSection('real_estate_holdings', {
+      asset_id_type: 'real_estate_id',
+      id: asset.real_estate_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -579,7 +588,7 @@ export class DataService {
     this.saveClientSection('bank_account_holdings', payload).subscribe();
     // Update local state with a fully-typed IBankAccount object
     const localAsset: IBankAccount = {
-      account_id: null,
+      bank_account_id: null,
       institution_name: asset.institution_name ?? '',
       account_type: asset.account_type ?? 'checking',
       account_number_encrypted: asset.account_number_encrypted ?? null,
@@ -606,6 +615,16 @@ export class DataService {
 
 
   removeBankAccount(index: number) {
+    const asset = this._clientdata().assets.bank_account_holdings[index];
+    if (!asset.bank_account_id) {
+      console.warn('Cannot delete: bank_account account_id is missing.');
+      return;
+    }
+    this.saveClientSection('bank_account_holdings', {
+      asset_id_type: 'account_id',
+      id: asset.bank_account_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -641,7 +660,7 @@ export class DataService {
     this.saveClientSection('nq_account_holdings', payload).subscribe();
     // Update local state with a fully-typed INQAccount object
     const localAsset: INQAccount = {
-      account_id: null,
+      nq_account_id: null,
       account_name: asset.account_name ?? '',
       balance: asset.balance ?? null,
       institution_name: asset.institution_name ?? '',
@@ -667,43 +686,42 @@ export class DataService {
     }));
   }
 
-  updateNQAccount(index: number, updates: Partial<INQAccount>) {
-    const currentAsset = this._clientdata().assets.nq_account_holdings[index];
+  updateNQAccount(asset: INQAccount) {
+    if (!asset.nq_account_id) {
+      console.warn('Cannot update: nq_account account_id is missing.');
+      return;
+    }
     const updatedAsset = {
-      nq_account_id: currentAsset.account_id,
-      portal_user_id: this.pui,
-      account_name: updates.account_name ?? currentAsset.account_name,
-      balance: updates.balance ?? currentAsset.balance,
-      institution_name: updates.institution_name ?? currentAsset.institution_name,
-      account_type: updates.account_type ?? currentAsset.account_type ?? 'mutual fund',
-      account_number_encrypted: updates.account_number_encrypted ?? currentAsset.account_number_encrypted,
-      approximate_value: updates.approximate_value ?? currentAsset.approximate_value,
-      title_type: updates.title_type ?? currentAsset.title_type ?? 'individual',
-      joint_owner_name: updates.joint_owner_name ?? currentAsset.joint_owner_name,
-      primary_beneficiaries: Array.isArray(updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries) ? JSON.stringify(updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries) : (updates.primary_beneficiaries ?? currentAsset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries) ? JSON.stringify(updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries) : (updates.contingent_beneficiaries ?? currentAsset.contingent_beneficiaries ?? ''),
-      beneficiary_last_reviewed: updates.beneficiary_last_reviewed ?? currentAsset.beneficiary_last_reviewed,
-      notes: updates.notes ?? currentAsset.notes,
-      owned_by: updates.owned_by ?? currentAsset.owned_by ?? null,
-      ownership_percentage: updates.ownership_percentage ?? currentAsset.ownership_percentage ?? null,
-      other_owners: updates.other_owners ?? currentAsset.other_owners ?? null,
-      action: 'update'
+      ...asset,
+      action: 'update',
+      nq_account_id: asset.nq_account_id,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
     };
     this.saveClientSection('nq_account_holdings', updatedAsset).subscribe();
-    // Update local state
+    // Update local state by account_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        nq_account_holdings: current.assets.nq_account_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        nq_account_holdings: current.assets.nq_account_holdings.map(a =>
+          a.nq_account_id === asset.nq_account_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeNQAccount(index: number) {
-    const removedAsset = this._clientdata().assets.nq_account_holdings[index];
+    const asset = this._clientdata().assets.nq_account_holdings[index];
+    if (!asset.nq_account_id) {
+      console.warn('Cannot delete: nq_account account_id is missing.');
+      return;
+    }
+    this.saveClientSection('nq_account_holdings', {
+      asset_id_type: 'account_id',
+      id: asset.nq_account_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -711,7 +729,6 @@ export class DataService {
         nq_account_holdings: current.assets.nq_account_holdings.filter((_, i) => i !== index)
       }
     }));
-    this.saveSection('nq_account_holdings_remove', removedAsset, this.pui);
   }
 
   // --- Retirement Account CRUD ---
@@ -720,7 +737,7 @@ export class DataService {
       ...asset,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
-      retirement_id: null,
+      retirement_account_id: null,
       portal_user_id: this.pui,
       action: 'insert'
     };
@@ -734,28 +751,42 @@ export class DataService {
     }));
   }
 
-  updateRetirementAccount(index: number, updates: Partial<IRetirementAccount>) {
-    const currentAsset = this._clientdata().assets.retirement_account_holdings[index];
+  updateRetirementAccount(asset: IRetirementAccount) {
+    if (!asset.retirement_account_id) {
+      console.warn('Cannot update: retirement_account retirement_account_id is missing.');
+      return;
+    }
     const updatedAsset = {
-      ...currentAsset,
-      ...updates,
+      ...asset,
       action: 'update',
-      retirement_id: currentAsset.retirement_id
+      retirement_account_id: asset.retirement_account_id,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
     };
     this.saveClientSection('retirement_account_holdings', updatedAsset).subscribe();
+    // Update local state by retirement_account_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        retirement_account_holdings: current.assets.retirement_account_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        retirement_account_holdings: current.assets.retirement_account_holdings.map(a =>
+          a.retirement_account_id === asset.retirement_account_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeRetirementAccount(index: number) {
-    const removedAsset = this._clientdata().assets.retirement_account_holdings[index];
+    const asset = this._clientdata().assets.retirement_account_holdings[index];
+    if (!asset.retirement_account_id) {
+      console.warn('Cannot delete: retirement_account retirement_account_id is missing.');
+      return;
+    }
+    this.saveClientSection('retirement_account_holdings', {
+      asset_id_type: 'retirement_account_id',
+      id: asset.retirement_account_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -763,7 +794,6 @@ export class DataService {
         retirement_account_holdings: current.assets.retirement_account_holdings.filter((_, i) => i !== index)
       }
     }));
-    this.saveSection('retirement_account_holdings_remove', removedAsset, this.pui);
   }
 
   addLifeInsurance(asset: ILifeInsurance) {
@@ -776,19 +806,42 @@ export class DataService {
     }));
   }
 
-  updateLifeInsurance(index: number, updates: Partial<ILifeInsurance>) {
+  updateLifeInsurance(asset: ILifeInsurance) {
+    if (!asset.life_insurance_id) {
+      console.warn('Cannot update: life_insurance life_insurance_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      life_insurance_id: asset.life_insurance_id,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+    };
+    this.saveClientSection('life_insurance_holdings', updatedAsset).subscribe();
+    // Update local state by life_insurance_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        life_insurance_holdings: current.assets.life_insurance_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        life_insurance_holdings: current.assets.life_insurance_holdings.map(a =>
+          a.life_insurance_id === asset.life_insurance_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeLifeInsurance(index: number) {
+    const asset = this._clientdata().assets.life_insurance_holdings[index];
+    if (!asset.life_insurance_id) {
+      console.warn('Cannot delete: life_insurance life_insurance_id is missing.');
+      return;
+    }
+    this.saveClientSection('life_insurance_holdings', {
+      asset_id_type: 'life_insurance_id',
+      id: asset.life_insurance_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -808,19 +861,40 @@ export class DataService {
     }));
   }
 
-  updateBusinessInterest(index: number, updates: Partial<IBusinessInterest>) {
+  updateBusinessInterest(asset: IBusinessInterest) {
+    if (!asset.business_interest_id) {
+      console.warn('Cannot update: business_interest business_interest_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      business_interest_id: asset.business_interest_id
+    };
+    this.saveClientSection('business_interest_holdings', updatedAsset).subscribe();
+    // Update local state by business_interest_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        business_interest_holdings: current.assets.business_interest_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        business_interest_holdings: current.assets.business_interest_holdings.map(a =>
+          a.business_interest_id === asset.business_interest_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeBusinessInterest(index: number) {
+    const asset = this._clientdata().assets.business_interest_holdings[index];
+    if (!asset.business_interest_id) {
+      console.warn('Cannot delete: business_interest business_interest_id is missing.');
+      return;
+    }
+    this.saveClientSection('business_interest_holdings', {
+      asset_id_type: 'business_interest_id',
+      id: asset.business_interest_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -840,19 +914,40 @@ export class DataService {
     }));
   }
 
-  updateDigitalAsset(index: number, updates: Partial<IDigitalAsset>) {
+  updateDigitalAsset(asset: IDigitalAsset) {
+    if (!asset.digital_asset_id) {
+      console.warn('Cannot update: digital_asset digital_asset_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      digital_asset_id: asset.digital_asset_id
+    };
+    this.saveClientSection('digital_asset_holdings', updatedAsset).subscribe();
+    // Update local state by digital_asset_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        digital_asset_holdings: current.assets.digital_asset_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        digital_asset_holdings: current.assets.digital_asset_holdings.map(a =>
+          a.digital_asset_id === asset.digital_asset_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeDigitalAsset(index: number) {
+    const asset = this._clientdata().assets.digital_asset_holdings[index];
+    if (!asset.digital_asset_id) {
+      console.warn('Cannot delete: digital_asset digital_asset_id is missing.');
+      return;
+    }
+    this.saveClientSection('digital_asset_holdings', {
+      asset_id_type: 'digital_asset_id',
+      id: asset.digital_asset_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -872,19 +967,40 @@ export class DataService {
     }));
   }
 
-  updateOtherAsset(index: number, updates: Partial<IOtherAsset>) {
+  updateOtherAsset(asset: IOtherAsset) {
+    if (!asset.other_asset_id) {
+      console.warn('Cannot update: other_asset other_asset_id is missing.');
+      return;
+    }
+    const updatedAsset = {
+      ...asset,
+      action: 'update',
+      asset_id: asset.other_asset_id
+    };
+    this.saveClientSection('other_asset_holdings', updatedAsset).subscribe();
+    // Update local state by other_asset_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        other_asset_holdings: current.assets.other_asset_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        other_asset_holdings: current.assets.other_asset_holdings.map(a =>
+          a.other_asset_id === asset.other_asset_id ? { ...a, ...asset } : a
         )
       }
     }));
   }
 
   removeOtherAsset(index: number) {
+    const asset = this._clientdata().assets.other_asset_holdings[index];
+    if (!asset.other_asset_id) {
+      console.warn('Cannot delete: other_asset other_asset_id is missing.');
+      return;
+    }
+    this.saveClientSection('other_asset_holdings', {
+      asset_id_type: 'other_asset_id',
+      id: asset.other_asset_id,
+      action: 'delete'
+    }).subscribe();
     this._clientdata.update(current => ({
       ...current,
       assets: {
@@ -1000,7 +1116,7 @@ export class DataService {
   };
 
   public realEstate: IRealEstate = {
-    property_id: null,
+    real_estate_id: null,
     property_type: 'primary_residence',
     address_line1: '',
     address_line2: null,
@@ -1009,9 +1125,9 @@ export class DataService {
     zip: '',
     title_holding: 'client',
     title_details: null,
-    approximate_value: null,
-    mortgage_balance: null,
-    net_value: null,
+    approximate_value: 0,
+    mortgage_balance: 0,
+    net_value: 0,
     beneficiaries_on_deed: null,
     intended_beneficiary: null,
     special_notes: null,
@@ -1022,7 +1138,7 @@ export class DataService {
   };
 
   public bankAccount: IBankAccount = {
-    account_id: null,
+    bank_account_id: null,
     institution_name: '',
     account_type: 'checking',
     account_number_encrypted: null,
@@ -1040,7 +1156,7 @@ export class DataService {
   };
 
     public nqAccount: INQAccount = {
-      account_id: null,
+      nq_account_id: null,
       account_name: '',
       balance: null,
       institution_name: '',
@@ -1059,7 +1175,7 @@ export class DataService {
     };
 
   public retirementAccount: IRetirementAccount = {
-    retirement_id: null,
+    retirement_account_id: null,
     account_name: '',
     balance: null,
     account_type: '401k',
@@ -1075,7 +1191,7 @@ export class DataService {
   };
 
   public businessInterest: IBusinessInterest = {
-    business_id: null,
+    business_interest_id: null,
     business_name: '',
     business_type: 'llc',
     ownership_percentage: null,
@@ -1095,7 +1211,7 @@ export class DataService {
   };
 
   public lifeInsurance: ILifeInsurance = {
-    policy_id: null,
+    life_insurance_id: null,
     insurance_company: '',
     policy_type: 'term',
     policy_number: null,
@@ -1114,7 +1230,7 @@ export class DataService {
   };
 
   public digitalAsset: IDigitalAsset = {
-    digital_id: null,
+    digital_asset_id: null,
     asset_type: 'other',
     asset_name: '',
     platform_or_service: null,
@@ -1132,7 +1248,7 @@ export class DataService {
   };
 
   public otherAsset: IOtherAsset = {
-    asset_id: null,
+    other_asset_id: null,
     asset_type: 'other',
     description: '',
     approximate_value: null,
@@ -1424,22 +1540,25 @@ loadClientData(): Observable<IClientData | null> {
     /**
    * Update a real estate holding in MariaDB
    */
-  updateRealEstate(index: number, updates: Partial<IRealEstate>) {
-    const currentAsset = this._clientdata().assets.real_estate_holdings[index];
+  updateRealEstate(asset: IRealEstate) {
+  const realEstateId = (asset as any).real_estate_id;
+    if (!realEstateId) {
+      console.warn('Cannot update: real_estate real_estate_id is missing.');
+      return;
+    }
     const updatedAsset = {
-      ...currentAsset,
-      ...updates,
+      ...asset,
       action: 'update',
-      real_estate_id: currentAsset.property_id
+      real_estate_id: realEstateId
     };
     this.saveClientSection('real_estate_holdings', updatedAsset).subscribe();
-    // Update local state
+    // Update local state by real_estate_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        real_estate_holdings: current.assets.real_estate_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        real_estate_holdings: current.assets.real_estate_holdings.map(a =>
+          a.real_estate_id === realEstateId ? { ...a, ...asset } : a
         )
       }
     }));
@@ -1448,25 +1567,26 @@ loadClientData(): Observable<IClientData | null> {
   /**
    * Update a bank account holding in MariaDB
    */
-  updateBankAccount(index: number, updates: Partial<IBankAccount>) {
-    const currentAsset = this._clientdata().assets.bank_account_holdings[index];
+  updateBankAccount(asset: IBankAccount) {
+    if (!asset.bank_account_id) {
+      console.warn('Cannot update: bank_account account_id is missing.');
+      return;
+    }
     const updatedAsset = {
-      ...currentAsset,
-      ...updates,
+      ...asset,
       action: 'update',
-      bank_account_id: currentAsset.account_id,
-      // Ensure beneficiaries are sent as strings
-      primary_beneficiaries: Array.isArray(currentAsset.primary_beneficiaries) ? JSON.stringify(currentAsset.primary_beneficiaries) : (currentAsset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(currentAsset.contingent_beneficiaries) ? JSON.stringify(currentAsset.contingent_beneficiaries) : (currentAsset.contingent_beneficiaries ?? '')
+      bank_account_id: asset.bank_account_id,
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
     };
     this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
-    // Update local state
+    // Update local state by account_id
     this._clientdata.update(current => ({
       ...current,
       assets: {
         ...current.assets,
-        bank_account_holdings: current.assets.bank_account_holdings.map((asset, i) =>
-          i === index ? { ...asset, ...updates } : asset
+        bank_account_holdings: current.assets.bank_account_holdings.map(a =>
+          a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a
         )
       }
     }));

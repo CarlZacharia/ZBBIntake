@@ -1,5 +1,5 @@
 export interface IRealEstate {
-  property_id: number | null;
+  real_estate_id?: number | null;
   property_type: 'primary_residence' | 'vacation' | 'rental' | 'land' | 'commercial' | 'other';
   address_line1: string;
   address_line2: string | null;
@@ -24,7 +24,7 @@ export interface IRealEstate {
  * Interface for a single Financial Account asset.
  */
 export interface IBankAccount {
-  account_id: number | null;
+  bank_account_id?: number | null;
   institution_name: string;
   account_type: 'checking' | 'savings' | 'money_market' | 'cd' | 'brokerage' | 'other_investment';
   account_number_encrypted: string | null;
@@ -42,7 +42,7 @@ export interface IBankAccount {
 }
 
 export interface INQAccount {
-  account_id: number | null;
+  nq_account_id?: number | null;
   account_name: string;
   balance: number | null;
   institution_name: string;
@@ -64,7 +64,7 @@ export interface INQAccount {
  * Interface for a single Retirement Account asset.
  */
 export interface IRetirementAccount {
-  retirement_id: number | null;
+  retirement_account_id: number | null;
   account_name: string;
   balance: number | null;
   account_type: '401k' | '403b' | 'traditional_ira' | 'roth_ira' | 'sep_ira' | 'simple_ira' | 'pension' | 'annuity' | 'other';
@@ -83,7 +83,7 @@ export interface IRetirementAccount {
  * Interface for a single Life Insurance asset.
  */
 export interface ILifeInsurance {
-  policy_id: number | null;
+  life_insurance_id?: number | null;
   insurance_company: string;
   policy_type: 'term' | 'whole_life' | 'universal' | 'variable' | 'other';
   policy_number: string | null;
@@ -105,7 +105,7 @@ export interface ILifeInsurance {
  * Interface for a single Business Interest asset.
  */
 export interface IBusinessInterest {
-  business_id: number | null;
+  business_interest_id?: number | null;
   business_name: string;
   business_type: 'llc' | 's_corp' | 'c_corp' | 'partnership' | 'sole_prop' | 'ther';
   ownership_percentage: number | null;
@@ -128,7 +128,7 @@ export interface IBusinessInterest {
  * Interface for a single Digital Asset.
  */
 export interface IDigitalAsset {
-  digital_id: number | null;
+  digital_asset_id?: number | null;
   asset_type: 'email' | 'social_media' | 'cryptocurrency' | 'nft' | 'domain' | 'website' | 'online_business' | 'cloud_storage' | 'password_manager' | 'digital_media' | 'loyalty_programs' | 'other';
   asset_name: string;
   platform_or_service: string | null;
@@ -149,7 +149,7 @@ export interface IDigitalAsset {
  * Interface for any Other Asset.
  */
 export interface IOtherAsset {
-  asset_id: number | null;
+  other_asset_id?: number | null;
   asset_type: 'vehicle' | 'boat' | 'rv' | 'motorcycle' | 'aircraft' | 'art' | 'antiques' | 'jewelry' | 'collectibles' | 'wine' | 'precious_metals' | 'intellectual_property' | 'livestock' | 'farm_equipment' | 'timeshare' | 'other';
   description: string;
   approximate_value: number | null;

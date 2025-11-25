@@ -82,13 +82,14 @@ export class AssetsComponent {
 
 
     formatCurrency(value: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
-  }
+      if (isNaN(value) || value == null) return '$0';
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(value);
+    }
   // --- Asset Filtering Methods ---
 
   getClientAssets(assetType: string): any[] {
@@ -120,7 +121,7 @@ export class AssetsComponent {
 
   private getAssetsByOwnership(assetType: string, ownership: 'client' | 'spouse' | null): any[] {
     const allAssets = this.getAllAssets(assetType);
-    if (ownership === null) {
+     if (ownership === null) {
       // Joint assets are those without owned_by set
       return allAssets.filter((asset: any) => !asset.owned_by);
     }
@@ -136,31 +137,32 @@ export class AssetsComponent {
 
     return assets.reduce((total, asset) => {
       let value = 0;
+      // Always coerce approximate_value to number
       switch (assetType) {
         case 'real_estate':
           value = +asset.approximate_value || 0;
           break;
         case 'bank_account':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'nq_account':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'retirement_account':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'life_insurance':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'business_interest':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'digital_asset':
-          value = asset.approximate_value || 0;
+          value = +asset.approximate_value || 0;
           break;
         case 'other_asset':
           // Use netValue if present, else approximate_value
-          value = (asset.netValue != null ? asset.netValue : asset.approximate_value) || 0;
+          value = (asset.netValue != null ? +asset.netValue : +asset.approximate_value) || 0;
           break;
       }
       return total + value;
@@ -169,7 +171,11 @@ export class AssetsComponent {
 
   getGrandTotal(ownership?: 'client' | 'spouse' | null): number {
     const types: AssetType[] = ['real_estate', 'bank_account', 'nq_account', 'retirement_account', 'life_insurance', 'business_interest', 'digital_asset', 'other_asset'];
-    return types.reduce((total, type) => total + this.getTotalValue(type, ownership), 0);
+    const total = types.reduce((sum, type) => {
+      const val = this.getTotalValue(type, ownership);
+      return sum + (isNaN(val) ? 0 : val);
+    }, 0);
+    return isNaN(total) ? 0 : total;
   }
 
   // --- Modal Methods ---
@@ -304,28 +310,28 @@ export class AssetsComponent {
 
     switch (this.currentAssetType) {
       case 'real_estate':
-        this.ds.updateRealEstate(this.editingIndex, asset as IRealEstate);
+        this.ds.updateRealEstate(asset);
         break;
       case 'bank_account':
-          this.ds.updateBankAccount(this.editingIndex, asset as IBankAccount);
+        this.ds.updateBankAccount(asset);
         break;
       case 'nq_account':
-          this.ds.updateNQAccount(this.editingIndex, asset as INQAccount);
+        this.ds.updateNQAccount(asset);
         break;
       case 'retirement_account':
-        this.ds.updateRetirementAccount(this.editingIndex, asset as IRetirementAccount);
+        this.ds.updateRetirementAccount(asset);
         break;
       case 'life_insurance':
-        this.ds.updateLifeInsurance(this.editingIndex, asset as ILifeInsurance);
+        this.ds.updateLifeInsurance(asset);
         break;
       case 'business_interest':
-        this.ds.updateBusinessInterest(this.editingIndex, asset as IBusinessInterest);
+        this.ds.updateBusinessInterest(asset);
         break;
       case 'digital_asset':
-        this.ds.updateDigitalAsset(this.editingIndex, asset as IDigitalAsset);
+        this.ds.updateDigitalAsset(asset);
         break;
       case 'other_asset':
-        this.ds.updateOtherAsset(this.editingIndex, asset as IOtherAsset);
+        this.ds.updateOtherAsset(asset);
         break;
     }
 

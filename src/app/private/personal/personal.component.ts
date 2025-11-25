@@ -76,7 +76,7 @@ export class PersonalComponent {
   }
 
   updateMaritalInfo(field: string, value: any) {
-    console.log('Updating marital info:', field, value);
+
     this.ds.updateMaritalInfo({ [field]: value });
   }
 
