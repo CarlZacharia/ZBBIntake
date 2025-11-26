@@ -2093,8 +2093,8 @@
           <select [(ngModel)]="editingDigitalAsset.asset_type" name="asset_type" required>
             <option value="email">Email Account</option>
             <option value="social_media">Social Media</option>
-            <option value="cryptocurrency">Cryptocurrency</option>
-            <option value="nft">NFT</option>
+            <option value="Cryptocurrency">Cryptocurrency</option>
+            <option value="NFT">NFT</option>
             <option value="domain">Domain Name</option>
             <option value="website">Website</option>
             <option value="online_business">Online Business</option>
@@ -2137,7 +2137,7 @@
         </div>
 
         <!-- Crypto-specific fields -->
-        <div *ngIf="editingDigitalAsset.asset_type === 'cryptocurrency' || editingDigitalAsset.asset_type === 'nft'">
+        <div *ngIf="editingDigitalAsset.asset_type === 'Cryptocurrency' || editingDigitalAsset.asset_type === 'NFT'">
           <div class="form-group">
             <label>Wallet Type</label>
             <input type="text" [(ngModel)]="editingDigitalAsset.wallet_type" name="wallet_type" placeholder="e.g., Hardware, Software, Exchange">
@@ -2206,8 +2206,8 @@
           <select [(ngModel)]="editingDigitalAsset.asset_type" name="asset_type" required>
             <option value="email">Email Account</option>
             <option value="social_media">Social Media</option>
-            <option value="cryptocurrency">Cryptocurrency</option>
-            <option value="nft">NFT</option>
+            <option value="Cryptocurrency">Cryptocurrency</option>
+            <option value="NFT">NFT</option>
             <option value="domain">Domain Name</option>
             <option value="website">Website</option>
             <option value="online_business">Online Business</option>
@@ -2250,7 +2250,7 @@
         </div>
 
         <!-- Crypto-specific fields -->
-        <div *ngIf="editingDigitalAsset.asset_type === 'cryptocurrency' || editingDigitalAsset.asset_type === 'nft'">
+        <div *ngIf="editingDigitalAsset.asset_type === 'Cryptocurrency' || editingDigitalAsset.asset_type === 'NFT'">
           <div class="form-group">
             <label>Wallet Type</label>
             <input type="text" [(ngModel)]="editingDigitalAsset.wallet_type" name="wallet_type" placeholder="e.g., Hardware, Software, Exchange">
