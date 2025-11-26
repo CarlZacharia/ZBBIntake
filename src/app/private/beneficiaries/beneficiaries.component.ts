@@ -1,40 +1,33 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BeneficiariesService } from '../../services/beneficiaries.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-beneficiaries',
   imports: [CommonModule, FormsModule],
   templateUrl: './beneficiaries.component.html',
   styleUrls: ['./beneficiaries.component.css'],
-  providers: [BeneficiariesService]
+  providers: [DataService]
 })
 export class BeneficiariesComponent {
-  children: any[] = [];
-  familyMembers: any[] = [];
-  charities: any[] = [];
+  get children() {
+    return this.dataService.children();
+  }
+  get familyMembers() {
+    return this.dataService.clientdata().family_members || [];
+  }
+  get charities() {
+    return this.dataService.clientdata().charities || [];
+  }
 
   editingType: string | null = null;
   editingIndex: number | null = null;
   editingItem: any = null;
 
-  constructor(private beneficiariesService: BeneficiariesService) {
-    this.loadBeneficiaries();
-  }
+  constructor(public dataService: DataService) {}
 
-  loadBeneficiaries() {
-    this.beneficiariesService.getChildren().subscribe(children => {
-      console.log('Fetched children:', children);
-      this.children = children;
-    });
-    this.beneficiariesService.getFamilyMembers().subscribe(family => {
-      this.familyMembers = family;
-    });
-    this.beneficiariesService.getCharities().subscribe(charities => {
-      this.charities = charities;
-    });
-  }
+  // No need for ngOnInit; data is always up-to-date via getters
 
   // Children
   addChild() {
@@ -48,8 +41,7 @@ export class BeneficiariesComponent {
     this.editingItem = { ...this.children[index] };
   }
   removeChild(index: number) {
-    // TODO: Use data.service.ts removeChild logic
-    this.children.splice(index, 1);
+    this.dataService.removeChild(index);
     if (this.editingType === 'child' && this.editingIndex === index) {
       this.cancelEdit();
     }
@@ -67,8 +59,7 @@ export class BeneficiariesComponent {
     this.editingItem = { ...this.familyMembers[index] };
   }
   removeFamilyMember(index: number) {
-    // TODO: Use data.service.ts removeFamilyMember logic
-    this.familyMembers.splice(index, 1);
+    this.dataService.removeFamilyMember(index);
     if (this.editingType === 'family' && this.editingIndex === index) {
       this.cancelEdit();
     }
@@ -86,8 +77,7 @@ export class BeneficiariesComponent {
     this.editingItem = { ...this.charities[index] };
   }
   removeCharity(index: number) {
-    // TODO: Use data.service.ts removeCharity logic
-    this.charities.splice(index, 1);
+    this.dataService.removeCharity(index);
     if (this.editingType === 'charity' && this.editingIndex === index) {
       this.cancelEdit();
     }
@@ -96,27 +86,21 @@ export class BeneficiariesComponent {
   saveEdit() {
     if (this.editingType === 'child') {
       if (this.editingIndex === this.children.length) {
-        // TODO: Use data.service.ts addChild logic
-        this.children.push(this.editingItem);
+        this.dataService.addChild(this.editingItem);
       } else if (this.editingIndex !== null) {
-        // TODO: Use data.service.ts updateChild logic
-        this.children[this.editingIndex] = this.editingItem;
+        this.dataService.updateChild(this.editingIndex, this.editingItem);
       }
     } else if (this.editingType === 'family') {
       if (this.editingIndex === this.familyMembers.length) {
-        // TODO: Use data.service.ts addFamilyMember logic
-        this.familyMembers.push(this.editingItem);
+        this.dataService.addFamilyMember(this.editingItem);
       } else if (this.editingIndex !== null) {
-        // TODO: Use data.service.ts updateFamilyMember logic
-        this.familyMembers[this.editingIndex] = this.editingItem;
+        this.dataService.updateFamilyMember(this.editingIndex, this.editingItem);
       }
     } else if (this.editingType === 'charity') {
       if (this.editingIndex === this.charities.length) {
-        // TODO: Use data.service.ts addCharity logic
-        this.charities.push(this.editingItem);
+        this.dataService.addCharity(this.editingItem);
       } else if (this.editingIndex !== null) {
-        // TODO: Use data.service.ts updateCharity logic
-        this.charities[this.editingIndex] = this.editingItem;
+        this.dataService.updateCharity(this.editingIndex, this.editingItem);
       }
     }
     this.cancelEdit();

@@ -55,7 +55,11 @@
           <span class="nav-title">Beneficiaries</span>
         </div>
         <div class="nav-card-info">
-          <!-- Optionally show total count or summary here -->
+          <div class="sidebar-counts">
+            <span>Children: {{ getChildrenCount() }}</span><br>
+            <span>Family Members: {{ getFamilyMembersCount() }}</span><br>
+            <span>Charities: {{ getCharitiesCount() }}</span>
+          </div>
         </div>
       </button>
 

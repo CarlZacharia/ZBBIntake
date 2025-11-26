@@ -379,85 +379,72 @@ export class DataService {
     }
   }
 
-  // Methods for managing children
+  // All beneficiary-related data (children, family members, charities) is loaded and updated only via loadClientData() and saveclientdata().
+  // To add, update, or remove beneficiaries, update the local _clientdata signal and call saveclientdata() to persist changes.
+
+  // Example: Add a child
   addChild(child: IChild) {
-      this._clientdata.update(current => ({
-        ...current,
-        children: [...current.children, child]
-      }));
-      // Save only the new child to backend as INSERT
-      const portal_user_id = this.pui;
-      const newChild = { ...child, child_id: null, action: 'insert' };
-      this.saveSection('child', newChild, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      children: [...current.children, child]
+    }));
+    this.autoSave();
   }
 
+  // Example: Update a child
   updateChild(index: number, updates: Partial<IChild>) {
-      this._clientdata.update(current => ({
-        ...current,
-        children: current.children.map((child, i) =>
-          i === index ? { ...child, ...updates } : child
-        )
-      }));
-      // Save only the updated child to backend
-      const portal_user_id = this.pui;
-      const updatedChild = this._clientdata().children[index];
-      this.saveSection('child', updatedChild, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      children: current.children.map((child, i) =>
+        i === index ? { ...child, ...updates } : child
+      )
+    }));
+    this.autoSave();
   }
 
+  // Example: Remove a child
   removeChild(index: number) {
-      const removedChild = this._clientdata().children[index];
-      this._clientdata.update(current => ({
-        ...current,
-        children: current.children.filter((_, i) => i !== index)
-      }));
-      // Optionally send the removed child to backend for deletion
-      const portal_user_id = this.pui;
-      this.saveSection('child_remove', removedChild, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      children: current.children.filter((_, i) => i !== index)
+    }));
+    this.autoSave();
   }
 
-  // Methods for managing family members
+  // Family members
   addFamilyMember(familyMember: IFamilyMember) {
-    console.log(familyMember);
-      this._clientdata.update(current => ({
-        ...current,
-        family_members: [...current.family_members, familyMember]
-      }));
-      // Save only the new family member to backend as INSERT
-      const portal_user_id = this.pui;
-      const newFamilyMember = { ...familyMember, family_member_id: null, action: 'insert' };
-      this.saveSection('family_member', newFamilyMember, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      family_members: [...current.family_members, familyMember]
+    }));
+    this.autoSave();
   }
 
   updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-      this._clientdata.update(current => ({
-        ...current,
-        family_members: current.family_members.map((member, i) =>
-          i === index ? { ...member, ...updates } : member
-        )
-      }));
-      // Save only the updated family member to backend
-      const portal_user_id = this.pui;
-      const updatedMember = this._clientdata().family_members[index];
-      this.saveSection('family_member', updatedMember, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      family_members: current.family_members.map((member, i) =>
+        i === index ? { ...member, ...updates } : member
+      )
+    }));
+    this.autoSave();
   }
 
   removeFamilyMember(index: number) {
-      const removedMember = this._clientdata().family_members[index];
-      this._clientdata.update(current => ({
-        ...current,
-        family_members: current.family_members.filter((_, i) => i !== index)
-      }));
-      // Optionally send the removed member to backend for deletion
-      const portal_user_id = this.pui;
-      this.saveSection('family_member_remove', removedMember, portal_user_id);
+    this._clientdata.update(current => ({
+      ...current,
+      family_members: current.family_members.filter((_, i) => i !== index)
+    }));
+    this.autoSave();
   }
 
-  // Methods for managing charities
+  // Charities
   addCharity(charity: ICharity) {
     this._clientdata.update(current => ({
       ...current,
       charities: [...current.charities, charity]
     }));
+    this.autoSave();
   }
 
   updateCharity(index: number, updates: Partial<ICharity>) {
@@ -467,6 +454,7 @@ export class DataService {
         i === index ? { ...charity, ...updates } : charity
       )
     }));
+    this.autoSave();
   }
 
   removeCharity(index: number) {
@@ -474,6 +462,7 @@ export class DataService {
       ...current,
       charities: current.charities.filter((_, i) => i !== index)
     }));
+    this.autoSave();
   }
 
   // Methods for managing assets
@@ -613,11 +602,11 @@ export class DataService {
     const localAsset: IBankAccount = {
       bank_account_id: null,
       institution_name: asset.institution_name ?? '',
-      account_type: asset.account_type ?? 'checking',
+      account_type: asset.account_type ?? 'Checking',
       account_number_encrypted: asset.account_number_encrypted ?? null,
       approximate_value: asset.approximate_value ?? null,
       balance: asset.balance ?? undefined,
-      title_type: asset.title_type ?? 'individual',
+      title_type: asset.title_type ?? 'Individual',
       joint_owner_name: asset.joint_owner_name ?? null,
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
@@ -693,7 +682,7 @@ export class DataService {
       account_name: asset.account_name ?? '',
       balance: asset.balance ?? undefined,
       institution_name: asset.institution_name ?? '',
-      account_type: asset.account_type ?? 'mutual fund',
+      account_type: asset.account_type ?? 'Mutual Fund',
       account_number_encrypted: asset.account_number_encrypted ?? '',
       approximate_value: asset.approximate_value ?? null,
       title_type: asset.title_type ?? 'individual',
@@ -714,10 +703,10 @@ export class DataService {
       account_name: asset.account_name ?? '',
       balance: asset.balance ?? null,
       institution_name: asset.institution_name ?? '',
-      account_type: asset.account_type ?? 'mutual fund',
+      account_type: asset.account_type ?? 'Mutual Fund',
       account_number_encrypted: asset.account_number_encrypted ?? null,
       approximate_value: asset.approximate_value ?? null,
-      title_type: asset.title_type ?? 'individual',
+      title_type: asset.title_type ?? 'Individual',
       joint_owner_name: asset.joint_owner_name ?? '',
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
@@ -1173,7 +1162,7 @@ export class DataService {
     city: '',
     state: '',
     zip: '',
-    title_holding: 'client',
+    title_holding: 'Client',
     title_details: null,
     approximate_value: 0,
     mortgage_balance: 0,
@@ -1190,11 +1179,11 @@ export class DataService {
   public bankAccount: IBankAccount = {
     bank_account_id: null,
     institution_name: '',
-    account_type: 'checking',
+    account_type: 'Checking',
     account_number_encrypted: null,
     approximate_value: 0,
     balance: 0,
-    title_type: 'individual',
+    title_type: 'Individual',
     joint_owner_name: null,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
@@ -1210,10 +1199,10 @@ export class DataService {
       account_name: '',
       balance: null,
       institution_name: '',
-      account_type: 'mutual fund',
+      account_type: 'Mutual Fund',
       account_number_encrypted: null,
       approximate_value: 0,
-      title_type: 'individual',
+      title_type: 'Individual',
       joint_owner_name: null,
       primary_beneficiaries: [],
       contingent_beneficiaries: [],
@@ -1243,7 +1232,7 @@ export class DataService {
   public businessInterest: IBusinessInterest = {
     business_interest_id: null,
     business_name: '',
-    business_type: 'llc',
+    business_type: 'LLC',
     ownership_percentage: null,
     approximate_value: null,
     has_other_owners: false,
@@ -1263,7 +1252,7 @@ export class DataService {
   public lifeInsurance: ILifeInsurance = {
     life_insurance_id: null,
     insurance_company: '',
-    policy_type: 'term',
+    policy_type: 'Term',
     policy_number: null,
     face_value: 0,
     approximate_value: 0, //death_benefit
@@ -1281,7 +1270,7 @@ export class DataService {
 
   public digitalAsset: IDigitalAsset = {
     digital_asset_id: null,
-    asset_type: 'other',
+    asset_type: 'Other',
     asset_name: '',
     platform_or_service: null,
     approximate_value: null,
@@ -1474,27 +1463,24 @@ export class DataService {
   }
 
   /**
-   * Load case data from server for current user
+   * Load all client data (including beneficiaries) from server for current user
    */
-  /**
-   * Load client data from server for current user
-   */
-loadClientData(): Observable<IClientData | null> {
-  const userId = this.authService.getCurrentUserId();
-  if (!userId) {
-    return throwError(() => new Error('User not authenticated'));
+  loadClientData(): Observable<IClientData | null> {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
+    }
+    // Single API call returns all client data, including children, family_members, charities, etc.
+    return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
+      map(response => response || null),
+      catchError(error => {
+        if (error.status === 404) {
+          return [null];
+        }
+        throw error;
+      })
+    );
   }
-
-  return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
-    map(response => response || null),
-    catchError(error => {
-      if (error.status === 404) {
-        return [null];
-      }
-      throw error;
-    })
-  );
-}
 
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here

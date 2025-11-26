@@ -6,7 +6,7 @@ export interface IRealEstate {
   city: string;
   state: string;
   zip: string;
-  title_holding: 'client' | 'spouse' | 'joint_spouse' | 'tenants_common' | 'joint_rights_survivorship' | 'tod_deed' | 'trust' | 'llc' | 'other';
+  title_holding: 'Client' | 'Spouse'  | 'Joint-Spouse' | 'TinC' | 'JTWROS' | 'tod_deed' | 'trust' | 'llc' | 'other';
   title_details: string | null;
   approximate_value: number | null;
   mortgage_balance: number | null;
@@ -14,7 +14,7 @@ export interface IRealEstate {
   beneficiaries_on_deed: string | null;
   intended_beneficiary: string | null;
   special_notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
   ownership_value: number | null;        // net_value * (ownership_percentage / 100)
@@ -26,17 +26,17 @@ export interface IRealEstate {
 export interface IBankAccount {
   bank_account_id?: number | null;
   institution_name: string;
-  account_type: 'checking' | 'savings' | 'money_market' | 'cd' | 'brokerage' | 'other_investment';
+  account_type: 'Checking' | 'Savings' | 'Money market' | 'CD' | 'Crokerage' | 'Other investment';
   account_number_encrypted: string | null;
   approximate_value: number | null;
   balance: number | undefined;
-  title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
+  title_type: 'Individual' | 'Joint' | 'POD' | 'TOD' | 'Trust' | 'Other';
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -46,16 +46,16 @@ export interface INQAccount {
   account_name: string;
   balance: number | null;
   institution_name: string;
-  account_type: 'mutual fund' | 'stocks' | 'bonds' | 'annuity' | 'money market' | 'brokerage' | 'other_investment';
+  account_type: 'Mutual Fund' | 'Stocks' | 'Bonds' | 'Annuity' | 'Money market' | 'Brokerage' | 'Other_investment';
   account_number_encrypted: string | null;
   approximate_value: number | null;
-  title_type: 'individual' | 'joint' | 'pod' | 'tod' | 'trust' | 'other';
+  title_type: 'Individual' | 'Joint' | 'POD' | 'TOD' | 'Trust' | 'Other';
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -67,7 +67,7 @@ export interface IRetirementAccount {
   retirement_account_id: number | null;
   account_name: string;
   balance: number | null;
-  account_type: '401k' | '403b' | 'traditional_ira' | 'roth_ira' | 'sep_ira' | 'simple_ira' | 'pension' | 'annuity' | 'other';
+  account_type: '401k' | '403b' | 'Traditional IRA' | 'Roth IRA' | 'SEP' | 'Simple IRA' | 'Pension' | 'Annuity' | 'Other';
   institution_name: string;
   account_number_encrypted: string | null;
   approximate_value: number | null;
@@ -76,7 +76,7 @@ export interface IRetirementAccount {
   beneficiary_last_reviewed: string | null;
   rmd_age_reached: boolean | number | string | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
 }
 
 /**
@@ -85,7 +85,7 @@ export interface IRetirementAccount {
 export interface ILifeInsurance {
   life_insurance_id?: number | null;
   insurance_company: string;
-  policy_type: 'term' | 'whole_life' | 'universal' | 'variable' | 'other';
+  policy_type: 'Term' | 'Whole life' | 'Universal' | 'Variable' | 'Other';
   policy_number: string | null;
   face_value: number;
   approximate_value: number;
@@ -96,7 +96,7 @@ export interface ILifeInsurance {
   trust_name: string | null;
   annual_premium: number | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -107,7 +107,7 @@ export interface ILifeInsurance {
 export interface IBusinessInterest {
   business_interest_id?: number | null;
   business_name: string;
-  business_type: 'llc' | 's_corp' | 'c_corp' | 'partnership' | 'sole_prop' | 'ther';
+  business_type: 'LLC' | 'S Corp' | ' C Corp' | 'LLP' | 'Partnership' | 'Sole Prop' | 'ther';
   ownership_percentage: number | null;
   approximate_value: number | null;
   has_other_owners: boolean | number | string | null;
@@ -120,7 +120,7 @@ export interface IBusinessInterest {
   successor_is_family: boolean | number | string | null;
   should_business_be_sold: boolean | number | string | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   other_owners: string | null;
 }
 
@@ -129,7 +129,7 @@ export interface IBusinessInterest {
  */
 export interface IDigitalAsset {
   digital_asset_id?: number | null;
-  asset_type: 'email' | 'social_media' | 'cryptocurrency' | 'nft' | 'domain' | 'website' | 'online_business' | 'cloud_storage' | 'password_manager' | 'digital_media' | 'loyalty_programs' | 'other';
+  asset_type: 'Email' | 'Social_media' | 'Cryptocurrency' | 'NFT' | 'Domain' | 'Website' | 'Online_business' | 'Cloud_storage' | 'Password_manager' | 'Digital_media' | 'Loyalty_programs' | 'Other';
   asset_name: string;
   platform_or_service: string | null;
   approximate_value: number | null;
@@ -140,7 +140,7 @@ export interface IDigitalAsset {
   intended_disposition: 'delete' | 'preserve' | 'transfer' | 'memorialize' | null;
   access_instructions: string | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -160,7 +160,7 @@ export interface IOtherAsset {
   special_instructions: string | null;
   appraisal_exists: boolean | number | string | null;
   appraisal_date: string | null;
-  owned_by: 'client' | 'spouse' | null;
+  owned_by: 'Client' | 'Spouse'  | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -177,7 +177,7 @@ export interface IDebt {
   current_balance: number | null;
   monthly_payment: number | null;
   notes: string | null;
-  owned_by: 'client' | 'spouse' | 'joint' | null;
+  owned_by: 'Client' | 'Spouse'  | 'joint' | null;
 }
 
 /**
@@ -234,7 +234,7 @@ export interface IChild {
   legal_last_name: string;
   suffix: string | null;
   date_of_birth: string | null;
-  child_of: 'client' | 'spouse' | 'both';
+  child_of: 'Client' | 'Spouse'  | 'both';
   child_comment: string | null;
   address: string | null;
   city: string | null;

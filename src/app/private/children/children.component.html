@@ -1,0 +1,660 @@
+<div class="children-container">
+  <h2>Children & Family Members</h2>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="btn btn-primary" (click)="openAddChildModal()">Add Child</button>
+    <button class="btn btn-secondary" (click)="openAddFamilyMemberModal()">Add Family Member</button>
+  </div>
+
+  <!-- Children Table -->
+  <section class="children-section">
+    <h3>Children</h3>
+    <table class="data-table" *ngIf="children().length > 0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date of Birth</th>
+          <th>Marital Status</th>
+          <th>Special Needs</th>
+          <th>Relationship Quality</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let child of children(); let i = index">
+          <td>{{ child.legal_first_name }} {{ child.legal_middle_name }} {{ child.legal_last_name }} {{ child.suffix }}
+          </td>
+          <td>{{ child.date_of_birth | date }}</td>
+          <td>{{ child.marital_status || 'N/A' }}</td>
+          <td>{{ child.special_needs ? 'Yes' : 'No' }}</td>
+          <td>{{ child.relationship_quality || 'N/A' }}</td>
+          <td class="actions">
+            <button class="btn-small btn-edit" (click)="openEditChildModal(child, i)">Edit</button>
+            <button class="btn-small btn-delete" (click)="deleteChild(i)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="children().length === 0" class="no-data">No children added yet.</p>
+  </section>
+
+  <!-- Family Members Table -->
+  <section class="family-members-section">
+    <h3>Family Members</h3>
+    <table class="data-table" *ngIf="familyMembers().length > 0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Relationship</th>
+          <th>Date of Birth</th>
+          <th>Living</th>
+          <th>Financial Support</th>
+          <th>Special Needs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of familyMembers(); let i = index">
+          <td>{{ member.legal_name }}</td>
+          <td>{{ member.relationship }}</td>
+          <td>{{ member.date_of_birth | date }}</td>
+          <td>{{ member.is_living ? 'Yes' : 'No' }}</td>
+          <td>{{ member.financial_support ? 'Yes' : 'No' }}</td>
+          <td>{{ member.special_needs ? 'Yes' : 'No' }}</td>
+          <td class="actions">
+            <button class="btn-small btn-edit" (click)="openEditFamilyMemberModal(member, i)">Edit</button>
+            <button class="btn-small btn-delete" (click)="deleteFamilyMember(i)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="familyMembers().length === 0" class="no-data">No family members added yet.</p>
+  </section>
+</div>
+
+<!-- Add Child Modal -->
+<div class="modal-overlay" *ngIf="showAddChildModal" (click)="closeAddChildModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Child</h3>
+      <button class="close-btn" (click)="closeAddChildModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingChild">
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" [(ngModel)]="editingChild.legal_first_name" name="first_name" required>
+          </div>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" [(ngModel)]="editingChild.legal_middle_name" name="middle_name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" [(ngModel)]="editingChild.legal_last_name" name="last_name" required>
+          </div>
+          <div class="form-group">
+            <label>Suffix</label>
+            <input type="text" [(ngModel)]="editingChild.suffix" name="suffix">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" [(ngModel)]="editingChild.date_of_birth" name="dob">
+          </div>
+          <div class="form-group">
+            <label>Marital Status</label>
+            <select [(ngModel)]="editingChild.marital_status" name="marital_status">
+              <option [ngValue]="null">Select...</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Widowed">Widowed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Child Of *</label>
+            <select [(ngModel)]="editingChild.child_of" name="child_of" required>
+              <option value="both">Both Client & Spouse</option>
+              <option value="client">Client Only</option>
+              <option value="spouse">Spouse Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Child Comment</label>
+          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
+            placeholder="Additional notes about this child's relationship..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingChild.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingChild.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingChild.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingChild.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.has_children" name="has_children"> Has
+              Children</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.special_needs" name="special_needs"> Special
+              Needs</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingChild.special_needs">
+          <label>Special Needs Description</label>
+          <textarea [(ngModel)]="editingChild.special_needs_description" name="special_needs_desc" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Disabilities</label>
+          <textarea [(ngModel)]="editingChild.disabilities" name="disabilities" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Relationship Quality</label>
+            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
+              <option [ngValue]="null">Select...</option>
+              <option value="close">Close</option>
+              <option value="good">Good</option>
+              <option value="distant">Distant</option>
+              <option value="estranged">Estranged</option>
+              <option value="complicated">Complicated</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financially Responsible</label>
+            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
+              <option [ngValue]="null">Select...</option>
+              <option value="very">Very</option>
+              <option value="somewhat">Somewhat</option>
+              <option value="not_really">Not Really</option>
+              <option value="concerning">Concerning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.substance_abuse_concerns" name="substance_abuse">
+              Substance Abuse Concerns</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.gambling_concerns" name="gambling"> Gambling
+              Concerns</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Other Concerns</label>
+          <textarea [(ngModel)]="editingChild.other_concerns" name="other_concerns" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.excluded_or_reduced" name="excluded"> Excluded or
+              Reduced Inheritance</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingChild.excluded_or_reduced">
+          <label>Exclusion Reason</label>
+          <textarea [(ngModel)]="editingChild.exclusion_reason" name="exclusion_reason" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.is_deceased" name="deceased"> Deceased</label>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="editingChild.is_deceased">
+          <div class="form-group">
+            <label>Date of Death</label>
+            <input type="date" [(ngModel)]="editingChild.date_of_death" name="date_of_death">
+          </div>
+          <div class="form-group">
+            <label>Surviving Spouse</label>
+            <input type="text" [(ngModel)]="editingChild.surviving_spouse" name="surviving_spouse">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddChildModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewChild()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Child Modal -->
+<div class="modal-overlay" *ngIf="showEditChildModal" (click)="closeEditChildModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Child</h3>
+      <button class="close-btn" (click)="closeEditChildModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingChild">
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" [(ngModel)]="editingChild.legal_first_name" name="first_name" required>
+          </div>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" [(ngModel)]="editingChild.legal_middle_name" name="middle_name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" [(ngModel)]="editingChild.legal_last_name" name="last_name" required>
+          </div>
+          <div class="form-group">
+            <label>Suffix</label>
+            <input type="text" [(ngModel)]="editingChild.suffix" name="suffix">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" [(ngModel)]="editingChild.date_of_birth" name="dob">
+          </div>
+          <div class="form-group">
+            <label>Marital Status</label>
+            <select [(ngModel)]="editingChild.marital_status" name="marital_status">
+              <option [ngValue]="null">Select...</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Widowed">Widowed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Child Of *</label>
+            <select [(ngModel)]="editingChild.child_of" name="child_of" required>
+              <option value="both">Both Client & Spouse</option>
+              <option value="client">Client Only</option>
+              <option value="spouse">Spouse Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Child Comment</label>
+          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
+            placeholder="Additional notes about this child's relationship..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingChild.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingChild.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingChild.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingChild.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.has_children" name="has_children"> Has
+              Children</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.special_needs" name="special_needs"> Special
+              Needs</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingChild.special_needs">
+          <label>Special Needs Description</label>
+          <textarea [(ngModel)]="editingChild.special_needs_description" name="special_needs_desc" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Disabilities</label>
+          <textarea [(ngModel)]="editingChild.disabilities" name="disabilities" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Relationship Quality</label>
+            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
+              <option [ngValue]="null">Select...</option>
+              <option value="close">Close</option>
+              <option value="good">Good</option>
+              <option value="distant">Distant</option>
+              <option value="estranged">Estranged</option>
+              <option value="complicated">Complicated</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financially Responsible</label>
+            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
+              <option [ngValue]="null">Select...</option>
+              <option value="very">Very</option>
+              <option value="somewhat">Somewhat</option>
+              <option value="not_really">Not Really</option>
+              <option value="concerning">Concerning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.substance_abuse_concerns" name="substance_abuse">
+              Substance Abuse Concerns</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.gambling_concerns" name="gambling"> Gambling
+              Concerns</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Other Concerns</label>
+          <textarea [(ngModel)]="editingChild.other_concerns" name="other_concerns" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.excluded_or_reduced" name="excluded"> Excluded or
+              Reduced Inheritance</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingChild.excluded_or_reduced">
+          <label>Exclusion Reason</label>
+          <textarea [(ngModel)]="editingChild.exclusion_reason" name="exclusion_reason" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingChild.is_deceased" name="deceased"> Deceased</label>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="editingChild.is_deceased">
+          <div class="form-group">
+            <label>Date of Death</label>
+            <input type="date" [(ngModel)]="editingChild.date_of_death" name="date_of_death">
+          </div>
+          <div class="form-group">
+            <label>Surviving Spouse</label>
+            <input type="text" [(ngModel)]="editingChild.surviving_spouse" name="surviving_spouse">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditChildModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditChild()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Family Member Modal -->
+<div class="modal-overlay" *ngIf="showAddFamilyMemberModal" (click)="closeAddFamilyMemberModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Family Member</h3>
+      <button class="close-btn" (click)="closeAddFamilyMemberModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingFamilyMember">
+      <form>
+        <div class="form-group">
+          <label>Legal Name *</label>
+          <input type="text" [(ngModel)]="editingFamilyMember.legal_name" name="legal_name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Relationship *</label>
+            <select [(ngModel)]="editingFamilyMember.relationship" name="relationship" required>
+              <option value="Grandchild">Grandchild</option>
+              <option value="Parent">Parent</option>
+              <option value="Sibling">Sibling</option>
+              <option value="Niece">Niece</option>
+              <option value="Nephew">Nephew</option>
+              <option value="Aunt_uncle">Aunt/Uncle</option>
+              <option value="Cousin">Cousin</option>
+              <option value="Other_dependent">Other Dependent</option>
+              <option value="Close_friend">Close Friend</option>
+              <option value="Godchild">Godchild</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" [(ngModel)]="editingFamilyMember.date_of_birth" name="dob">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.is_living" name="is_living"> Living</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="!editingFamilyMember.is_living">
+          <label>Date of Death</label>
+          <input type="date" [(ngModel)]="editingFamilyMember.date_of_death" name="date_of_death">
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingFamilyMember.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingFamilyMember.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingFamilyMember.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingFamilyMember.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.financial_support" name="financial_support">
+              Providing Financial Support</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingFamilyMember.financial_support">
+          <label>Support Amount (Monthly)</label>
+          <input type="number" [(ngModel)]="editingFamilyMember.support_amount_monthly" name="support_amount">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.special_needs" name="special_needs"> Special
+              Needs</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.caregiving_responsibilities"
+                name="caregiving"> Caregiving Responsibilities</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingFamilyMember.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddFamilyMemberModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveNewFamilyMember()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Family Member Modal -->
+<div class="modal-overlay" *ngIf="showEditFamilyMemberModal" (click)="closeEditFamilyMemberModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Family Member</h3>
+      <button class="close-btn" (click)="closeEditFamilyMemberModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="editingFamilyMember">
+      <form>
+        <div class="form-group">
+          <label>Legal Name *</label>
+          <input type="text" [(ngModel)]="editingFamilyMember.legal_name" name="legal_name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Relationship *</label>
+            <select [(ngModel)]="editingFamilyMember.relationship" name="relationship" required>
+              <option value="Grandchild">Grandchild</option>
+              <option value="Parent">Parent</option>
+              <option value="Sibling">Sibling</option>
+              <option value="Niece">Niece</option>
+              <option value="Nephew">Nephew</option>
+              <option value="Aunt_uncle">Aunt/Uncle</option>
+              <option value="Cousin">Cousin</option>
+              <option value="Other_dependent">Other Dependent</option>
+              <option value="Close_friend">Close Friend</option>
+              <option value="Godchild">Godchild</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" [(ngModel)]="editingFamilyMember.date_of_birth" name="dob">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.is_living" name="is_living"> Living</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="!editingFamilyMember.is_living">
+          <label>Date of Death</label>
+          <input type="date" [(ngModel)]="editingFamilyMember.date_of_death" name="date_of_death">
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editingFamilyMember.address" name="address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="editingFamilyMember.city" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="editingFamilyMember.state" name="state">
+              <option [ngValue]="null">Select...</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ZIP</label>
+            <input type="text" [(ngModel)]="editingFamilyMember.zip" name="zip">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.financial_support" name="financial_support">
+              Providing Financial Support</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingFamilyMember.financial_support">
+          <label>Support Amount (Monthly)</label>
+          <input type="number" [(ngModel)]="editingFamilyMember.support_amount_monthly" name="support_amount">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.special_needs" name="special_needs"> Special
+              Needs</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.caregiving_responsibilities"
+                name="caregiving"> Caregiving Responsibilities</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="editingFamilyMember.notes" name="notes" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditFamilyMemberModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveEditFamilyMember()">Save</button>
+    </div>
+  </div>
+</div>
