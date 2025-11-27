@@ -11,6 +11,16 @@ import { DataService } from '../../services/data.service';
   providers: [DataService]
 })
 export class BeneficiariesComponent {
+    get isAddMode(): boolean {
+      if (this.editingType === 'child') {
+        return this.editingIndex === this.children.length;
+      } else if (this.editingType === 'family') {
+        return this.editingIndex === this.familyMembers.length;
+      } else if (this.editingType === 'charity') {
+        return this.editingIndex === this.charities.length;
+      }
+      return false;
+    }
   get children() {
     return this.dataService.children();
   }
@@ -33,12 +43,20 @@ export class BeneficiariesComponent {
   addChild() {
     this.editingType = 'child';
     this.editingIndex = this.children.length;
-    this.editingItem = { name: '' };
+    this.editingItem = {
+      legal_first_name: '',
+      legal_last_name: '',
+      substance_abuse: false,
+      gamblnig_concerns: false,
+      has_children: false,
+      excluded_or_reduced: false,
+      i_deceased: false
+    };
   }
   editChild(index: number) {
     this.editingType = 'child';
     this.editingIndex = index;
-    this.editingItem = { ...this.children[index] };
+    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.children[index] });
   }
   removeChild(index: number) {
     this.dataService.removeChild(index);
@@ -51,12 +69,20 @@ export class BeneficiariesComponent {
   addFamilyMember() {
     this.editingType = 'family';
     this.editingIndex = this.familyMembers.length;
-    this.editingItem = { name: '' };
+    this.editingItem = {
+      legal_first_name: '',
+      legal_last_name: '',
+      substance_abuse: false,
+      gamblnig_concerns: false,
+      has_children: false,
+      excluded_or_reduced: false,
+      i_deceased: false
+    };
   }
   editFamilyMember(index: number) {
     this.editingType = 'family';
     this.editingIndex = index;
-    this.editingItem = { ...this.familyMembers[index] };
+    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.familyMembers[index] });
   }
   removeFamilyMember(index: number) {
     this.dataService.removeFamilyMember(index);
@@ -69,12 +95,19 @@ export class BeneficiariesComponent {
   addCharity() {
     this.editingType = 'charity';
     this.editingIndex = this.charities.length;
-    this.editingItem = { charity_name: '' };
+    this.editingItem = {
+      charity_name: '',
+      substance_abuse: false,
+      gamblnig_concerns: false,
+      has_children: false,
+      excluded_or_reduced: false,
+      i_deceased: false
+    };
   }
   editCharity(index: number) {
     this.editingType = 'charity';
     this.editingIndex = index;
-    this.editingItem = { ...this.charities[index] };
+    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.charities[index] });
   }
   removeCharity(index: number) {
     this.dataService.removeCharity(index);
@@ -84,26 +117,62 @@ export class BeneficiariesComponent {
   }
 
   saveEdit() {
+    // Convert boolean fields back to 0/1 before saving
+    const itemToSave = this.convertCheckboxFieldsToInt(this.editingItem);
     if (this.editingType === 'child') {
       if (this.editingIndex === this.children.length) {
-        this.dataService.addChild(this.editingItem);
+        this.dataService.addChild(itemToSave);
       } else if (this.editingIndex !== null) {
-        this.dataService.updateChild(this.editingIndex, this.editingItem);
+        this.dataService.updateChild(this.editingIndex, itemToSave);
       }
     } else if (this.editingType === 'family') {
       if (this.editingIndex === this.familyMembers.length) {
-        this.dataService.addFamilyMember(this.editingItem);
+        this.dataService.addFamilyMember(itemToSave);
       } else if (this.editingIndex !== null) {
-        this.dataService.updateFamilyMember(this.editingIndex, this.editingItem);
+        this.dataService.updateFamilyMember(this.editingIndex, itemToSave);
       }
     } else if (this.editingType === 'charity') {
       if (this.editingIndex === this.charities.length) {
-        this.dataService.addCharity(this.editingItem);
+        this.dataService.addCharity(itemToSave);
       } else if (this.editingIndex !== null) {
-        this.dataService.updateCharity(this.editingIndex, this.editingItem);
+        this.dataService.updateCharity(this.editingIndex, itemToSave);
       }
     }
     this.cancelEdit();
+  }
+  // Utility: convert integer fields to booleans for UI
+  convertCheckboxFieldsToBoolean(item: any): any {
+    const fields = [
+      'substance_abuse',
+      'gamblnig_concerns',
+      'has_children',
+      'excluded_or_reduced',
+      'i_deceased'
+    ];
+    fields.forEach(f => {
+      if (item.hasOwnProperty(f)) {
+        item[f] = item[f] === 1 ? true : false;
+      }
+    });
+    return item;
+  }
+
+  // Utility: convert booleans to integer for saving
+  convertCheckboxFieldsToInt(item: any): any {
+    const fields = [
+      'substance_abuse',
+      'gamblnig_concerns',
+      'has_children',
+      'excluded_or_reduced',
+      'i_deceased'
+    ];
+    const newItem = { ...item };
+    fields.forEach(f => {
+      if (newItem.hasOwnProperty(f)) {
+        newItem[f] = newItem[f] ? 1 : 0;
+      }
+    });
+    return newItem;
   }
 
   cancelEdit() {
