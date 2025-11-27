@@ -39,64 +39,72 @@ if (!$table || !$data || !is_array($data)) {
 
 
 
-// Use asset_id_type (e.g. bank_account_id) as the primary key for WHERE clause
-// Support asset_id_type and primary key value from both top-level and data object
 
-// Determine primary key name (e.g., real_estate_id) and value
-if (isset($input['asset_id_type'])) {
-    $primaryKey = $input['asset_id_type'];
-} elseif (isset($data['asset_id_type'])) {
-    $primaryKey = $data['asset_id_type'];
-} else {
-    // Fallback: set primaryKey based on table name
-    switch ($table) {
-        case 'real_estate_holdings':
-            $primaryKey = 'real_estate_id';
-            break;
-        case 'bank_account_holdings':
-            $primaryKey = 'bank_account_id';
-            break;
-        case 'nq_account_holdings':
-            $primaryKey = 'nq_account_id';
-            break;
-        case 'life_insurance_holdings':
-            $primaryKey = 'life_insurance_id';
-            break;
-        case 'retirement_account_holdings':
-            $primaryKey = 'retirement_account_id';
-            break;
-        case 'other_asset_holdings':
-            $primaryKey = 'other_asset_id';
-            break;
-        case 'business_interest_holdings':
-            $primaryKey = 'business_interest_id';
-            break;
-        // Add more cases as needed for other asset tables
-        default:
-            $primaryKey = null;
-    }
-}
-
+// Only detect and validate primary key for update/delete actions
+$primaryKey = null;
 $primaryId = null;
-if ($primaryKey) {
-    if (isset($input[$primaryKey])) {
-        $primaryId = $input[$primaryKey];
-    } elseif (isset($data[$primaryKey])) {
-        $primaryId = $data[$primaryKey];
-    } elseif (isset($input['id'])) {
-        $primaryId = $input['id'];
-    } elseif (isset($data['id'])) {
-        $primaryId = $data['id'];
+if ($action === 'update' || $action === 'delete') {
+    // Determine primary key name (e.g., real_estate_id) and value
+    if (isset($input['asset_id_type'])) {
+        $primaryKey = $input['asset_id_type'];
+    } elseif (isset($data['asset_id_type'])) {
+        $primaryKey = $data['asset_id_type'];
+    } else {
+        // Fallback: set primaryKey based on table name
+        switch ($table) {
+            case 'real_estate_holdings':
+                $primaryKey = 'real_estate_id';
+                break;
+            case 'bank_account_holdings':
+                $primaryKey = 'bank_account_id';
+                break;
+            case 'nq_account_holdings':
+                $primaryKey = 'nq_account_id';
+                break;
+            case 'life_insurance_holdings':
+                $primaryKey = 'life_insurance_id';
+                break;
+            case 'retirement_account_holdings':
+                $primaryKey = 'retirement_account_id';
+                break;
+            case 'other_asset_holdings':
+                $primaryKey = 'other_asset_id';
+                break;
+            case 'business_interest_holdings':
+                $primaryKey = 'business_interest_id';
+                break;
+            case 'debt':
+                $primaryKey = 'debt_id';
+                break;
+            // Add more cases as needed for other asset tables
+            default:
+                $primaryKey = null;
+        }
+    }
+
+    if ($primaryKey) {
+        if (isset($input[$primaryKey])) {
+            $primaryId = $input[$primaryKey];
+        } elseif (isset($data[$primaryKey])) {
+            $primaryId = $data[$primaryKey];
+        } elseif (isset($input['id'])) {
+            $primaryId = $input['id'];
+        } elseif (isset($data['id'])) {
+            $primaryId = $data['id'];
+        }
     }
 }
 
-if (!$table || !$primaryKey || !$primaryId) {
-    // For tables like personal or marital_info, allow update/delete without primary key
-    $noPrimaryKeyTables = ['personal', 'marital_info'];
-    if (!in_array($table, $noPrimaryKeyTables)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing table, asset_id_type, or primary key value', 'table' => $table, 'primaryKey' => $primaryKey, 'primaryId' => $primaryId]);
-        exit();
+
+// Only validate primary key for update/delete actions
+if ($action === 'update' || $action === 'delete') {
+    if (!$table || !$primaryKey || !$primaryId) {
+        $noPrimaryKeyTables = ['personal', 'marital_info'];
+        if (!in_array($table, $noPrimaryKeyTables)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing table, asset_id_type, or primary key value', 'table' => $table, 'primaryKey' => $primaryKey, 'primaryId' => $primaryId]);
+            exit();
+        }
     }
 }
 
@@ -104,6 +112,7 @@ if (!$table || !$primaryKey || !$primaryId) {
 
 
 if ($action === 'insert') {
+    header('Content-Type: application/json');
     // Build INSERT statement
     $columns = [];
     $values = [];
@@ -125,6 +134,7 @@ if ($action === 'insert') {
         ]);
     } else {
         http_response_code(500);
+        header('Content-Type: application/json');
         echo json_encode([
             'error' => 'Database insert failed',
             'details' => $conn->error,

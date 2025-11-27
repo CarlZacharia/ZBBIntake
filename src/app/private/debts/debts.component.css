@@ -1,3 +1,8 @@
+/* Make debts data rows dark blue and bold */
+.debt-row td {
+  color: #143a6a;
+  font-weight: bold;
+}
 .form-group select {
   padding: 8px 10px;
   border: 1px solid #ccc;

@@ -170,7 +170,7 @@ export interface IOtherAsset {
  */
 export interface IDebt {
   debt_id: number | null;
-  debt_type: 'credit_card' | 'student_loan' | 'personal_loan' | 'medical' | 'business_loan' | 'tax' | 'co-signer' | 'other';
+  debt_type: 'Credit card' | 'Student loan' | 'Personal loan' | 'Medical' | 'Business loan' | 'Tax' | 'Co-signer' | 'Other';
   creditor_name: string;
   account_number: string | null;
   original_amount: number | null;

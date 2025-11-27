@@ -1485,31 +1485,42 @@ export class DataService {
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here
   */
+    /**
+     * Refresh debts from backend and update local signal
+     */
+    public refreshDebts(): void {
+      this.loadClientData().subscribe({
+        next: (clientData) => {
+          if (clientData && Array.isArray(clientData.debts)) {
+            this._clientdata.update(current => ({
+              ...current,
+              debts: clientData.debts
+            }));
+          }
+        },
+        error: (error) => {
+          console.error('Failed to refresh debts:', error);
+        }
+      });
+    }
 
-    // Debts CRUD methods
-  addDebt(debt: IDebt) {
-    this._clientdata.update(current => ({
-      ...current,
-      debts: [...current.debts, debt]
-    }));
-    this.autoSave();
-  }
-
-  updateDebt(index: number, updates: Partial<IDebt>) {
-    this._clientdata.update(current => ({
-      ...current,
-      debts: current.debts.map((debt, i) => i === index ? { ...debt, ...updates } : debt)
-    }));
-    this.autoSave();
-  }
-
-  removeDebt(index: number) {
-    this._clientdata.update(current => ({
-      ...current,
-      debts: current.debts.filter((_, i) => i !== index)
-    }));
-    this.autoSave();
-  }
+    /**
+     * Send targeted request to clientupdate.php for debts
+     */
+    saveDebt(action: 'insert' | 'update' | 'delete', debt: IDebt): Observable<any> {
+      const userId = this.authService.getCurrentUserId();
+      if (!userId) return throwError(() => new Error('User not authenticated'));
+      let payload: any = {
+        table: 'debt',
+        action,
+        data: { ...debt, portal_user_id: userId }
+      };
+      if (action !== 'insert' && debt.debt_id) {
+        payload.asset_id_type = 'debt_id';
+        payload.debt_id = debt.debt_id;
+      }
+      return this.http.post(this.UPDATE_URL, payload);
+    }
 
   /**
    * Save case data to server

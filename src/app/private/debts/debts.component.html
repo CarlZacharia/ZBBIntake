@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let debt of debts(); let i = index" (click)="openEditModal(i)" class="clickable-row">
+      <tr *ngFor="let debt of debts(); let i = index" (click)="openEditModal(i)" class="debt-row clickable-row">
         <td>{{ debt.debt_type }}</td>
         <td>{{ debt.creditor_name }}</td>
         <td>{{ debt.account_number }}</td>
@@ -29,6 +29,7 @@
         <td class="actions" (click)="$event.stopPropagation()">
           <button class="btn-small btn-delete" (click)="deleteDebt(i)">Delete</button>
         </td>
+        <!-- Debug cell removed for production UI -->
       </tr>
     </tbody>
   </table>
@@ -45,14 +46,14 @@
           <div class="form-group">
             <label>Debt Type *</label>
             <select [(ngModel)]="editingDebt.debt_type" name="debt_type" required>
-              <option value="credit_card">Credit Card</option>
-              <option value="student_loan">Student Loan</option>
-              <option value="personal_loan">Personal Loan</option>
-              <option value="medical">Medical</option>
-              <option value="business_loan">Business Loan</option>
-              <option value="tax">Tax</option>
-              <option value="co-signer">Co-signer</option>
-              <option value="other">Other</option>
+              <option value="Credit card">Credit Card</option>
+              <option value="Student loan">Student Loan</option>
+              <option value="Personal loan">Personal Loan</option>
+              <option value="Medical">Medical</option>
+              <option value="Business loan">Business Loan</option>
+              <option value="Tax">Tax</option>
+              <option value="Co-signer">Co-signer</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div class="form-group">
@@ -96,14 +97,14 @@
           <div class="form-group">
             <label>Debt Type *</label>
             <select [(ngModel)]="editingDebt.debt_type" name="debt_type" required>
-              <option value="credit_card">Credit Card</option>
-              <option value="student_loan">Student Loan</option>
-              <option value="personal_loan">Personal Loan</option>
-              <option value="medical">Medical</option>
-              <option value="business_loan">Business Loan</option>
-              <option value="tax">Tax</option>
-              <option value="co-signer">Co-signer</option>
-              <option value="other">Other</option>
+              <option value="Credit card">Credit Card</option>
+              <option value="Student loan">Student Loan</option>
+              <option value="Personal loan">Personal Loan</option>
+              <option value="Medical">Medical</option>
+              <option value="Business loan">Business Loan</option>
+              <option value="Tax">Tax</option>
+              <option value="Co-signer">Co-signer</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div class="form-group">

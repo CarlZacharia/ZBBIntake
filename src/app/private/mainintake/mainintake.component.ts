@@ -21,6 +21,11 @@ import { IClientData } from '../../models/case_data';
 })
 
 export class MainintakeComponent {
+    readonly totalDebts = computed(() => this.ds.totalDebts());
+
+    getTotalDebts() {
+      return this.totalDebts();
+    }
   activeSection: string = 'personal';
   constructor(public ds: DataService, private authService: AuthService, private cdr: ChangeDetectorRef) {
     // No assetsChanged observable; rely on Angular reactivity

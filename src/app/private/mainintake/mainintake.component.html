@@ -54,7 +54,7 @@
           </svg>
           <span class="nav-title">Beneficiaries</span>
         </div>
-        <div class="nav-card-info">
+        <div class="nav-card-status">
           <div class="sidebar-counts">
             <span>Children: {{ getChildrenCount() }}</span><br>
             <span>Family Members: {{ getFamilyMembersCount() }}</span><br>
@@ -92,9 +92,8 @@
           </svg>
           <span class="nav-title">Debts</span>
         </div>
-        <div class="nav-card-info">
-          <!-- Placeholder for future debt summary -->
-          Debts Overview
+        <div class="nav-card-status">
+          Total Debts: {{ getTotalDebts() | currency:'USD':'symbol':'1.0-0' }}
         </div>
       </button>
 

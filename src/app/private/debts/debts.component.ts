@@ -26,7 +26,7 @@ export class DebtsComponent {
   openAddModal() {
     this.editingDebt = {
       debt_id: null,
-      debt_type: 'other',
+      debt_type: 'Credit card',
       creditor_name: '',
       account_number: null,
       original_amount: null,
@@ -46,20 +46,42 @@ export class DebtsComponent {
   }
 
   saveNewDebt() {
-    if (!this.editingDebt) return;
-    this.ds.addDebt(this.editingDebt);
-    this.closeAddModal();
+      if (!this.editingDebt) return;
+      this.ds.saveDebt('insert', this.editingDebt).subscribe({
+        next: () => {
+          this.closeAddModal();
+          this.ds.refreshDebts();
+        },
+        error: err => {
+          alert('Failed to add debt: ' + err.message);
+        }
+      });
   }
 
   saveEditDebt() {
-    if (!this.editingDebt || this.editingIndex < 0) return;
-    this.ds.updateDebt(this.editingIndex, this.editingDebt);
-    this.closeEditModal();
+      if (!this.editingDebt || this.editingIndex < 0) return;
+      this.ds.saveDebt('update', this.editingDebt).subscribe({
+        next: () => {
+          this.closeEditModal();
+          this.ds.refreshDebts();
+        },
+        error: err => {
+          alert('Failed to update debt: ' + err.message);
+        }
+      });
   }
 
   deleteDebt(index: number) {
-    if (!confirm('Are you sure you want to delete this debt?')) return;
-    this.ds.removeDebt(index);
+      if (!confirm('Are you sure you want to delete this debt?')) return;
+      const debt = this.debts()[index];
+      this.ds.saveDebt('delete', debt).subscribe({
+        next: () => {
+          this.ds.refreshDebts();
+        },
+        error: err => {
+          alert('Failed to delete debt: ' + err.message);
+        }
+      });
   }
 
   closeAddModal() {
