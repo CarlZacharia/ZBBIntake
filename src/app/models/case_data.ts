@@ -185,7 +185,7 @@ export interface IDebt {
  */
 export interface IBeneficiary {
   beneficiary_id: number | null;
-  beneficiary_type: 'child' | 'spouse' | 'family_member' | 'other';
+  beneficiary_type: 'Child' | 'Spouse' | 'Family_member' | 'Other';
   child_id: number | null;           // Links to IChild
   spouse_id: number | null;          // Could link to spouse info
   family_member_id: number | null;   // Links to IFamilyMember
@@ -234,7 +234,7 @@ export interface IChild {
   legal_last_name: string;
   suffix: string | null;
   date_of_birth: string | null;
-  child_of: 'Client' | 'Spouse'  | 'both';
+  child_of: 'Client' | 'Spouse'  | 'Both';
   child_comment: string | null;
   address: string | null;
   city: string | null;
@@ -245,8 +245,8 @@ export interface IChild {
   special_needs: boolean | number | string | null;
   special_needs_description: string | null;
   disabilities: string | null;
-  relationship_quality: 'close' | 'good' | 'distant' | 'estranged' | 'complicated' | null;
-  financially_responsible: 'very' | 'somewhat' | 'not_really' | 'concerning' | null;
+  relationship_quality: 'Close' | 'Good' | 'Distant' | 'Estranged' | 'Complicated' | null;
+  financially_responsible: 'Very' | 'Somewhat' | 'Not_Really' | 'Concerning' | null;
   substance_abuse_concerns: boolean | number | string | null;
   gambling_concerns: boolean | number | string | null;
   other_concerns: string | null;
@@ -279,7 +279,7 @@ export interface ICharity {
   charity_id: number | null;
   organization_name: string;
   ein_tax_id: string | null;
-  charity_type: 'religious' | 'educational' | 'medical' | 'environmental' | 'animal_welfare' | 'arts_culture' | 'social_services' | 'community' | 'other';
+  charity_type: 'Religious' | 'Educational' | 'Medical' | 'Environmental' | 'Animal_welfare' | 'Arts_culture' | 'Social_services' | 'Community' | 'Other';
   mission_description: string | null;
   website: string | null;
   address: string | null;
@@ -293,7 +293,7 @@ export interface ICharity {
   annual_contribution_amount: number | null;
   years_supporting: number | null;
   personal_connection: string | null;
-  intended_gift_type: 'percentage' | 'specific_amount' | 'specific_asset' | 'residuary' | null;
+  intended_gift_type: 'Percentage' | 'Specific_amount' | 'Specific_asset' | 'Residuary' | null;
   intended_percentage: number | null;
   intended_dollar_amount: number | null;
   intended_asset_description: string | null;
@@ -302,14 +302,14 @@ export interface ICharity {
   memorial_name: string | null;
   endowment_fund: boolean | number | string | null;
   endowment_purpose: string | null;
-  recognition_preferences: 'anonymous' | 'public' | 'family_only' | null;
+  recognition_preferences: 'Anonymous' | 'Public' | 'Family_only' | null;
   notes: string | null;
 }
 
 export interface IFiduciary {
   appointment_id: number | null;
-  role_type: 'executor' | 'trustee' | 'financial_poa' | 'healthcare_poa' | 'guardian_person' | 'guardian_property';
-  priority: 'primary' | 'first_alternate' | 'second_alternate' | 'co_trustee';
+  role_type: 'Executor' | 'Trustee' | 'Financial_poa' | 'Healthcare_poa' | 'Guardian_person' | 'Guardian_property';
+  priority: 'Primary' | 'First_alternate' | 'Second_alternate' | 'Co_trustee';
   appointee_name: string;
   relationship: string | null;
   contact_phone: string | null;
@@ -349,7 +349,7 @@ export interface IMaritalInfo {
   postnup_exists: string | null;
   postnup_document_id: number | null;
   spouse_has_other_children: string | null;
-  relationship_quality: 'excellent' | 'good' | 'strained' | 'complicated' | null;
+  relationship_quality: 'Excellent' | 'Good' | 'Strained' | 'Complicated' | null;
   previous_marriages: IPreviousMarriage[];
   divorce_obligations: string | null;
   divorce_decree_restrictions: string | null;
@@ -375,7 +375,7 @@ export interface IPersonal {
   mobile_phone: string | null;
   home_phone: string | null;
   email: string | null;
-  preferred_contact_method: 'mobile' | 'home' | 'email' | 'text' | null;
+  preferred_contact_method: 'Mobile' | 'Home' | 'Email' | 'Text' | null;
   occupation: string | null;
   employer_name: string | null;
   employer_address: string | null;

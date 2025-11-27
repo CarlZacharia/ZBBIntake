@@ -28,6 +28,16 @@ import { IDebt } from '../models/case_data';
   providedIn: 'root'
 })
 export class DataService {
+
+    booleanFields = [
+    'special_needs', 'has_children', 'substance_abuse_concerns', 'gambling_concerns',
+    'excluded_or_reduced', 'is_deceased', 'financial_support', 'caregiving_responsibilities',
+    'current_donor', 'memorial_gift', 'endowment_fund', 'rmd_age_reached', 'owned_by_trust',
+    'buy_sell_agreement_exists', 'succession_plan_exists', 'should_business_be_sold',
+    'is_heirloom', 'appraisal_exists', 'act_jointly', 'discussed_with_appointee', 'effective_immediately'
+    // Add all other boolean fields here
+  ];
+
   /**
 
   /**
@@ -91,7 +101,7 @@ export class DataService {
       mobile_phone: null,
       home_phone: null,
       email: null,
-      preferred_contact_method: 'email',
+      preferred_contact_method: 'Email',
       occupation: null,
       employer_name: null,
       employer_address: null,
@@ -161,6 +171,8 @@ export class DataService {
     if (!debts || debts.length === 0) return 0;
     return debts.reduce((sum, debt) => sum + (Number(debt.current_balance) || 0), 0);
   });
+
+
 
     // Computed signal for secured debts (mortgages + other asset debts)
     readonly securedDebts = computed(() => {
@@ -1091,8 +1103,8 @@ export class DataService {
 
   public fiduciary: IFiduciary = {
     appointment_id: null,
-    role_type: 'executor',
-    priority: 'primary',
+    role_type: 'Executor',
+    priority: 'Primary',
     appointee_name: '',
     relationship: null,
     contact_phone: null,
@@ -1116,7 +1128,7 @@ export class DataService {
     legal_last_name: '',
     suffix: null,
     date_of_birth: null,
-    child_of: 'both',
+    child_of: 'Both',
     child_comment: null,
     address: null,
     city: null,
@@ -1168,7 +1180,7 @@ export class DataService {
 
   public beneficiary: IBeneficiary = {
     beneficiary_id: null,
-    beneficiary_type: 'child',
+    beneficiary_type: 'Child',
     child_id: null,
     spouse_id: null,
     family_member_id: null,
@@ -1386,7 +1398,7 @@ export class DataService {
         mobile_phone: null,
         home_phone: null,
         email: null,
-        preferred_contact_method: 'email',
+        preferred_contact_method: 'Email',
         occupation: null,
         employer_name: null,
         employer_address: null,
@@ -1507,6 +1519,23 @@ export class DataService {
     );
   }
 
+    convertBooleans(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.convertBooleans(item));
+    } else if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      for (const key in obj) {
+        if (this.booleanFields.includes(key)) {
+          newObj[key] = obj[key] === 1 ? true : !!obj[key];
+        } else {
+          newObj[key] = this.convertBooleans(obj[key]);
+        }
+      }
+      return newObj;
+    }
+    return obj;
+  }
+
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here
   */
@@ -1528,6 +1557,8 @@ export class DataService {
         }
       });
     }
+
+
 
     /**
      * Send targeted request to clientupdate.php for debts

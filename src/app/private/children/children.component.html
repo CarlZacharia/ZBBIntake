@@ -132,11 +132,6 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Child Comment</label>
-          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
-            placeholder="Additional notes about this child's relationship..."></textarea>
-        </div>
 
         <div class="form-group">
           <label>Address</label>
@@ -182,29 +177,7 @@
           <textarea [(ngModel)]="editingChild.disabilities" name="disabilities" rows="2"></textarea>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Relationship Quality</label>
-            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
-              <option [ngValue]="null">Select...</option>
-              <option value="close">Close</option>
-              <option value="good">Good</option>
-              <option value="distant">Distant</option>
-              <option value="estranged">Estranged</option>
-              <option value="complicated">Complicated</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Financially Responsible</label>
-            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
-              <option [ngValue]="null">Select...</option>
-              <option value="very">Very</option>
-              <option value="somewhat">Somewhat</option>
-              <option value="not_really">Not Really</option>
-              <option value="concerning">Concerning</option>
-            </select>
-          </div>
-        </div>
+
 
         <div class="form-row">
           <div class="form-group checkbox-group">
@@ -249,6 +222,36 @@
             <label>Surviving Spouse</label>
             <input type="text" [(ngModel)]="editingChild.surviving_spouse" name="surviving_spouse">
           </div>
+        </div>
+
+         <div class="form-row">
+          <div class="form-group">
+            <label>Relationship Quality</label>
+            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
+              <option [ngValue]="null">Select...</option>
+              <option value="Close">Close</option>
+              <option value="Good">Good</option>
+              <option value="Distant">Distant</option>
+              <option value="Estranged">Estranged</option>
+              <option value="Complicated">Complicated</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financially Responsible</label>
+            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
+              <option [ngValue]="null">Select...</option>
+              <option value="Very">Very</option>
+              <option value="Somewhat">Somewhat</option>
+              <option value="Not_Really">Not Really</option>
+              <option value="Concerning">Concerning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Child Comment</label>
+          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
+            placeholder="Additional notes about this child's relationship..."></textarea>
         </div>
       </form>
     </div>
@@ -318,11 +321,7 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Child Comment</label>
-          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
-            placeholder="Additional notes about this child's relationship..."></textarea>
-        </div>
+
 
         <div class="form-group">
           <label>Address</label>
@@ -368,29 +367,6 @@
           <textarea [(ngModel)]="editingChild.disabilities" name="disabilities" rows="2"></textarea>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Relationship Quality</label>
-            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
-              <option [ngValue]="null">Select...</option>
-              <option value="close">Close</option>
-              <option value="good">Good</option>
-              <option value="distant">Distant</option>
-              <option value="estranged">Estranged</option>
-              <option value="complicated">Complicated</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Financially Responsible</label>
-            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
-              <option [ngValue]="null">Select...</option>
-              <option value="very">Very</option>
-              <option value="somewhat">Somewhat</option>
-              <option value="not_really">Not Really</option>
-              <option value="concerning">Concerning</option>
-            </select>
-          </div>
-        </div>
 
         <div class="form-row">
           <div class="form-group checkbox-group">
@@ -436,6 +412,37 @@
             <input type="text" [(ngModel)]="editingChild.surviving_spouse" name="surviving_spouse">
           </div>
         </div>
+
+                <div class="form-row">
+          <div class="form-group">
+            <label>Relationship Quality</label>
+            <select [(ngModel)]="editingChild.relationship_quality" name="relationship_quality">
+              <option [ngValue]="null">Select...</option>
+              <option value="Close">Close</option>
+              <option value="Good">Good</option>
+              <option value="Distant">Distant</option>
+              <option value="Estranged">Estranged</option>
+              <option value="Complicated">Complicated</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financially Responsible</label>
+            <select [(ngModel)]="editingChild.financially_responsible" name="financially_responsible">
+              <option [ngValue]="null">Select...</option>
+              <option value="Very">Very</option>
+              <option value="Somewhat">Somewhat</option>
+              <option value="Not_Really">Not Really</option>
+              <option value="Concerning">Concerning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Child Comment</label>
+          <textarea [(ngModel)]="editingChild.child_comment" name="child_comment" rows="2"
+            placeholder="Additional notes about this child's relationship..."></textarea>
+        </div>
+
       </form>
     </div>
     <div class="modal-footer">

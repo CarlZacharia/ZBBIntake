@@ -314,15 +314,15 @@
             <span class="detail-label">Intended Gift Type:</span>
             <span class="detail-value">{{charity.intended_gift_type | titlecase}}</span>
           </div>
-          <div class="detail-row" *ngIf="charity.intended_gift_type === 'percentage' && charity.intended_percentage">
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'Percentage' && charity.intended_percentage">
             <span class="detail-label">Gift Percentage:</span>
             <span class="detail-value">{{charity.intended_percentage}}% of estate</span>
           </div>
-          <div class="detail-row" *ngIf="charity.intended_gift_type === 'specific_amount' && charity.intended_dollar_amount">
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'Specific_amount' && charity.intended_dollar_amount">
             <span class="detail-label">Gift Amount:</span>
             <span class="detail-value">{{formatCurrency(charity.intended_dollar_amount)}}</span>
           </div>
-          <div class="detail-row" *ngIf="charity.intended_gift_type === 'specific_asset' && charity.intended_asset_description">
+          <div class="detail-row" *ngIf="charity.intended_gift_type === 'Specific_asset' && charity.intended_asset_description">
             <span class="detail-label">Specific Asset:</span>
             <span class="detail-value">{{charity.intended_asset_description}}</span>
           </div>

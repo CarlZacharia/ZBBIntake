@@ -37,7 +37,14 @@ export class BeneficiariesComponent {
 
   constructor(public dataService: DataService) {}
 
-  // No need for ngOnInit; data is always up-to-date via getters
+  ngOnInit() {
+    this.dataService.loadClientData().subscribe(data => {
+      if (data) {
+        const cleanData = this.dataService.convertBooleans(data);
+        // Use cleanData in your component
+      }
+    });
+  }
 
   // Children
   addChild() {
