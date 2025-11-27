@@ -162,6 +162,31 @@ export class DataService {
     return debts.reduce((sum, debt) => sum + (Number(debt.current_balance) || 0), 0);
   });
 
+    // Computed signal for secured debts (mortgages + other asset debts)
+    readonly securedDebts = computed(() => {
+      const assets = this.assets();
+      let total = 0;
+      // Mortgages from real estate holdings
+      if (Array.isArray(assets.real_estate_holdings)) {
+        total += assets.real_estate_holdings.reduce((sum, re) => sum + (Number(re.mortgage_balance) || 0), 0);
+      }
+      // debtOwed from other asset holdings
+      if (Array.isArray(assets.other_asset_holdings)) {
+        total += assets.other_asset_holdings.reduce((sum, oa) => sum + (Number(oa.debtOwed) || 0), 0);
+      }
+      return total;
+    });
+
+    // Computed signal for total of all debts (unsecured + secured)
+    readonly totalAllDebts = computed(() => {
+      return (this.totalDebts() || 0) + (this.securedDebts() || 0);
+    });
+
+    // Computed signal for net estate value (all assets minus all debts)
+    readonly netEstateValue = computed(() => {
+      return (this.totalAssetValue() || 0) - (this.totalAllDebts() || 0);
+    });
+
   // Computed signal for total asset value (sums balance and approximate_value for bank, NQ, retirement)
   readonly totalAssetValue = computed(() => {
     const assets = this.assets();
