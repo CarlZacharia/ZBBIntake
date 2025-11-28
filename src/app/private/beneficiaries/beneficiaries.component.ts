@@ -2,26 +2,30 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { IBeneficiaryConcern, IConcernCategory } from '../../models/case_data';
+import {
+  IBeneficiaryConcern,
+  IChild,
+  IConcernCategory,
+} from '../../models/case_data';
 
 @Component({
   selector: 'app-beneficiaries',
   imports: [CommonModule, FormsModule],
   templateUrl: './beneficiaries.component.html',
   styleUrls: ['./beneficiaries.component.css'],
-  providers: [DataService]
+  providers: [DataService],
 })
 export class BeneficiariesComponent {
-    get isAddMode(): boolean {
-      if (this.editingType === 'child') {
-        return this.editingIndex === this.children.length;
-      } else if (this.editingType === 'family') {
-        return this.editingIndex === this.familyMembers.length;
-      } else if (this.editingType === 'charity') {
-        return this.editingIndex === this.charities.length;
-      }
-      return false;
+  get isAddMode(): boolean {
+    if (this.editingType === 'child') {
+      return this.editingIndex === this.children.length;
+    } else if (this.editingType === 'family') {
+      return this.editingIndex === this.familyMembers.length;
+    } else if (this.editingType === 'charity') {
+      return this.editingIndex === this.charities.length;
     }
+    return false;
+  }
   get children() {
     return this.dataService.children();
   }
@@ -41,14 +45,57 @@ export class BeneficiariesComponent {
   constructor(public dataService: DataService) {}
 
   ngOnInit() {
-    this.dataService.loadClientData().subscribe(data => {
+    this.dataService.loadClientData().subscribe((data) => {
       if (data) {
         const cleanData = this.dataService.convertBooleans(data);
+        // Convert concern_ids and assigned_ids to arrays of numbers for children, family members, charities
+        if (Array.isArray(cleanData.children)) {
+          cleanData.children = cleanData.children.map((child: any) => {
+            if (Array.isArray(child.concern_ids)) {
+              child.concern_ids = child.concern_ids.map((id: any) =>
+                Number(id)
+              );
+            }
+            if (Array.isArray(child.assigned_ids)) {
+              child.assigned_ids = child.assigned_ids.map((id: any) =>
+                Number(id)
+              );
+            }
+            return child;
+          });
+        }
+        if (Array.isArray(cleanData.family_members)) {
+          cleanData.family_members = cleanData.family_members.map((fm: any) => {
+            if (Array.isArray(fm.concern_ids)) {
+              fm.concern_ids = fm.concern_ids.map((id: any) => Number(id));
+            }
+            if (Array.isArray(fm.assigned_ids)) {
+              fm.assigned_ids = fm.assigned_ids.map((id: any) => Number(id));
+            }
+            return fm;
+          });
+        }
+        if (Array.isArray(cleanData.charities)) {
+          cleanData.charities = cleanData.charities.map((charity: any) => {
+            if (Array.isArray(charity.concern_ids)) {
+              charity.concern_ids = charity.concern_ids.map((id: any) =>
+                Number(id)
+              );
+            }
+            if (Array.isArray(charity.assigned_ids)) {
+              charity.assigned_ids = charity.assigned_ids.map((id: any) =>
+                Number(id)
+              );
+            }
+            return charity;
+          });
+        }
         // Use cleanData in your component
-        // Load grouped concerns from API response
         if (cleanData.beneficiary_concern_categories) {
           this.concernCategories = cleanData.beneficiary_concern_categories;
-          this.allConcerns = this.concernCategories.flatMap(cat => cat.concerns);
+          this.allConcerns = this.concernCategories.flatMap(
+            (cat) => cat.concerns
+          );
         } else {
           this.concernCategories = [];
           this.allConcerns = [];
@@ -57,35 +104,88 @@ export class BeneficiariesComponent {
     });
   }
 
-
   // loadConcernCategories() removed; concerns now loaded from API response
 
-toggleConcern(concernId: number) {
-  if (!this.editingItem.concern_ids) {
-    this.editingItem.concern_ids = [];
+  toggleConcern(concernId: string | number): void {
+    const id = Number(concernId); // Normalize to number
+    if (!this.editingItem.concern_ids) {
+      this.editingItem.concern_ids = [];
+    }
+    const index = this.editingItem.concern_ids.indexOf(id);
+    if (index === -1) {
+      this.editingItem.concern_ids.push(id);
+    } else {
+      this.editingItem.concern_ids.splice(index, 1);
+    }
+    console.log('Updated concern_ids:', this.editingItem.concern_ids);
+    this.saveConcernAssignments();
   }
 
-  const index = this.editingItem.concern_ids.indexOf(concernId);
-  if (index > -1) {
-    this.editingItem.concern_ids.splice(index, 1);
-  } else {
-    this.editingItem.concern_ids.push(concernId);
+  saveConcernAssignments() {
+    const type = this.editingType;
+    const item = this.editingItem;
+    const userId = this.dataService.pui;
+
+    console.log('Saving:', { type, item, child_id: item.child_id });
+    if (!type || !item || !userId) return;
+
+    let table = '';
+    let idField = '';
+    let idValue = null;
+    if (type === 'child') {
+      table = 'child';
+      idField = 'child_id';
+      idValue = item.child_id;
+    } else if (type === 'family') {
+      table = 'family_member';
+      idField = 'family_member_id';
+      idValue = item.family_member_id;
+    } else if (type === 'charity') {
+      table = 'charity';
+      idField = 'charity_id';
+      idValue = item.charity_id;
+    }
+    if (!table || !idField || !idValue) return;
+
+    this.dataService
+      .saveClientSection(
+        table,
+        {
+          ...item,
+          concern_ids: item.concern_ids,
+          portal_user_id: userId,
+          action: 'update',
+          [idField]: idValue,
+        },
+        idField
+      )
+      .subscribe();
   }
+
+getConcernById(concernId: number | string): any {
+  const id = Number(concernId);
+  for (const category of this.concernCategories) {
+    const found = category.concerns.find((c: any) => Number(c.id) === id);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
 }
 
-getConcernById(id: number): IBeneficiaryConcern | undefined {
-  return this.allConcerns.find(c => c.id === id);
-}
+  get hasTrustIndicator(): boolean {
+    if (!this.editingItem.concern_ids?.length) return false;
+    return this.editingItem.concern_ids.some(
+      (id: number) => this.getConcernById(id)?.suggests_trust
+    );
+  }
 
-get hasTrustIndicator(): boolean {
-  if (!this.editingItem.concern_ids?.length) return false;
-  return this.editingItem.concern_ids.some((id: number) => this.getConcernById(id)?.suggests_trust);
-}
-
-get hasSntIndicator(): boolean {
-  if (!this.editingItem.concern_ids?.length) return false;
-  return this.editingItem.concern_ids.some((id: number) => this.getConcernById(id)?.suggests_snt);
-}
+  get hasSntIndicator(): boolean {
+    if (!this.editingItem.concern_ids?.length) return false;
+    return this.editingItem.concern_ids.some(
+      (id: number) => this.getConcernById(id)?.suggests_snt
+    );
+  }
 
   // Children
   addChild() {
@@ -98,13 +198,21 @@ get hasSntIndicator(): boolean {
       gamblnig_concerns: false,
       has_children: false,
       excluded_or_reduced: false,
-      i_deceased: false
+      i_deceased: false,
     };
   }
   editChild(index: number) {
     this.editingType = 'child';
     this.editingIndex = index;
-    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.children[index] });
+    this.editingItem = this.convertCheckboxFieldsToBoolean({
+      ...this.children[index],
+    });
+    // Ensure concern_ids is always an array of numbers
+    if (Array.isArray(this.editingItem.concern_ids)) {
+      this.editingItem.concern_ids = this.editingItem.concern_ids.map(
+        (id: string | number) => Number(id)
+      );
+    }
   }
   removeChild(index: number) {
     this.dataService.removeChild(index);
@@ -124,13 +232,21 @@ get hasSntIndicator(): boolean {
       gamblnig_concerns: false,
       has_children: false,
       excluded_or_reduced: false,
-      i_deceased: false
+      i_deceased: false,
     };
   }
   editFamilyMember(index: number) {
     this.editingType = 'family';
     this.editingIndex = index;
-    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.familyMembers[index] });
+    this.editingItem = this.convertCheckboxFieldsToBoolean({
+      ...this.familyMembers[index],
+    });
+    // Ensure concern_ids is always an array of numbers
+    if (Array.isArray(this.editingItem.concern_ids)) {
+      this.editingItem.concern_ids = this.editingItem.concern_ids.map(
+        (id: string | number) => Number(id)
+      );
+    }
   }
   removeFamilyMember(index: number) {
     this.dataService.removeFamilyMember(index);
@@ -149,13 +265,21 @@ get hasSntIndicator(): boolean {
       gamblnig_concerns: false,
       has_children: false,
       excluded_or_reduced: false,
-      i_deceased: false
+      i_deceased: false,
     };
   }
   editCharity(index: number) {
     this.editingType = 'charity';
     this.editingIndex = index;
-    this.editingItem = this.convertCheckboxFieldsToBoolean({ ...this.charities[index] });
+    this.editingItem = this.convertCheckboxFieldsToBoolean({
+      ...this.charities[index],
+    });
+    // Ensure concern_ids is always an array of numbers
+    if (Array.isArray(this.editingItem.concern_ids)) {
+      this.editingItem.concern_ids = this.editingItem.concern_ids.map(
+        (id: string | number) => Number(id)
+      );
+    }
   }
   removeCharity(index: number) {
     this.dataService.removeCharity(index);
@@ -195,9 +319,9 @@ get hasSntIndicator(): boolean {
       'gamblnig_concerns',
       'has_children',
       'excluded_or_reduced',
-      'i_deceased'
+      'i_deceased',
     ];
-    fields.forEach(f => {
+    fields.forEach((f) => {
       if (item.hasOwnProperty(f)) {
         item[f] = item[f] === 1 ? true : false;
       }
@@ -212,10 +336,10 @@ get hasSntIndicator(): boolean {
       'gamblnig_concerns',
       'has_children',
       'excluded_or_reduced',
-      'i_deceased'
+      'i_deceased',
     ];
     const newItem = { ...item };
-    fields.forEach(f => {
+    fields.forEach((f) => {
       if (newItem.hasOwnProperty(f)) {
         newItem[f] = newItem[f] ? 1 : 0;
       }

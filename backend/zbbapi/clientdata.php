@@ -210,10 +210,19 @@ $children = $conn->query("SELECT * FROM child WHERE portal_user_id = $portal_use
 $family_members = $conn->query("SELECT * FROM family_member WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
 $charities = $conn->query("SELECT * FROM charity WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
 $fiduciaries = $conn->query("SELECT * FROM fiduciary WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
-
-
-
 $debts = $conn->query("SELECT * FROM debt WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
+
+for ($i = 0; $i < count($children); $i++) {
+    $child_id = (int)$children[$i]['child_id'];
+    $child_concerns = $conn->query(
+        "SELECT concern_id FROM beneficiary_concern_assignments
+         WHERE child_id = $child_id"
+    )->fetch_all(MYSQLI_ASSOC);
+
+    $children[$i]['concern_ids'] = array_map(function($row) {
+        return (string)$row['concern_id'];
+    }, $child_concerns);
+}
 
 // For assets, combine multiple tables
 $assets = [
@@ -237,6 +246,7 @@ $assignments = $conn->query("SELECT concern_id FROM beneficiary_concern_assignme
 $assigned_ids = array_map(function($row) { return $row['concern_id']; }, $assignments);
 
 // 4. Group concerns by category and mark assignment
+
 $grouped_categories = array();
 foreach ($categories as $cat) {
     $cat_id = $cat['id'];

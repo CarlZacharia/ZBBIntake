@@ -3,7 +3,28 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { IClient, IAddress, IAssets, IBeneficiary, IBusinessInterest, ICharity, IChild, IDigitalAsset, IFamilyMember, IFiduciary, IBankAccount, INQAccount, IGuardianPreferences, ILifeInsurance, IMaritalInfo, IOtherAsset, IPersonal, IPreviousMarriage, IRealEstate, IRetirementAccount } from '../models/case_data';
+import {
+  IClient,
+  IAddress,
+  IAssets,
+  IBeneficiary,
+  IBusinessInterest,
+  ICharity,
+  IChild,
+  IDigitalAsset,
+  IFamilyMember,
+  IFiduciary,
+  IBankAccount,
+  INQAccount,
+  IGuardianPreferences,
+  ILifeInsurance,
+  IMaritalInfo,
+  IOtherAsset,
+  IPersonal,
+  IPreviousMarriage,
+  IRealEstate,
+  IRetirementAccount,
+} from '../models/case_data';
 // Combined interface for client-centric data
 export interface IClientData {
   client: IClient;
@@ -21,20 +42,34 @@ import { IDebt } from '../models/case_data';
 // ...existing code...
 // Add IDebt to the import list above
 
-
 // --- DATA SERVICE ---
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
-
-    booleanFields = [
-    'special_needs', 'has_children', 'substance_abuse_concerns', 'gambling_concerns',
-    'excluded_or_reduced', 'is_deceased', 'financial_support', 'caregiving_responsibilities',
-    'current_donor', 'memorial_gift', 'endowment_fund', 'rmd_age_reached', 'owned_by_trust',
-    'buy_sell_agreement_exists', 'succession_plan_exists', 'should_business_be_sold',
-    'is_heirloom', 'appraisal_exists', 'act_jointly', 'discussed_with_appointee', 'effective_immediately'
+  booleanFields = [
+    'special_needs',
+    'has_children',
+    'substance_abuse_concerns',
+    'gambling_concerns',
+    'excluded_or_reduced',
+    'is_deceased',
+    'financial_support',
+    'caregiving_responsibilities',
+    'current_donor',
+    'memorial_gift',
+    'endowment_fund',
+    'rmd_age_reached',
+    'owned_by_trust',
+    'buy_sell_agreement_exists',
+    'succession_plan_exists',
+    'should_business_be_sold',
+    'is_heirloom',
+    'appraisal_exists',
+    'act_jointly',
+    'discussed_with_appointee',
+    'effective_immediately',
     // Add all other boolean fields here
   ];
 
@@ -45,18 +80,19 @@ export class DataService {
    */
 
   public setClientData(data: IClientData) {
-      if (!data.marital_info) {
-        console.warn('spouse_ssn_encrypted is missing from marital_info:', data.marital_info);
-      }
+    if (!data.marital_info) {
+      console.warn(
+        'spouse_ssn_encrypted is missing from marital_info:',
+        data.marital_info
+      );
+    }
     this._clientdata.set(data);
   }
 
-
   private readonly API_URL = 'https://zacbrownportal.com/api/clientdata.php'; // Now points to combined client data endpoint
-  private readonly UPDATE_URL = 'https://zacbrownportal.com/api/clientupdate.php';
+  private readonly UPDATE_URL =
+    'https://zacbrownportal.com/api/clientupdate.php';
   public pui: number | null = null;
-
-
 
   /**
    * Save a section of client data to the backend (clientupdate.php)
@@ -64,9 +100,13 @@ export class DataService {
    * @param data The data object (must include portal_user_id)
    */
 
-  saveClientSection(table: string, data: any): Observable<any> {
-    return this.http.post(this.UPDATE_URL, { table, data });
-  }
+  saveClientSection(table: string, data: any, asset_id_type?: string): Observable<any> {
+      const payload: any = { table, data };
+      if (asset_id_type) {
+        payload.asset_id_type = asset_id_type;
+      }
+      return this.http.post(this.UPDATE_URL, payload);
+    }
   private readonly authService = inject(AuthService);
   private readonly http = inject(HttpClient);
 
@@ -149,12 +189,10 @@ export class DataService {
       life_insurance_holdings: [],
       business_interest_holdings: [],
       digital_asset_holdings: [],
-      other_asset_holdings: []
+      other_asset_holdings: [],
     },
-    debts: []
-
+    debts: [],
   });
-
 
   // Computed signals for reactive derived state
   readonly clientdata = this._clientdata.asReadonly();
@@ -169,35 +207,42 @@ export class DataService {
   readonly totalDebts = computed(() => {
     const debts = this.debts();
     if (!debts || debts.length === 0) return 0;
-    return debts.reduce((sum, debt) => sum + (Number(debt.current_balance) || 0), 0);
+    return debts.reduce(
+      (sum, debt) => sum + (Number(debt.current_balance) || 0),
+      0
+    );
   });
 
+  // Computed signal for secured debts (mortgages + other asset debts)
+  readonly securedDebts = computed(() => {
+    const assets = this.assets();
+    let total = 0;
+    // Mortgages from real estate holdings
+    if (Array.isArray(assets.real_estate_holdings)) {
+      total += assets.real_estate_holdings.reduce(
+        (sum, re) => sum + (Number(re.mortgage_balance) || 0),
+        0
+      );
+    }
+    // debtOwed from other asset holdings
+    if (Array.isArray(assets.other_asset_holdings)) {
+      total += assets.other_asset_holdings.reduce(
+        (sum, oa) => sum + (Number(oa.debtOwed) || 0),
+        0
+      );
+    }
+    return total;
+  });
 
+  // Computed signal for total of all debts (unsecured + secured)
+  readonly totalAllDebts = computed(() => {
+    return (this.totalDebts() || 0) + (this.securedDebts() || 0);
+  });
 
-    // Computed signal for secured debts (mortgages + other asset debts)
-    readonly securedDebts = computed(() => {
-      const assets = this.assets();
-      let total = 0;
-      // Mortgages from real estate holdings
-      if (Array.isArray(assets.real_estate_holdings)) {
-        total += assets.real_estate_holdings.reduce((sum, re) => sum + (Number(re.mortgage_balance) || 0), 0);
-      }
-      // debtOwed from other asset holdings
-      if (Array.isArray(assets.other_asset_holdings)) {
-        total += assets.other_asset_holdings.reduce((sum, oa) => sum + (Number(oa.debtOwed) || 0), 0);
-      }
-      return total;
-    });
-
-    // Computed signal for total of all debts (unsecured + secured)
-    readonly totalAllDebts = computed(() => {
-      return (this.totalDebts() || 0) + (this.securedDebts() || 0);
-    });
-
-    // Computed signal for net estate value (all assets minus all debts)
-    readonly netEstateValue = computed(() => {
-      return (this.totalAssetValue() || 0) - (this.totalAllDebts() || 0);
-    });
+  // Computed signal for net estate value (all assets minus all debts)
+  readonly netEstateValue = computed(() => {
+    return (this.totalAssetValue() || 0) - (this.totalAllDebts() || 0);
+  });
 
   // Computed signal for total asset value (sums balance and approximate_value for bank, NQ, retirement)
   readonly totalAssetValue = computed(() => {
@@ -206,35 +251,59 @@ export class DataService {
     let total = 0;
     // Bank accounts
     if (Array.isArray(assets.bank_account_holdings)) {
-      total += assets.bank_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+      total += assets.bank_account_holdings.reduce(
+        (sum, acc) => sum + Number(acc.approximate_value ?? 0),
+        0
+      );
     }
     // NQ accounts
     if (Array.isArray(assets.nq_account_holdings)) {
-      total += assets.nq_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+      total += assets.nq_account_holdings.reduce(
+        (sum, acc) => sum + Number(acc.approximate_value ?? 0),
+        0
+      );
     }
     // Retirement accounts
     if (Array.isArray(assets.retirement_account_holdings)) {
-      total += assets.retirement_account_holdings.reduce((sum, acc) => sum + Number(acc.approximate_value ?? 0), 0);
+      total += assets.retirement_account_holdings.reduce(
+        (sum, acc) => sum + Number(acc.approximate_value ?? 0),
+        0
+      );
     }
     // Real estate
     if (Array.isArray(assets.real_estate_holdings)) {
-      total += assets.real_estate_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+      total += assets.real_estate_holdings.reduce(
+        (sum, asset) => sum + Number(asset.approximate_value ?? 0),
+        0
+      );
     }
     // Life insurance
     if (Array.isArray(assets.life_insurance_holdings)) {
-      total += assets.life_insurance_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+      total += assets.life_insurance_holdings.reduce(
+        (sum, asset) => sum + Number(asset.approximate_value ?? 0),
+        0
+      );
     }
     // Business interests
     if (Array.isArray(assets.business_interest_holdings)) {
-      total += assets.business_interest_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+      total += assets.business_interest_holdings.reduce(
+        (sum, asset) => sum + Number(asset.approximate_value ?? 0),
+        0
+      );
     }
     // Digital assets
     if (Array.isArray(assets.digital_asset_holdings)) {
-      total += assets.digital_asset_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+      total += assets.digital_asset_holdings.reduce(
+        (sum, asset) => sum + Number(asset.approximate_value ?? 0),
+        0
+      );
     }
     // Other assets
     if (Array.isArray(assets.other_asset_holdings)) {
-      total += assets.other_asset_holdings.reduce((sum, asset) => sum + Number(asset.approximate_value ?? 0), 0);
+      total += assets.other_asset_holdings.reduce(
+        (sum, asset) => sum + Number(asset.approximate_value ?? 0),
+        0
+      );
     }
     return total;
   });
@@ -242,13 +311,15 @@ export class DataService {
   // Computed signals for validation and completion tracking
   readonly isPersonalInfoComplete = computed(() => {
     const personal = this.personal();
-    return !!(personal.legal_first_name &&
+    return !!(
+      personal.legal_first_name &&
       personal.legal_last_name &&
       personal.date_of_birth &&
       personal.address_line1 &&
       personal.city &&
       personal.state &&
-      personal.zip);
+      personal.zip
+    );
   });
 
   readonly completionPercentage = computed(() => {
@@ -262,10 +333,9 @@ export class DataService {
 
   // Methods to update specific parts of the case data
   updatePersonal(updates: Partial<IPersonal>) {
-
-  this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      personal: { ...current.personal, ...updates }
+      personal: { ...current.personal, ...updates },
     }));
     // Save to backend
     const portal_user_id = this.pui;
@@ -274,10 +344,9 @@ export class DataService {
   }
 
   updateMaritalInfo(updates: Partial<IMaritalInfo>) {
-
-  this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      marital_info: { ...current.marital_info, ...updates }
+      marital_info: { ...current.marital_info, ...updates },
     }));
     // Save to backend with correct portal_user_id
     const portal_user_id = this.pui;
@@ -285,25 +354,27 @@ export class DataService {
       console.warn('Cannot update marital_info: portal_user_id is not set');
       return;
     }
-    this.saveSection('marital_info', this._clientdata().marital_info, portal_user_id);
+    this.saveSection(
+      'marital_info',
+      this._clientdata().marital_info,
+      portal_user_id
+    );
     this.autoSave();
   }
 
   updatePersonalAddress(updates: Partial<IAddress>) {
-
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       personal: {
         ...current.personal,
-        ...updates
-      }
+        ...updates,
+      },
     }));
-  // Save to backend using portal_user_id
-  const portal_user_id = this.pui;
-  this.saveSection('personal', this._clientdata().personal, portal_user_id);
-  this.autoSave();
-    }
-
+    // Save to backend using portal_user_id
+    const portal_user_id = this.pui;
+    this.saveSection('personal', this._clientdata().personal, portal_user_id);
+    this.autoSave();
+  }
 
   /**
    * Dynamically save a section to the correct table
@@ -319,30 +390,39 @@ export class DataService {
     this.saveClientSection(table, payload).subscribe();
   }
 
-    // --- Deduplicated updateClient ---
-    updateClient(updates: Partial<IClient>) {
-        this._clientdata.update(current => ({
-            ...current,
-            client: { ...current.client, ...updates }
-        }));
-        // Save to backend
-        const portal_user_id = this._clientdata().client.client_id;
-        this.saveClientSection('client', { ...this._clientdata().client, portal_user_id }).subscribe();
-        this.autoSave();
-    }
+  // --- Deduplicated updateClient ---
+  updateClient(updates: Partial<IClient>) {
+    this._clientdata.update((current) => ({
+      ...current,
+      client: { ...current.client, ...updates },
+    }));
+    // Save to backend
+    const portal_user_id = this._clientdata().client.client_id;
+    this.saveClientSection('client', {
+      ...this._clientdata().client,
+      portal_user_id,
+    }).subscribe();
+    this.autoSave();
+  }
 
-    // --- Deduplicated updateGuardianPreferences ---
-    updateGuardianPreferences(updates: Partial<IGuardianPreferences>) {
-        this._clientdata.update(current => ({
-            ...current,
-            guardianship_preferences: { ...current.guardianship_preferences, ...updates }
-        }));
-        // Save to backend
-        const portal_user_id = this._clientdata().guardianship_preferences.preference_id;
-        this.saveClientSection('guardianship_preferences', { ...this._clientdata().guardianship_preferences, portal_user_id }).subscribe();
-        this.autoSave();
-    }
-
+  // --- Deduplicated updateGuardianPreferences ---
+  updateGuardianPreferences(updates: Partial<IGuardianPreferences>) {
+    this._clientdata.update((current) => ({
+      ...current,
+      guardianship_preferences: {
+        ...current.guardianship_preferences,
+        ...updates,
+      },
+    }));
+    // Save to backend
+    const portal_user_id =
+      this._clientdata().guardianship_preferences.preference_id;
+    this.saveClientSection('guardianship_preferences', {
+      ...this._clientdata().guardianship_preferences,
+      portal_user_id,
+    }).subscribe();
+    this.autoSave();
+  }
 
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
@@ -376,7 +456,10 @@ export class DataService {
         return false;
       }
       // Save to backend and await response
-      const savedData = await this.saveClientSection('marital_info', { ...this.maritalInfo(), portal_user_id }).toPromise();
+      const savedData = await this.saveClientSection('marital_info', {
+        ...this.maritalInfo(),
+        portal_user_id,
+      }).toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
         console.log('Setting clientdata after saveMaritalInfo:', savedData);
@@ -398,14 +481,22 @@ export class DataService {
       console.log('Saving guardianship preferences:', this.guardianPreferences);
       const portal_user_id = this.pui;
       if (!portal_user_id) {
-        console.warn('Cannot save guardianship_preferences: portal_user_id is not set');
+        console.warn(
+          'Cannot save guardianship_preferences: portal_user_id is not set'
+        );
         return false;
       }
       // Save to backend and await response
-      const savedData = await this.saveClientSection('guardianship_preferences', { ...this.guardianPreferences, portal_user_id }).toPromise();
+      const savedData = await this.saveClientSection(
+        'guardianship_preferences',
+        { ...this.guardianPreferences, portal_user_id }
+      ).toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
-        console.log('Setting clientdata after saveGuardianPreferences:', savedData);
+        console.log(
+          'Setting clientdata after saveGuardianPreferences:',
+          savedData
+        );
         this._clientdata.set(savedData as IClientData);
         return true;
       }
@@ -421,89 +512,91 @@ export class DataService {
 
   // Example: Add a child
   addChild(child: IChild) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      children: [...current.children, child]
+      children: [...current.children, child],
     }));
     this.autoSave();
   }
 
   // Example: Update a child
   updateChild(index: number, updates: Partial<IChild>) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       children: current.children.map((child, i) =>
         i === index ? { ...child, ...updates } : child
-      )
+      ),
     }));
     this.autoSave();
   }
 
   // Example: Remove a child
   removeChild(index: number) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      children: current.children.filter((_, i) => i !== index)
+      children: current.children.filter((_, i) => i !== index),
     }));
     this.autoSave();
   }
 
   // Family members
   addFamilyMember(familyMember: IFamilyMember) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      family_members: [...current.family_members, familyMember]
+      family_members: [...current.family_members, familyMember],
     }));
     this.autoSave();
   }
 
   updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       family_members: current.family_members.map((member, i) =>
         i === index ? { ...member, ...updates } : member
-      )
+      ),
     }));
     this.autoSave();
   }
 
   removeFamilyMember(index: number) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      family_members: current.family_members.filter((_, i) => i !== index)
+      family_members: current.family_members.filter((_, i) => i !== index),
     }));
     this.autoSave();
   }
 
   // Charities
   addCharity(charity: ICharity) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      charities: [...current.charities, charity]
+      charities: [...current.charities, charity],
     }));
     this.autoSave();
   }
 
   updateCharity(index: number, updates: Partial<ICharity>) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       charities: current.charities.map((charity, i) =>
         i === index ? { ...charity, ...updates } : charity
-      )
+      ),
     }));
     this.autoSave();
   }
 
   removeCharity(index: number) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
-      charities: current.charities.filter((_, i) => i !== index)
+      charities: current.charities.filter((_, i) => i !== index),
     }));
     this.autoSave();
   }
 
   // Methods for managing assets
-  addRealEstate(asset: Partial<IRealEstate> & { description?: string, value?: number }) {
+  addRealEstate(
+    asset: Partial<IRealEstate> & { description?: string; value?: number }
+  ) {
     // Prepare payload matching MariaDB table columns
     const payload = {
       real_estate_id: null,
@@ -528,7 +621,7 @@ export class DataService {
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? '',
       ownership_value: asset.ownership_value ?? null,
-      action: 'insert'
+      action: 'insert',
     };
     // Save to backend
     this.saveClientSection('real_estate_holdings', payload).subscribe();
@@ -552,19 +645,22 @@ export class DataService {
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? null,
-      ownership_value: asset.ownership_value ?? null
+      ownership_value: asset.ownership_value ?? null,
     };
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        real_estate_holdings: [...current.assets.real_estate_holdings, localAsset]
-      }
+        real_estate_holdings: [
+          ...current.assets.real_estate_holdings,
+          localAsset,
+        ],
+      },
     }));
   }
 
   updateRealEstate(asset: IRealEstate) {
-  const realEstateId = (asset as any).real_estate_id;
+    const realEstateId = (asset as any).real_estate_id;
     if (!realEstateId) {
       console.warn('Cannot update: real_estate real_estate_id is missing.');
       return;
@@ -572,18 +668,18 @@ export class DataService {
     const updatedAsset = {
       ...asset,
       action: 'update',
-      real_estate_id: realEstateId
+      real_estate_id: realEstateId,
     };
     this.saveClientSection('real_estate_holdings', updatedAsset).subscribe();
     // Update local state by real_estate_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        real_estate_holdings: current.assets.real_estate_holdings.map(a =>
+        real_estate_holdings: current.assets.real_estate_holdings.map((a) =>
           a.real_estate_id === realEstateId ? { ...a, ...asset } : a
-        )
-      }
+        ),
+      },
     }));
   }
 
@@ -597,22 +693,26 @@ export class DataService {
     this.saveClientSection('real_estate_holdings', {
       asset_id_type: 'real_estate_id',
       id: asset.real_estate_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        real_estate_holdings: current.assets.real_estate_holdings.filter((_, i) => i !== index)
-      }
+        real_estate_holdings: current.assets.real_estate_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
 
-  addBankAccount(asset: Partial<IBankAccount> & {
-    institution_name?: string,
-    account_number?: string,
-    balance?: number
-  }) {
+  addBankAccount(
+    asset: Partial<IBankAccount> & {
+      institution_name?: string;
+      account_number?: string;
+      balance?: number;
+    }
+  ) {
     // Prepare payload matching MariaDB table columns
     const payload = {
       bank_account_id: null,
@@ -625,13 +725,17 @@ export class DataService {
       approximate_value: asset.approximate_value ?? null,
       title_type: asset.title_type ?? '',
       joint_owner_name: asset.joint_owner_name ?? '',
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? '',
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? '',
-      action: 'insert'
+      action: 'insert',
     };
     // Save to backend
     this.saveClientSection('bank_account_holdings', payload).subscribe();
@@ -651,14 +755,17 @@ export class DataService {
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
-      other_owners: asset.other_owners ?? null
+      other_owners: asset.other_owners ?? null,
     };
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        bank_account_holdings: [...current.assets.bank_account_holdings, localAsset]
-      }
+        bank_account_holdings: [
+          ...current.assets.bank_account_holdings,
+          localAsset,
+        ],
+      },
     }));
   }
 
@@ -674,19 +781,23 @@ export class DataService {
       ...asset,
       action: 'update',
       bank_account_id: asset.bank_account_id,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
     };
     this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
     // Update local state by account_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        bank_account_holdings: current.assets.bank_account_holdings.map(a =>
+        bank_account_holdings: current.assets.bank_account_holdings.map((a) =>
           a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a
-        )
-      }
+        ),
+      },
     }));
   }
 
@@ -699,17 +810,18 @@ export class DataService {
     this.saveClientSection('bank_account_holdings', {
       asset_id_type: 'account_id',
       id: asset.bank_account_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        bank_account_holdings: current.assets.bank_account_holdings.filter((_, i) => i !== index)
-      }
+        bank_account_holdings: current.assets.bank_account_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
-
 
   // --- NQ Account CRUD ---
   addNQAccount(asset: Partial<INQAccount>) {
@@ -724,14 +836,18 @@ export class DataService {
       approximate_value: asset.approximate_value ?? null,
       title_type: asset.title_type ?? 'individual',
       joint_owner_name: asset.joint_owner_name ?? '',
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
       beneficiary_last_reviewed: asset.beneficiary_last_reviewed ?? '',
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? null,
-      action: 'insert'
+      action: 'insert',
     };
     this.saveClientSection('nq_account_holdings', payload).subscribe();
     // Update local state with a fully-typed INQAccount object
@@ -751,14 +867,17 @@ export class DataService {
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
-      other_owners: asset.other_owners ?? null
+      other_owners: asset.other_owners ?? null,
     };
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        nq_account_holdings: [...current.assets.nq_account_holdings, localAsset]
-      }
+        nq_account_holdings: [
+          ...current.assets.nq_account_holdings,
+          localAsset,
+        ],
+      },
     }));
   }
 
@@ -771,19 +890,23 @@ export class DataService {
       ...asset,
       action: 'update',
       nq_account_id: asset.nq_account_id,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
     };
     this.saveClientSection('nq_account_holdings', updatedAsset).subscribe();
     // Update local state by account_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        nq_account_holdings: current.assets.nq_account_holdings.map(a =>
+        nq_account_holdings: current.assets.nq_account_holdings.map((a) =>
           a.nq_account_id === asset.nq_account_id ? { ...a, ...asset } : a
-        )
-      }
+        ),
+      },
     }));
   }
 
@@ -796,14 +919,16 @@ export class DataService {
     this.saveClientSection('nq_account_holdings', {
       asset_id_type: 'account_id',
       id: asset.nq_account_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        nq_account_holdings: current.assets.nq_account_holdings.filter((_, i) => i !== index)
-      }
+        nq_account_holdings: current.assets.nq_account_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
 
@@ -811,182 +936,241 @@ export class DataService {
   addRetirementAccount(asset: Partial<IRetirementAccount>) {
     const payload = {
       ...asset,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? ''),
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
       retirement_account_id: null,
       portal_user_id: this.pui,
-      action: 'insert'
+      action: 'insert',
     };
     this.saveClientSection('retirement_account_holdings', payload).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        retirement_account_holdings: [...current.assets.retirement_account_holdings, asset as IRetirementAccount]
-      }
+        retirement_account_holdings: [
+          ...current.assets.retirement_account_holdings,
+          asset as IRetirementAccount,
+        ],
+      },
     }));
   }
 
   updateRetirementAccount(asset: IRetirementAccount) {
     if (!asset.retirement_account_id) {
-      console.warn('Cannot update: retirement_account retirement_account_id is missing.');
+      console.warn(
+        'Cannot update: retirement_account retirement_account_id is missing.'
+      );
       return;
     }
     const updatedAsset = {
       ...asset,
       action: 'update',
       retirement_account_id: asset.retirement_account_id,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
     };
-    this.saveClientSection('retirement_account_holdings', updatedAsset).subscribe();
+    this.saveClientSection(
+      'retirement_account_holdings',
+      updatedAsset
+    ).subscribe();
     // Update local state by retirement_account_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        retirement_account_holdings: current.assets.retirement_account_holdings.map(a =>
-          a.retirement_account_id === asset.retirement_account_id ? { ...a, ...asset } : a
-        )
-      }
+        retirement_account_holdings:
+          current.assets.retirement_account_holdings.map((a) =>
+            a.retirement_account_id === asset.retirement_account_id
+              ? { ...a, ...asset }
+              : a
+          ),
+      },
     }));
   }
 
   removeRetirementAccount(index: number) {
     const asset = this._clientdata().assets.retirement_account_holdings[index];
     if (!asset.retirement_account_id) {
-      console.warn('Cannot delete: retirement_account retirement_account_id is missing.');
+      console.warn(
+        'Cannot delete: retirement_account retirement_account_id is missing.'
+      );
       return;
     }
     this.saveClientSection('retirement_account_holdings', {
       asset_id_type: 'retirement_account_id',
       id: asset.retirement_account_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        retirement_account_holdings: current.assets.retirement_account_holdings.filter((_, i) => i !== index)
-      }
+        retirement_account_holdings:
+          current.assets.retirement_account_holdings.filter(
+            (_, i) => i !== index
+          ),
+      },
     }));
   }
 
   addLifeInsurance(asset: ILifeInsurance) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        life_insurance_holdings: [...current.assets.life_insurance_holdings, asset]
-      }
+        life_insurance_holdings: [
+          ...current.assets.life_insurance_holdings,
+          asset,
+        ],
+      },
     }));
   }
 
   updateLifeInsurance(asset: ILifeInsurance) {
     if (!asset.life_insurance_id) {
-      console.warn('Cannot update: life_insurance life_insurance_id is missing.');
+      console.warn(
+        'Cannot update: life_insurance life_insurance_id is missing.'
+      );
       return;
     }
     const updatedAsset = {
       ...asset,
       action: 'update',
       life_insurance_id: asset.life_insurance_id,
-      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries) ? JSON.stringify(asset.primary_beneficiaries) : (asset.primary_beneficiaries ?? ''),
-      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries) ? JSON.stringify(asset.contingent_beneficiaries) : (asset.contingent_beneficiaries ?? '')
+      primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
+        ? JSON.stringify(asset.primary_beneficiaries)
+        : asset.primary_beneficiaries ?? '',
+      contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
+        ? JSON.stringify(asset.contingent_beneficiaries)
+        : asset.contingent_beneficiaries ?? '',
     };
     this.saveClientSection('life_insurance_holdings', updatedAsset).subscribe();
     // Update local state by life_insurance_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        life_insurance_holdings: current.assets.life_insurance_holdings.map(a =>
-          a.life_insurance_id === asset.life_insurance_id ? { ...a, ...asset } : a
-        )
-      }
+        life_insurance_holdings: current.assets.life_insurance_holdings.map(
+          (a) =>
+            a.life_insurance_id === asset.life_insurance_id
+              ? { ...a, ...asset }
+              : a
+        ),
+      },
     }));
   }
 
   removeLifeInsurance(index: number) {
     const asset = this._clientdata().assets.life_insurance_holdings[index];
     if (!asset.life_insurance_id) {
-      console.warn('Cannot delete: life_insurance life_insurance_id is missing.');
+      console.warn(
+        'Cannot delete: life_insurance life_insurance_id is missing.'
+      );
       return;
     }
     this.saveClientSection('life_insurance_holdings', {
       asset_id_type: 'life_insurance_id',
       id: asset.life_insurance_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        life_insurance_holdings: current.assets.life_insurance_holdings.filter((_, i) => i !== index)
-      }
+        life_insurance_holdings: current.assets.life_insurance_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
 
   addBusinessInterest(asset: IBusinessInterest) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        business_interest_holdings: [...current.assets.business_interest_holdings, asset]
-      }
+        business_interest_holdings: [
+          ...current.assets.business_interest_holdings,
+          asset,
+        ],
+      },
     }));
   }
 
   updateBusinessInterest(asset: IBusinessInterest) {
     if (!asset.business_interest_id) {
-      console.warn('Cannot update: business_interest business_interest_id is missing.');
+      console.warn(
+        'Cannot update: business_interest business_interest_id is missing.'
+      );
       return;
     }
     const updatedAsset = {
       ...asset,
       action: 'update',
-      business_interest_id: asset.business_interest_id
+      business_interest_id: asset.business_interest_id,
     };
-    this.saveClientSection('business_interest_holdings', updatedAsset).subscribe();
+    this.saveClientSection(
+      'business_interest_holdings',
+      updatedAsset
+    ).subscribe();
     // Update local state by business_interest_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        business_interest_holdings: current.assets.business_interest_holdings.map(a =>
-          a.business_interest_id === asset.business_interest_id ? { ...a, ...asset } : a
-        )
-      }
+        business_interest_holdings:
+          current.assets.business_interest_holdings.map((a) =>
+            a.business_interest_id === asset.business_interest_id
+              ? { ...a, ...asset }
+              : a
+          ),
+      },
     }));
   }
 
   removeBusinessInterest(index: number) {
     const asset = this._clientdata().assets.business_interest_holdings[index];
     if (!asset.business_interest_id) {
-      console.warn('Cannot delete: business_interest business_interest_id is missing.');
+      console.warn(
+        'Cannot delete: business_interest business_interest_id is missing.'
+      );
       return;
     }
     this.saveClientSection('business_interest_holdings', {
       asset_id_type: 'business_interest_id',
       id: asset.business_interest_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        business_interest_holdings: current.assets.business_interest_holdings.filter((_, i) => i !== index)
-      }
+        business_interest_holdings:
+          current.assets.business_interest_holdings.filter(
+            (_, i) => i !== index
+          ),
+      },
     }));
   }
 
   addDigitalAsset(asset: IDigitalAsset) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        digital_asset_holdings: [...current.assets.digital_asset_holdings, asset]
-      }
+        digital_asset_holdings: [
+          ...current.assets.digital_asset_holdings,
+          asset,
+        ],
+      },
     }));
   }
 
@@ -998,18 +1182,18 @@ export class DataService {
     const updatedAsset = {
       ...asset,
       action: 'update',
-      digital_asset_id: asset.digital_asset_id
+      digital_asset_id: asset.digital_asset_id,
     };
     this.saveClientSection('digital_asset_holdings', updatedAsset).subscribe();
     // Update local state by digital_asset_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        digital_asset_holdings: current.assets.digital_asset_holdings.map(a =>
+        digital_asset_holdings: current.assets.digital_asset_holdings.map((a) =>
           a.digital_asset_id === asset.digital_asset_id ? { ...a, ...asset } : a
-        )
-      }
+        ),
+      },
     }));
   }
 
@@ -1022,24 +1206,26 @@ export class DataService {
     this.saveClientSection('digital_asset_holdings', {
       asset_id_type: 'digital_asset_id',
       id: asset.digital_asset_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        digital_asset_holdings: current.assets.digital_asset_holdings.filter((_, i) => i !== index)
-      }
+        digital_asset_holdings: current.assets.digital_asset_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
 
   addOtherAsset(asset: IOtherAsset) {
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        other_asset_holdings: [...current.assets.other_asset_holdings, asset]
-      }
+        other_asset_holdings: [...current.assets.other_asset_holdings, asset],
+      },
     }));
   }
 
@@ -1051,18 +1237,18 @@ export class DataService {
     const updatedAsset = {
       ...asset,
       action: 'update',
-      asset_id: asset.other_asset_id
+      asset_id: asset.other_asset_id,
     };
     this.saveClientSection('other_asset_holdings', updatedAsset).subscribe();
     // Update local state by other_asset_id
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        other_asset_holdings: current.assets.other_asset_holdings.map(a =>
+        other_asset_holdings: current.assets.other_asset_holdings.map((a) =>
           a.other_asset_id === asset.other_asset_id ? { ...a, ...asset } : a
-        )
-      }
+        ),
+      },
     }));
   }
 
@@ -1075,14 +1261,16 @@ export class DataService {
     this.saveClientSection('other_asset_holdings', {
       asset_id_type: 'other_asset_id',
       id: asset.other_asset_id,
-      action: 'delete'
+      action: 'delete',
     }).subscribe();
-    this._clientdata.update(current => ({
+    this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
-        other_asset_holdings: current.assets.other_asset_holdings.filter((_, i) => i !== index)
-      }
+        other_asset_holdings: current.assets.other_asset_holdings.filter(
+          (_, i) => i !== index
+        ),
+      },
     }));
   }
   // Template objects for creating new instances
@@ -1091,14 +1279,14 @@ export class DataService {
     address_line2: null,
     city: '',
     state: '',
-    zip: ''
+    zip: '',
   };
 
   public previousMarriage: IPreviousMarriage = {
     spouse_name: '',
     marriage_date: null,
     divorce_date: null,
-    location: ''
+    location: '',
   };
 
   public fiduciary: IFiduciary = {
@@ -1118,7 +1306,7 @@ export class DataService {
     discussed_with_appointee: false,
     health_concerns: null,
     conflict_concerns: null,
-    effective_immediately: null
+    effective_immediately: null,
   };
 
   public child: IChild = {
@@ -1144,7 +1332,7 @@ export class DataService {
     exclusion_reason: null,
     is_deceased: false,
     date_of_death: null,
-    surviving_spouse: null
+    surviving_spouse: null,
   };
 
   public familyMember: IFamilyMember = {
@@ -1164,7 +1352,7 @@ export class DataService {
     caregiving_details: null,
     concern_ids: [],
     concern_notes: null,
-    notes: null
+    notes: null,
   };
 
   public guardianPreferences: IGuardianPreferences = {
@@ -1173,7 +1361,7 @@ export class DataService {
     location_importance: null,
     religious_upbringing_preferences: null,
     education_priorities: null,
-    other_preferences: null
+    other_preferences: null,
   };
 
   public beneficiary: IBeneficiary = {
@@ -1186,7 +1374,7 @@ export class DataService {
     percentage: 0,
     calculated_value: null,
     per_stirpes: false,
-    notes: null
+    notes: null,
   };
 
   public realEstate: IRealEstate = {
@@ -1208,7 +1396,7 @@ export class DataService {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
-    ownership_value: null
+    ownership_value: null,
   };
 
   public bankAccount: IBankAccount = {
@@ -1226,27 +1414,27 @@ export class DataService {
     notes: null,
     owned_by: null,
     ownership_percentage: null,
-    other_owners: null
+    other_owners: null,
   };
 
-    public nqAccount: INQAccount = {
-      nq_account_id: null,
-      account_name: '',
-      balance: null,
-      institution_name: '',
-      account_type: 'Mutual Fund',
-      account_number_encrypted: null,
-      approximate_value: 0,
-      title_type: 'Individual',
-      joint_owner_name: null,
-      primary_beneficiaries: [],
-      contingent_beneficiaries: [],
-      beneficiary_last_reviewed: null,
-      notes: null,
-      owned_by: null,
-      ownership_percentage: null,
-      other_owners: null
-    };
+  public nqAccount: INQAccount = {
+    nq_account_id: null,
+    account_name: '',
+    balance: null,
+    institution_name: '',
+    account_type: 'Mutual Fund',
+    account_number_encrypted: null,
+    approximate_value: 0,
+    title_type: 'Individual',
+    joint_owner_name: null,
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
+    beneficiary_last_reviewed: null,
+    notes: null,
+    owned_by: null,
+    ownership_percentage: null,
+    other_owners: null,
+  };
 
   public retirementAccount: IRetirementAccount = {
     retirement_account_id: null,
@@ -1261,7 +1449,7 @@ export class DataService {
     beneficiary_last_reviewed: null,
     rmd_age_reached: false,
     notes: null,
-    owned_by: null
+    owned_by: null,
   };
 
   public businessInterest: IBusinessInterest = {
@@ -1281,7 +1469,7 @@ export class DataService {
     should_business_be_sold: null,
     notes: null,
     owned_by: null,
-    other_owners: null
+    other_owners: null,
   };
 
   public lifeInsurance: ILifeInsurance = {
@@ -1300,7 +1488,7 @@ export class DataService {
     notes: null,
     owned_by: null,
     ownership_percentage: null,
-    other_owners: null
+    other_owners: null,
   };
 
   public digitalAsset: IDigitalAsset = {
@@ -1318,7 +1506,7 @@ export class DataService {
     notes: null,
     owned_by: null,
     ownership_percentage: null,
-    other_owners: null
+    other_owners: null,
   };
 
   public otherAsset: IOtherAsset = {
@@ -1335,13 +1523,12 @@ export class DataService {
     appraisal_date: null,
     owned_by: null,
     ownership_percentage: null,
-    other_owners: null
+    other_owners: null,
   };
 
   /**
    * Holds the portal_user_id for use in updates
    */
-
 
   constructor() {
     // Initialize case data with user context when available
@@ -1445,7 +1632,7 @@ export class DataService {
         digital_asset_holdings: [],
         other_asset_holdings: [],
       },
-      debts: []
+      debts: [],
     });
   }
 
@@ -1470,12 +1657,12 @@ export class DataService {
   private initializeClientData(): void {
     const userId = this.authService.getCurrentUserId();
     if (userId) {
-      this._clientdata.update(current => ({
+      this._clientdata.update((current) => ({
         ...current,
         client: {
           ...current.client,
-          client_id: userId
-        }
+          client_id: userId,
+        },
       }));
 
       // Load existing client data for this user
@@ -1485,14 +1672,18 @@ export class DataService {
             this.pui = clientData.client.portal_user_id;
             this._clientdata.set(clientData);
 
-          if (clientData && clientData.client && clientData.client.client_id) {
-            this.pui = clientData.client.client_id;
-          }
+            if (
+              clientData &&
+              clientData.client &&
+              clientData.client.client_id
+            ) {
+              this.pui = clientData.client.client_id;
+            }
           }
         },
         error: (error) => {
           console.warn('Could not load existing client data:', error);
-        }
+        },
       });
     }
   }
@@ -1500,82 +1691,83 @@ export class DataService {
   /**
    * Load all client data (including beneficiaries) from server for current user
    */
-loadClientData(): Observable<IClientData | null> {
-  const userId = this.authService.getCurrentUserId();
-  if (!userId) {
-    return throwError(() => new Error('User not authenticated'));
-  }
-  // Single API call returns all client data, including children, family_members, charities, etc.
-  return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
-    map(response => response ? this.convertBooleans(response) : null),
-    catchError(error => {
-      if (error.status === 404) {
-        return [null];
-      }
-      throw error;
-    })
-  );
-}
-
-convertBooleans(obj: any): any {
-  if (Array.isArray(obj)) {
-    return obj.map(item => this.convertBooleans(item));
-  } else if (obj && typeof obj === 'object') {
-    const newObj: any = {};
-    for (const key in obj) {
-      if (this.booleanFields.includes(key)) {
-        // Accept 0, "0", null, undefined as false; 1, "1" as true
-        newObj[key] = obj[key] === 1 || obj[key] === "1" ? true : false;
-      } else {
-        newObj[key] = this.convertBooleans(obj[key]);
-      }
+  loadClientData(): Observable<IClientData | null> {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
     }
-    return newObj;
+    // Single API call returns all client data, including children, family_members, charities, etc.
+    return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
+      map((response) => (response ? this.convertBooleans(response) : null)),
+      catchError((error) => {
+        if (error.status === 404) {
+          return [null];
+        }
+        throw error;
+      })
+    );
   }
-  return obj;
-}
+
+  convertBooleans(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => this.convertBooleans(item));
+    } else if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      for (const key in obj) {
+        if (this.booleanFields.includes(key)) {
+          // Accept 0, "0", null, undefined as false; 1, "1" as true
+          newObj[key] = obj[key] === 1 || obj[key] === '1' ? true : false;
+        } else {
+          newObj[key] = this.convertBooleans(obj[key]);
+        }
+      }
+      return newObj;
+    }
+    return obj;
+  }
 
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here
-  */
-    /**
-     * Refresh debts from backend and update local signal
-     */
-    public refreshDebts(): void {
-      this.loadClientData().subscribe({
-        next: (clientData) => {
-          if (clientData && Array.isArray(clientData.debts)) {
-            this._clientdata.update(current => ({
-              ...current,
-              debts: clientData.debts
-            }));
-          }
-        },
-        error: (error) => {
-          console.error('Failed to refresh debts:', error);
+   */
+  /**
+   * Refresh debts from backend and update local signal
+   */
+  public refreshDebts(): void {
+    this.loadClientData().subscribe({
+      next: (clientData) => {
+        if (clientData && Array.isArray(clientData.debts)) {
+          this._clientdata.update((current) => ({
+            ...current,
+            debts: clientData.debts,
+          }));
         }
-      });
+      },
+      error: (error) => {
+        console.error('Failed to refresh debts:', error);
+      },
+    });
+  }
+
+  /**
+   * Send targeted request to clientupdate.php for debts
+   */
+  saveDebt(
+    action: 'insert' | 'update' | 'delete',
+    debt: IDebt
+  ): Observable<any> {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) return throwError(() => new Error('User not authenticated'));
+    let payload: any = {
+      table: 'debt',
+      action,
+      data: { ...debt, portal_user_id: userId },
+    };
+    if (action !== 'insert' && debt.debt_id) {
+      payload.asset_id_type = 'debt_id';
+      payload.debt_id = debt.debt_id;
     }
-
-
-
-    /**
-     * Send targeted request to clientupdate.php for debts
-     */
-    saveDebt(action: 'insert' | 'update' | 'delete', debt: IDebt): Observable<any> {
-      const userId = this.authService.getCurrentUserId();
-      if (!userId) return throwError(() => new Error('User not authenticated'));
-      let payload: any = {
-        table: 'debt',
-        action,
-        data: { ...debt, portal_user_id: userId }
-      };
-      if (action !== 'insert' && debt.debt_id) {
-        payload.asset_id_type = 'debt_id';
-        payload.debt_id = debt.debt_id;
-      }
-      return this.http.post(this.UPDATE_URL, payload);
-    }
+    return this.http.post(this.UPDATE_URL, payload);
+  }
 
   /**
    * Save case data to server
@@ -1584,7 +1776,7 @@ convertBooleans(obj: any): any {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
       // Silently skip saving if no user is authenticated
-      return new Observable<IClientData>(observer => {
+      return new Observable<IClientData>((observer) => {
         observer.complete();
       });
     }
@@ -1594,25 +1786,27 @@ convertBooleans(obj: any): any {
       ...clientData,
       client: {
         ...clientData.client,
-        client_id: userId
+        client_id: userId,
       },
       personal: {
         ...clientData.personal,
-        client_id: userId
+        client_id: userId,
       },
       marital_info: {
         ...clientData.marital_info,
-        client_id: userId
+        client_id: userId,
       },
       guardianship_preferences: {
         ...clientData.guardianship_preferences,
-        client_id: userId
-      }
-
+        client_id: userId,
+      },
     };
 
     // Save the full client data object (POST to clientdata.php)
-    return this.http.post<IClientData>(`${this.API_URL}?id=${userId}`, dataToSave);
+    return this.http.post<IClientData>(
+      `${this.API_URL}?id=${userId}`,
+      dataToSave
+    );
   }
 
   /**
@@ -1621,7 +1815,6 @@ convertBooleans(obj: any): any {
   private saveTimeout?: any;
 
   private autoSave(): void {
-
     // Clear existing timeout
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
@@ -1630,19 +1823,16 @@ convertBooleans(obj: any): any {
     this.saveTimeout = setTimeout(() => {
       this.saveclientdata().subscribe({
         next: (savedData) => {
-      this._clientdata.set(savedData as IClientData);
+          this._clientdata.set(savedData as IClientData);
         },
         error: (error) => {
           console.error('Auto-save failed:', error);
-        }
+        },
       });
     }, 2000);
   }
 
-    /**
+  /**
    * Update a real estate holding in MariaDB
    */
-
-
-
 }

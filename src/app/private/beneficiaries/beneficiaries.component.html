@@ -2,7 +2,9 @@
   <h2>Beneficiaries</h2>
   <div class="action-buttons">
     <button class="btn btn-primary" (click)="addChild()">Add Child</button>
-    <button class="btn btn-primary" (click)="addFamilyMember()">Add Family Member</button>
+    <button class="btn btn-primary" (click)="addFamilyMember()">
+      Add Family Member
+    </button>
     <button class="btn btn-primary" (click)="addCharity()">Add Charity</button>
   </div>
 
@@ -20,13 +22,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let child of children; let i = index" class="data-row" (click)="editChild(i)">
-          <td>{{ child.legal_first_name }} {{ child.legal_middle_name }} {{ child.legal_last_name }}</td>
+        <tr
+          *ngFor="let child of children; let i = index"
+          class="data-row"
+          (click)="editChild(i)"
+        >
+          <td>
+            {{ child.legal_first_name }} {{ child.legal_middle_name }}
+            {{ child.legal_last_name }}
+          </td>
           <td>{{ child.date_of_birth | date }}</td>
-          <td>{{ child.marital_status || 'N/A' }}</td>
-          <td>{{ child.relationship_quality || 'N/A' }}</td>
+          <td>{{ child.marital_status || "N/A" }}</td>
+          <td>{{ child.relationship_quality || "N/A" }}</td>
           <td class="actions">
-            <button class="btn-small btn-delete" (click)="$event.stopPropagation(); removeChild(i)">Delete</button>
+            <button
+              class="btn-small btn-delete"
+              (click)="$event.stopPropagation(); removeChild(i)"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -49,20 +63,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let member of familyMembers; let i = index" class="data-row" (click)="editFamilyMember(i)">
+        <tr
+          *ngFor="let member of familyMembers; let i = index"
+          class="data-row"
+          (click)="editFamilyMember(i)"
+        >
           <td>{{ member.legal_name }}</td>
           <td>{{ member.relationship }}</td>
           <td>{{ member.date_of_birth | date }}</td>
-          <td>{{ member.is_living ? 'Yes' : 'No' }}</td>
-          <td>{{ member.financial_support ? 'Yes' : 'No' }}</td>
+          <td>{{ member.is_living ? "Yes" : "No" }}</td>
+          <td>{{ member.financial_support ? "Yes" : "No" }}</td>
 
           <td class="actions">
-            <button class="btn-small btn-delete" (click)="$event.stopPropagation(); removeFamilyMember(i)">Delete</button>
+            <button
+              class="btn-small btn-delete"
+              (click)="$event.stopPropagation(); removeFamilyMember(i)"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <p *ngIf="familyMembers.length === 0" class="no-data">No family members added yet.</p>
+    <p *ngIf="familyMembers.length === 0" class="no-data">
+      No family members added yet.
+    </p>
   </section>
 
   <!-- Charities Table -->
@@ -79,62 +104,121 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let charity of charities; let i = index" class="data-row" (click)="editCharity(i)">
+        <tr
+          *ngFor="let charity of charities; let i = index"
+          class="data-row"
+          (click)="editCharity(i)"
+        >
           <td>{{ charity.organization_name }}</td>
           <td>{{ charity.mission_description }}</td>
-          <td>{{ charity.contact_person }}<br>{{ charity.contact_email }}<br>{{ charity.contact_phone }}</td>
+          <td>
+            {{ charity.contact_person }}<br />{{ charity.contact_email
+            }}<br />{{ charity.contact_phone }}
+          </td>
           <td>{{ charity.intended_gift_type }}</td>
           <td class="actions">
-            <button class="btn-small btn-delete" (click)="$event.stopPropagation(); removeCharity(i)">Delete</button>
+            <button
+              class="btn-small btn-delete"
+              (click)="$event.stopPropagation(); removeCharity(i)"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <p *ngIf="charities.length === 0" class="no-data">No charities added yet.</p>
+    <p *ngIf="charities.length === 0" class="no-data">
+      No charities added yet.
+    </p>
   </section>
 
   <!-- Edit Modal/Form -->
-<!-- Edit Modal/Form -->
-<div class="modal fade show" tabindex="-1" role="dialog"
-     [ngStyle]="{display: editingType !== null ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}"
-     aria-modal="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header" [ngClass]="isAddMode ? 'bg-primary text-white' : 'bg-success text-white'">
-        <h5 class="modal-title">
-          {{ isAddMode ? ('Add ' + (editingType | titlecase)) : ('Edit ' + (editingType | titlecase)) }}
-        </h5>
-        <button type="button" class="close" aria-label="Close" (click)="cancelEdit()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="saveEdit()">
-          <!-- CHILD FORM -->
+  <!-- Edit Modal/Form -->
+  <div
+    class="modal fade show"
+    tabindex="-1"
+    role="dialog"
+    [ngStyle]="{
+      display: editingType !== null ? 'block' : 'none',
+      background: 'rgba(0,0,0,0.5)'
+    }"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div
+          class="modal-header"
+          [ngClass]="
+            isAddMode ? 'bg-primary text-white' : 'bg-success text-white'
+          "
+        >
+          <h5 class="modal-title">
+            {{
+              isAddMode
+                ? "Add " + (editingType | titlecase)
+                : "Edit " + (editingType | titlecase)
+            }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="cancelEdit()"
+          >
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveEdit()">
+            <!-- CHILD FORM -->
             <ng-container *ngIf="editingType === 'child'">
               <div class="form-row name-row mb-4">
                 <div class="form-group name-group">
                   <label>First Name *</label>
-                  <input type="text" [(ngModel)]="editingItem.legal_first_name" name="first_name" required class="name-input first-name">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.legal_first_name"
+                    name="first_name"
+                    required
+                    class="name-input first-name"
+                  />
                 </div>
                 <div class="form-group name-group">
                   <label>Middle Name</label>
-                  <input type="text" [(ngModel)]="editingItem.legal_middle_name" name="middle_name" class="name-input middle-name">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.legal_middle_name"
+                    name="middle_name"
+                    class="name-input middle-name"
+                  />
                 </div>
                 <div class="form-group name-group">
                   <label>Last Name *</label>
-                  <input type="text" [(ngModel)]="editingItem.legal_last_name" name="last_name" required class="name-input last-name">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.legal_last_name"
+                    name="last_name"
+                    required
+                    class="name-input last-name"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Date of Birth</label>
-                  <input type="date" [(ngModel)]="editingItem.date_of_birth" name="date_of_birth">
+                  <input
+                    type="date"
+                    [(ngModel)]="editingItem.date_of_birth"
+                    name="date_of_birth"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Marital Status</label>
-                  <select [(ngModel)]="editingItem.marital_status" name="marital_status">
+                  <select
+                    [(ngModel)]="editingItem.marital_status"
+                    name="marital_status"
+                  >
                     <option [ngValue]="null">Select...</option>
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
@@ -144,7 +228,11 @@
                 </div>
                 <div class="form-group">
                   <label>Child Of *</label>
-                  <select [(ngModel)]="editingItem.child_of" name="child_of" required>
+                  <select
+                    [(ngModel)]="editingItem.child_of"
+                    name="child_of"
+                    required
+                  >
                     <option value="Both">Both Client & Spouse</option>
                     <option value="Client">Client Only</option>
                     <option value="Spouse">Spouse Only</option>
@@ -154,28 +242,43 @@
 
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" [(ngModel)]="editingItem.address" name="address">
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.address"
+                  name="address"
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>City</label>
-                  <input type="text" [(ngModel)]="editingItem.city" name="city">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.city"
+                    name="city"
+                  />
                 </div>
                 <div class="form-group">
                   <label>State</label>
-                  <input type="text" [(ngModel)]="editingItem.state" name="state">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.state"
+                    name="state"
+                  />
                 </div>
                 <div class="form-group">
                   <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip">
+                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
                 </div>
               </div>
 
-                            <div class="form-row">
+              <div class="form-row">
                 <div class="form-group">
                   <label>Relationship Quality</label>
-                  <select [(ngModel)]="editingItem.relationship_quality" name="relationship_quality">
+                  <select
+                    [(ngModel)]="editingItem.relationship_quality"
+                    name="relationship_quality"
+                  >
                     <option [ngValue]="null">Select...</option>
                     <option value="Close">Close</option>
                     <option value="Good">Good</option>
@@ -186,7 +289,10 @@
                 </div>
                 <div class="form-group">
                   <label>Financially Responsible</label>
-                  <select [(ngModel)]="editingItem.financially_responsible" name="financially_responsible">
+                  <select
+                    [(ngModel)]="editingItem.financially_responsible"
+                    name="financially_responsible"
+                  >
                     <option [ngValue]="null">Select...</option>
                     <option value="Very">Very</option>
                     <option value="Somewhat">Somewhat</option>
@@ -198,109 +304,194 @@
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.has_children" name="has_children"> Has Children</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.has_children"
+                      name="has_children"
+                    />
+                    Has Children</label
+                  >
                 </div>
-                  <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.excluded_or_reduced" name="excluded"> Excluded or Reduced Inheritance</label>
+                <div class="form-group checkbox-group">
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.excluded_or_reduced"
+                      name="excluded"
+                    />
+                    Excluded or Reduced Inheritance</label
+                  >
                 </div>
               </div>
               <div class="form-group" *ngIf="editingItem.excluded_or_reduced">
                 <label>Exclusion Reason</label>
-                <textarea [(ngModel)]="editingItem.exclusion_reason" name="exclusion_reason" rows="3"></textarea>
+                <textarea
+                  [(ngModel)]="editingItem.exclusion_reason"
+                  name="exclusion_reason"
+                  rows="3"
+                ></textarea>
               </div>
-
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.is_deceased" name="deceased"> Deceased</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.is_deceased"
+                      name="deceased"
+                    />
+                    Deceased</label
+                  >
                 </div>
               </div>
 
               <div class="form-row" *ngIf="editingItem.is_deceased">
                 <div class="form-group">
                   <label>Date of Death</label>
-                  <input type="date" [(ngModel)]="editingItem.date_of_death" name="date_of_death">
+                  <input
+                    type="date"
+                    [(ngModel)]="editingItem.date_of_death"
+                    name="date_of_death"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Surviving Spouse</label>
-                  <input type="text" [(ngModel)]="editingItem.surviving_spouse" name="surviving_spouse">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.surviving_spouse"
+                    name="surviving_spouse"
+                  />
                 </div>
               </div>
 
               <div class="form-group">
                 <label>Child Comment</label>
-                <textarea [(ngModel)]="editingItem.child_comment" name="child_comment" rows="2"></textarea>
+                <textarea
+                  [(ngModel)]="editingItem.child_comment"
+                  name="child_comment"
+                  rows="2"
+                ></textarea>
               </div>
 
               <!-- Beneficiary Concerns Section -->
-<div class="mb-3">
-  <label class="form-label">Planning Concerns </label>
-  <div class="dropdown w-100">
-    <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span *ngIf="!editingItem.concern_ids?.length">Select concerns...</span>
-      <span *ngIf="editingItem.concern_ids?.length">{{ editingItem.concern_ids.length }} concern(s) selected</span>
-    </button>
+              <div class="mb-3">
+                <label class="form-label">Planning Concerns </label>
+                <div class="w-100">
+                  <ul class="w-100 p-2">
+                    <ng-container *ngFor="let category of concernCategories">
+                      <li class="dropdown-header fw-bold">
+                        {{ category.category_name }}
+                      </li>
+                      <li *ngFor="let concern of category.concerns">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [checked]="
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            (change)="toggleConcern(concern.id)"
+                          />
+                          <label class="form-check-label w-75">
+                            {{ concern.concern_name }}
+                          </label>
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_snt) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-danger ms-2"
+                            title="May indicate Special Needs Trust"
+                            >SNT</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_trust) === '1' &&
+                              !($any(concern.suggests_snt) === '1') &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-primary ms-2"
+                            title="May indicate need for Trust provisions"
+                            >Trust</span
+                          >
+                        </div>
+                      </li>
+                    </ng-container>
+                  </ul>
+                </div>
+              </div>
 
-    <ul class="dropdown-menu w-100 p-2" style="max-height: 320px; overflow-y: auto;">
-      <ng-container *ngFor="let category of concernCategories">
-        <li class="dropdown-header fw-bold">{{ category.category_name }}</li>
-        <li *ngFor="let concern of category.concerns">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox"
-                   [checked]="editingItem.concern_ids?.includes(concern.id)"
-                   (change)="toggleConcern(concern.id)">
-            <label class="form-check-label w-75">
-              {{ concern.concern_name }}
-            </label>
-            <span *ngIf="concern.suggests_snt" class="badge bg-warning ms-2" title="May indicate SNT">SNT</span>
-          </div>
-        </li>
-      </ng-container>
-    </ul>
-  </div>
-</div>
+              <!-- Selected concerns badges -->
+              <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
+                <div class="d-flex flex-wrap gap-2">
+                  <ng-container
+                    *ngFor="let concernId of editingItem.concern_ids"
+                  >
+                    <span
+                      class="badge rounded-pill me-1"
+                      [ngClass]="{
+                        'bg-danger':
+                          +getConcernById(concernId)?.suggests_snt === 1,
+                        'bg-primary':
+                          +getConcernById(concernId)?.suggests_trust === 1 &&
+                          +getConcernById(concernId)?.suggests_snt !== 1,
+                        'bg-secondary':
+                          +getConcernById(concernId)?.suggests_trust !== 1
+                      }"
+                    >
+                      {{ getConcernById(concernId)?.concern_name }}
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white btn-sm ms-2"
+                        aria-label="Remove"
+                        (click)="toggleConcern(concernId)"
+                      ></button>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
 
-<!-- Selected concerns badges -->
-<div class="mb-3" *ngIf="editingItem.concern_ids?.length">
-  <div class="d-flex flex-wrap gap-2">
-    <ng-container *ngFor="let concernId of editingItem.concern_ids">
-      <span class="badge rounded-pill me-1"
-            [ngClass]="{
-              'bg-warning': getConcernById(concernId)?.suggests_snt,
-              'bg-info': getConcernById(concernId)?.suggests_trust && !getConcernById(concernId)?.suggests_snt,
-              'bg-secondary': !getConcernById(concernId)?.suggests_trust
-            }">
-        {{ getConcernById(concernId)?.concern_name }}
-        <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Remove" (click)="toggleConcern(concernId)"></button>
-      </span>
-    </ng-container>
-  </div>
-</div>
+              <!-- Concern notes -->
+              <div class="mb-3">
+                <label class="form-label">Concern Details / Notes</label>
+                <textarea
+                  [(ngModel)]="editingItem.concern_notes"
+                  name="concern_notes"
+                  rows="3"
+                  class="form-control"
+                  placeholder="Additional details about any concerns selected above..."
+                ></textarea>
+              </div>
 
-<!-- Concern notes -->
-<div class="mb-3">
-  <label class="form-label">Concern Details / Notes</label>
-  <textarea [(ngModel)]="editingItem.concern_notes" name="concern_notes" rows="3" class="form-control" placeholder="Additional details about any concerns selected above..."></textarea>
-</div>
-
-<!-- Planning Alert -->
-<div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
-  <i class="bi bi-exclamation-triangle-fill me-2"></i>
-  Selected concerns may indicate a Special Needs Trust is appropriate for this beneficiary.
-</div>
+              <!-- Planning Alert -->
+              <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Selected concerns may indicate a Special Needs Trust is
+                appropriate for this beneficiary.
+              </div>
             </ng-container>
 
-          <!-- FAMILY MEMBER FORM -->
+            <!-- FAMILY MEMBER FORM -->
             <ng-container *ngIf="editingType === 'family'">
               <div class="form-group">
                 <label>Legal Name *</label>
-                <input type="text" [(ngModel)]="editingItem.legal_name" name="legal_name" required>
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.legal_name"
+                  name="legal_name"
+                  required
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Relationship *</label>
-                  <select [(ngModel)]="editingItem.relationship" name="relationship" required>
+                  <select
+                    [(ngModel)]="editingItem.relationship"
+                    name="relationship"
+                    required
+                  >
                     <option value="Grandchild">Grandchild</option>
                     <option value="Parent">Parent</option>
                     <option value="Sibling">Sibling</option>
@@ -316,262 +507,474 @@
                 </div>
                 <div class="form-group">
                   <label>Date of Birth</label>
-                  <input type="date" [(ngModel)]="editingItem.date_of_birth" name="dob">
+                  <input
+                    type="date"
+                    [(ngModel)]="editingItem.date_of_birth"
+                    name="dob"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.is_living" name="is_living"> Living</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.is_living"
+                      name="is_living"
+                    />
+                    Living</label
+                  >
                 </div>
               </div>
 
               <div class="form-group" *ngIf="!editingItem.is_living">
                 <label>Date of Death</label>
-                <input type="date" [(ngModel)]="editingItem.date_of_death" name="date_of_death">
+                <input
+                  type="date"
+                  [(ngModel)]="editingItem.date_of_death"
+                  name="date_of_death"
+                />
               </div>
 
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" [(ngModel)]="editingItem.address" name="address">
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.address"
+                  name="address"
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>City</label>
-                  <input type="text" [(ngModel)]="editingItem.city" name="city">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.city"
+                    name="city"
+                  />
                 </div>
                 <div class="form-group">
                   <label>State</label>
-                  <input type="text" [(ngModel)]="editingItem.state" name="state">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.state"
+                    name="state"
+                  />
                 </div>
                 <div class="form-group">
                   <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip">
+                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.financial_support" name="financial_support"> Providing Financial Support</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.financial_support"
+                      name="financial_support"
+                    />
+                    Providing Financial Support</label
+                  >
                 </div>
               </div>
 
               <div class="form-group" *ngIf="editingItem.financial_support">
                 <label>Support Amount (Monthly)</label>
-                <input type="number" [(ngModel)]="editingItem.support_amount_monthly" name="support_amount">
+                <input
+                  type="number"
+                  [(ngModel)]="editingItem.support_amount_monthly"
+                  name="support_amount"
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.special_needs" name="special_needs"> Special Needs</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.special_needs"
+                      name="special_needs"
+                    />
+                    Special Needs</label
+                  >
                 </div>
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.caregiving_responsibilities" name="caregiving"> Caregiving Responsibilities</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.caregiving_responsibilities"
+                      name="caregiving"
+                    />
+                    Caregiving Responsibilities</label
+                  >
                 </div>
               </div>
-<!-- Beneficiary Concerns Section -->
-  <div class="mb-3">
-    <label class="form-label">Planning Concerns Debug </label>
-    <div class="dropdown w-100">
-      <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <span *ngIf="!editingItem.concern_ids?.length">Select concerns...</span>
-        <span *ngIf="editingItem.concern_ids?.length">{{ editingItem.concern_ids.length }} concern(s) selected</span>
-      </button>
+              <!-- Beneficiary Concerns Section -->
+              <div class="mb-3">
+                <label class="form-label">Planning Concerns Debug </label>
+                <div class="dropdown w-100">
+                  <button
+                    class="btn btn-outline-secondary w-100 dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <span *ngIf="!editingItem.concern_ids?.length"
+                      >Select concerns...</span
+                    >
+                    <span *ngIf="editingItem.concern_ids?.length"
+                      >{{ editingItem.concern_ids.length }} concern(s)
+                      selected</span
+                    >
+                  </button>
 
-      <ul class="dropdown-menu w-100 p-2" style="max-height: 320px; overflow-y: auto;">
-        <ng-container *ngFor="let category of concernCategories">
-          <li class="dropdown-header fw-bold">{{ category.category_name }}</li>
-          <ng-container *ngIf="category.concerns && category.concerns.length">
-            <li *ngFor="let concern of category.concerns">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [checked]="editingItem.concern_ids?.includes(concern.id)"
-                       (change)="toggleConcern(concern.id)">
-                <label class="form-check-label w-75">
-                  {{ concern.concern_name }}
-                </label>
-                <span *ngIf="concern.suggests_snt" class="badge bg-warning ms-2" title="May indicate SNT">SNT</span>
+                  <ul
+                    class="dropdown-menu w-100 p-2"
+                    style="max-height: 320px; overflow-y: auto"
+                  >
+                    <ng-container *ngFor="let category of concernCategories">
+                      <li class="dropdown-header fw-bold">
+                        {{ category.category_name }}
+                      </li>
+                      <ng-container
+                        *ngIf="category.concerns && category.concerns.length"
+                      >
+                        <li *ngFor="let concern of category.concerns">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              [checked]="
+                                editingItem.concern_ids?.includes(concern.id)
+                              "
+                              (change)="toggleConcern(concern.id)"
+                            />
+                            <label class="form-check-label w-75">
+                              {{ concern.concern_name }}
+                            </label>
+                            <span
+                              *ngIf="concern.suggests_snt"
+                              class="badge bg-warning ms-2"
+                              title="May indicate SNT"
+                              >SNT</span
+                            >
+                          </div>
+                        </li>
+                      </ng-container>
+                    </ng-container>
+                  </ul>
+                </div>
               </div>
-            </li>
-          </ng-container>
-        </ng-container>
-      </ul>
-    </div>
-  </div>
 
-<!-- Selected concerns badges -->
-<div class="mb-3" *ngIf="editingItem.concern_ids?.length">
-  <div class="d-flex flex-wrap gap-2">
-    <ng-container *ngFor="let concernId of editingItem.concern_ids">
-      <span class="badge rounded-pill me-1"
-            [ngClass]="{
-              'bg-warning': getConcernById(concernId)?.suggests_snt,
-              'bg-info': getConcernById(concernId)?.suggests_trust && !getConcernById(concernId)?.suggests_snt,
-              'bg-secondary': !getConcernById(concernId)?.suggests_trust
-            }">
-        {{ getConcernById(concernId)?.concern_name }}
-        <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Remove" (click)="toggleConcern(concernId)"></button>
-      </span>
-    </ng-container>
-  </div>
-</div>
+              <!-- Selected concerns badges -->
+              <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
+                <div class="d-flex flex-wrap gap-2">
+                  <ng-container
+                    *ngFor="let concernId of editingItem.concern_ids"
+                  >
+                    <span
+                      class="badge rounded-pill me-1"
+                      [ngClass]="{
+                        'bg-warning': getConcernById(concernId)?.suggests_snt,
+                        'bg-info':
+                          getConcernById(concernId)?.suggests_trust &&
+                          !getConcernById(concernId)?.suggests_snt,
+                        'bg-secondary':
+                          !getConcernById(concernId)?.suggests_trust
+                      }"
+                    >
+                      {{ getConcernById(concernId)?.concern_name }}
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white btn-sm ms-2"
+                        aria-label="Remove"
+                        (click)="toggleConcern(concernId)"
+                      ></button>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
 
-<!-- Concern notes -->
-<div class="mb-3">
-  <label class="form-label">Concern Details / Notes</label>
-  <textarea [(ngModel)]="editingItem.concern_notes" name="concern_notes" rows="3" class="form-control" placeholder="Additional details about any concerns selected above..."></textarea>
-</div>
+              <!-- Concern notes -->
+              <div class="mb-3">
+                <label class="form-label">Concern Details / Notes</label>
+                <textarea
+                  [(ngModel)]="editingItem.concern_notes"
+                  name="concern_notes"
+                  rows="3"
+                  class="form-control"
+                  placeholder="Additional details about any concerns selected above..."
+                ></textarea>
+              </div>
 
-<!-- Planning Alert -->
-<div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
-  <i class="bi bi-exclamation-triangle-fill me-2"></i>
-  Selected concerns may indicate a Special Needs Trust is appropriate for this beneficiary.
-</div>
+              <!-- Planning Alert -->
+              <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Selected concerns may indicate a Special Needs Trust is
+                appropriate for this beneficiary.
+              </div>
 
               <div class="form-group">
                 <label>Notes</label>
-                <textarea [(ngModel)]="editingItem.notes" name="notes" rows="3"></textarea>
+                <textarea
+                  [(ngModel)]="editingItem.notes"
+                  name="notes"
+                  rows="3"
+                ></textarea>
               </div>
             </ng-container>
 
-
-          <!-- CHARITY FORM -->
+            <!-- CHARITY FORM -->
             <ng-container *ngIf="editingType === 'charity'">
               <div class="form-group">
                 <label>Organization Name</label>
-                <input type="text" [(ngModel)]="editingItem.organization_name" name="organization_name">
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.organization_name"
+                  name="organization_name"
+                />
               </div>
 
               <div class="form-group">
                 <label>Mission Description</label>
-                <textarea [(ngModel)]="editingItem.mission_description" name="mission_description" rows="2"></textarea>
+                <textarea
+                  [(ngModel)]="editingItem.mission_description"
+                  name="mission_description"
+                  rows="2"
+                ></textarea>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Website</label>
-                  <input type="text" [(ngModel)]="editingItem.website" name="website">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.website"
+                    name="website"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Address</label>
-                  <input type="text" [(ngModel)]="editingItem.address" name="address">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.address"
+                    name="address"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>City</label>
-                  <input type="text" [(ngModel)]="editingItem.city" name="city">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.city"
+                    name="city"
+                  />
                 </div>
                 <div class="form-group">
                   <label>State</label>
-                  <input type="text" [(ngModel)]="editingItem.state" name="state">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.state"
+                    name="state"
+                  />
                 </div>
                 <div class="form-group">
                   <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip">
+                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Contact Person</label>
-                  <input type="text" [(ngModel)]="editingItem.contact_person" name="contact_person">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.contact_person"
+                    name="contact_person"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Contact Phone</label>
-                  <input type="text" [(ngModel)]="editingItem.contact_phone" name="contact_phone">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.contact_phone"
+                    name="contact_phone"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Contact Email</label>
-                  <input type="email" [(ngModel)]="editingItem.contact_email" name="contact_email">
+                  <input
+                    type="email"
+                    [(ngModel)]="editingItem.contact_email"
+                    name="contact_email"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.current_donor" name="current_donor"> Current Donor</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.current_donor"
+                      name="current_donor"
+                    />
+                    Current Donor</label
+                  >
                 </div>
                 <div class="form-group" *ngIf="editingItem.current_donor">
                   <label>Annual Contribution Amount</label>
-                  <input type="number" [(ngModel)]="editingItem.annual_contribution_amount" name="annual_contribution_amount">
+                  <input
+                    type="number"
+                    [(ngModel)]="editingItem.annual_contribution_amount"
+                    name="annual_contribution_amount"
+                  />
                 </div>
                 <div class="form-group" *ngIf="editingItem.current_donor">
                   <label>Years Supporting</label>
-                  <input type="number" [(ngModel)]="editingItem.years_supporting" name="years_supporting">
+                  <input
+                    type="number"
+                    [(ngModel)]="editingItem.years_supporting"
+                    name="years_supporting"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Personal Connection</label>
-                  <input type="text" [(ngModel)]="editingItem.personal_connection" name="personal_connection">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.personal_connection"
+                    name="personal_connection"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Intended Gift Type</label>
-                  <input type="text" [(ngModel)]="editingItem.intended_gift_type" name="intended_gift_type">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.intended_gift_type"
+                    name="intended_gift_type"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Intended Percentage</label>
-                  <input type="number" [(ngModel)]="editingItem.intended_percentage" name="intended_percentage">
+                  <input
+                    type="number"
+                    [(ngModel)]="editingItem.intended_percentage"
+                    name="intended_percentage"
+                  />
                 </div>
                 <div class="form-group">
                   <label>Intended Dollar Amount</label>
-                  <input type="number" [(ngModel)]="editingItem.intended_dollar_amount" name="intended_dollar_amount">
+                  <input
+                    type="number"
+                    [(ngModel)]="editingItem.intended_dollar_amount"
+                    name="intended_dollar_amount"
+                  />
                 </div>
               </div>
 
               <div class="form-group">
                 <label>Intended Asset Description</label>
-                <input type="text" [(ngModel)]="editingItem.intended_asset_description" name="intended_asset_description">
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.intended_asset_description"
+                  name="intended_asset_description"
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>Gift Restrictions</label>
-                  <input type="text" [(ngModel)]="editingItem.gift_restrictions" name="gift_restrictions">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.gift_restrictions"
+                    name="gift_restrictions"
+                  />
                 </div>
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.memorial_gift" name="memorial_gift"> Memorial Gift</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.memorial_gift"
+                      name="memorial_gift"
+                    />
+                    Memorial Gift</label
+                  >
                 </div>
                 <div class="form-group" *ngIf="editingItem.memorial_gift">
                   <label>Memorial Name</label>
-                  <input type="text" [(ngModel)]="editingItem.memorial_name" name="memorial_name">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.memorial_name"
+                    name="memorial_name"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group checkbox-group">
-                  <label><input type="checkbox" [(ngModel)]="editingItem.endowment_fund" name="endowment_fund"> Endowment Fund</label>
+                  <label
+                    ><input
+                      type="checkbox"
+                      [(ngModel)]="editingItem.endowment_fund"
+                      name="endowment_fund"
+                    />
+                    Endowment Fund</label
+                  >
                 </div>
                 <div class="form-group" *ngIf="editingItem.endowment_fund">
                   <label>Endowment Purpose</label>
-                  <input type="text" [(ngModel)]="editingItem.endowment_purpose" name="endowment_purpose">
+                  <input
+                    type="text"
+                    [(ngModel)]="editingItem.endowment_purpose"
+                    name="endowment_purpose"
+                  />
                 </div>
               </div>
 
               <div class="form-group">
                 <label>Recognition Preferences</label>
-                <input type="text" [(ngModel)]="editingItem.recognition_preferences" name="recognition_preferences">
+                <input
+                  type="text"
+                  [(ngModel)]="editingItem.recognition_preferences"
+                  name="recognition_preferences"
+                />
               </div>
 
               <div class="form-group">
                 <label>Notes</label>
-                <textarea [(ngModel)]="editingItem.notes" name="notes" rows="3"></textarea>
+                <textarea
+                  [(ngModel)]="editingItem.notes"
+                  name="notes"
+                  rows="3"
+                ></textarea>
               </div>
             </ng-container>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save</button>
-          </div>
-        </form>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelEdit()"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
