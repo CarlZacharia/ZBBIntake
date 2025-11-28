@@ -46,11 +46,21 @@ export class ChildrenComponent {
     this.showAddChildModal = true;
   }
 
-  openEditChildModal(child: IChild, index: number) {
-    this.editingChild = { ...child };
-    this.editingChildIndex = index;
-    this.showEditChildModal = true;
-  }
+openEditChildModal(child: IChild, index: number) {
+  // Convert all boolean fields to true/false
+  const booleanFields = [
+    'has_children', 'special_needs', 'substance_abuse_concerns', 'gambling_concerns',
+    'excluded_or_reduced', 'is_deceased'
+    // Add any other boolean fields here
+  ];
+  const convertedChild: any = { ...child };
+  booleanFields.forEach(field => {
+    convertedChild[field] = convertedChild[field] === 1 || convertedChild[field] === "1" ? true : false;
+  });
+  this.editingChild = convertedChild;
+  this.editingChildIndex = index;
+  this.showEditChildModal = true;
+}
 
   saveNewChild() {
     if (this.editingChild) {
@@ -91,7 +101,7 @@ export class ChildrenComponent {
       legal_last_name: '',
       suffix: null,
       date_of_birth: null,
-      child_of: 'both',
+      child_of: 'Both',
       child_comment: null,
       address: null,
       city: null,
@@ -99,14 +109,10 @@ export class ChildrenComponent {
       zip: null,
       marital_status: null,
       has_children: false,
-      special_needs: false,
-      special_needs_description: null,
-      disabilities: null,
       relationship_quality: null,
       financially_responsible: null,
-      substance_abuse_concerns: false,
-      gambling_concerns: false,
-      other_concerns: null,
+      concern_ids: [],
+      concern_notes: null,
       excluded_or_reduced: false,
       exclusion_reason: null,
       is_deceased: false,
@@ -173,8 +179,10 @@ export class ChildrenComponent {
       zip: null,
       financial_support: false,
       support_amount_monthly: null,
-      special_needs: false,
       caregiving_responsibilities: false,
+      caregiving_details: null,
+      concern_ids: [],
+      concern_notes: null,
       notes: null
     };
   }

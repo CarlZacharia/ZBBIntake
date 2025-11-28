@@ -234,7 +234,7 @@ export interface IChild {
   legal_last_name: string;
   suffix: string | null;
   date_of_birth: string | null;
-  child_of: 'Client' | 'Spouse'  | 'Both';
+  child_of: 'Client' | 'Spouse' | 'Both';
   child_comment: string | null;
   address: string | null;
   city: string | null;
@@ -242,19 +242,37 @@ export interface IChild {
   zip: string | null;
   marital_status: 'Single' | 'Married' | 'Divorced' | 'Widowed' | null;
   has_children: boolean | number | string | null;
-  special_needs: boolean | number | string | null;
-  special_needs_description: string | null;
-  disabilities: string | null;
+
+  // Relationship & character assessment
   relationship_quality: 'Close' | 'Good' | 'Distant' | 'Estranged' | 'Complicated' | null;
   financially_responsible: 'Very' | 'Somewhat' | 'Not_Really' | 'Concerning' | null;
-  substance_abuse_concerns: boolean | number | string | null;
-  gambling_concerns: boolean | number | string | null;
-  other_concerns: string | null;
+
+  // Consolidated concerns - array of concern IDs from lookup table
+  concern_ids: number[];
+  concern_notes: string | null;  // General notes about any concerns
+
+  // Exclusion
   excluded_or_reduced: boolean | number | string | null;
   exclusion_reason: string | null;
+
+  // Deceased
   is_deceased: boolean | number | string | null;
   date_of_death: string | null;
   surviving_spouse: string | null;
+}
+
+// Supporting interfaces for the concerns dropdown
+export interface IBeneficiaryConcern {
+  id: number;
+  concern_name: string;
+  suggests_trust: boolean;
+  suggests_snt: boolean;
+}
+
+export interface IConcernCategory {
+  category_id: number;
+  category_name: string;
+  concerns: IBeneficiaryConcern[];
 }
 
 export interface IFamilyMember {
@@ -270,8 +288,13 @@ export interface IFamilyMember {
   zip: string | null;
   financial_support: boolean | number | string | null;
   support_amount_monthly: number | null;
-  special_needs: boolean | number | string | null;
   caregiving_responsibilities: boolean | number | string | null;
+  caregiving_details: string | null;
+
+  // Consolidated concerns - replaces special_needs boolean
+  concern_ids: number[];
+  concern_notes: string | null;
+
   notes: string | null;
 }
 

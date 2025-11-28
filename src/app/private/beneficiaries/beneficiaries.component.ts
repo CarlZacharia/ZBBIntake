@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
+import { IBeneficiaryConcern, IConcernCategory } from '../../models/case_data';
 
 @Component({
   selector: 'app-beneficiaries',
@@ -34,6 +35,8 @@ export class BeneficiariesComponent {
   editingType: string | null = null;
   editingIndex: number | null = null;
   editingItem: any = null;
+  concernCategories: IConcernCategory[] = [];
+  private allConcerns: IBeneficiaryConcern[] = [];
 
   constructor(public dataService: DataService) {}
 
@@ -42,9 +45,47 @@ export class BeneficiariesComponent {
       if (data) {
         const cleanData = this.dataService.convertBooleans(data);
         // Use cleanData in your component
+        // Load grouped concerns from API response
+        if (cleanData.beneficiary_concern_categories) {
+          this.concernCategories = cleanData.beneficiary_concern_categories;
+          this.allConcerns = this.concernCategories.flatMap(cat => cat.concerns);
+        } else {
+          this.concernCategories = [];
+          this.allConcerns = [];
+        }
       }
     });
   }
+
+
+  // loadConcernCategories() removed; concerns now loaded from API response
+
+toggleConcern(concernId: number) {
+  if (!this.editingItem.concern_ids) {
+    this.editingItem.concern_ids = [];
+  }
+
+  const index = this.editingItem.concern_ids.indexOf(concernId);
+  if (index > -1) {
+    this.editingItem.concern_ids.splice(index, 1);
+  } else {
+    this.editingItem.concern_ids.push(concernId);
+  }
+}
+
+getConcernById(id: number): IBeneficiaryConcern | undefined {
+  return this.allConcerns.find(c => c.id === id);
+}
+
+get hasTrustIndicator(): boolean {
+  if (!this.editingItem.concern_ids?.length) return false;
+  return this.editingItem.concern_ids.some((id: number) => this.getConcernById(id)?.suggests_trust);
+}
+
+get hasSntIndicator(): boolean {
+  if (!this.editingItem.concern_ids?.length) return false;
+  return this.editingItem.concern_ids.some((id: number) => this.getConcernById(id)?.suggests_snt);
+}
 
   // Children
   addChild() {

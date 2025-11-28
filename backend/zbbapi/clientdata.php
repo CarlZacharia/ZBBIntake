@@ -212,6 +212,7 @@ $charities = $conn->query("SELECT * FROM charity WHERE portal_user_id = $portal_
 $fiduciaries = $conn->query("SELECT * FROM fiduciary WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
 
 
+
 $debts = $conn->query("SELECT * FROM debt WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
 
 // For assets, combine multiple tables
@@ -226,6 +227,30 @@ $assets = [
     'other_asset_holdings' => $conn->query("SELECT * FROM other_asset_holdings WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC)
 ];
 
+// --- Beneficiary Concerns and Categories ---
+// 1. Load all categories
+$categories = $conn->query("SELECT * FROM beneficiary_concern_categories ORDER BY category_name ASC")->fetch_all(MYSQLI_ASSOC);
+// 2. Load all concerns
+$concerns = $conn->query("SELECT * FROM beneficiary_concerns ORDER BY category_id ASC, concern_name ASC")->fetch_all(MYSQLI_ASSOC);
+// 3. Load all assignments for this client
+$assignments = $conn->query("SELECT concern_id FROM beneficiary_concern_assignments WHERE portal_user_id = $portal_user_id")->fetch_all(MYSQLI_ASSOC);
+$assigned_ids = array_map(function($row) { return $row['concern_id']; }, $assignments);
+
+// 4. Group concerns by category and mark assignment
+$grouped_categories = array();
+foreach ($categories as $cat) {
+    $cat_id = $cat['id'];
+    $cat_concerns = array();
+    foreach ($concerns as $concern) {
+        if ($concern['category_id'] == $cat_id) {
+            $concern['assigned'] = in_array($concern['id'], $assigned_ids) ? true : false;
+            $cat_concerns[] = $concern;
+        }
+    }
+    $cat['concerns'] = $cat_concerns;
+    $grouped_categories[] = $cat;
+}
+
 // Build and return the full IClientData structure
 header('Content-Type: application/json');
 echo json_encode([
@@ -238,5 +263,6 @@ echo json_encode([
     'fiduciaries' => $fiduciaries,
     'guardianship_preferences' => $guardianship_preferences,
     'assets' => $assets,
-    'debts' => $debts
+    'debts' => $debts,
+    'beneficiary_concern_categories' => $grouped_categories
 ]);

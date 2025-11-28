@@ -1136,14 +1136,10 @@ export class DataService {
     zip: null,
     marital_status: null,
     has_children: false,
-    special_needs: false,
-    special_needs_description: null,
-    disabilities: null,
     relationship_quality: null,
     financially_responsible: null,
-    substance_abuse_concerns: false,
-    gambling_concerns: false,
-    other_concerns: null,
+    concern_ids: [],
+    concern_notes: null,
     excluded_or_reduced: false,
     exclusion_reason: null,
     is_deceased: false,
@@ -1164,8 +1160,10 @@ export class DataService {
     zip: null,
     financial_support: false,
     support_amount_monthly: null,
-    special_needs: false,
     caregiving_responsibilities: false,
+    caregiving_details: null,
+    concern_ids: [],
+    concern_notes: null,
     notes: null
   };
 
@@ -1502,39 +1500,40 @@ export class DataService {
   /**
    * Load all client data (including beneficiaries) from server for current user
    */
-  loadClientData(): Observable<IClientData | null> {
-    const userId = this.authService.getCurrentUserId();
-    if (!userId) {
-      return throwError(() => new Error('User not authenticated'));
-    }
-    // Single API call returns all client data, including children, family_members, charities, etc.
-    return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
-      map(response => response || null),
-      catchError(error => {
-        if (error.status === 404) {
-          return [null];
-        }
-        throw error;
-      })
-    );
+loadClientData(): Observable<IClientData | null> {
+  const userId = this.authService.getCurrentUserId();
+  if (!userId) {
+    return throwError(() => new Error('User not authenticated'));
   }
-
-    convertBooleans(obj: any): any {
-    if (Array.isArray(obj)) {
-      return obj.map(item => this.convertBooleans(item));
-    } else if (obj && typeof obj === 'object') {
-      const newObj: any = {};
-      for (const key in obj) {
-        if (this.booleanFields.includes(key)) {
-          newObj[key] = obj[key] === 1 ? true : !!obj[key];
-        } else {
-          newObj[key] = this.convertBooleans(obj[key]);
-        }
+  // Single API call returns all client data, including children, family_members, charities, etc.
+  return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
+    map(response => response ? this.convertBooleans(response) : null),
+    catchError(error => {
+      if (error.status === 404) {
+        return [null];
       }
-      return newObj;
+      throw error;
+    })
+  );
+}
+
+convertBooleans(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(item => this.convertBooleans(item));
+  } else if (obj && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      if (this.booleanFields.includes(key)) {
+        // Accept 0, "0", null, undefined as false; 1, "1" as true
+        newObj[key] = obj[key] === 1 || obj[key] === "1" ? true : false;
+      } else {
+        newObj[key] = this.convertBooleans(obj[key]);
+      }
     }
-    return obj;
+    return newObj;
   }
+  return obj;
+}
 
   /** CRUD for Debts
    * Add, Update, Remove methods for debts can be implemented here

@@ -168,14 +168,8 @@
             <span class="detail-label">Has Children:</span>
             <span class="detail-value">{{child.has_children ? 'Yes' : 'No'}}</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Special Needs:</span>
-            <span class="detail-value">{{child.special_needs ? 'Yes' : 'No'}}</span>
-          </div>
-          <div class="detail-row" *ngIf="child.special_needs && child.special_needs_description">
-            <span class="detail-label">Special Needs Description:</span>
-            <span class="detail-value">{{child.special_needs_description}}</span>
-          </div>
+
+
           <div class="detail-row" *ngIf="child.relationship_quality">
             <span class="detail-label">Relationship Quality:</span>
             <span class="detail-value">{{child.relationship_quality}}</span>
@@ -237,10 +231,7 @@
             <span class="detail-label">Support Amount (Monthly):</span>
             <span class="detail-value">{{formatCurrency(member.support_amount_monthly)}}</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Special Needs:</span>
-            <span class="detail-value">{{member.special_needs ? 'Yes' : 'No'}}</span>
-          </div>
+
           <div class="detail-row">
             <span class="detail-label">Caregiving Responsibilities:</span>
             <span class="detail-value">{{member.caregiving_responsibilities ? 'Yes' : 'No'}}</span>

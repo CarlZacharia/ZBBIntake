@@ -125,9 +125,9 @@
           <div class="form-group">
             <label>Child Of *</label>
             <select [(ngModel)]="editingChild.child_of" name="child_of" required>
-              <option value="both">Both Client & Spouse</option>
-              <option value="client">Client Only</option>
-              <option value="spouse">Spouse Only</option>
+              <option value="Both">Both Client & Spouse</option>
+              <option value="Client">Client Only</option>
+              <option value="Spouse">Spouse Only</option>
             </select>
           </div>
         </div>
@@ -314,9 +314,9 @@
           <div class="form-group">
             <label>Child Of *</label>
             <select [(ngModel)]="editingChild.child_of" name="child_of" required>
-              <option value="both">Both Client & Spouse</option>
-              <option value="client">Client Only</option>
-              <option value="spouse">Spouse Only</option>
+              <option value="Both">Both Client & Spouse</option>
+              <option value="Client">Client Only</option>
+              <option value="Spouse">Spouse Only</option>
             </select>
           </div>
         </div>
@@ -349,7 +349,7 @@
         <div class="form-row">
           <div class="form-group checkbox-group">
             <label><input type="checkbox" [(ngModel)]="editingChild.has_children" name="has_children"> Has
-              Children</label>
+              Children {{editingChild.has_children}}</label>
           </div>
           <div class="form-group checkbox-group">
             <label><input type="checkbox" [(ngModel)]="editingChild.special_needs" name="special_needs"> Special
