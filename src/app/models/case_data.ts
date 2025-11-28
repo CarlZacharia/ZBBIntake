@@ -360,9 +360,20 @@ export interface IChild {
 // Supporting interfaces for the concerns dropdown
 export interface IBeneficiaryConcern {
   id: number;
+  category_id?: number;
   concern_name: string;
-  suggests_snt: string | number;
+  description?: string;
+  planning_notes?: string;
   suggests_trust: string | number;
+  suggests_snt: string | number;
+  suggests_medicaid: string | number;
+  suggests_guardian: string | number;
+  suggests_spendthrift: string | number;
+  display_order?: number;
+  is_active?: string | number;
+  created_at?: string;
+  updated_at?: string;
+  assigned?: boolean;
 }
 
 export interface IConcernCategory {
@@ -393,12 +404,6 @@ export interface IFamilyMember {
   city: string | null;
   state: string | null;
   zip: string | null;
-  financial_support: boolean | number | string | null;
-  support_amount_monthly: number | null;
-  caregiving_responsibilities: boolean | number | string | null;
-  caregiving_details: string | null;
-
-  // Consolidated concerns - replaces special_needs boolean
   concern_ids: number[];
   concern_notes: string | null;
 

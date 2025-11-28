@@ -57,9 +57,6 @@
           <th>Name</th>
           <th>Relationship</th>
           <th>Date of Birth</th>
-          <th>Living</th>
-          <th>Financial Support</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -71,8 +68,6 @@
           <td>{{ member.legal_name }}</td>
           <td>{{ member.relationship }}</td>
           <td>{{ member.date_of_birth | date }}</td>
-          <td>{{ member.is_living ? "Yes" : "No" }}</td>
-          <td>{{ member.financial_support ? "Yes" : "No" }}</td>
 
           <td class="actions">
             <button
@@ -133,7 +128,7 @@
   </section>
 
   <!-- Edit Modal/Form -->
-  <!-- Edit Modal/Form -->
+
   <div
     class="modal fade show"
     tabindex="-1"
@@ -333,38 +328,6 @@
                 ></textarea>
               </div>
 
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.is_deceased"
-                      name="deceased"
-                    />
-                    Deceased</label
-                  >
-                </div>
-              </div>
-
-              <div class="form-row" *ngIf="editingItem.is_deceased">
-                <div class="form-group">
-                  <label>Date of Death</label>
-                  <input
-                    type="date"
-                    [(ngModel)]="editingItem.date_of_death"
-                    name="date_of_death"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Surviving Spouse</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.surviving_spouse"
-                    name="surviving_spouse"
-                  />
-                </div>
-              </div>
-
               <div class="form-group">
                 <label>Child Comment</label>
                 <textarea
@@ -401,19 +364,36 @@
                               $any(concern.suggests_snt) === '1' &&
                               editingItem.concern_ids?.includes(+concern.id)
                             "
-                            class="badge bg-danger ms-2"
+                            class="badge bg-warning ms-2"
                             title="May indicate Special Needs Trust"
                             >SNT</span
                           >
                           <span
                             *ngIf="
-                              $any(concern.suggests_trust) === '1' &&
-                              !($any(concern.suggests_snt) === '1') &&
+                              $any(concern.suggests_medicaid) === '1' &&
                               editingItem.concern_ids?.includes(+concern.id)
                             "
-                            class="badge bg-primary ms-2"
-                            title="May indicate need for Trust provisions"
-                            >Trust</span
+                            class="badge bg-danger ms-2"
+                            title="May affect Medicaid eligibility"
+                            >Medicaid</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_guardian) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-purple ms-2"
+                            title="May indicate need for Guardian"
+                            >Guardian</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_spendthrift) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-secondary ms-2"
+                            title="May indicate need for Spendthrift provisions"
+                            >Spendthrift</span
                           >
                         </div>
                       </li>
@@ -515,27 +495,7 @@
                 </div>
               </div>
 
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.is_living"
-                      name="is_living"
-                    />
-                    Living</label
-                  >
-                </div>
-              </div>
 
-              <div class="form-group" *ngIf="!editingItem.is_living">
-                <label>Date of Death</label>
-                <input
-                  type="date"
-                  [(ngModel)]="editingItem.date_of_death"
-                  name="date_of_death"
-                />
-              </div>
 
               <div class="form-group">
                 <label>Address</label>
@@ -569,102 +529,67 @@
                 </div>
               </div>
 
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.financial_support"
-                      name="financial_support"
-                    />
-                    Providing Financial Support</label
-                  >
-                </div>
-              </div>
 
-              <div class="form-group" *ngIf="editingItem.financial_support">
-                <label>Support Amount (Monthly)</label>
-                <input
-                  type="number"
-                  [(ngModel)]="editingItem.support_amount_monthly"
-                  name="support_amount"
-                />
-              </div>
-
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.special_needs"
-                      name="special_needs"
-                    />
-                    Special Needs</label
-                  >
-                </div>
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.caregiving_responsibilities"
-                      name="caregiving"
-                    />
-                    Caregiving Responsibilities</label
-                  >
-                </div>
-              </div>
               <!-- Beneficiary Concerns Section -->
               <div class="mb-3">
-                <label class="form-label">Planning Concerns Debug </label>
-                <div class="dropdown w-100">
-                  <button
-                    class="btn btn-outline-secondary w-100 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <span *ngIf="!editingItem.concern_ids?.length"
-                      >Select concerns...</span
-                    >
-                    <span *ngIf="editingItem.concern_ids?.length"
-                      >{{ editingItem.concern_ids.length }} concern(s)
-                      selected</span
-                    >
-                  </button>
-
-                  <ul
-                    class="dropdown-menu w-100 p-2"
-                    style="max-height: 320px; overflow-y: auto"
-                  >
+                <label class="form-label">Planning Concerns </label>
+                <div class="w-100">
+                  <ul class="w-100 p-2">
                     <ng-container *ngFor="let category of concernCategories">
                       <li class="dropdown-header fw-bold">
                         {{ category.category_name }}
                       </li>
-                      <ng-container
-                        *ngIf="category.concerns && category.concerns.length"
-                      >
-                        <li *ngFor="let concern of category.concerns">
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              [checked]="
-                                editingItem.concern_ids?.includes(concern.id)
-                              "
-                              (change)="toggleConcern(concern.id)"
-                            />
-                            <label class="form-check-label w-75">
-                              {{ concern.concern_name }}
-                            </label>
-                            <span
-                              *ngIf="concern.suggests_snt"
-                              class="badge bg-warning ms-2"
-                              title="May indicate SNT"
-                              >SNT</span
-                            >
-                          </div>
-                        </li>
-                      </ng-container>
+                      <li *ngFor="let concern of category.concerns">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [checked]="
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            (change)="toggleConcern(concern.id)"
+                          />
+                          <label class="form-check-label w-75">
+                            {{ concern.concern_name }}
+                          </label>
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_snt) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-warning ms-2"
+                            title="May indicate Special Needs Trust"
+                            >SNT</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_medicaid) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-danger ms-2"
+                            title="May affect Medicaid eligibility"
+                            >Medicaid</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_guardian) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-purple ms-2"
+                            title="May indicate need for Guardian"
+                            >Guardian</span
+                          >
+                          <span
+                            *ngIf="
+                              $any(concern.suggests_spendthrift) === '1' &&
+                              editingItem.concern_ids?.includes(+concern.id)
+                            "
+                            class="badge bg-secondary ms-2"
+                            title="May indicate need for Spendthrift provisions"
+                            >Spendthrift</span
+                          >
+                        </div>
+                      </li>
                     </ng-container>
                   </ul>
                 </div>
@@ -679,12 +604,13 @@
                     <span
                       class="badge rounded-pill me-1"
                       [ngClass]="{
-                        'bg-warning': getConcernById(concernId)?.suggests_snt,
-                        'bg-info':
-                          getConcernById(concernId)?.suggests_trust &&
-                          !getConcernById(concernId)?.suggests_snt,
+                        'bg-danger':
+                          +getConcernById(concernId)?.suggests_snt === 1,
+                        'bg-primary':
+                          +getConcernById(concernId)?.suggests_trust === 1 &&
+                          +getConcernById(concernId)?.suggests_snt !== 1,
                         'bg-secondary':
-                          !getConcernById(concernId)?.suggests_trust
+                          +getConcernById(concernId)?.suggests_trust !== 1
                       }"
                     >
                       {{ getConcernById(concernId)?.concern_name }}

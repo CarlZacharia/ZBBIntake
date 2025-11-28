@@ -177,10 +177,6 @@ openEditChildModal(child: IChild, index: number) {
       city: null,
       state: null,
       zip: null,
-      financial_support: false,
-      support_amount_monthly: null,
-      caregiving_responsibilities: false,
-      caregiving_details: null,
       concern_ids: [],
       concern_notes: null,
       notes: null

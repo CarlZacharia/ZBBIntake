@@ -54,9 +54,6 @@ export class DataService {
     'substance_abuse_concerns',
     'gambling_concerns',
     'excluded_or_reduced',
-    'is_deceased',
-    'financial_support',
-    'caregiving_responsibilities',
     'current_donor',
     'memorial_gift',
     'endowment_fund',
@@ -107,6 +104,7 @@ export class DataService {
       }
       return this.http.post(this.UPDATE_URL, payload);
     }
+
   private readonly authService = inject(AuthService);
   private readonly http = inject(HttpClient);
 
@@ -511,87 +509,181 @@ export class DataService {
   // To add, update, or remove beneficiaries, update the local _clientdata signal and call saveclientdata() to persist changes.
 
   // Example: Add a child
-  addChild(child: IChild) {
-    this._clientdata.update((current) => ({
-      ...current,
-      children: [...current.children, child],
-    }));
-    this.autoSave();
-  }
-
+addChild(child: IChild) {
+  this.saveClientSection('child', {
+    ...child,
+    action: 'insert',
+    portal_user_id: this.pui
+  }, 'child_id').subscribe({
+    next: (response) => {
+      console.log('Child added:', response);
+      const newChild = { ...child, child_id: response.insert_id };
+      this._clientdata.update((current) => ({
+        ...current,
+        children: [...current.children, newChild],
+      }));
+    },
+    error: (err) => console.error('Child add failed:', err)
+  });
+}
   // Example: Update a child
-  updateChild(index: number, updates: Partial<IChild>) {
-    this._clientdata.update((current) => ({
-      ...current,
-      children: current.children.map((child, i) =>
-        i === index ? { ...child, ...updates } : child
-      ),
-    }));
-    this.autoSave();
-  }
+updateChild(index: number, updates: Partial<IChild>) {
+  // Update local state
+  this._clientdata.update((current) => ({
+    ...current,
+    children: current.children.map((child, i) =>
+      i === index ? { ...child, ...updates } : child
+    ),
+  }));
+
+  // Save to server via clientupdate.php
+  const child = this._clientdata().children[index];
+  this.saveClientSection('child', {
+    ...child,
+    action: 'update',
+    portal_user_id: this.pui
+  }, 'child_id').subscribe({
+    next: (response) => console.log('Child saved:', response),
+    error: (err) => console.error('Child save failed:', err)
+  });
+}
 
   // Example: Remove a child
-  removeChild(index: number) {
-    this._clientdata.update((current) => ({
-      ...current,
-      children: current.children.filter((_, i) => i !== index),
-    }));
-    this.autoSave();
-  }
+removeChild(index: number) {
+  // Get the child before removing from local state
+  const child = this._clientdata().children[index];
+
+  // Update local state
+  this._clientdata.update((current) => ({
+    ...current,
+    children: current.children.filter((_, i) => i !== index),
+  }));
+
+  // Delete from server via clientupdate.php
+  this.saveClientSection('child', {
+    child_id: child.child_id,
+    portal_user_id: this.pui,
+    action: 'delete'
+  }, 'child_id').subscribe({
+    next: (response) => console.log('Child deleted:', response),
+    error: (err) => console.error('Child delete failed:', err)
+  });
+}
 
   // Family members
-  addFamilyMember(familyMember: IFamilyMember) {
-    this._clientdata.update((current) => ({
-      ...current,
-      family_members: [...current.family_members, familyMember],
-    }));
-    this.autoSave();
-  }
+addFamilyMember(familyMember: IFamilyMember) {
+  // Save to server first, then update local state with the returned ID
+  this.saveClientSection('family_member', {
+    ...familyMember,
+    action: 'insert',
+    portal_user_id: this.pui
+  }, 'family_member_id').subscribe({
+    next: (response) => {
+      console.log('Family member added:', response);
+      // Update local state with the new ID from the database
+      const newMember = { ...familyMember, family_member_id: response.insert_id };
+      this._clientdata.update((current) => ({
+        ...current,
+        family_members: [...current.family_members, newMember],
+      }));
+    },
+    error: (err) => console.error('Family member add failed:', err)
+  });
+}
 
-  updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-    this._clientdata.update((current) => ({
-      ...current,
-      family_members: current.family_members.map((member, i) =>
-        i === index ? { ...member, ...updates } : member
-      ),
-    }));
-    this.autoSave();
-  }
+updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
+  this._clientdata.update((current) => ({
+    ...current,
+    family_members: current.family_members.map((member, i) =>
+      i === index ? { ...member, ...updates } : member
+    ),
+  }));
 
-  removeFamilyMember(index: number) {
-    this._clientdata.update((current) => ({
-      ...current,
-      family_members: current.family_members.filter((_, i) => i !== index),
-    }));
-    this.autoSave();
-  }
+  const member = this._clientdata().family_members[index];
+  this.saveClientSection('family_member', {
+    ...member,
+    action: 'update',
+    portal_user_id: this.pui
+  }, 'family_member_id').subscribe({
+    next: (response) => console.log('Family member saved:', response),
+    error: (err) => console.error('Family member save failed:', err)
+  });
+}
+
+
+removeFamilyMember(index: number) {
+  const member = this._clientdata().family_members[index];
+
+  this._clientdata.update((current) => ({
+    ...current,
+    family_members: current.family_members.filter((_, i) => i !== index),
+  }));
+
+  this.saveClientSection('family_member', {
+    family_member_id: member.family_member_id,
+    portal_user_id: this.pui,
+    action: 'delete'
+  }, 'family_member_id').subscribe({
+    next: (response) => console.log('Family member deleted:', response),
+    error: (err) => console.error('Family member delete failed:', err)
+  });
+}
 
   // Charities
-  addCharity(charity: ICharity) {
-    this._clientdata.update((current) => ({
-      ...current,
-      charities: [...current.charities, charity],
-    }));
-    this.autoSave();
-  }
+addCharity(charity: ICharity) {
+  this.saveClientSection('charity', {
+    ...charity,
+    action: 'insert',
+    portal_user_id: this.pui
+  }, 'charity_id').subscribe({
+    next: (response) => {
+      console.log('Charity added:', response);
+      const newCharity = { ...charity, charity_id: response.insert_id };
+      this._clientdata.update((current) => ({
+        ...current,
+        charities: [...current.charities, newCharity],
+      }));
+    },
+    error: (err) => console.error('Charity add failed:', err)
+  });
+}
 
-  updateCharity(index: number, updates: Partial<ICharity>) {
-    this._clientdata.update((current) => ({
-      ...current,
-      charities: current.charities.map((charity, i) =>
-        i === index ? { ...charity, ...updates } : charity
-      ),
-    }));
-    this.autoSave();
-  }
+updateCharity(index: number, updates: Partial<ICharity>) {
+  this._clientdata.update((current) => ({
+    ...current,
+    charities: current.charities.map((charity, i) =>
+      i === index ? { ...charity, ...updates } : charity
+    ),
+  }));
 
-  removeCharity(index: number) {
-    this._clientdata.update((current) => ({
-      ...current,
-      charities: current.charities.filter((_, i) => i !== index),
-    }));
-    this.autoSave();
-  }
+  const charity = this._clientdata().charities[index];
+  this.saveClientSection('charity', {
+    ...charity,
+    action: 'update',
+    portal_user_id: this.pui
+  }, 'charity_id').subscribe({
+    next: (response) => console.log('Charity saved:', response),
+    error: (err) => console.error('Charity save failed:', err)
+  });
+}
+
+removeCharity(index: number) {
+  const charity = this._clientdata().charities[index];
+
+  this._clientdata.update((current) => ({
+    ...current,
+    charities: current.charities.filter((_, i) => i !== index),
+  }));
+
+  this.saveClientSection('charity', {
+    charity_id: charity.charity_id,
+    portal_user_id: this.pui,
+    action: 'delete'
+  }, 'charity_id').subscribe({
+    next: (response) => console.log('Charity deleted:', response),
+    error: (err) => console.error('Charity delete failed:', err)
+  });
+}
 
   // Methods for managing assets
   addRealEstate(
@@ -1346,10 +1438,6 @@ export class DataService {
     city: null,
     state: null,
     zip: null,
-    financial_support: false,
-    support_amount_monthly: null,
-    caregiving_responsibilities: false,
-    caregiving_details: null,
     concern_ids: [],
     concern_notes: null,
     notes: null,

@@ -37,13 +37,18 @@ if (!$table || !$data || !is_array($data)) {
 }
 
 
+$table = isset($input['table']) ? $input['table'] : null;
+$data = isset($input['data']) ? $input['data'] : null;
+$action = isset($input['action']) ? $input['action'] : (isset($data['action']) ? $data['action'] : null);
 
+// DEBUG - remove after testing
 
 
 // Only detect and validate primary key for update/delete actions
 $primaryKey = null;
 $primaryId = null;
 if ($action === 'update' || $action === 'delete') {
+
   // Determine primary key name (e.g., real_estate_id) and value
   if (isset($input['asset_id_type'])) {
     $primaryKey = $input['asset_id_type'];
@@ -102,6 +107,8 @@ if ($action === 'update' || $action === 'delete') {
       $primaryId = $data['id'];
     }
   }
+
+
 }
 
 
@@ -121,6 +128,7 @@ if ($action === 'update' || $action === 'delete') {
 
 
 if ($action === 'insert') {
+
   header('Content-Type: application/json');
   // Build INSERT statement
   $columns = [];

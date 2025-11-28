@@ -178,18 +178,15 @@
             <span class="detail-label">Financially Responsible:</span>
             <span class="detail-value">{{child.financially_responsible}}</span>
           </div>
-          <div class="detail-row" *ngIf="child.excluded_or_reduced">
+          <div class="detail-row" *ngIf="child.excluded_or_reduced == 1">
             <span class="detail-label">Excluded or Reduced Inheritance:</span>
             <span class="detail-value">Yes</span>
           </div>
-          <div class="detail-row" *ngIf="child.excluded_or_reduced && child.exclusion_reason">
+          <div class="detail-row" *ngIf="child.excluded_or_reduced == 1 && child.exclusion_reason">
             <span class="detail-label">Exclusion Reason:</span>
             <span class="detail-value">{{child.exclusion_reason}}</span>
           </div>
-          <div class="detail-row" *ngIf="child.is_deceased">
-            <span class="detail-label">Deceased:</span>
-            <span class="detail-value">Yes ({{formatDate(child.date_of_death)}})</span>
-          </div>
+
         </div>
       </div>
     </div>
@@ -211,31 +208,12 @@
             <span class="detail-label">Date of Birth:</span>
             <span class="detail-value">{{formatDate(member.date_of_birth)}}</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Living:</span>
-            <span class="detail-value">{{member.is_living ? 'Yes' : 'No'}}</span>
-          </div>
-          <div class="detail-row" *ngIf="!member.is_living">
-            <span class="detail-label">Date of Death:</span>
-            <span class="detail-value">{{formatDate(member.date_of_death)}}</span>
-          </div>
+
           <div class="detail-row" *ngIf="member.address">
             <span class="detail-label">Address:</span>
             <span class="detail-value">{{member.address}}, {{member.city}}, {{member.state}} {{member.zip}}</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Financial Support:</span>
-            <span class="detail-value">{{member.financial_support ? 'Yes' : 'No'}}</span>
-          </div>
-          <div class="detail-row" *ngIf="member.financial_support && member.support_amount_monthly">
-            <span class="detail-label">Support Amount (Monthly):</span>
-            <span class="detail-value">{{formatCurrency(member.support_amount_monthly)}}</span>
-          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Caregiving Responsibilities:</span>
-            <span class="detail-value">{{member.caregiving_responsibilities ? 'Yes' : 'No'}}</span>
-          </div>
           <div class="detail-row" *ngIf="member.notes">
             <span class="detail-label">Notes:</span>
             <span class="detail-value">{{member.notes}}</span>

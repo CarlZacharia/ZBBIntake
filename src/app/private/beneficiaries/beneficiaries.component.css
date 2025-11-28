@@ -15,6 +15,11 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+.bg-purple {
+  background-color: #6f42c1 !important;
+}
+
 @media (max-width: 700px) {
   .name-row {
     flex-direction: column !important;

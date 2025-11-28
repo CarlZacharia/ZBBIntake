@@ -117,7 +117,6 @@ export class BeneficiariesComponent {
     } else {
       this.editingItem.concern_ids.splice(index, 1);
     }
-    console.log('Updated concern_ids:', this.editingItem.concern_ids);
     this.saveConcernAssignments();
   }
 
@@ -125,8 +124,6 @@ export class BeneficiariesComponent {
     const type = this.editingType;
     const item = this.editingItem;
     const userId = this.dataService.pui;
-
-    console.log('Saving:', { type, item, child_id: item.child_id });
     if (!type || !item || !userId) return;
 
     let table = '';
@@ -193,12 +190,10 @@ getConcernById(concernId: number | string): any {
     this.editingIndex = this.children.length;
     this.editingItem = {
       legal_first_name: '',
+      legal_middle_name: '',
       legal_last_name: '',
-      substance_abuse: false,
-      gamblnig_concerns: false,
       has_children: false,
       excluded_or_reduced: false,
-      i_deceased: false,
     };
   }
   editChild(index: number) {
@@ -222,19 +217,23 @@ getConcernById(concernId: number | string): any {
   }
 
   // Family Members
-  addFamilyMember() {
-    this.editingType = 'family';
-    this.editingIndex = this.familyMembers.length;
-    this.editingItem = {
-      legal_first_name: '',
-      legal_last_name: '',
-      substance_abuse: false,
-      gamblnig_concerns: false,
-      has_children: false,
-      excluded_or_reduced: false,
-      i_deceased: false,
-    };
-  }
+addFamilyMember() {
+  this.editingType = 'family';
+  this.editingIndex = this.familyMembers.length;
+  this.editingItem = {
+    legal_name: '',
+    relationship: '',
+    date_of_birth: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    concern_ids: [],
+    concern_notes: '',
+    notes: ''
+  };
+}
+
   editFamilyMember(index: number) {
     this.editingType = 'family';
     this.editingIndex = index;
@@ -260,12 +259,7 @@ getConcernById(concernId: number | string): any {
     this.editingType = 'charity';
     this.editingIndex = this.charities.length;
     this.editingItem = {
-      charity_name: '',
-      substance_abuse: false,
-      gamblnig_concerns: false,
-      has_children: false,
-      excluded_or_reduced: false,
-      i_deceased: false,
+      organization_name: '',
     };
   }
   editCharity(index: number) {
@@ -316,8 +310,6 @@ getConcernById(concernId: number | string): any {
   convertCheckboxFieldsToBoolean(item: any): any {
     const fields = [
       'substance_abuse',
-      'gamblnig_concerns',
-      'has_children',
       'excluded_or_reduced',
       'i_deceased',
     ];
@@ -333,10 +325,7 @@ getConcernById(concernId: number | string): any {
   convertCheckboxFieldsToInt(item: any): any {
     const fields = [
       'substance_abuse',
-      'gamblnig_concerns',
-      'has_children',
       'excluded_or_reduced',
-      'i_deceased',
     ];
     const newItem = { ...item };
     fields.forEach((f) => {

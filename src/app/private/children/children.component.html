@@ -59,10 +59,7 @@
           <td>{{ member.legal_name }}</td>
           <td>{{ member.relationship }}</td>
           <td>{{ member.date_of_birth | date }}</td>
-          <td>{{ member.is_living ? 'Yes' : 'No' }}</td>
-          <td>{{ member.financial_support ? 'Yes' : 'No' }}</td>
-          <td>{{ member.special_needs ? 'Yes' : 'No' }}</td>
-          <td class="actions">
+           <td class="actions">
             <button class="btn-small btn-edit" (click)="openEditFamilyMemberModal(member, i)">Edit</button>
             <button class="btn-small btn-delete" (click)="deleteFamilyMember(i)">Delete</button>
           </td>
@@ -523,28 +520,7 @@
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.financial_support" name="financial_support">
-              Providing Financial Support</label>
-          </div>
-        </div>
 
-        <div class="form-group" *ngIf="editingFamilyMember.financial_support">
-          <label>Support Amount (Monthly)</label>
-          <input type="number" [(ngModel)]="editingFamilyMember.support_amount_monthly" name="support_amount">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.special_needs" name="special_needs"> Special
-              Needs</label>
-          </div>
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.caregiving_responsibilities"
-                name="caregiving"> Caregiving Responsibilities</label>
-          </div>
-        </div>
 
         <div class="form-group">
           <label>Notes</label>
@@ -630,28 +606,7 @@
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.financial_support" name="financial_support">
-              Providing Financial Support</label>
-          </div>
-        </div>
 
-        <div class="form-group" *ngIf="editingFamilyMember.financial_support">
-          <label>Support Amount (Monthly)</label>
-          <input type="number" [(ngModel)]="editingFamilyMember.support_amount_monthly" name="support_amount">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.special_needs" name="special_needs"> Special
-              Needs</label>
-          </div>
-          <div class="form-group checkbox-group">
-            <label><input type="checkbox" [(ngModel)]="editingFamilyMember.caregiving_responsibilities"
-                name="caregiving"> Caregiving Responsibilities</label>
-          </div>
-        </div>
 
         <div class="form-group">
           <label>Notes</label>
