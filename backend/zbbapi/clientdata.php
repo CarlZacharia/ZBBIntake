@@ -45,7 +45,7 @@ if (!$personal) {
     $legal_middle_name = '';
     $legal_last_name = '';
     $suffix = '';
-    $preferred_name = '';
+    $sex = '';
     $date_of_birth = null;
     $ssn_encrypted = '';
     $us_citizen = null;
@@ -73,7 +73,7 @@ if (!$personal) {
         legal_middle_name,
         legal_last_name,
         suffix,
-        preferred_name,
+        sex,
         date_of_birth,
         ssn_encrypted,
         us_citizen,
@@ -102,7 +102,7 @@ if (!$personal) {
         $legal_middle_name,
         $legal_last_name,
         $suffix,
-        $preferred_name,
+        $sex,
         $date_of_birth,
         $ssn_encrypted,
         $us_citizen,

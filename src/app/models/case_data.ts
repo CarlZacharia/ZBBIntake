@@ -61,7 +61,7 @@ export interface IBankAccount {
   contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' |   null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -87,7 +87,7 @@ export interface INQAccount {
   contingent_beneficiaries: IBeneficiary[];
   beneficiary_last_reviewed: string | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -137,7 +137,7 @@ export interface ILifeInsurance {
   trust_name: string | null;
   annual_premium: number | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -168,7 +168,7 @@ export interface IBusinessInterest {
   successor_is_family: boolean | number | string | null;
   should_business_be_sold: boolean | number | string | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   other_owners: string | null;
 }
 
@@ -205,7 +205,7 @@ export interface IDigitalAsset {
     | null;
   access_instructions: string | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -241,7 +241,7 @@ export interface IOtherAsset {
   special_instructions: string | null;
   appraisal_exists: boolean | number | string | null;
   appraisal_date: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -266,7 +266,7 @@ export interface IDebt {
   current_balance: number | null;
   monthly_payment: number | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'joint' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
 }
 
 /**
@@ -531,7 +531,7 @@ export interface IPersonal {
   legal_middle_name: string | null;
   legal_last_name: string;
   suffix: string | null;
-  preferred_name: string | null;
+  sex: 'Male' | 'Female' | 'Other' | null;
   date_of_birth: string | null;
   ssn_encrypted: string | null;
   us_citizen: 'Yes' | 'No' | null;

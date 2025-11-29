@@ -59,11 +59,16 @@
               <!-- Preferred Name -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Preferred Name</span>
+                  <span class="label-text font-semibold">Sex</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().preferred_name"
-                  (ngModelChange)="updatePersonalInfo('preferred_name', $event)" name="preferred_name"
-                  placeholder="What do you go by?" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <select [(ngModel)]="personal().sex"
+                  (ngModelChange)="updatePersonalInfo('sex', $event)" name="sex"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'Male'">Male</option>
+                  <option [ngValue]="'Female'">Female</option>
+                  <option [ngValue]="'Other'">Other</option>
+                </select>
               </div>
 
               <!-- Date of Birth -->
