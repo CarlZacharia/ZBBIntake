@@ -1599,7 +1599,7 @@ removeCharity(index: number) {
 
   public otherAsset: IOtherAsset = {
     other_asset_id: null,
-    asset_type: 'other',
+    asset_type: 'Other',
     description: '',
     approximate_value: null,
     debtOwed: 0,

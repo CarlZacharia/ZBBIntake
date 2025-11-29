@@ -14,7 +14,7 @@
   </div>
 
   <!-- Single Person View -->
-  <div *ngIf="!isMarried" class="single-view">
+  <ng-container *ngIf="showTable === 'single'" class="single-view">
     <h3>All Assets</h3>
 
     <!-- Real Estate -->
@@ -269,10 +269,10 @@
     <div class="grand-total">
       <h3>Total Assets: {{ formatCurrency(getGrandTotal()) }}</h3>
     </div>
-  </div>
+  </ng-container>
 
   <!-- Married Couple View -->
-  <div *ngIf="isMarried" class="married-view">
+  <ng-container *ngIf="showTable === 'married'" class="married-view">
 
     <!-- Client Assets -->
     <div class="ownership-section">
@@ -290,11 +290,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('real_estate'); let i = index"
-              (click)="openEditModal('real_estate', i, 'client')" class="clickable-row">
+              (click)="openEditModal('real_estate', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'client')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -313,12 +313,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('bank_account'); let i = index"
-              (click)="openEditModal('bank_account', i, 'client')" class="clickable-row">
+              (click)="openEditModal('bank_account', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('bank_account', i, 'client')">Delete</button>
+                  (click)="deleteAsset('bank_account', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -337,12 +337,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('nq_account'); let i = index"
-              (click)="openEditModal('nq_account', i, 'client')" class="clickable-row">
+              (click)="openEditModal('nq_account', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('nq_account', i, 'client')">Delete</button>
+                  (click)="deleteAsset('nq_account', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -361,12 +361,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('retirement_account'); let i = index"
-              (click)="openEditModal('retirement_account', i, 'client')" class="clickable-row">
+              (click)="openEditModal('retirement_account', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('retirement_account', i, 'client')">Delete</button>
+                  (click)="deleteAsset('retirement_account', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -385,12 +385,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('life_insurance'); let i = index"
-              (click)="openEditModal('life_insurance', i, 'client')" class="clickable-row">
+              (click)="openEditModal('life_insurance', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('life_insurance', i, 'client')">Delete</button>
+                  (click)="deleteAsset('life_insurance', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -409,12 +409,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('business_interest'); let i = index"
-              (click)="openEditModal('business_interest', i, 'client')" class="clickable-row">
+              (click)="openEditModal('business_interest', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('business_interest', i, 'client')">Delete</button>
+                  (click)="deleteAsset('business_interest', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -433,11 +433,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('digital_asset'); let i = index"
-              (click)="openEditModal('digital_asset', i, 'client')" class="clickable-row">
+              (click)="openEditModal('digital_asset', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'client')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -456,11 +456,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getClientAssets('other_asset'); let i = index"
-              (click)="openEditModal('other_asset', i, 'client')" class="clickable-row">
+              (click)="openEditModal('other_asset', i, 'Client')" class="clickable-row">
               <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'client')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'Client')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -468,7 +468,7 @@
       </div>
 
       <div class="section-total">
-        <strong>Client Total: {{ formatCurrency(getGrandTotal('client')) }}</strong>
+        <strong>Client Total: {{ formatCurrency(getGrandTotal('Client')) }}</strong>
       </div>
     </div>
 
@@ -759,8 +759,7 @@
               <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete"
-                  (click)="deleteAsset('retirement_account', i, null)">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('retirement_account', i, null)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -866,10 +865,197 @@
 
     <!-- Grand Total -->
     <div class="grand-total">
-      <h3>Combined Total: {{ formatCurrency(getGrandTotal('client') + getGrandTotal('spouse') + getGrandTotal(null)) }}
+      <h3>Combined Total: {{ formatCurrency(getGrandTotal('Client') + getGrandTotal('spouse') + getGrandTotal(null)) }}
       </h3>
     </div>
+  </ng-container>
+
+  <ng-container *ngIf="showTable === 'default'">
+  <div class="all-assets-debts-table-wrapper">
+    <table class="all-assets-debts-table">
+      <thead>
+        <tr>
+          <th colspan="6" style="font-size:1rem; text-align:left; background:#007bff; color:white;">Assets & Debts Overview</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Real Estate Holdings -->
+        <tr *ngIf="assetsGroups.real_estate_holdings.length > 0">
+          <td colspan="6" class="group-header">Real Estate Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.real_estate_holdings.length > 0">
+          <td>Address</td>
+          <td>City, State, Zip</td>
+          <td>Property Type</td>
+          <td>Title</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.real_estate_holdings; let i = index"
+              (click)="openEditModal('real_estate', i)" class="clickable-row">
+          <td>{{item.address_line1}}</td>
+          <td>{{item.city}}, {{item.state}}, {{item.zip}}</td>
+          <td>{{item.property_type}}</td>
+          <td>{{item.title_holding}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Bank Account Holdings -->
+        <tr *ngIf="assetsGroups.bank_account_holdings.length > 0">
+          <td colspan="6" class="group-header">Bank Account Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.bank_account_holdings.length > 0">
+          <td>Institution</td>
+          <td>Type</td>
+          <td>Account #</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.bank_account_holdings; let i = index"
+              (click)="openEditModal('bank_account', i)" class="clickable-row">
+          <td>{{item.institution_name}}</td>
+          <td>{{item.account_type}}</td>
+          <td>{{item.account_number_encrypted}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- NQ Account Holdings -->
+        <tr *ngIf="assetsGroups.nq_account_holdings.length > 0">
+          <td colspan="6" class="group-header">NQ Account Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.nq_account_holdings.length > 0">
+          <td>Institution</td>
+          <td>Type</td>
+          <td>Account #</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.nq_account_holdings; let i = index"
+              (click)="openEditModal('nq_account', i)" class="clickable-row">
+          <td>{{item.institution_name}}</td>
+          <td>{{item.account_type}}</td>
+          <td>{{item.account_number_encrypted}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Retirement Account Holdings -->
+        <tr *ngIf="assetsGroups.retirement_account_holdings.length > 0">
+          <td colspan="6" class="group-header">Retirement Account Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.retirement_account_holdings.length > 0">
+          <td>Institution</td>
+          <td>Type</td>
+          <td>Account #</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.retirement_account_holdings; let i = index"
+              (click)="openEditModal('retirement_account', i)" class="clickable-row">
+          <td>{{item.institution_name}}</td>
+          <td>{{item.account_type}}</td>
+          <td>{{item.account_number_encrypted}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Life Insurance Holdings -->
+        <tr *ngIf="assetsGroups.life_insurance_holdings.length > 0">
+          <td colspan="6" class="group-header">Life Insurance Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.life_insurance_holdings.length > 0">
+          <td>Company</td>
+          <td>Policy Type</td>
+          <td>Policy #</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.life_insurance_holdings; let i = index"
+              (click)="openEditModal('life_insurance', i, 'Client')" class="clickable-row">
+          <td>{{item.insurance_company}}</td>
+          <td>{{item.policy_type}}</td>
+          <td>{{item.policy_number}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Business Interest Holdings -->
+        <tr *ngIf="assetsGroups.business_interest_holdings.length > 0">
+          <td colspan="6" class="group-header">Business Interest Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.business_interest_holdings.length > 0">
+          <td>Business Name</td>
+          <td>Type</td>
+          <td>Ownership %</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.business_interest_holdings; let i = index"
+              (click)="openEditModal('business_interest', i)" class="clickable-row">
+          <td>{{item.business_name}}</td>
+          <td>{{item.business_type}}</td>
+          <td>{{item.ownership_percentage}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Digital Asset Holdings -->
+        <tr *ngIf="assetsGroups.digital_asset_holdings.length > 0">
+          <td colspan="6" class="group-header">Digital Asset Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.digital_asset_holdings.length > 0">
+          <td>Asset Name</td>
+          <td>Type</td>
+          <td>Access Location</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.digital_asset_holdings; let i = index"
+              (click)="openEditModal('digital_asset', i)" class="clickable-row">
+          <td>{{item.asset_name}}</td>
+          <td>{{item.asset_type}}</td>
+          <td>{{item.access_location}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Other Asset Holdings -->
+        <tr *ngIf="assetsGroups.other_asset_holdings.length > 0">
+          <td colspan="6" class="group-header">Other Asset Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="assetsGroups.other_asset_holdings.length > 0">
+          <td>Description</td>
+          <td>Type</td>
+          <td>Heirloom?</td>
+          <td>Owned By</td>
+          <td>Approx. Value</td>
+        </tr>
+        <tr *ngFor="let item of assetsGroups.other_asset_holdings; let i = index"
+              (click)="openEditModal('other_asset', i)" class="clickable-row">
+          <td>{{item.description}}</td>
+          <td>{{item.asset_type}}</td>
+          <td>{{item.is_heirloom ? 'Yes' : 'No'}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.approximate_value | currency}}</td>
+        </tr>
+        <!-- Debt Holdings
+        <tr *ngIf="debts.length > 0">
+          <td colspan="6" class="group-header">Debt Holdings</td>
+        </tr>
+        <tr class="sub-header" *ngIf="debts.length > 0">
+          <td>Creditor</td>
+          <td>Type</td>
+          <td>Account #</td>
+          <td>Owned By</td>
+          <td>Current Balance</td>
+        </tr>
+        <tr *ngFor="let item of debts; let i = index"
+              (click)="openEditModal('debt', i, 'Client')" class="clickable-row">
+          <td>{{item.creditor_name}}</td>
+          <td>{{item.debt_type}}</td>
+          <td>{{item.account_number}}</td>
+          <td>{{item.owned_by}}</td>
+          <td>{{item.current_balance | currency}}</td>
+        </tr> -->
+      </tbody>
+    </table>
   </div>
+</ng-container>
+
+
 </div>
 
 <!-- Real Estate Add Modal -->
@@ -885,12 +1071,12 @@
         <div class="form-group">
           <label>Property Type *</label>
           <select [(ngModel)]="editingRealEstate.property_type" name="property_type" required>
-            <option value="primary_residence">Primary Residence</option>
-            <option value="vacation">Vacation</option>
-            <option value="rental">Rental</option>
-            <option value="land">Land</option>
-            <option value="commercial">Commercial</option>
-            <option value="other">Other</option>
+            <option value="Primary Residence">Primary Residence</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Rental">Rental</option>
+            <option value="Land">Land</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -927,15 +1113,15 @@
           <div class="form-group">
             <label>Title Holding *</label>
             <select [(ngModel)]="editingRealEstate.title_holding" name="title_holding" required>
-              <option value="client">Client</option>
-              <option value="spouse">Spouse</option>
-              <option value="joint_spouse">Joint with Spouse</option>
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Joint Spouse">Joint with Spouse</option>
               <option value="TinC">Tenants in Common</option>
-              <option value="joint_rights_survivorship">Joint with Rights of Survivorship</option>
-              <option value="tod_deed">TOD Deed</option>
-              <option value="trust">Trust</option>
-              <option value="llc">LLC</option>
-              <option value="other">Other</option>
+              <option value="Joint Rights of Survivorship">Joint with Rights of Survivorship</option>
+              <option value="TOD Deed">TOD Deed</option>
+              <option value="Trust">Trust</option>
+              <option value="LLC">LLC</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -943,8 +1129,8 @@
             <label>Owned By</label>
             <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
               <option [ngValue]="null">Joint/Both</option>
-              <option value="client">Client</option>
-              <option value="spouse">Spouse</option>
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
             </select>
           </div>
         </div>
@@ -1022,12 +1208,12 @@
         <div class="form-group">
           <label>Property Type *</label>
           <select [(ngModel)]="editingRealEstate.property_type" name="property_type" required>
-            <option value="primary_residence">Primary Residence</option>
-            <option value="vacation">Vacation</option>
-            <option value="rental">Rental</option>
-            <option value="land">Land</option>
-            <option value="commercial">Commercial</option>
-            <option value="other">Other</option>
+            <option value="Primary Residence">Primary Residence</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Rental">Rental</option>
+            <option value="Land">Land</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -1064,15 +1250,15 @@
           <div class="form-group">
             <label>Title Holding *</label>
             <select [(ngModel)]="editingRealEstate.title_holding" name="title_holding" required>
-              <option value="client">Client</option>
-              <option value="spouse">Spouse</option>
-              <option value="joint_spouse">Joint with Spouse</option>
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Joint Spouse">Joint with Spouse</option>
               <option value="TinC">Tenants in Common</option>
-              <option value="joint_rights_survivorship">Joint with Rights of Survivorship</option>
-              <option value="tod_deed">TOD Deed</option>
-              <option value="trust">Trust</option>
-              <option value="llc">LLC</option>
-              <option value="other">Other</option>
+              <option value="Joint Rights of Survivorship">Joint with Rights of Survivorship</option>
+              <option value="TOD Deed">TOD Deed</option>
+              <option value="Trust">Trust</option>
+              <option value="LLC">LLC</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -1080,8 +1266,8 @@
             <label>Owned By</label>
             <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
               <option [ngValue]="null">Joint/Both</option>
-              <option value="client">Client</option>
-              <option value="spouse">Spouse</option>
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
             </select>
           </div>
         </div>
@@ -1191,12 +1377,12 @@
           <div class="form-group">
             <label>Title Type *</label>
             <select [(ngModel)]="editingBankAccount.title_type" name="title_type" required>
-              <option value="individual">Individual</option>
-              <option value="joint">Joint</option>
-              <option value="pod">POD (Payable on Death)</option>
-              <option value="tod">TOD (Transfer on Death)</option>
-              <option value="trust">Trust</option>
-              <option value="other">Other</option>
+              <option value="Individual">Individual</option>
+              <option value="Joint">Joint</option>
+              <option value="POD">POD (Payable on Death)</option>
+              <option value="TOD">TOD (Transfer on Death)</option>
+              <option value="Trust">Trust</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -1211,8 +1397,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1278,11 +1464,11 @@
             <label>Title Type *</label>
             <select [(ngModel)]="editingBankAccount.title_type" name="title_type" required>
               <option value="individual">Individual</option>
-              <option value="joint">Joint</option>
-              <option value="pod">POD (Payable on Death)</option>
-              <option value="tod">TOD (Transfer on Death)</option>
-              <option value="trust">Trust</option>
-              <option value="other">Other</option>
+              <option value="Joint">Joint</option>
+              <option value="POD">POD (Payable on Death)</option>
+              <option value="TOD">TOD (Transfer on Death)</option>
+              <option value="Trust">Trust</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -1297,8 +1483,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1359,12 +1545,12 @@
           <div class="form-group">
             <label>Title Type *</label>
             <select [(ngModel)]="editingNQAccount.title_type" name="title_type" required>
-              <option value="individual">Individual</option>
-              <option value="joint">Joint</option>
-              <option value="pod">POD (Payable on Death)</option>
-              <option value="tod">TOD (Transfer on Death)</option>
-              <option value="trust">Trust</option>
-              <option value="other">Other</option>
+              <option value="Information">Individual</option>
+              <option value="Joint">Joint</option>
+              <option value="POD">POD (Payable on Death)</option>
+              <option value="TOD">TOD (Transfer on Death)</option>
+              <option value="Trust">Trust</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -1379,8 +1565,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1441,12 +1627,12 @@
           <div class="form-group">
             <label>Title Type *</label>
             <select [(ngModel)]="editingNQAccount.title_type" name="title_type" required>
-              <option value="individual">Individual</option>
-              <option value="joint">Joint</option>
-              <option value="pod">POD (Payable on Death)</option>
-              <option value="tod">TOD (Transfer on Death)</option>
-              <option value="trust">Trust</option>
-              <option value="other">Other</option>
+              <option value="Individual">Individual</option>
+              <option value="Joint">Joint</option>
+              <option value="POD">POD (Payable on Death)</option>
+              <option value="TOD">TOD (Transfer on Death)</option>
+              <option value="Trust">Trust</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -1461,8 +1647,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1528,8 +1714,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
           <select [(ngModel)]="editingRetirementAccount.owned_by" name="owned_by">
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1604,8 +1790,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
           <select [(ngModel)]="editingRetirementAccount.owned_by" name="owned_by">
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1707,8 +1893,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1801,8 +1987,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -1930,8 +2116,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingBusinessInterest.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -2059,8 +2245,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingBusinessInterest.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -2172,8 +2358,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -2285,8 +2471,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
 
@@ -2320,19 +2506,19 @@
             <option value="vehicle">Vehicle</option>
             <option value="boat">Boat</option>
             <option value="rv">RV</option>
-            <option value="motorcycle">Motorcycle</option>
-            <option value="aircraft">Aircraft</option>
-            <option value="art">Art</option>
-            <option value="antiques">Antiques</option>
-            <option value="jewelry">Jewelry</option>
-            <option value="collectibles">Collectibles</option>
-            <option value="wine">Wine Collection</option>
-            <option value="precious_metals">Precious Metals</option>
-            <option value="intellectual_property">Intellectual Property</option>
-            <option value="livestock">Livestock</option>
-            <option value="farm_equipment">Farm Equipment</option>
-            <option value="timeshare">Timeshare</option>
-            <option value="other">Other</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Aircraft">Aircraft</option>
+            <option value="Art">Art</option>
+            <option value="Antiques">Antiques</option>
+            <option value="Jewelry">Jewelry</option>
+            <option value="Collectibles">Collectibles</option>
+            <option value="Wine Collection">Wine Collection</option>
+            <option value="Precious Metals">Precious Metals</option>
+            <option value="Intellectual Property">Intellectual Property</option>
+            <option value="Livestock">Livestock</option>
+            <option value="Farm Equipment">Farm Equipment</option>
+            <option value="Timeshare">Timeshare</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -2348,7 +2534,7 @@
           <input type="number" [(ngModel)]="editingOtherAsset.approximate_value" name="approximate_value">
         </div>
         <!-- Vehicle Loan (only for vehicles) -->
-        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'vehicle'">
+        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'Vehicle'">
           <label>Vehicle Loan</label>
           <input type="number" [(ngModel)]="editingOtherAsset.debtOwed" name="debtOwed" placeholder="Amount of vehicle loan" (ngModelChange)="onOtherAssetValueChange()">
         </div>
@@ -2396,8 +2582,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
       </form>
@@ -2422,22 +2608,22 @@
         <div class="form-group">
           <label>Asset Type *</label>
           <select [(ngModel)]="editingOtherAsset.asset_type" name="asset_type" required>
-            <option value="vehicle">Vehicle</option>
-            <option value="boat">Boat</option>
-            <option value="rv">RV</option>
-            <option value="motorcycle">Motorcycle</option>
-            <option value="aircraft">Aircraft</option>
-            <option value="art">Art</option>
-            <option value="antiques">Antiques</option>
-            <option value="jewelry">Jewelry</option>
-            <option value="collectibles">Collectibles</option>
-            <option value="wine">Wine Collection</option>
-            <option value="precious_metals">Precious Metals</option>
-            <option value="intellectual_property">Intellectual Property</option>
-            <option value="livestock">Livestock</option>
-            <option value="farm_equipment">Farm Equipment</option>
-            <option value="timeshare">Timeshare</option>
-            <option value="other">Other</option>
+            <option value="Vehicle">Vehicle</option>
+            <option value="Boat">Boat</option>
+            <option value="RV">RV</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Aircraft">Aircraft</option>
+            <option value="Art">Art</option>
+            <option value="Antiques">Antiques</option>
+            <option value="Jewelry">Jewelry</option>
+            <option value="Collectibles">Collectibles</option>
+            <option value="Wine Collection">Wine Collection</option>
+            <option value="Precious Metals">Precious Metals</option>
+            <option value="Intellectual Property">Intellectual Property</option>
+            <option value="Livestock">Livestock</option>
+            <option value="Farm Equipment">Farm Equipment</option>
+            <option value="Timeshare">Timeshare</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -2453,7 +2639,7 @@
           <input type="number" [(ngModel)]="editingOtherAsset.approximate_value" name="approximate_value" (ngModelChange)="onOtherAssetValueChange()">
         </div>
         <!-- Vehicle Loan (only for vehicles) -->
-        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'vehicle'">
+        <div class="form-group" *ngIf="editingOtherAsset.asset_type === 'Vehicle'">
           <label>Vehicle Loan</label>
           <input type="number" [(ngModel)]="editingOtherAsset.debtOwed" name="debtOwed" placeholder="Amount of vehicle loan" (ngModelChange)="onOtherAssetValueChange()">
         </div>
@@ -2501,8 +2687,8 @@
           <label>Owned By</label>
           <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
             <option [ngValue]="null">Joint/Both</option>
-            <option value="client">Client</option>
-            <option value="spouse">Spouse</option>
+            <option value="Client">Client</option>
+            <option value="Spouse">Spouse</option>
           </select>
         </div>
       </form>
@@ -2513,3 +2699,5 @@
     </div>
   </div>
 </div>
+
+<!-- Table of All Assets and Debts -->

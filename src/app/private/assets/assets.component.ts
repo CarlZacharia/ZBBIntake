@@ -24,6 +24,25 @@ type AssetType = 'real_estate' | 'bank_account' | 'nq_account' | 'retirement_acc
   styleUrls: ['./assets.component.css']
 })
 export class AssetsComponent {
+    // Grouped asset and debt properties for table rendering
+    get assetsGroups() {
+      const assets = this.assets();
+      return {
+        real_estate_holdings: assets.real_estate_holdings || [],
+        bank_account_holdings: assets.bank_account_holdings || [],
+        nq_account_holdings: assets.nq_account_holdings || [],
+        retirement_account_holdings: assets.retirement_account_holdings || [],
+        life_insurance_holdings: assets.life_insurance_holdings || [],
+        business_interest_holdings: assets.business_interest_holdings || [],
+        digital_asset_holdings: assets.digital_asset_holdings || [],
+        other_asset_holdings: assets.other_asset_holdings || []
+      };
+    }
+
+    // Debts from DataService
+    get debts() {
+      return this.ds.debts();
+    }
   // Auto-calculate netValue for real estate
   onRealEstateValueChange() {
     if (this.editingRealEstate) {
@@ -73,7 +92,11 @@ export class AssetsComponent {
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
 
-  constructor(public ds: DataService) { }
+  showTable: 'single' | 'married' | 'default' = 'default';
+
+  constructor(public ds: DataService) {
+    this.showTable = 'default';
+  }
 
   // Backwards compatibility
   get isMarried(): boolean {
@@ -93,11 +116,11 @@ export class AssetsComponent {
   // --- Asset Filtering Methods ---
 
   getClientAssets(assetType: string): any[] {
-    return this.getAssetsByOwnership(assetType, 'client');
+    return this.getAssetsByOwnership(assetType, 'Client');
   }
 
   getSpouseAssets(assetType: string): any[] {
-    return this.getAssetsByOwnership(assetType, 'spouse');
+    return this.getAssetsByOwnership(assetType, 'Spouse');
   }
 
   getJointAssets(assetType: string): any[] {
@@ -119,7 +142,7 @@ export class AssetsComponent {
     }
   }
 
-  private getAssetsByOwnership(assetType: string, ownership: 'client' | 'spouse' | null): any[] {
+  private getAssetsByOwnership(assetType: string, ownership: 'Client' | 'Spouse' |null): any[] {
     const allAssets = this.getAllAssets(assetType);
      if (ownership === null) {
       // Joint assets are those without owned_by set
@@ -130,7 +153,7 @@ export class AssetsComponent {
 
   // --- Total Calculation Methods ---
 
-  getTotalValue(assetType: string, ownership?: 'client' | 'spouse' | null): number {
+  getTotalValue(assetType: string, ownership?: 'Client' | 'Spouse' |null): number {
     const assets = ownership !== undefined
       ? this.getAssetsByOwnership(assetType, ownership)
       : this.getAllAssets(assetType);
@@ -169,7 +192,7 @@ export class AssetsComponent {
     }, 0);
   }
 
-  getGrandTotal(ownership?: 'client' | 'spouse' | null): number {
+  getGrandTotal(ownership?: 'Client' | 'Spouse' |null): number {
     const types: AssetType[] = ['real_estate', 'bank_account', 'nq_account', 'retirement_account', 'life_insurance', 'business_interest', 'digital_asset', 'other_asset'];
     const total = types.reduce((sum, type) => {
       const val = this.getTotalValue(type, ownership);
@@ -186,7 +209,7 @@ export class AssetsComponent {
     this.showAddModal = true;
   }
 
-  openEditModal(assetType: AssetType, index: number, ownership?: 'client' | 'spouse' | null) {
+  openEditModal(assetType: AssetType, index: number, ownership?: 'Client' | 'Spouse' |null) {
     this.currentAssetType = assetType;
     this.editingIndex = index;
 
@@ -338,7 +361,7 @@ export class AssetsComponent {
     this.closeEditModal();
   }
 
-  deleteAsset(assetType: AssetType, index: number, ownership?: 'client' | 'spouse' | null) {
+  deleteAsset(assetType: AssetType, index: number, ownership?: 'Client' | 'Spouse' |null) {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
     let actualIndex = index;

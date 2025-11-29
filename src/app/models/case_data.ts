@@ -212,22 +212,22 @@ export interface IDigitalAsset {
 export interface IOtherAsset {
   other_asset_id?: number | null;
   asset_type:
-    | 'vehicle'
-    | 'boat'
-    | 'rv'
-    | 'motorcycle'
-    | 'aircraft'
-    | 'art'
-    | 'antiques'
-    | 'jewelry'
-    | 'collectibles'
-    | 'wine'
-    | 'precious_metals'
-    | 'intellectual_property'
-    | 'livestock'
-    | 'farm_equipment'
-    | 'timeshare'
-    | 'other';
+    | 'Vehicle'
+    | 'Boat'
+    | 'RV'
+    | 'Motorcycle'
+    | 'Aircraft'
+    | 'Art'
+    | 'Antiques'
+    | 'Jewelry'
+    | 'Collectibles'
+    | 'Wine Collection'
+    | 'Precious Metals'
+    | 'Intellectual Property'
+    | 'Livestock'
+    | 'Farm Equipment'
+    | 'Timeshare'
+    | 'Other';
   description: string;
   approximate_value: number | null;
   debtOwed: number | null; // Amount of debt associated with the asset (e.g., vehicle loan)
