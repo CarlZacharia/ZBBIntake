@@ -488,11 +488,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('real_estate'); let i = index"
-              (click)="openEditModal('real_estate', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('real_estate', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('real_estate', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('real_estate', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'spouse')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('real_estate', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -511,12 +511,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('bank_account'); let i = index"
-              (click)="openEditModal('bank_account', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('bank_account', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('bank_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('bank_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('bank_account', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('bank_account', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -535,12 +535,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('nq_account'); let i = index"
-              (click)="openEditModal('nq_account', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('nq_account', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('nq_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('nq_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('nq_account', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('nq_account', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -559,12 +559,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('retirement_account'); let i = index"
-              (click)="openEditModal('retirement_account', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('retirement_account', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('retirement_account', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('retirement_account', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('retirement_account', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('retirement_account', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -583,12 +583,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('life_insurance'); let i = index"
-              (click)="openEditModal('life_insurance', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('life_insurance', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('life_insurance', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('life_insurance', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('life_insurance', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('life_insurance', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -607,12 +607,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('business_interest'); let i = index"
-              (click)="openEditModal('business_interest', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('business_interest', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('business_interest', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('business_interest', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn-small btn-delete"
-                  (click)="deleteAsset('business_interest', i, 'spouse')">Delete</button>
+                  (click)="deleteAsset('business_interest', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -631,11 +631,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('digital_asset'); let i = index"
-              (click)="openEditModal('digital_asset', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('digital_asset', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('digital_asset', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('digital_asset', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'spouse')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('digital_asset', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -654,11 +654,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let asset of getSpouseAssets('other_asset'); let i = index"
-              (click)="openEditModal('other_asset', i, 'spouse')" class="clickable-row">
+              (click)="openEditModal('other_asset', i, 'Spouse')" class="clickable-row">
               <td>{{ getAssetDisplayName('other_asset', asset) }}</td>
               <td>{{ formatCurrency(getAssetValue('other_asset', asset)) }}</td>
               <td class="actions" (click)="$event.stopPropagation()">
-                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'spouse')">Delete</button>
+                <button class="btn-small btn-delete" (click)="deleteAsset('other_asset', i, 'Spouse')">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -666,7 +666,7 @@
       </div>
 
       <div class="section-total">
-        <strong>Spouse Total: {{ formatCurrency(getGrandTotal('spouse')) }}</strong>
+        <strong>Spouse Total: {{ formatCurrency(getGrandTotal('Spouse')) }}</strong>
       </div>
     </div>
 
@@ -865,7 +865,7 @@
 
     <!-- Grand Total -->
     <div class="grand-total">
-      <h3>Combined Total: {{ formatCurrency(getGrandTotal('Client') + getGrandTotal('spouse') + getGrandTotal(null)) }}
+      <h3>Combined Total: {{ formatCurrency(getGrandTotal('Client') + getGrandTotal('Spouse') + getGrandTotal(null)) }}
       </h3>
     </div>
   </ng-container>
