@@ -13,15 +13,19 @@ export interface IRealEstate {
   state: string;
   zip: string;
   title_holding:
-    | 'Client'
-    | 'Spouse'
-    | 'Joint-Spouse'
-    | 'TinC'
+    | 'Sole Ownership'
     | 'JTWROS'
-    | 'tod_deed'
-    | 'trust'
-    | 'llc'
-    | 'other';
+    | 'TBE'
+    | 'TIC'
+    | 'Life Estate - Client'
+    | 'Life Estate - Spouse'
+    | 'Life Estate - Other'
+    | 'Remainder Interest'
+    | 'Lady Bird Deed'
+    | 'Trust'
+    | 'LLC/Partnership'
+    | 'Land Contract'
+    | 'Other'
   title_details: string | null;
   approximate_value: number | null;
   mortgage_balance: number | null;
@@ -29,7 +33,7 @@ export interface IRealEstate {
   beneficiaries_on_deed: string | null;
   intended_beneficiary: string | null;
   special_notes: string | null;
-  owned_by: 'Client' | 'Spouse' | null;
+  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' |   null;
   ownership_percentage: number | null;
   other_owners: string | null;
   ownership_value: number | null; // net_value * (ownership_percentage / 100)
