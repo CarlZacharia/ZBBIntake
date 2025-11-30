@@ -1383,11 +1383,11 @@
             class="sub-header"
             *ngIf="assetsGroups.real_estate_holdings.length > 0"
           >
-            <td>Address</td>
-            <td>City, State, Zip</td>
-            <td>Property Type</td>
-            <td>Title</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Address</td>
+            <td style="font-weight:bold; text-decoration: underline;">City, State, Zip</td>
+            <td style="font-weight:bold; text-decoration: underline;">Property Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Title</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1400,7 +1400,7 @@
             <td>{{ item.address_line1 }}</td>
             <td>{{ item.city }}, {{ item.state }}, {{ item.zip }}</td>
             <td>{{ item.property_type }}</td>
-            <td>{{ item.title_holding }}</td>
+            <td>{{ item.owned_by }}</td>
             <td>{{ item.approximate_value | currency }}</td>
           </tr>
           <!-- Bank Account Holdings -->
@@ -1411,11 +1411,11 @@
             class="sub-header"
             *ngIf="assetsGroups.bank_account_holdings.length > 0"
           >
-            <td>Institution</td>
-            <td>Type</td>
-            <td>Account #</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Institution</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Account #</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1439,11 +1439,11 @@
             class="sub-header"
             *ngIf="assetsGroups.nq_account_holdings.length > 0"
           >
-            <td>Institution</td>
-            <td>Type</td>
-            <td>Account #</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Institution</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Account #</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="let item of assetsGroups.nq_account_holdings; let i = index"
@@ -1466,11 +1466,11 @@
             class="sub-header"
             *ngIf="assetsGroups.retirement_account_holdings.length > 0"
           >
-            <td>Institution</td>
-            <td>Type</td>
-            <td>Account #</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Institution</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Account #</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1494,11 +1494,11 @@
             class="sub-header"
             *ngIf="assetsGroups.life_insurance_holdings.length > 0"
           >
-            <td>Company</td>
-            <td>Policy Type</td>
-            <td>Policy #</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Company</td>
+            <td style="font-weight:bold; text-decoration: underline;">Policy Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Policy #</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1522,11 +1522,11 @@
             class="sub-header"
             *ngIf="assetsGroups.business_interest_holdings.length > 0"
           >
-            <td>Business Name</td>
-            <td>Type</td>
-            <td>Ownership %</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Business Name</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Ownership %</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1550,11 +1550,11 @@
             class="sub-header"
             *ngIf="assetsGroups.digital_asset_holdings.length > 0"
           >
-            <td>Asset Name</td>
-            <td>Type</td>
-            <td>Access Location</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Asset Name</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Access Location</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1578,11 +1578,11 @@
             class="sub-header"
             *ngIf="assetsGroups.other_asset_holdings.length > 0"
           >
-            <td>Description</td>
-            <td>Type</td>
-            <td>Heirloom?</td>
-            <td>Owned By</td>
-            <td>Approx. Value</td>
+            <td style="font-weight:bold; text-decoration: underline;">Description</td>
+            <td style="font-weight:bold; text-decoration: underline;">Type</td>
+            <td style="font-weight:bold; text-decoration: underline;">Heirloom?</td>
+            <td style="font-weight:bold; text-decoration: underline;">Owned By</td>
+            <td style="font-weight:bold; text-decoration: underline;">Approx. Value</td>
           </tr>
           <tr
             *ngFor="
@@ -1627,7 +1627,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'real_estate'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -1720,7 +1719,7 @@
                 Client, Spouse & Other(s)
               </option>
               <option value="Trust">Trust</option>
-              <option value="LLC/Entity">LLC/Entity</option>
+              <option value="LLC">LLC</option>
               <option value="Other">Other</option>
             </select>
           </div>
@@ -1740,7 +1739,7 @@
               } @if (editingRealEstate.owned_by !== 'Client' &&
               editingRealEstate.owned_by !== 'Spouse' &&
               editingRealEstate.owned_by !== 'Trust' &&
-              editingRealEstate.owned_by !== 'LLC/Entity') {
+              editingRealEstate.owned_by !== 'LLC') {
               <option value="JTWROS">
                 Joint Tenants with Rights of Survivorship
               </option>
@@ -1764,7 +1763,7 @@
               } @if (editingRealEstate.owned_by !== 'Client' &&
               editingRealEstate.owned_by !== 'Spouse' &&
               editingRealEstate.owned_by !== 'Trust' &&
-              editingRealEstate.owned_by !== 'LLC/Entity') {
+              editingRealEstate.owned_by !== 'LLC') {
               <option value="Life Estate - Other">
                 Life Estate (Other as Life Tenant)
               </option>
@@ -1778,8 +1777,8 @@
               </option>
               } @if (editingRealEstate.owned_by === 'Trust') {
               <option value="In Trust">In Trust</option>
-              } @if (editingRealEstate.owned_by === 'LLC/Entity') {
-              <option value="LLC/Partnership">LLC/Partnership Interest</option>
+              } @if (editingRealEstate.owned_by === 'LLC') {
+              <option value="LLC">LLC Interest</option>
               }
               <option value="Land Contract">
                 Land Contract/Contract for Deed
@@ -1819,7 +1818,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.title_holding === 'TinC'">
+        <div *ngIf="editingRealEstate.title_holding === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -1887,7 +1886,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'real_estate'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -1964,33 +1962,80 @@
 
         <!-- Ownership Structure -->
         <div class="form-row">
-          <div class="form-group">
-            <label>Title Holding *</label>
-            <select
-              [(ngModel)]="editingRealEstate.title_holding"
-              name="title_holding"
-              required
-            >
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
               <option value="Client">Client</option>
               <option value="Spouse">Spouse</option>
-              <option value="Joint Spouse">Joint with Spouse</option>
-              <option value="TinC">Tenants in Common</option>
-              <option value="JTWROS">
-                Joint with Rights of Survivorship
-              </option>
+              <option value="TBE">Joint with Spouse</option>
+z              <option value="TIC">Tenants in Common</option>
+              <option value="JTWROS">Joint with Rights of Survivorship</option>
               <option value="Lady Bird Deed">TOD Deed</option>
               <option value="Trust">Trust</option>
               <option value="LLC">LLC</option>
               <option value="Other">Other</option>
             </select>
           </div>
-
-          <div class="form-group" *ngIf="isMarried">
-            <label>Owned By</label>
-            <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
-              <option value="Joint">Joint</option>
-              <option value="Client">Client</option>
-              <option value="Spouse">Spouse</option>
+                    <div class="form-group">
+            <label>Title Holding Method *</label>
+            <select
+              [(ngModel)]="editingRealEstate.title_holding"
+              name="title_holding"
+              required
+            >
+              @if (editingRealEstate.owned_by === 'Client' ||
+              editingRealEstate.owned_by === 'Spouse') {
+              <option value="Sole Ownership">
+                Sole Ownership (Fee Simple)
+              </option>
+              } @if (editingRealEstate.owned_by !== 'Client' &&
+              editingRealEstate.owned_by !== 'Spouse' &&
+              editingRealEstate.owned_by !== 'Trust' &&
+              editingRealEstate.owned_by !== 'LLC') {
+              <option value="JTWROS">
+                Joint Tenants with Rights of Survivorship
+              </option>
+              <option value="TIC">Tenants in Common</option>
+              } @if (editingRealEstate.owned_by === 'Client & Spouse') {
+              <option value="TBE">Tenants by the Entirety</option>
+              } @if (editingRealEstate.owned_by === 'Client' ||
+              editingRealEstate.owned_by === 'Client & Spouse' ||
+              editingRealEstate.owned_by === 'Client & Other' ||
+              editingRealEstate.owned_by === 'Client, Spouse & Other') {
+              <option value="Life Estate - Client">
+                Life Estate (Client as Life Tenant)
+              </option>
+              } @if (editingRealEstate.owned_by === 'Spouse' ||
+              editingRealEstate.owned_by === 'Client & Spouse' ||
+              editingRealEstate.owned_by === 'Spouse & Other' ||
+              editingRealEstate.owned_by === 'Client, Spouse & Other') {
+              <option value="Life Estate - Spouse">
+                Life Estate (Spouse as Life Tenant)
+              </option>
+              } @if (editingRealEstate.owned_by !== 'Client' &&
+              editingRealEstate.owned_by !== 'Spouse' &&
+              editingRealEstate.owned_by !== 'Trust' &&
+              editingRealEstate.owned_by !== 'LLC') {
+              <option value="Life Estate - Other">
+                Life Estate (Other as Life Tenant)
+              </option>
+              } @if (editingRealEstate.owned_by === 'Client' ||
+              editingRealEstate.owned_by === 'Spouse') {
+              <option value="Remainder Interest">
+                Remainder Interest Only
+              </option>
+              <option value="Lady Bird Deed">
+                Enhanced Life Estate (Lady Bird Deed)
+              </option>
+              } @if (editingRealEstate.owned_by === 'Trust') {
+              <option value="In Trust">In Trust</option>
+              } @if (editingRealEstate.owned_by === 'LLC') {
+              <option value="LLC">LLC Interest</option>
+              }
+              <option value="Land Contract">
+                Land Contract/Contract for Deed
+              </option>
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>
@@ -2027,7 +2072,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.title_holding === 'TinC'">
+        <div *ngIf="editingRealEstate.title_holding === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -2097,7 +2142,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'bank_account'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -2158,25 +2202,32 @@
 
         <!-- Title Type -->
         <div class="form-row">
-          <div class="form-group">
-            <label>Title Type *</label>
-            <select
-              [(ngModel)]="editingBankAccount.title_type"
-              name="title_type"
-              required
-            >
-              <option value="Individual">Individual</option>
-              <option value="Joint">Joint</option>
-              <option value="POD">POD (Payable on Death)</option>
-              <option value="TOD">TOD (Transfer on Death)</option>
+          <!-- Ownership (for married couples) -->
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Client & Spouse">Client & Spouse</option>
+              <option value="Client & Other">Client & Other</option>
+              <option value="Spouse & Other">Spouse & Other</option>
+              <option value="Client, Spouse & Other">
+                Client, Spouse & Other
+              </option>
               <option value="Trust">Trust</option>
+              <option value="LLC">LLC</option>
               <option value="Other">Other</option>
             </select>
           </div>
 
           <div
             class="form-group"
-            *ngIf="editingBankAccount.title_type === 'Joint'"
+            *ngIf="
+              editingBankAccount.owned_by === 'Client & Other' ||
+              editingBankAccount.owned_by === 'Spouse & Other' ||
+              editingBankAccount.owned_by === 'Client, Spouse & Other' ||
+              editingBankAccount.owned_by === 'Other'
+            "
           >
             <label>Joint Owner Name</label>
             <input
@@ -2185,16 +2236,6 @@
               name="joint_owner_name"
             />
           </div>
-        </div>
-
-        <!-- Ownership (for married couples) -->
-        <div class="form-group" *ngIf="isMarried">
-          <label>Owned By</label>
-          <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
-            <option value="Joint">Joint</option>
-            <option value="Client">Client</option>
-            <option value="Spouse">Spouse</option>
-          </select>
         </div>
 
         <!-- Beneficiary Information -->
@@ -2223,7 +2264,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'bank_account'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -2282,25 +2322,30 @@
 
         <!-- Title Type -->
         <div class="form-row">
-          <div class="form-group">
-            <label>Title Type *</label>
-            <select
-              [(ngModel)]="editingBankAccount.title_type"
-              name="title_type"
-              required
-            >
-              <option value="individual">Individual</option>
-              <option value="Joint">Joint</option>
-              <option value="POD">POD (Payable on Death)</option>
-              <option value="TOD">TOD (Transfer on Death)</option>
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
+              <option value="Client">Client Only</option>
+              <option value="Spouse">Spouse Only</option>
+              <option value="Client & Spouse">Client & Spouse</option>
+              <option value="Client & Other">Client & Other(s)</option>
+              <option value="Spouse & Other">Spouse & Other(s)</option>
+              <option value="Client, Spouse & Other">
+                Client, Spouse & Other(s)
+              </option>
               <option value="Trust">Trust</option>
+              <option value="LLC">LLC</option>
               <option value="Other">Other</option>
             </select>
           </div>
-
           <div
             class="form-group"
-            *ngIf="editingBankAccount.title_type === 'Joint'"
+            *ngIf="
+              editingBankAccount.owned_by === 'Client & Other' ||
+              editingBankAccount.owned_by === 'Spouse & Other' ||
+              editingBankAccount.owned_by === 'Client, Spouse & Other' ||
+              editingBankAccount.owned_by === 'Other'
+            "
           >
             <label>Joint Owner Name</label>
             <input
@@ -2312,14 +2357,6 @@
         </div>
 
         <!-- Ownership (for married couples) -->
-        <div class="form-group" *ngIf="isMarried">
-          <label>Owned By</label>
-          <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
-            <option value="Joint">Joint</option>
-            <option value="Client">Client</option>
-            <option value="Spouse">Spouse</option>
-          </select>
-        </div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -2347,7 +2384,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'nq_account'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -2376,8 +2412,8 @@
               name="account_type"
               required
             >
-              <option value="brokerage">Brokerage</option>
-              <option value="other_investment">Other Investment</option>
+              <option value="Brokerage">Brokerage</option>
+              <option value="Other Investment">Other Investment</option>
             </select>
           </div>
 
@@ -2402,27 +2438,27 @@
           />
         </div>
 
-        <!-- Title Type -->
+        <!-- Ownership (for married couples) -->
         <div class="form-row">
-          <div class="form-group">
-            <label>Title Type *</label>
-            <select
-              [(ngModel)]="editingNQAccount.title_type"
-              name="title_type"
-              required
-            >
-              <option value="Information">Individual</option>
-              <option value="Joint">Joint</option>
-              <option value="POD">POD (Payable on Death)</option>
-              <option value="TOD">TOD (Transfer on Death)</option>
+          <div class="form-group" *ngIf="isMarried">
+            <label>Owned By</label>
+            <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
+              <option value="Client">Client</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Client & Spouse">Client & Spouse</option>
+              <option value="Client & Other">Client & Other</option>
+              <option value="Spouse & Other">Spouse & Other</option>
+              <option value="Client, Spouse & Other">
+                Client, Spouse & Other
+              </option>
               <option value="Trust">Trust</option>
               <option value="Other">Other</option>
             </select>
           </div>
-
+          <!-- Title Type -->
           <div
             class="form-group"
-            *ngIf="editingNQAccount.title_type === 'Joint'"
+            *ngIf="editingNQAccount.owned_by === 'Client & Other' || editingNQAccount.owned_by === 'Spouse & Other' || editingNQAccount.owned_by === 'Client, Spouse & Other' || editingNQAccount.owned_by === 'Other'"
           >
             <label>Joint Owner Name</label>
             <input
@@ -2431,16 +2467,6 @@
               name="joint_owner_name"
             />
           </div>
-        </div>
-
-        <!-- Ownership (for married couples) -->
-        <div class="form-group" *ngIf="isMarried">
-          <label>Owned By</label>
-          <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
-            <option value="Joint">Joint</option>
-            <option value="Client">Client</option>
-            <option value="Spouse">Spouse</option>
-          </select>
         </div>
 
         <!-- Notes -->
@@ -2467,7 +2493,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'nq_account'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -2496,8 +2521,8 @@
               name="account_type"
               required
             >
-              <option value="brokerage">Brokerage</option>
-              <option value="other_investment">Other Investment</option>
+              <option value="Brokerage">Brokerage</option>
+              <option value="Other Investment">Other Investment</option>
             </select>
           </div>
 
@@ -2524,25 +2549,14 @@
 
         <!-- Title Type -->
         <div class="form-row">
-          <div class="form-group">
-            <label>Title Type *</label>
-            <select
-              [(ngModel)]="editingNQAccount.title_type"
-              name="title_type"
-              required
-            >
-              <option value="Individual">Individual</option>
-              <option value="Joint">Joint</option>
-              <option value="POD">POD (Payable on Death)</option>
-              <option value="TOD">TOD (Transfer on Death)</option>
-              <option value="Trust">Trust</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
           <div
             class="form-group"
-            *ngIf="editingNQAccount.title_type === 'Joint'"
+            *ngIf="
+              editingNQAccount.owned_by === 'Client & Other' ||
+              editingNQAccount.owned_by === 'Spouse & Other' ||
+              editingNQAccount.owned_by === 'Client, Spouse & Other' ||
+              editingNQAccount.owned_by === 'Other'
+            "
           >
             <label>Joint Owner Name</label>
             <input
@@ -2557,9 +2571,17 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
           <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
-            <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+            <option value="Client & Spouse">Client & Spouse</option>
+            <option value="Client & Other">Client & Other</option>
+            <option value="Spouse & Other">Spouse & Other</option>
+            <option value="Client, Spouse & Other">
+              Client, Spouse & Other
+            </option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -2589,7 +2611,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'retirement_account'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -2698,7 +2719,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'retirement_account'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -2809,7 +2829,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'life_insurance'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -2952,7 +2971,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'life_insurance'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -3097,7 +3115,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'business_interest'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -3298,7 +3315,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'business_interest'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -3501,7 +3517,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'digital_asset'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -3674,7 +3689,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'digital_asset'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">
@@ -3849,7 +3863,6 @@
 <div
   class="modal-overlay"
   *ngIf="showAddModal && currentAssetType === 'other_asset'"
-  (click)="closeAddModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header add-modal-header">
@@ -4011,7 +4024,6 @@
 <div
   class="modal-overlay"
   *ngIf="showEditModal && currentAssetType === 'other_asset'"
-  (click)="closeEditModal()"
 >
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header edit-modal-header">

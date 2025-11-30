@@ -1,49 +1,86 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6" *ngIf="personal() && maritalInfo()">
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6"
+  *ngIf="personal() && maritalInfo()"
+>
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-4xl font-bold text-slate-800 mb-2">Personal Information</h1>
-      <p class="text-slate-600">Please provide your personal details for our records</p>
+      <h1 class="text-4xl font-bold text-slate-800 mb-2">
+        Personal Information
+      </h1>
+      <p class="text-slate-600">
+        Please provide your personal details for our records
+      </p>
     </div>
 
     <!-- Main Form Card -->
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <form>
-
           <!-- Basic Information Section -->
           <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Basic Information</h2>
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Basic Information
+            </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <!-- Legal First Name -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Legal First Name *</span>
+                  <span class="label-text font-semibold"
+                    >Legal First Name *</span
+                  >
                 </label>
-                <input type="text" [(ngModel)]="personal().legal_first_name"
-                  (ngModelChange)="updatePersonalInfo('legal_first_name', $event)" name="legal_first_name"
-                  placeholder="First name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().legal_first_name"
+                  (ngModelChange)="
+                    updatePersonalInfo('legal_first_name', $event)
+                  "
+                  name="legal_first_name"
+                  placeholder="First name"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
               </div>
 
               <!-- Legal Middle Name -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Legal Middle Name</span>
+                  <span class="label-text font-semibold"
+                    >Legal Middle Name</span
+                  >
                 </label>
-                <input type="text" [(ngModel)]="personal().legal_middle_name"
-                  (ngModelChange)="updatePersonalInfo('legal_middle_name', $event)"
-                  name="legal_middle_name" placeholder="Middle name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().legal_middle_name"
+                  (ngModelChange)="
+                    updatePersonalInfo('legal_middle_name', $event)
+                  "
+                  name="legal_middle_name"
+                  placeholder="Middle name"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
               </div>
 
               <!-- Legal Last Name -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Legal Last Name *</span>
+                  <span class="label-text font-semibold"
+                    >Legal Last Name *</span
+                  >
                 </label>
-                <input type="text" [(ngModel)]="personal().legal_last_name"
-                  (ngModelChange)="updatePersonalInfo('legal_last_name', $event)" name="legal_last_name"
-                  placeholder="Last name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().legal_last_name"
+                  (ngModelChange)="
+                    updatePersonalInfo('legal_last_name', $event)
+                  "
+                  name="legal_last_name"
+                  placeholder="Last name"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
               </div>
 
               <!-- Suffix -->
@@ -51,9 +88,14 @@
                 <label class="label">
                   <span class="label-text font-semibold">Suffix</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().suffix"
-                  (ngModelChange)="updatePersonalInfo('suffix', $event)" name="suffix"
-                  placeholder="Jr., Sr., III, etc." class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().suffix"
+                  (ngModelChange)="updatePersonalInfo('suffix', $event)"
+                  name="suffix"
+                  placeholder="Jr., Sr., III, etc."
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
               </div>
 
               <!-- Preferred Name -->
@@ -61,9 +103,12 @@
                 <label class="label">
                   <span class="label-text font-semibold">Sex</span>
                 </label>
-                <select [(ngModel)]="personal().sex"
-                  (ngModelChange)="updatePersonalInfo('sex', $event)" name="sex"
-                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
+                <select
+                  [(ngModel)]="personal().sex"
+                  (ngModelChange)="updatePersonalInfo('sex', $event)"
+                  name="sex"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="'Male'">Male</option>
                   <option [ngValue]="'Female'">Female</option>
@@ -76,19 +121,32 @@
                 <label class="label">
                   <span class="label-text font-semibold">Date of Birth</span>
                 </label>
-                <input type="date" [(ngModel)]="personal().date_of_birth"
-                  (ngModelChange)="updatePersonalInfo('date_of_birth', $event)" name="date_of_birth"
-                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="date"
+                  [(ngModel)]="personal().date_of_birth"
+                  (ngModelChange)="updatePersonalInfo('date_of_birth', $event)"
+                  name="date_of_birth"
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold"
+                />
               </div>
 
               <!-- SSN -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Social Security Number</span>
+                  <span class="label-text font-semibold"
+                    >Social Security Number</span
+                  >
                 </label>
-                <input type="text" [(ngModel)]="personal().ssn_encrypted"
-                  (ngModelChange)="updatePersonalInfo('ssn_encrypted', $event)" name="ssn_encrypted"
-                  placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" mask="000-00-0000" [showMaskTyped]="false" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().ssn_encrypted"
+                  (ngModelChange)="updatePersonalInfo('ssn_encrypted', $event)"
+                  name="ssn_encrypted"
+                  placeholder="XXX-XX-XXXX"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                  mask="000-00-0000"
+                  [showMaskTyped]="false"
+                />
               </div>
 
               <!-- US Citizen -->
@@ -96,9 +154,12 @@
                 <label class="label">
                   <span class="label-text font-semibold">US Citizen?</span>
                 </label>
-                <select [(ngModel)]="personal().us_citizen"
+                <select
+                  [(ngModel)]="personal().us_citizen"
                   (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
-                  name="us_citizen" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
+                  name="us_citizen"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="'Yes'">Yes</option>
                   <option [ngValue]="'No'">No</option>
@@ -110,254 +171,157 @@
                 <label class="label">
                   <span class="label-text font-semibold">Marital Status</span>
                 </label>
-                <select [(ngModel)]="maritalInfo().marital_status"
-                  (ngModelChange)="updateMaritalInfo('marital_status', $event)" name="marital_status"
-                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
+                <select
+                  [(ngModel)]="maritalInfo().marital_status"
+                  (ngModelChange)="updateMaritalInfo('marital_status', $event)"
+                  name="marital_status"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
                   <option [ngValue]="null">Select...</option>
-               <option [ngValue]="null">Select...</option>
-              <option value="Single">Single</option>
-              <option value="Married">Married</option>
-              <option value="Divorced">Divorced</option>
-              <option value="Widowed">Widowed</option>
-                  <option value="domestic_partnership">Domestic Partnership</option>
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                  <option value="domestic_partnership">
+                    Domestic Partnership
+                  </option>
                 </select>
               </div>
 
               <!-- Citizenship Country -->
               <div class="form-control" *ngIf="personal().us_citizen == 'No'">
                 <label class="label">
-                  <span class="label-text font-semibold">Citizenship Country</span>
+                  <span class="label-text font-semibold"
+                    >Citizenship Country</span
+                  >
                 </label>
-                <input type="text" [(ngModel)]="personal().citizenship_country"
-                  (ngModelChange)="updatePersonalInfo('citizenship_country', $event)" name="citizenship_country"
-                  placeholder="Country of citizenship" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().citizenship_country"
+                  (ngModelChange)="
+                    updatePersonalInfo('citizenship_country', $event)
+                  "
+                  name="citizenship_country"
+                  placeholder="Country of citizenship"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
               </div>
             </div>
           </div>
 
           <!-- Current Address Section -->
           <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Current Address</h2>
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Current Address
+            </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
               <!-- Address Line 1 -->
-              <div class="form-control md:col-span-2">
+              <div class="form-control md:col-span-6">
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 1 *</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().address_line1"
-                  (ngModelChange)="updateAddress('address_line1', $event)" name="address_line1"
-                  placeholder="Street address" class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().address_line1"
+                  (ngModelChange)="updateAddress('address_line1', $event)"
+                  name="address_line1"
+                  placeholder="Street address"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Address Line 2 -->
-              <div class="form-control md:col-span-2">
+              <div class="form-control md:col-span-6">
                 <label class="label">
                   <span class="label-text font-semibold">Address Line 2</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().address_line2"
-                  (ngModelChange)="updateAddress('address_line2', $event)" name="address_line2"
-                  placeholder="Apt, Suite, Unit, etc." class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().address_line2"
+                  (ngModelChange)="updateAddress('address_line2', $event)"
+                  name="address_line2"
+                  placeholder="Apt, Suite, Unit, etc."
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- City -->
-              <div class="form-control">
+              <div class="form-control md:col-span-3">
                 <label class="label">
                   <span class="label-text font-semibold">City *</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().city"
-                  (ngModelChange)="updateAddress('city', $event)" name="city" placeholder="City"
-                  class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().city"
+                  (ngModelChange)="updateAddress('city', $event)"
+                  name="city"
+                  placeholder="City"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- State -->
-              <div class="form-control">
+              <div class="form-control md:col-span-1">
                 <label class="label">
                   <span class="label-text font-semibold">State *</span>
                 </label>
-                <select [(ngModel)]="personal().state"
-                  (ngModelChange)="updateAddress('state', $event)" name="state"
-                  class="select select-bordered w-full">
+                <select
+                  [(ngModel)]="personal().state"
+                  (ngModelChange)="updateAddress('state', $event)"
+                  name="state"
+                  class="select select-bordered w-full"
+                >
                   <option [ngValue]="null">Select state...</option>
-                  <option *ngFor="let state of states" [ngValue]="state">{{state}}</option>
+                  <option *ngFor="let state of states" [ngValue]="state">
+                    {{ state }}
+                  </option>
                 </select>
               </div>
 
               <!-- ZIP -->
-              <div class="form-control">
+              <div class="form-control md:col-span-1">
                 <label class="label">
                   <span class="label-text font-semibold">ZIP Code *</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().zip"
-                  (ngModelChange)="updateAddress('zip', $event)" name="zip" placeholder="12345"
-                  class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().zip"
+                  (ngModelChange)="updateAddress('zip', $event)"
+                  name="zip"
+                  placeholder="12345"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Years at Address -->
-              <div class="form-control">
+              <div class="form-control md:col-span-1">
                 <label class="label">
-                  <span class="label-text font-semibold">Years at This Address</span>
+                  <span class="label-text font-semibold">No. Years</span>
                 </label>
-                <input type="number" [(ngModel)]="personal().years_at_address"
-                  (ngModelChange)="updatePersonalInfo('years_at_address', $event)" name="years_at_address"
-                  placeholder="0" class="input input-bordered w-full" />
+                <input
+                  type="number"
+                  [(ngModel)]="personal().years_at_address"
+                  (ngModelChange)="
+                    updatePersonalInfo('years_at_address', $event)
+                  "
+                  name="years_at_address"
+                  placeholder="0"
+                  class="input input-bordered w-full"
+                />
               </div>
             </div>
           </div>
-
-          <!-- Marital Information Section (conditional) -->
-          <div class="mb-8"
-            *ngIf="maritalInfo().marital_status === 'Married' || maritalInfo().marital_status === 'Domestic_partnership'">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Spouse/Partner
-              Information</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <!-- Spouse Legal Name -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Spouse/Partner Legal Name *</span>
-                </label>
-                <input type="text" [value]="(maritalInfo().spouse_legal_name) || ''"
-                  (input)="onInputChange('spouse_legal_name', $event, updateMaritalInfo.bind(this))" name="spouse_legal_name"
-                  placeholder="Full legal name" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
-              </div>
-
-              <!-- Spouse Date of Birth -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Spouse/Partner Date of Birth</span>
-                </label>
-                <input type="date" [value]="(maritalInfo().spouse_dob) || ''"
-                  (input)="onInputChange('spouse_dob', $event, updateMaritalInfo.bind(this))" name="spouse_dob"
-                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
-              </div>
-
-              <!-- Spouse SSN -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Spouse/Partner SSN</span>
-                </label>
-          <input type="text" [(ngModel)]="maritalInfo().spouse_ssn_encrypted" (ngModelChange)="updateMaritalInfo('spouse_ssn_encrypted', $event)" name="spouse_ssn_encrypted" mask="000-00-0000" placeholder="XXX-XX-XXXX" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"  />
-              </div>
-
-              <!-- Marriage Date -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Marriage/Partnership Date</span>
-                </label>
-                <input type="date" [value]="(maritalInfo().marriage_date) || ''"
-                  (input)="onInputChange('marriage_date', $event, updateMaritalInfo.bind(this))" name="marriage_date"
-                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold" />
-              </div>
-
-              <!-- Marriage Location -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Marriage/Partnership Location</span>
-                </label>
-                <input type="text" [value]="(maritalInfo().marriage_location) || ''"
-                  (input)="onInputChange('marriage_location', $event, updateMaritalInfo.bind(this))" name="marriage_location"
-                  placeholder="City, State/Country" class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold" />
-              </div>
-
-              <!-- First Marriage -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">First Marriage?</span>
-                </label>
-                <select [(ngModel)]="maritalInfo().first_marriage"
-                  (ngModelChange)="updateMaritalInfo('first_marriage', $event)" name="first_marriage"
-                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
-                  <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="'Yes'">Yes</option>
-                    <option [ngValue]="'No'">No</option>
-                </select>
-              </div>
-
-              <!-- Relationship Quality -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Relationship Quality</span>
-                </label>
-                <select [value]="(maritalInfo().relationship_quality) || ''"
-                  (input)="onInputChange('relationship_quality', $event, updateMaritalInfo.bind(this))" name="relationship_quality"
-                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
-                  <option [ngValue]="null">Select...</option>
-                  <option value="excellent">Excellent</option>
-                  <option value="good">Good</option>
-                  <option value="strained">Strained</option>
-                  <option value="complicated">Complicated</option>
-                </select>
-              </div>
-
-              <!-- Spouse Has Other Children -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Children from Prior Relationship?</span>
-                </label>
-                <select [(ngModel)]="maritalInfo().spouse_has_other_children"
-                  (ngModelChange)="updateMaritalInfo('spouse_has_other_children', $event)"
-                  name="spouse_has_other_children" class="select select-bordered w-full text-blue-900 border-blue-900 font-bold">
-                  <option [ngValue]="null">Select...</option>
-                  <option [ngValue]="'Yes'">Yes</option>
-                  <option [ngValue]="'No'">No</option>
-                </select>
-              </div>
-
-              <!-- Prenup Exists -->
-              <div class="form-control">
-                  <label class="label cursor-pointer justify-start gap-4">
-                    <div class="flex items-center gap-2">
-                      <input type="checkbox" [checked]="maritalInfo().prenup_exists == 'Yes'"
-                        (change)="onCheckboxChange('prenup_exists', $event, updateMaritalInfo.bind(this))" name="prenup_exists"
-                        class="checkbox checkbox-primary" />
-                      <span class="label-text font-semibold">Prenuptial Agreement Exists</span>
-                    </div>
-                  </label>
-              </div>
-
-              <!-- Postnup Exists -->
-              <div class="form-control">
-                  <label class="label cursor-pointer justify-start gap-4">
-                    <div class="flex items-center gap-2">
-                      <input type="checkbox" [checked]="maritalInfo().postnup_exists == 'Yes'"
-                        (change)="onCheckboxChange('postnup_exists', $event, updateMaritalInfo.bind(this))" name="postnup_exists"
-                        class="checkbox checkbox-primary" />
-                      <span class="label-text font-semibold">Postnuptial Agreement Exists</span>
-                    </div>
-                  </label>
-              </div>
-
-              <!-- Divorce Obligations -->
-              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === 'No'">
-                <label class="label">
-                  <span class="label-text font-semibold">Divorce Obligations (from previous marriage)</span>
-                </label>
-                <textarea [value]="(maritalInfo().divorce_obligations) || ''"
-                  (input)="onInputChange('divorce_obligations', $event, updateMaritalInfo.bind(this))" name="divorce_obligations"
-                  rows="3" placeholder="Alimony, child support, property divisions, etc."
-                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"></textarea>
-              </div>
-
-              <!-- Divorce Decree Restrictions -->
-              <div class="form-control md:col-span-2 lg:col-span-3" *ngIf="maritalInfo().first_marriage === 'No'">
-                <label class="label">
-                  <span class="label-text font-semibold">Divorce Decree Restrictions</span>
-                </label>
-                <textarea [value]="(maritalInfo().divorce_decree_restrictions) || ''"
-                  (input)="onInputChange('divorce_decree_restrictions', $event, updateMaritalInfo.bind(this))"
-                  name="divorce_decree_restrictions" rows="3"
-                  placeholder="Any restrictions or special provisions in divorce decree..."
-                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"></textarea>
-              </div>
-            </div>
-          </div>
-
-
 
           <!-- Contact Information Section -->
           <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Contact Information
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Contact Information
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -366,9 +330,16 @@
                 <label class="label">
                   <span class="label-text font-semibold">Mobile Phone</span>
                 </label>
-                <input type="tel" [(ngModel)]="personal().mobile_phone"
-                  (ngModelChange)="updatePersonalInfo('mobile_phone', $event)" name="mobile_phone"
-                  placeholder="(555) 555-5555" mask="(000) 000-0000" [showMaskTyped]="false" class="input input-bordered w-full" />
+                <input
+                  type="tel"
+                  [(ngModel)]="personal().mobile_phone"
+                  (ngModelChange)="updatePersonalInfo('mobile_phone', $event)"
+                  name="mobile_phone"
+                  placeholder="(555) 555-5555"
+                  mask="(000) 000-0000"
+                  [showMaskTyped]="false"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Home Phone -->
@@ -376,9 +347,16 @@
                 <label class="label">
                   <span class="label-text font-semibold">Home Phone</span>
                 </label>
-                <input type="tel" [(ngModel)]="personal().home_phone"
-                  (ngModelChange)="updatePersonalInfo('home_phone', $event)" name="home_phone"
-                  placeholder="(555) 555-5555" class="input input-bordered w-full" mask="(000) 000-0000" [showMaskTyped]="false" />
+                <input
+                  type="tel"
+                  [(ngModel)]="personal().home_phone"
+                  (ngModelChange)="updatePersonalInfo('home_phone', $event)"
+                  name="home_phone"
+                  placeholder="(555) 555-5555"
+                  class="input input-bordered w-full"
+                  mask="(000) 000-0000"
+                  [showMaskTyped]="false"
+                />
               </div>
 
               <!-- Email -->
@@ -386,19 +364,31 @@
                 <label class="label">
                   <span class="label-text font-semibold">Email</span>
                 </label>
-                <input type="email" [(ngModel)]="personal().email"
-                  (ngModelChange)="updatePersonalInfo('email', $event)" name="email"
-                  placeholder="email@example.com" class="input input-bordered w-full" />
+                <input
+                  type="email"
+                  [(ngModel)]="personal().email"
+                  (ngModelChange)="updatePersonalInfo('email', $event)"
+                  name="email"
+                  placeholder="email@example.com"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Preferred Contact Method -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Preferred Contact Method</span>
+                  <span class="label-text font-semibold"
+                    >Preferred Contact Method</span
+                  >
                 </label>
-                <select [(ngModel)]="personal().preferred_contact_method"
-                  (ngModelChange)="updatePersonalInfo('preferred_contact_method', $event)"
-                  name="preferred_contact_method" class="select select-bordered w-full">
+                <select
+                  [(ngModel)]="personal().preferred_contact_method"
+                  (ngModelChange)="
+                    updatePersonalInfo('preferred_contact_method', $event)
+                  "
+                  name="preferred_contact_method"
+                  class="select select-bordered w-full"
+                >
                   <option [ngValue]="null">Select...</option>
                   <option [ngValue]="'mobile'">Mobile Phone</option>
                   <option [ngValue]="'home'">Home Phone</option>
@@ -411,7 +401,10 @@
 
           <!-- Employment Information Section -->
           <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Employment Information
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Employment Information
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -420,9 +413,14 @@
                 <label class="label">
                   <span class="label-text font-semibold">Occupation</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().occupation"
-                  (ngModelChange)="updatePersonalInfo('occupation', $event)" name="occupation"
-                  placeholder="Your occupation" class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().occupation"
+                  (ngModelChange)="updatePersonalInfo('occupation', $event)"
+                  name="occupation"
+                  placeholder="Your occupation"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Employer Name -->
@@ -430,9 +428,14 @@
                 <label class="label">
                   <span class="label-text font-semibold">Employer Name</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().employer_name"
-                  (ngModelChange)="updatePersonalInfo('employer_name', $event)" name="employer_name"
-                  placeholder="Company name" class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().employer_name"
+                  (ngModelChange)="updatePersonalInfo('employer_name', $event)"
+                  name="employer_name"
+                  placeholder="Company name"
+                  class="input input-bordered w-full"
+                />
               </div>
 
               <!-- Employer Address -->
@@ -440,59 +443,558 @@
                 <label class="label">
                   <span class="label-text font-semibold">Employer Address</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().employer_address"
-                  (ngModelChange)="updatePersonalInfo('employer_address', $event)" name="employer_address"
-                  placeholder="Full address" class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().employer_address"
+                  (ngModelChange)="
+                    updatePersonalInfo('employer_address', $event)
+                  "
+                  name="employer_address"
+                  placeholder="Full address"
+                  class="input input-bordered w-full"
+                />
               </div>
             </div>
           </div>
 
           <!-- Military Service Section -->
           <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2">Military Service</h2>
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Military Service
+            </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <!-- Military Service Checkbox -->
               <div class="form-control">
                 <label class="label cursor-pointer justify-start gap-4">
-                    <div class="flex items-center gap-2">
-                      <input type="checkbox" [checked]="personal().military_service == 'Yes'"
-                        (change)="onCheckboxChange('military_service', $event, updatePersonalInfo.bind(this))" name="military_service"
-                        class="checkbox checkbox-primary" />
-                      <span class="label-text font-semibold">Have you served in the military?</span>
-                    </div>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="personal().military_service == 'Yes'"
+                      (change)="
+                        onCheckboxChange(
+                          'military_service',
+                          $event,
+                          updatePersonalInfo.bind(this)
+                        )
+                      "
+                      name="military_service"
+                      class="checkbox checkbox-primary"
+                    />
+                    <span class="label-text font-semibold"
+                      >Have you served in the military?</span
+                    >
+                  </div>
                 </label>
               </div>
 
               <!-- Military Branch -->
-              <div class="form-control" *ngIf="personal().military_service == 'Yes'">
+              <div
+                class="form-control"
+                *ngIf="personal().military_service == 'Yes'"
+              >
                 <label class="label">
-                  <span class="label-text font-semibold">Branch of Service</span>
+                  <span class="label-text font-semibold"
+                    >Branch of Service</span
+                  >
                 </label>
-                <select [(ngModel)]="personal().military_branch"
-                  (ngModelChange)="updatePersonalInfo('military_branch', $event)" name="military_branch"
-                  class="select select-bordered w-full">
+                <select
+                  [(ngModel)]="personal().military_branch"
+                  (ngModelChange)="
+                    updatePersonalInfo('military_branch', $event)
+                  "
+                  name="military_branch"
+                  class="select select-bordered w-full"
+                >
                   <option [ngValue]="null">Select branch...</option>
-                  <option *ngFor="let branch of militaryBranches" [ngValue]="branch">{{branch}}</option>
+                  <option
+                    *ngFor="let branch of militaryBranches"
+                    [ngValue]="branch"
+                  >
+                    {{ branch }}
+                  </option>
                 </select>
               </div>
 
               <!-- Service Dates -->
-              <div class="form-control" *ngIf="personal().military_service =='Yes'">
+              <div
+                class="form-control"
+                *ngIf="personal().military_service == 'Yes'"
+              >
                 <label class="label">
                   <span class="label-text font-semibold">Service Dates</span>
                 </label>
-                <input type="text" [(ngModel)]="personal().military_service_dates"
-                  (ngModelChange)="updatePersonalInfo('military_service_dates', $event)"
-                  name="military_service_dates" placeholder="e.g., 2000-2004" class="input input-bordered w-full" />
+                <input
+                  type="text"
+                  [(ngModel)]="personal().military_service_dates"
+                  (ngModelChange)="
+                    updatePersonalInfo('military_service_dates', $event)
+                  "
+                  name="military_service_dates"
+                  placeholder="e.g., 2000-2004"
+                  class="input input-bordered w-full"
+                />
               </div>
             </div>
           </div>
 
-          <!-- Action Buttons -->
+          <!-- Marital Information Section (conditional) -->
+          <div
+            class="mb-8"
+            *ngIf="
+              maritalInfo().marital_status === 'Married' ||
+              maritalInfo().marital_status === 'Domestic_partnership'
+            "
+          >
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Spouse/Partner Information
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Spouse Legal Name -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Spouse/Partner Legal Name *</span
+                  >
+                </label>
+                <input
+                  type="text"
+                  [value]="maritalInfo().spouse_legal_name || ''"
+                  (input)="
+                    onInputChange(
+                      'spouse_legal_name',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="spouse_legal_name"
+                  placeholder="Full legal name"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
+              </div>
+
+              <!-- Spouse Date of Birth -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Spouse/Partner Date of Birth</span
+                  >
+                </label>
+                <input
+                  type="date"
+                  [value]="maritalInfo().spouse_dob || ''"
+                  (input)="
+                    onInputChange(
+                      'spouse_dob',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="spouse_dob"
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold"
+                />
+              </div>
+
+              <!-- Spouse SSN -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Spouse/Partner SSN</span
+                  >
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="maritalInfo().spouse_ssn_encrypted"
+                  (ngModelChange)="
+                    updateMaritalInfo('spouse_ssn_encrypted', $event)
+                  "
+                  name="spouse_ssn_encrypted"
+                  mask="000-00-0000"
+                  placeholder="XXX-XX-XXXX"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
+              </div>
+
+              <!-- Marriage Date -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Marriage/Partnership Date</span
+                  >
+                </label>
+                <input
+                  type="date"
+                  [value]="maritalInfo().marriage_date || ''"
+                  (input)="
+                    onInputChange(
+                      'marriage_date',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="marriage_date"
+                  class="input input-bordered w-full text-blue-900 border-blue-900 font-bold"
+                />
+              </div>
+
+              <!-- Marriage Location -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Marriage/Partnership Location</span
+                  >
+                </label>
+                <input
+                  type="text"
+                  [value]="maritalInfo().marriage_location || ''"
+                  (input)="
+                    onInputChange(
+                      'marriage_location',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="marriage_location"
+                  placeholder="City, State/Country"
+                  class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                />
+              </div>
+
+              <!-- First Marriage -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">First Marriage?</span>
+                </label>
+                <select
+                  [(ngModel)]="maritalInfo().first_marriage"
+                  (ngModelChange)="updateMaritalInfo('first_marriage', $event)"
+                  name="first_marriage"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'Yes'">Yes</option>
+                  <option [ngValue]="'No'">No</option>
+                </select>
+              </div>
+
+              <!-- Relationship Quality -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Relationship Quality</span
+                  >
+                </label>
+                <select
+                  [value]="maritalInfo().relationship_quality || ''"
+                  (input)="
+                    onInputChange(
+                      'relationship_quality',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="relationship_quality"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="excellent">Excellent</option>
+                  <option value="good">Good</option>
+                  <option value="strained">Strained</option>
+                  <option value="complicated">Complicated</option>
+                </select>
+              </div>
+
+              <!-- Spouse Has Other Children -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Children from Prior Relationship?</span
+                  >
+                </label>
+                <select
+                  [(ngModel)]="maritalInfo().spouse_has_other_children"
+                  (ngModelChange)="
+                    updateMaritalInfo('spouse_has_other_children', $event)
+                  "
+                  name="spouse_has_other_children"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'Yes'">Yes</option>
+                  <option [ngValue]="'No'">No</option>
+                </select>
+              </div>
+
+              <!--Sex of Spouse-->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Sex of Spouse</span>
+                </label>
+                <select
+                  [(ngModel)]="maritalInfo().spouse_sex"
+                  (ngModelChange)="updateMaritalInfo('spouse_sex', $event)"
+                  name="spouse_sex"
+                  class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'Male'">Male</option>
+                  <option [ngValue]="'Female'">Female</option>
+                  <option [ngValue]="'Other'">Other</option>
+                </select>
+              </div>
+
+              <!-- Prenup Exists -->
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="maritalInfo().prenup_exists == 'Yes'"
+                      (change)="
+                        onCheckboxChange(
+                          'prenup_exists',
+                          $event,
+                          updateMaritalInfo.bind(this)
+                        )
+                      "
+                      name="prenup_exists"
+                      class="checkbox checkbox-primary"
+                    />
+                    <span class="label-text font-semibold"
+                      >Prenuptial Agreement Exists</span
+                    >
+                  </div>
+                </label>
+              </div>
+
+
+              <!-- Postnup Exists -->
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      [checked]="maritalInfo().postnup_exists == 'Yes'"
+                      (change)="
+                        onCheckboxChange(
+                          'postnup_exists',
+                          $event,
+                          updateMaritalInfo.bind(this)
+                        )
+                      "
+                      name="postnup_exists"
+                      class="checkbox checkbox-primary"
+                    />
+                    <span class="label-text font-semibold"
+                      >Postnuptial Agreement Exists</span
+                    >
+                  </div>
+                </label>
+              </div>
+
+
+              <!-- Divorce Obligations -->
+              <div
+                class="form-control md:col-span-2 lg:col-span-3"
+                *ngIf="maritalInfo().first_marriage === 'No'"
+              >
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Divorce Obligations (from previous marriage)</span
+                  >
+                </label>
+                <textarea
+                  [value]="maritalInfo().divorce_obligations || ''"
+                  (input)="
+                    onInputChange(
+                      'divorce_obligations',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="divorce_obligations"
+                  rows="3"
+                  placeholder="Alimony, child support, property divisions, etc."
+                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                ></textarea>
+              </div>
+
+              <!-- Divorce Decree Restrictions -->
+              <div
+                class="form-control md:col-span-2 lg:col-span-3"
+                *ngIf="maritalInfo().first_marriage === 'No'"
+              >
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Divorce Decree Restrictions</span
+                  >
+                </label>
+                <textarea
+                  [value]="maritalInfo().divorce_decree_restrictions || ''"
+                  (input)="
+                    onInputChange(
+                      'divorce_decree_restrictions',
+                      $event,
+                      updateMaritalInfo.bind(this)
+                    )
+                  "
+                  name="divorce_decree_restrictions"
+                  rows="3"
+                  placeholder="Any restrictions or special provisions in divorce decree..."
+                  class="textarea textarea-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
+                ></textarea>
+              </div>
+            </div>
+
+          <!-- Contact Information Section -->
+          <div class="mb-8">
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Spouse Contact Information
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Mobile Phone -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Mobile Phone</span>
+                </label>
+                <input
+                  type="tel"
+                  [(ngModel)]="maritalInfo().mobile_phone"
+                  (ngModelChange)="updateMaritalInfo('mobile_phone', $event)"
+                  name="mobile_phone"
+                  placeholder="(555) 555-5555"
+                  mask="(000) 000-0000"
+                  [showMaskTyped]="false"
+                  class="input input-bordered w-full"
+                />
+              </div>
+
+              <!-- Home Phone -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Home Phone</span>
+                </label>
+                <input
+                  type="tel"
+                  [(ngModel)]="maritalInfo().home_phone"
+                  (ngModelChange)="updateMaritalInfo('home_phone', $event)"
+                  name="home_phone"
+                  placeholder="(555) 555-5555"
+                  class="input input-bordered w-full"
+                  mask="(000) 000-0000"
+                  [showMaskTyped]="false"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Email</span>
+                </label>
+                <input
+                  type="email"
+                  [(ngModel)]="maritalInfo().email"
+                  (ngModelChange)="updateMaritalInfo('email', $event)"
+                  name="email"
+                  placeholder="email@example.com"
+                  class="input input-bordered w-full"
+                />
+              </div>
+
+              <!-- Preferred Contact Method -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold"
+                    >Preferred Contact Method</span
+                  >
+                </label>
+                <select
+                  [(ngModel)]="maritalInfo().preferred_contact_method"
+                  (ngModelChange)="
+                    updateMaritalInfo('preferred_contact_method', $event)
+                  "
+                  name="preferred_contact_method"
+                  class="select select-bordered w-full"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option [ngValue]="'mobile'">Mobile Phone</option>
+                  <option [ngValue]="'home'">Home Phone</option>
+                  <option [ngValue]="'email'">Email</option>
+                  <option [ngValue]="'text'">Text Message</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employment Information Section -->
+          <div class="mb-8">
+            <h2
+              class="text-2xl font-semibold text-slate-700 mb-4 border-b-2 border-primary pb-2"
+            >
+              Spouse Employment Information
+            </h2>
+
+            <div class="grid grid-cols-3 md:grid-cols-3 gap-4">
+              <!-- Occupation -->
+              <div class="form-control col-span-1">
+                <label class="label">
+                  <span class="label-text font-semibold">Spouse Occupation</span>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="maritalInfo().occupation"
+                  (ngModelChange)="updateMaritalInfo('occupation', $event)"
+                  name="occupation"
+                  placeholder="Spouse occupation"
+                  class="input input-bordered w-full"
+                />
+              </div>
+
+              <!-- Employer Name -->
+              <div class="form-control col-span-1">
+                <label class="label">
+                  <span class="label-text font-semibold">Spouse Employer Name</span>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="maritalInfo().employer_name"
+                  (ngModelChange)="updateMaritalInfo('employer_name', $event)"
+                  name="employer_name"
+                  placeholder="Company name"
+                  class="input input-bordered w-full"
+                />
+              </div>
+
+              <!-- Employer Address -->
+              <div class="form-control col-span-1">
+                <label class="label">
+                  <span class="label-text font-semibold">Spouse Employer Address</span>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="maritalInfo().employer_address"
+                  (ngModelChange)="updateMaritalInfo('employer_address', $event)"
+                  name="employer_address"
+                  placeholder="Full address"
+                  class="input input-bordered w-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
         </form>
       </div>
     </div>
   </div>
-</div>
 

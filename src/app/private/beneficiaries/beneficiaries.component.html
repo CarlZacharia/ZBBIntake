@@ -17,7 +17,6 @@
           <th>Name</th>
           <th>Date of Birth</th>
           <th>Marital Status</th>
-          <th>Relationship Quality</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -33,7 +32,6 @@
           </td>
           <td>{{ child.date_of_birth | date }}</td>
           <td>{{ child.marital_status || "N/A" }}</td>
-          <td>{{ child.relationship_quality || "N/A" }}</td>
           <td class="actions">
             <button
               class="btn-small btn-delete"
@@ -57,6 +55,7 @@
           <th>Name</th>
           <th>Relationship</th>
           <th>Date of Birth</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -92,7 +91,6 @@
       <thead>
         <tr>
           <th>Organization Name</th>
-          <th>Mission</th>
           <th>Contact</th>
           <th>Gift Type</th>
           <th>Actions</th>
@@ -105,7 +103,6 @@
           (click)="editCharity(i)"
         >
           <td>{{ charity.organization_name }}</td>
-          <td>{{ charity.mission_description }}</td>
           <td>
             {{ charity.contact_person }}<br />{{ charity.contact_email
             }}<br />{{ charity.contact_phone }}

@@ -195,3 +195,12 @@
   outline: 2px solid #d4a146;
   outline-offset: 2px;
 }
+
+select .select, .select-bordered, .textarea, .textarea-bordered {
+  background-color: aliceblue;
+}
+
+
+.input-bordered {
+  background-color: aliceblue;
+}
