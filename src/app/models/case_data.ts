@@ -55,6 +55,7 @@ export interface IBankAccount {
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' |   null;
   ownership_percentage: number | null;
@@ -79,6 +80,7 @@ export interface INQAccount {
   joint_owner_name: string | null;
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
@@ -108,6 +110,7 @@ export interface IRetirementAccount {
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   rmd_age_reached: boolean | number | string | null;
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | null;
 }
@@ -128,6 +131,7 @@ export interface ILifeInsurance {
   owned_by_trust: boolean | number | string | null;
   trust_name: string | null;
   annual_premium: number | null;
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
@@ -159,6 +163,7 @@ export interface IBusinessInterest {
   intended_successor: string | null;
   successor_is_family: boolean | number | string | null;
   should_business_be_sold: boolean | number | string | null;
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   other_owners: string | null;
@@ -196,6 +201,7 @@ export interface IDigitalAsset {
     | 'memorialize'
     | null;
   access_instructions: string | null;
+  dispo_type: string | null;
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
@@ -236,6 +242,8 @@ export interface IOtherAsset {
   owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
   ownership_percentage: number | null;
   other_owners: string | null;
+  dispo_type: string | null;
+  notes: string | null;
 }
 
 /**
@@ -531,6 +539,8 @@ export interface IPersonal {
   legal_middle_name: string | null;
   legal_last_name: string;
   suffix: string | null;
+  homestate: string | null;
+  homestateother: string | null;
   sex: 'Male' | 'Female' | 'Other' | null;
   date_of_birth: string | null;
   ssn_encrypted: string | null;

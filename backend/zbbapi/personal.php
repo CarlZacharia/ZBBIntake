@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $legal_middle_name = $data['legal_middle_name'] ?? '';
     $legal_last_name = $data['legal_last_name'] ?? '';
     $suffix = $data['suffix'] ?? '';
+    $homestate = $data['homestate'] ?? '';
+    $homestateother = $data['homestateother'] ?? '';
     $sex = $data['sex'] ?? '';
     $date_of_birth = $data['date_of_birth'] ?? null;
     $ssn_encrypted = $data['ssn_encrypted'] ?? '';
@@ -39,13 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $military_branch = $data['military_branch'] ?? '';
     $military_service_dates = $data['military_service_dates'] ?? '';
 
-    $stmt = $conn->prepare("INSERT INTO personal (portal_user_id, legal_first_name, legal_middle_name, legal_last_name, suffix, sex, date_of_birth, ssn_encrypted, us_citizen, address_line1, address_line2, city, state, zip, citizenship_country, years_at_address, mobile_phone, home_phone, email, preferred_contact_method, occupation, employer_name, employer_address, military_service, military_branch, military_service_dates) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssssssississsssiss",
+    $stmt = $conn->prepare("INSERT INTO personal (portal_user_id, legal_first_name, legal_middle_name, legal_last_name, suffix, homestate, homestateother, sex, date_of_birth, ssn_encrypted, us_citizen, address_line1, address_line2, city, state, zip, citizenship_country, years_at_address, mobile_phone, home_phone, email, preferred_contact_method, occupation, employer_name, employer_address, military_service, military_branch, military_service_dates) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssssssssssisssssissssssss",
         $portal_user_id,
         $legal_first_name,
         $legal_middle_name,
         $legal_last_name,
         $suffix,
+        $homestate,
+        $homestateother,
         $sex,
         $date_of_birth,
         $ssn_encrypted,
@@ -98,13 +102,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE personal SET portal_user_id=?, legal_first_name=?, legal_middle_name=?, legal_last_name=?, suffix=?, sex=?, date_of_birth=?, ssn_encrypted=?, us_citizen=?, address_line1=?, address_line2=?, city=?, state=?, zip=?, citizenship_country=?, years_at_address=?, mobile_phone=?, home_phone=?, email=?, preferred_contact_method=?, occupation=?, employer_name=?, employer_address=?, military_service=?, military_branch=?, military_service_dates=? WHERE personal_id=?");
-    $stmt->bind_param("issssssssssssississsssissi",
+    $stmt = $conn->prepare("UPDATE personal SET portal_user_id=?, legal_first_name=?, legal_middle_name=?, legal_last_name=?, suffix=?, homestate=?, homestateother=?, sex=?, date_of_birth=?, ssn_encrypted=?, us_citizen=?, address_line1=?, address_line2=?, city=?, state=?, zip=?, citizenship_country=?, years_at_address=?, mobile_phone=?, home_phone=?, email=?, preferred_contact_method=?, occupation=?, employer_name=?, employer_address=?, military_service=?, military_branch=?, military_service_dates=? WHERE personal_id=?");
+    $stmt->bind_param("issssssssssssississsssississsi",
         $data['portal_user_id'],
         $data['legal_first_name'],
         $data['legal_middle_name'],
         $data['legal_last_name'],
         $data['suffix'],
+        $data['homestate'],
+        $data['homestateother'],
         $data['sex'],
         $data['date_of_birth'],
         $data['ssn_encrypted'],

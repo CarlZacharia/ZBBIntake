@@ -16,7 +16,7 @@
     <!-- Main Form Card -->
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <form>
+        <form #form="ngForm">
           <!-- Basic Information Section -->
           <div class="mb-8">
             <h2
@@ -208,7 +208,39 @@
                 />
               </div>
             </div>
+
+          <!-- Home State Row -->
+          <div class="mt-6 flex flex-row items-center gap-6">
+            <label class="font-semibold text-lg">What State do you call home?</label>
+            <div class="flex flex-row gap-4">
+              <label class="flex items-center gap-1">
+                <input type="radio" name="homestate" [(ngModel)]="personal().homestate" value="Florida" (ngModelChange)="updatePersonalInfo('homestate', $event)" required/>
+                Florida
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="radio" name="homestate" [(ngModel)]="personal().homestate" value="Pennsylvania" (ngModelChange)="updatePersonalInfo('homestate', $event)" required/>
+                Pennsylvania
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="radio" name="homestate" [(ngModel)]="personal().homestate" value="Other" (ngModelChange)="updatePersonalInfo('homestate', $event)" required/>
+                Other
+              </label>
+            </div>
           </div>
+          <!-- Homestate Other Row -->
+          <div class="mb-6 flex flex-row items-center gap-6" *ngIf="personal().homestate === 'Other'">
+            <label class="font-semibold text-lg">What is the name of the State you call home?</label>
+            <input
+              type="text"
+              name="homestateother"
+              [(ngModel)]="personal().homestateother"
+              (ngModelChange)="updatePersonalInfo('homestateother', $event)"
+              class="input input-bordered w-full max-w-xs"
+              placeholder="Enter state name"
+            />
+          </div>
+          </div>
+
 
           <!-- Current Address Section -->
           <div class="mb-8">
@@ -993,6 +1025,9 @@
 
 
 
+        <button class="btn btn-primary" [disabled]="!form.valid" (click)="savePersonalInfo();saveMaritalInfo()">
+          Save
+        </button>
         </form>
       </div>
     </div>

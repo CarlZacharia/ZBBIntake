@@ -1700,7 +1700,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingRealEstate">
-      <form>
+      <form #form="ngForm">
         <!-- Property Type -->
         <div class="form-group">
           <label>Property Type *</label>
@@ -1777,11 +1777,15 @@
               required
             >
               <option value="Client">Client Only</option>
-              <option value="Spouse">Spouse Only</option>
-              <option value="Client & Spouse">Client & Spouse</option>
+              <option value="Spouse" *ngIf="ds.isMarried()">Spouse Only</option>
+              <option value="Client & Spouse" *ngIf="ds.isMarried()">
+                Client & Spouse
+              </option>
               <option value="Client & Other">Client & Other(s)</option>
-              <option value="Spouse & Other">Spouse & Other(s)</option>
-              <option value="Client, Spouse & Other">
+              <option value="Spouse & Other" *ngIf="ds.isMarried()">
+                Spouse & Other(s)
+              </option>
+              <option value="Client, Spouse & Other" *ngIf="ds.isMarried()">
                 Client, Spouse & Other(s)
               </option>
               <option value="Trust">Trust</option>
@@ -1798,7 +1802,7 @@
               required
             >
               @if (editingRealEstate.owned_by === 'Client' ||
-              editingRealEstate.owned_by === 'Spouse') {
+              editingRealEstate.owned_by === 'Spouse' && ds.isMarried()) {
               <option value="Sole Ownership">
                 Sole Ownership (Fee Simple)
               </option>
@@ -1864,6 +1868,7 @@
               type="number"
               [(ngModel)]="editingRealEstate.approximate_value"
               name="approximate_value"
+              required
             />
           </div>
           <div class="form-group">
@@ -1902,7 +1907,8 @@
           </div>
         </div>
 
-        <!-- Beneficiary Information -->
+        @if (editingRealEstate.title_holding === 'Lady Bird Deed' ||
+        editingRealEstate.title_holding === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -1911,6 +1917,7 @@
             rows="2"
           ></textarea>
         </div>
+        }
 
         <div class="form-group">
           <label>Intended Beneficiary</label>
@@ -1930,13 +1937,19 @@
             rows="3"
           ></textarea>
         </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeAddModal()">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            [disabled]="!form.valid"
+            (click)="saveNewAsset()"
+          >
+            Save
+          </button>
+        </div>
       </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeAddModal()">
-        Cancel
-      </button>
-      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
     </div>
   </div>
 </div>
@@ -1952,7 +1965,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingRealEstate">
-      <form>
+      <form #form="ngForm">
         <!-- Property Type -->
         <div class="form-group">
           <label>Property Type *</label>
@@ -2023,14 +2036,23 @@
         <div class="form-row">
           <div class="form-group" *ngIf="isMarried">
             <label>Owned By</label>
-            <select [(ngModel)]="editingRealEstate.owned_by" name="owned_by">
-              <option value="Client">Client</option>
-              <option value="Spouse">Spouse</option>
-              <option value="TBE">Joint with Spouse</option>
-              z
-              <option value="TIC">Tenants in Common</option>
-              <option value="JTWROS">Joint with Rights of Survivorship</option>
-              <option value="Lady Bird Deed">TOD Deed</option>
+            <select
+              [(ngModel)]="editingRealEstate.owned_by"
+              name="owned_by"
+              required
+            >
+              <option value="Client">Client Only</option>
+              <option value="Spouse" *ngIf="ds.isMarried()">Spouse Only</option>
+              <option value="Client & Spouse" *ngIf="ds.isMarried()">
+                Client & Spouse
+              </option>
+              <option value="Client & Other">Client & Other(s)</option>
+              <option value="Spouse & Other" *ngIf="ds.isMarried()">
+                Spouse & Other(s)
+              </option>
+              <option value="Client, Spouse & Other" *ngIf="ds.isMarried()">
+                Client, Spouse & Other(s)
+              </option>
               <option value="Trust">Trust</option>
               <option value="LLC">LLC</option>
               <option value="Other">Other</option>
@@ -2097,6 +2119,7 @@
               [(ngModel)]="editingRealEstate.approximate_value"
               name="approximate_value"
               (ngModelChange)="onRealEstateValueChange()"
+              required
             />
           </div>
           <div class="form-group">
@@ -2137,7 +2160,8 @@
         </div>
 
         <!-- Beneficiary Information -->
-         @if (editingRealEstate.title_holding === 'Lady Bird Deed' || editingRealEstate.title_holding === 'Life Estate') {
+        @if (editingRealEstate.title_holding === 'Lady Bird Deed' ||
+        editingRealEstate.title_holding === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -2146,7 +2170,7 @@
             rows="2"
           ></textarea>
         </div>
-      }
+        }
         <div class="form-group">
           <label>Intended Beneficiary</label>
           <input
@@ -2165,15 +2189,20 @@
             rows="3"
           ></textarea>
         </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeEditModal()">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            [disabled]="!form.valid"
+            (click)="saveEditAsset()"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeEditModal()">
-        Cancel
-      </button>
-      <button class="btn btn-primary" (click)="saveEditAsset()">
-        Save Changes
-      </button>
     </div>
   </div>
 </div>
@@ -2189,7 +2218,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingBankAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
@@ -2237,6 +2266,7 @@
             type="number"
             [(ngModel)]="editingBankAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2245,13 +2275,21 @@
           <!-- Ownership (for married couples) -->
           <div class="form-group" *ngIf="isMarried">
             <label>Owned By</label>
-            <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
+            <select
+              [(ngModel)]="editingBankAccount.owned_by"
+              name="owned_by"
+              required
+            >
               <option value="Client">Client</option>
-              <option value="Spouse">Spouse</option>
-              <option value="Client & Spouse">Client & Spouse</option>
+              <option value="Spouse" *ngIf="ds.isMarried()">Spouse</option>
+              <option value="Client & Spouse" *ngIf="ds.isMarried()">
+                Client & Spouse
+              </option>
               <option value="Client & Other">Client & Other</option>
-              <option value="Spouse & Other">Spouse & Other</option>
-              <option value="Client, Spouse & Other">
+              <option value="Spouse & Other" *ngIf="ds.isMarried()">
+                Spouse & Other
+              </option>
+              <option value="Client, Spouse & Other" *ngIf="ds.isMarried()">
                 Client, Spouse & Other
               </option>
               <option value="Trust">Trust</option>
@@ -2278,7 +2316,20 @@
           </div>
         </div>
 
-        <!-- Beneficiary Information -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingBankAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="POD">Payable on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -2311,7 +2362,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingBankAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
@@ -2357,6 +2408,7 @@
             type="number"
             [(ngModel)]="editingBankAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2364,7 +2416,11 @@
         <div class="form-row">
           <div class="form-group" *ngIf="isMarried">
             <label>Owned By</label>
-            <select [(ngModel)]="editingBankAccount.owned_by" name="owned_by">
+            <select
+              [(ngModel)]="editingBankAccount.owned_by"
+              name="owned_by"
+              required
+            >
               <option value="Client">Client Only</option>
               <option value="Spouse">Spouse Only</option>
               <option value="Client & Spouse">Client & Spouse</option>
@@ -2396,7 +2452,20 @@
           </div>
         </div>
 
-        <!-- Ownership (for married couples) -->
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingBankAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="POD">Payable on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -2407,15 +2476,15 @@
             rows="3"
           ></textarea>
         </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeEditModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" (click)="saveEditAsset()">
+            Save Changes
+          </button>
+        </div>
       </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeEditModal()">
-        Cancel
-      </button>
-      <button class="btn btn-primary" (click)="saveEditAsset()">
-        Save Changes
-      </button>
     </div>
   </div>
 </div>
@@ -2431,7 +2500,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingNQAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
@@ -2475,6 +2544,7 @@
             type="number"
             [(ngModel)]="editingNQAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2482,7 +2552,11 @@
         <div class="form-row">
           <div class="form-group" *ngIf="isMarried">
             <label>Owned By</label>
-            <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
+            <select
+              [(ngModel)]="editingNQAccount.owned_by"
+              name="owned_by"
+              required
+            >
               <option value="Client">Client</option>
               <option value="Spouse">Spouse</option>
               <option value="Client & Spouse">Client & Spouse</option>
@@ -2512,6 +2586,21 @@
               name="joint_owner_name"
             />
           </div>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingNQAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <!-- Notes -->
@@ -2545,7 +2634,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingNQAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Institution Name -->
         <div class="form-group">
           <label>Institution Name *</label>
@@ -2589,6 +2678,7 @@
             type="number"
             [(ngModel)]="editingNQAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2615,7 +2705,11 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingNQAccount.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingNQAccount.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
             <option value="Client & Spouse">Client & Spouse</option>
@@ -2624,6 +2718,21 @@
             <option value="Client, Spouse & Other">
               Client, Spouse & Other
             </option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingNQAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
             <option value="Trust">Trust</option>
             <option value="LLC">LLC</option>
             <option value="Other">Other</option>
@@ -2663,7 +2772,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingRetirementAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Account Type -->
         <div class="form-group">
           <label>Account Type *</label>
@@ -2713,6 +2822,7 @@
             type="number"
             [(ngModel)]="editingRetirementAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2722,6 +2832,7 @@
           <select
             [(ngModel)]="editingRetirementAccount.owned_by"
             name="owned_by"
+            required
           >
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
@@ -2738,6 +2849,20 @@
             />
             RMD Age Reached
           </label>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingRetirementAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="BD">Beneficiary Designation</option>
+            <option value="Trust">Trust</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <!-- Notes -->
@@ -2771,7 +2896,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingRetirementAccount">
-      <form>
+      <form #form="ngForm">
         <!-- Account Type -->
         <div class="form-group">
           <label>Account Type *</label>
@@ -2821,6 +2946,7 @@
             type="number"
             [(ngModel)]="editingRetirementAccount.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -2830,6 +2956,7 @@
           <select
             [(ngModel)]="editingRetirementAccount.owned_by"
             name="owned_by"
+            required
           >
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
@@ -2846,6 +2973,20 @@
             />
             RMD Age Reached
           </label>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingRetirementAccount.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="BD">Beneficiary Designation</option>
+            <option value="Trust">Trust</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <!-- Notes -->
@@ -2881,7 +3022,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingLifeInsurance">
-      <form>
+      <form #form="ngForm">
         <!-- Insurance Company -->
         <div class="form-group">
           <label>Insurance Company *</label>
@@ -2985,10 +3126,29 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingLifeInsurance.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingLifeInsurance.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="BD">Beneficiary Designation</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3023,7 +3183,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingLifeInsurance">
-      <form>
+      <form #form="ngForm">
         <!-- Insurance Company -->
         <div class="form-group">
           <label>Insurance Company *</label>
@@ -3070,7 +3230,6 @@
               type="number"
               [(ngModel)]="editingLifeInsurance.face_value"
               name="face_value"
-              required
             />
           </div>
           <div class="form-group">
@@ -3127,10 +3286,29 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingLifeInsurance.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingLifeInsurance.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingLifeInsurance.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="BD">Beneficiary Designation</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3167,7 +3345,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingBusinessInterest">
-      <form>
+      <form #form="ngForm">
         <!-- Business Name -->
         <div class="form-group">
           <label>Business Name *</label>
@@ -3205,6 +3383,7 @@
               name="ownership_percentage"
               min="0"
               max="100"
+              required
             />
           </div>
         </div>
@@ -3216,6 +3395,7 @@
             type="number"
             [(ngModel)]="editingBusinessInterest.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -3329,10 +3509,26 @@
           <select
             [(ngModel)]="editingBusinessInterest.owned_by"
             name="owned_by"
+            required
           >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingBusinessInterest.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3367,7 +3563,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingBusinessInterest">
-      <form>
+      <form #form="ngForm">
         <!-- Business Name -->
         <div class="form-group">
           <label>Business Name *</label>
@@ -3405,6 +3601,7 @@
               name="ownership_percentage"
               min="0"
               max="100"
+              required
             />
           </div>
         </div>
@@ -3416,6 +3613,7 @@
             type="number"
             [(ngModel)]="editingBusinessInterest.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -3533,6 +3731,21 @@
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingBusinessInterest.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3569,7 +3782,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingDigitalAsset">
-      <form>
+      <form #form="ngForm">
         <!-- Asset Type -->
         <div class="form-group">
           <label>Asset Type *</label>
@@ -3622,6 +3835,7 @@
             type="number"
             [(ngModel)]="editingDigitalAsset.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -3703,10 +3917,44 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingDigitalAsset.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingDigitalAsset.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingDigitalAsset.dispo_type"
+            name="dispo_type"
+            required
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3741,7 +3989,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingDigitalAsset">
-      <form>
+      <form #form="ngForm">
         <!-- Asset Type -->
         <div class="form-group">
           <label>Asset Type *</label>
@@ -3794,6 +4042,7 @@
             type="number"
             [(ngModel)]="editingDigitalAsset.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
 
@@ -3852,6 +4101,7 @@
           <select
             [(ngModel)]="editingDigitalAsset.intended_disposition"
             name="intended_disposition"
+            required
           >
             <option [ngValue]="null">Not Specified</option>
             <option value="delete">Delete</option>
@@ -3875,10 +4125,28 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingDigitalAsset.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingDigitalAsset.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isMarried">
+          <label>Beneficiary Designation?</label>
+          <select
+            [(ngModel)]="editingDigitalAsset.dispo_type"
+            name="dispo_type"
+          >
+            <option value="Will">None</option>
+            <option value="TOD">Transfer on Death</option>
+            <option value="Trust">Trust</option>
+            <option value="LLC">LLC</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -3915,7 +4183,7 @@
       <button class="close-btn" (click)="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingOtherAsset">
-      <form>
+      <form #form="ngForm">
         <!-- Asset Type -->
         <div class="form-group">
           <label>Asset Type *</label>
@@ -3962,6 +4230,7 @@
             type="number"
             [(ngModel)]="editingOtherAsset.approximate_value"
             name="approximate_value"
+            required
           />
         </div>
         <!-- Vehicle Loan (only for vehicles) -->
@@ -4048,7 +4317,11 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingOtherAsset.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>
@@ -4076,7 +4349,7 @@
       <button class="close-btn" (click)="closeEditModal()">&times;</button>
     </div>
     <div class="modal-body" *ngIf="editingOtherAsset">
-      <form>
+      <form #form="ngForm">
         <!-- Asset Type -->
         <div class="form-group">
           <label>Asset Type *</label>
@@ -4124,6 +4397,7 @@
             [(ngModel)]="editingOtherAsset.approximate_value"
             name="approximate_value"
             (ngModelChange)="onOtherAssetValueChange()"
+            required
           />
         </div>
         <!-- Vehicle Loan (only for vehicles) -->
@@ -4210,7 +4484,11 @@
         <!-- Ownership (for married couples) -->
         <div class="form-group" *ngIf="isMarried">
           <label>Owned By</label>
-          <select [(ngModel)]="editingOtherAsset.owned_by" name="owned_by">
+          <select
+            [(ngModel)]="editingOtherAsset.owned_by"
+            name="owned_by"
+            required
+          >
             <option value="Joint">Joint</option>
             <option value="Client">Client</option>
             <option value="Spouse">Spouse</option>

@@ -61,8 +61,11 @@ export class PersonalComponent {
     return null;
   });
 
-  constructor(public ds: DataService) { }
-
+  constructor(public ds: DataService) {
+    if(this.personal().homestate !== null){
+      this.ds.homestate = this.personal().homestate;
+   }
+  }
   // Backwards compatibility getter - can be removed if not used elsewhere
   get csd(): IClientData {
     return this.ds.clientdata();

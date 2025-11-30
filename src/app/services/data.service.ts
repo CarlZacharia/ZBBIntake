@@ -48,6 +48,8 @@ import { IDebt } from '../models/case_data';
   providedIn: 'root',
 })
 export class DataService {
+  homestate: string | null = null ;
+
   booleanFields = [
     'special_needs',
     'has_children',
@@ -126,6 +128,8 @@ export class DataService {
       legal_last_name: '',
       suffix: null,
       sex: null,
+      homestate: null,
+      homestateother: null,
       date_of_birth: null,
       ssn_encrypted: null,
       us_citizen: 'Yes',
@@ -849,6 +853,7 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? null,
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
+      dispo_type: asset.dispo_type ?? null,
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -957,6 +962,7 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? '',
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
+      dispo_type: asset.dispo_type ?? null,
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -1498,6 +1504,7 @@ removeCharity(index: number) {
     joint_owner_name: null,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
+    dispo_type: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1515,6 +1522,7 @@ removeCharity(index: number) {
     joint_owner_name: null,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
+    dispo_type: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1532,6 +1540,7 @@ removeCharity(index: number) {
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
     rmd_age_reached: false,
+    dispo_type: null,
     notes: null,
     owned_by: null,
   };
@@ -1551,6 +1560,7 @@ removeCharity(index: number) {
     intended_successor: null,
     successor_is_family: null,
     should_business_be_sold: null,
+    dispo_type: null,
     notes: null,
     owned_by: null,
     other_owners: null,
@@ -1569,6 +1579,7 @@ removeCharity(index: number) {
     owned_by_trust: false,
     trust_name: null,
     annual_premium: 0,
+    dispo_type: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1587,6 +1598,7 @@ removeCharity(index: number) {
     seed_phrase_location: null,
     intended_disposition: null,
     access_instructions: null,
+    dispo_type: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1608,6 +1620,8 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
+    dispo_type: null,
+    notes: null,
   };
 
   /**
@@ -1653,6 +1667,8 @@ removeCharity(index: number) {
         legal_middle_name: null,
         legal_last_name: '',
         suffix: null,
+        homestate: null,
+        homestateother: null,
         sex: null,
         date_of_birth: null,
         ssn_encrypted: null,
@@ -1927,4 +1943,8 @@ removeCharity(index: number) {
   /**
    * Update a real estate holding in MariaDB
    */
+  readonly isMarried = computed(() => {
+    const status = this.maritalInfo()?.marital_status;
+    return status === 'Married' || status === 'Domestic_partnership';
+  });
 }
