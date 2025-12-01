@@ -40,7 +40,7 @@
                     updatePersonalInfo('legal_first_name', $event)
                   "
                   name="legal_first_name"
-                  placeholder="First name"
+                  placeholder="First name" required
                   class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
                 />
               </div>
@@ -77,7 +77,7 @@
                   (ngModelChange)="
                     updatePersonalInfo('legal_last_name', $event)
                   "
-                  name="legal_last_name"
+                  name="legal_last_name" required
                   placeholder="Last name"
                   class="input input-bordered w-full text-blue-900 placeholder-blue-900 border-blue-900 font-bold"
                 />
@@ -106,7 +106,7 @@
                 <select
                   [(ngModel)]="personal().sex"
                   (ngModelChange)="updatePersonalInfo('sex', $event)"
-                  name="sex"
+                  name="sex"  required
                   class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
                 >
                   <option [ngValue]="null">Select...</option>
@@ -125,7 +125,7 @@
                   type="date"
                   [(ngModel)]="personal().date_of_birth"
                   (ngModelChange)="updatePersonalInfo('date_of_birth', $event)"
-                  name="date_of_birth"
+                  name="date_of_birth" required
                   class="input input-bordered w-full text-blue-900 border-blue-900 font-bold"
                 />
               </div>
@@ -157,7 +157,7 @@
                 <select
                   [(ngModel)]="personal().us_citizen"
                   (ngModelChange)="updatePersonalInfo('us_citizen', $event)"
-                  name="us_citizen"
+                  name="us_citizen" required
                   class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
                 >
                   <option [ngValue]="null">Select...</option>
@@ -174,10 +174,9 @@
                 <select
                   [(ngModel)]="maritalInfo().marital_status"
                   (ngModelChange)="updateMaritalInfo('marital_status', $event)"
-                  name="marital_status"
+                  name="marital_status" required
                   class="select select-bordered w-full text-blue-900 border-blue-900 font-bold"
                 >
-                  <option [ngValue]="null">Select...</option>
                   <option [ngValue]="null">Select...</option>
                   <option value="Single">Single</option>
                   <option value="Married">Married</option>
@@ -261,7 +260,7 @@
                   [(ngModel)]="personal().address_line1"
                   (ngModelChange)="updateAddress('address_line1', $event)"
                   name="address_line1"
-                  placeholder="Street address"
+                  placeholder="Street address" required
                   class="input input-bordered w-full"
                 />
               </div>
@@ -293,6 +292,7 @@
                   name="city"
                   placeholder="City"
                   class="input input-bordered w-full"
+                  required
                 />
               </div>
 
@@ -306,7 +306,8 @@
                   (ngModelChange)="updateAddress('state', $event)"
                   name="state"
                   class="select select-bordered w-full"
-                >
+                  required>
+
                   <option [ngValue]="null">Select state...</option>
                   <option *ngFor="let state of states" [ngValue]="state">
                     {{ state }}
@@ -324,7 +325,7 @@
                   [(ngModel)]="personal().zip"
                   (ngModelChange)="updateAddress('zip', $event)"
                   name="zip"
-                  placeholder="12345"
+                  placeholder="12345" required
                   class="input input-bordered w-full"
                 />
               </div>
@@ -371,6 +372,7 @@
                   mask="(000) 000-0000"
                   [showMaskTyped]="false"
                   class="input input-bordered w-full"
+                  required
                 />
               </div>
 
@@ -386,7 +388,7 @@
                   name="home_phone"
                   placeholder="(555) 555-5555"
                   class="input input-bordered w-full"
-                  mask="(000) 000-0000"
+                  mask="(000) 000-0000" required
                   [showMaskTyped]="false"
                 />
               </div>

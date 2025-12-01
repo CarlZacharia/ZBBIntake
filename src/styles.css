@@ -23,6 +23,17 @@ textarea::placeholder {
   color: #1e3a8a;
   opacity: 1;
 }
+
+
+input.ng-invalid[required],
+select.ng-invalid[required],
+input[type="checkbox"].ng-invalid[required],
+input[type="radio"].ng-invalid[required] {
+  border: 1px solid red !important;
+  outline: 1px solid red !important;
+}
+
+
 /* stylelint-disable */
 
 /* stylelint-enable */

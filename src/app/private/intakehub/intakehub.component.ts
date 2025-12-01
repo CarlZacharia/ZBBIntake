@@ -2,6 +2,7 @@ import { Component, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-intakehub',
@@ -12,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class IntakehubComponent {
   showIntakeOptions: boolean = false;
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, public ds: DataService) {
     // Method 1: Using effect to reactively log user data whenever it changes
     effect(() => {
       const currentUser = this.authService.currentUser();

@@ -47,10 +47,16 @@
         <div class="card-image">
           <img src="/intakeform.jpg" alt="New Intake">
         </div>
-        <div class="card-content">
+        <div class="card-content" *ngIf="ds.personal().legal_last_name == ''">
           <h2 class="card-title">Estate Planning Intake</h2>
-          <p class="card-description" style="font-size: 0.95rem; margin-bottom: 0.5rem;">Start a new client intake form</p>
-          <div *ngIf="authService.currentUser()?.date_created" style="font-size: 0.85rem; color: #888; margin-top: 0.25rem;">
+          <p class="card-description text-center" style="font-size: 0.95rem; margin-bottom: 0.5rem;">Start a new client intake form</p>
+
+        </div>
+
+        <div class="card-content" *ngIf="ds.personal().legal_last_name != ''">
+          <h2 class="card-title">Estate Planning Intake</h2>
+          <p class="card-description text-center" style="font-size: 0.95rem; margin-bottom: 0.5rem;">Continue Intake for {{ds.personal().legal_first_name}} {{ds.personal().legal_last_name}}</p>
+          <div *ngIf="authService.currentUser()?.date_created" style="font-size: 0.85rem; color: #888; margin-top: 0.25rem;text-align: center;">
             Created: {{ authService.currentUser()?.date_created | date:'longDate' }}
           </div>
         </div>

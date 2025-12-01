@@ -3,278 +3,329 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Headers
+header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://localhost:4200');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+// Handle preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  http_response_code(200);
-  exit;
+    http_response_code(200);
+    exit;
 }
 
-require_once 'db.php';
-
-
+// Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  http_response_code(405);
-  echo json_encode(['error' => 'Method not allowed']);
-  exit();
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+    exit();
 }
 
+// Database connection
+require __DIR__ . '/db.php';
+
+// Parse input
 $input = json_decode(file_get_contents('php://input'), true);
 
+$table = $input['table'] ?? null;
+$data = $input['data'] ?? null;
+$action = $input['action'] ?? ($data['action'] ?? null);
 
-$table = isset($input['table']) ? $input['table'] : null;
-$data = isset($input['data']) ? $input['data'] : null;
-
-// Support action in both top-level and inside data
-$action = isset($input['action']) ? $input['action'] : (isset($data['action']) ? $data['action'] : null);
-
-
+// Validate required fields
 if (!$table || !$data || !is_array($data)) {
-  http_response_code(400);
-  echo json_encode(['error' => 'Missing table or data']);
-  exit();
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing table or data']);
+    exit();
 }
 
+// Whitelist allowed tables for security
+$allowedTables = [
+    'personal',
+    'marital_info',
+    'client',
+    'child',
+    'family_member',
+    'charity',
+    'real_estate_holdings',
+    'bank_account_holdings',
+    'nq_account_holdings',
+    'life_insurance_holdings',
+    'retirement_account_holdings',
+    'other_asset_holdings',
+    'business_interest_holdings',
+    'guardian_preferences'
+];
 
-$table = isset($input['table']) ? $input['table'] : null;
-$data = isset($input['data']) ? $input['data'] : null;
-$action = isset($input['action']) ? $input['action'] : (isset($data['action']) ? $data['action'] : null);
+if (!in_array($table, $allowedTables)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid table name', 'table' => $table]);
+    exit();
+}
 
-// DEBUG - remove after testing
+// Determine primary key from input or by table name
+$primaryKey = $input['asset_id_type'] ?? $data['asset_id_type'] ?? null;
 
-
-// Only detect and validate primary key for update/delete actions
-$primaryKey = null;
-$primaryId = null;
-if ($action === 'update' || $action === 'delete') {
-
-  // Determine primary key name (e.g., real_estate_id) and value
-  if (isset($input['asset_id_type'])) {
-    $primaryKey = $input['asset_id_type'];
-  } elseif (isset($data['asset_id_type'])) {
-    $primaryKey = $data['asset_id_type'];
-  } else {
-    // Fallback: set primaryKey based on table name
+if (!$primaryKey) {
     switch ($table) {
-      case 'child':
-        $primaryKey = 'child_id';
-        break;
-      case 'family_member':
-        $primaryKey = 'family_member_id';
-        break;
-      case 'charity':
-        $primaryKey = 'charity_id';
-        break;
-      case 'real_estate_holdings':
-        $primaryKey = 'real_estate_id';
-        break;
-      case 'bank_account_holdings':
-        $primaryKey = 'bank_account_id';
-        break;
-      case 'nq_account_holdings':
-        $primaryKey = 'nq_account_id';
-        break;
-      case 'life_insurance_holdings':
-        $primaryKey = 'life_insurance_id';
-        break;
-      case 'retirement_account_holdings':
-        $primaryKey = 'retirement_account_id';
-        break;
-      case 'other_asset_holdings':
-        $primaryKey = 'other_asset_id';
-        break;
-      case 'business_interest_holdings':
-        $primaryKey = 'business_interest_id';
-        break;
-      case 'debt':
-        $primaryKey = 'debt_id';
-        break;
-      // Add more cases as needed for other asset tables
-      default:
-        $primaryKey = null;
+        case 'child':
+            $primaryKey = 'child_id';
+            break;
+        case 'family_member':
+            $primaryKey = 'family_member_id';
+            break;
+        case 'charity':
+            $primaryKey = 'charity_id';
+            break;
+        case 'real_estate_holdings':
+            $primaryKey = 'real_estate_id';
+            break;
+        case 'bank_account_holdings':
+            $primaryKey = 'bank_account_id';
+            break;
+        case 'nq_account_holdings':
+            $primaryKey = 'nq_account_id';
+            break;
+        case 'life_insurance_holdings':
+            $primaryKey = 'life_insurance_id';
+            break;
+        case 'retirement_account_holdings':
+            $primaryKey = 'retirement_account_id';
+            break;
+        case 'other_asset_holdings':
+            $primaryKey = 'other_asset_id';
+            break;
+        case 'business_interest_holdings':
+            $primaryKey = 'business_interest_id';
+            break;
+        // Tables that use portal_user_id as primary key
+        case 'client':
+        case 'personal':
+        case 'marital_info':
+        case 'guardian_preferences':
+            $primaryKey = 'portal_user_id';
+            break;
+        default:
+            $primaryKey = null;
     }
-  }
-
-  if ($primaryKey) {
-    if (isset($input[$primaryKey])) {
-      $primaryId = $input[$primaryKey];
-    } elseif (isset($data[$primaryKey])) {
-      $primaryId = $data[$primaryKey];
-    } elseif (isset($input['id'])) {
-      $primaryId = $input['id'];
-    } elseif (isset($data['id'])) {
-      $primaryId = $data['id'];
-    }
-  }
-
-
 }
 
+// Get primary key value
+$primaryId = $input['id'] ?? ($data[$primaryKey] ?? null);
 
-// Only validate primary key for update/delete actions
-if ($action === 'update' || $action === 'delete') {
-  if (!$table || !$primaryKey || !$primaryId) {
-    $noPrimaryKeyTables = ['personal', 'marital_info'];
-    if (!in_array($table, $noPrimaryKeyTables)) {
-      http_response_code(400);
-      echo json_encode(['error' => 'Missing table, asset_id_type, or primary key value', 'table' => $table, 'primaryKey' => $primaryKey, 'primaryId' => $primaryId]);
-      exit();
+// Main tables that should not allow insert (only update) - records created during registration
+$mainTables = ['personal', 'marital_info', 'client', 'guardian_preferences'];
+
+/**
+ * Helper function to save concern assignments
+ */
+function saveConcernAssignments($conn, $table, $data, $beneficiaryId) {
+    if (!isset($data['concern_ids']) || !is_array($data['concern_ids'])) {
+        return;
     }
-  }
+
+    $concern_ids = $data['concern_ids'];
+    $portal_user_id = isset($data['portal_user_id']) ? intval($data['portal_user_id']) : 0;
+
+    // Determine the beneficiary ID field based on table
+    $beneficiary_id_field = null;
+    switch ($table) {
+        case 'child':
+            $beneficiary_id_field = 'child_id';
+            break;
+        case 'family_member':
+            $beneficiary_id_field = 'family_member_id';
+            break;
+        case 'charity':
+            $beneficiary_id_field = 'charity_id';
+            break;
+    }
+
+    if ($beneficiary_id_field && $beneficiaryId) {
+        // Delete old assignments
+        $stmt = $conn->prepare("DELETE FROM beneficiary_concern_assignments WHERE $beneficiary_id_field = ? AND portal_user_id = ?");
+        $stmt->bind_param("ii", $beneficiaryId, $portal_user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Insert new assignments
+        $stmt = $conn->prepare("INSERT INTO beneficiary_concern_assignments (portal_user_id, $beneficiary_id_field, concern_id) VALUES (?, ?, ?)");
+        foreach ($concern_ids as $concern_id) {
+            $concern_id = intval($concern_id);
+            $stmt->bind_param("iii", $portal_user_id, $beneficiaryId, $concern_id);
+            $stmt->execute();
+        }
+        $stmt->close();
+    }
 }
 
+/**
+ * Build SET clause for UPDATE statements
+ */
+function buildSetClause($conn, $data, $primaryKey) {
+    $set = [];
+    foreach ($data as $key => $value) {
+        // Skip special fields
+        if ($key === $primaryKey || $key === 'action' || $key === 'concern_ids' || $key === 'asset_id_type') {
+            continue;
+        }
+        $escaped = $conn->real_escape_string($value === null ? '' : $value);
+        $set[] = "`$key` = '$escaped'";
+    }
+    return implode(', ', $set);
+}
 
+/**
+ * Build INSERT columns and values
+ */
+function buildInsertClauses($conn, $data) {
+    $columns = [];
+    $values = [];
+    foreach ($data as $key => $value) {
+        // Skip special fields
+        if ($key === 'action' || $key === 'concern_ids' || $key === 'asset_id_type') {
+            continue;
+        }
+        $columns[] = "`$key`";
+        $escaped = $conn->real_escape_string($value === null ? '' : $value);
+        $values[] = "'$escaped'";
+    }
+    return [
+        'columns' => implode(', ', $columns),
+        'values' => implode(', ', $values)
+    ];
+}
 
+// ============================================
+// HANDLE ACTIONS
+// ============================================
 
 if ($action === 'insert') {
+    // INSERT action
 
-  header('Content-Type: application/json');
-  // Build INSERT statement
-  $columns = [];
-  $values = [];
-  foreach ($data as $key => $value) {
-    if ($key === 'action' || $key === 'concern_ids') continue; // Skip action and concern_ids
-    $columns[] = "`$key`";
-    $escaped = $conn->real_escape_string($value === null ? '' : $value);
-    $values[] = "'$escaped'";
-  }
-  $columnsClause = implode(', ', $columns);
-  $valuesClause = implode(', ', $values);
-  $sql = "INSERT INTO `$table` ($columnsClause) VALUES ($valuesClause)";
-  $result = $conn->query($sql);
-  $insert_id = $conn->insert_id;
-  if ($result) {
-    // Save concern assignments if present
-    if (isset($data['concern_ids']) && is_array($data['concern_ids'])) {
-      $concern_ids = $data['concern_ids'];
-      $portal_user_id = isset($data['portal_user_id']) ? intval($data['portal_user_id']) : 0;
-      if ($table === 'child') {
-        $beneficiary_id_field = 'child_id';
-      } elseif ($table === 'family_member') {
-        $beneficiary_id_field = 'family_member_id';
-      } elseif ($table === 'charity') {
-        $beneficiary_id_field = 'charity_id';
-      } else {
-        $beneficiary_id_field = null;
-      }
-      if ($beneficiary_id_field && $insert_id) {
-        // Delete old assignments (should be none for new insert)
-        $conn->query("DELETE FROM beneficiary_concern_assignments WHERE $beneficiary_id_field = $insert_id AND portal_user_id = $portal_user_id");
-        // Insert new assignments
-        foreach ($concern_ids as $concern_id) {
-          $concern_id = intval($concern_id);
-          $conn->query("INSERT INTO beneficiary_concern_assignments (portal_user_id, $beneficiary_id_field, concern_id) VALUES ($portal_user_id, $insert_id, $concern_id)");
-        }
-      }
+    // Block insert for main tables
+    if (in_array($table, $mainTables)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Insert not allowed for main table. Use update instead.', 'table' => $table]);
+        exit();
     }
-    echo json_encode([
-      'success' => true,
-      'sql' => $sql,
-      'insert_id' => $insert_id
-    ]);
-  } else {
-    http_response_code(500);
-    header('Content-Type: application/json');
-    echo json_encode([
-      'error' => 'Database insert failed',
-      'details' => $conn->error,
-      'sql' => $sql
-    ]);
-  }
-} else if ($action === 'delete') {
-  // DELETE statement
-  // To send a delete from the frontend, use:
-  // {
-  //   table: 'bank_account_holdings',
-  //   asset_id_type: 'bank_account_id',
-  //   id: 123,
-  //   action: 'delete'
-  // }
-  // For tables without a primary key, delete all rows (use with caution)
-  $noPrimaryKeyTables = ['personal', 'marital_info'];
-  if (in_array($table, $noPrimaryKeyTables)) {
-    $sql = "DELETE FROM `$table` LIMIT 1";
-  } else {
-    $id = $primaryId === null ? '' : $conn->real_escape_string($primaryId);
+
+    // Validate primary key exists for insert
+    if (!$primaryKey || !isset($data[$primaryKey]) || $data[$primaryKey] === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing or empty primary key for insert', 'primaryKey' => $primaryKey]);
+        exit();
+    }
+
+    $checkId = $conn->real_escape_string($data[$primaryKey]);
+
+    // Check if record already exists
+    $checkSql = "SELECT 1 FROM `$table` WHERE `$primaryKey` = '$checkId' LIMIT 1";
+    $checkResult = $conn->query($checkSql);
+
+    if ($checkResult && $checkResult->num_rows > 0) {
+        // Row exists - run UPDATE instead
+        $setClause = buildSetClause($conn, $data, $primaryKey);
+        $sql = "UPDATE `$table` SET $setClause WHERE `$primaryKey` = '$checkId' LIMIT 1";
+        $result = $conn->query($sql);
+
+        if ($result) {
+            saveConcernAssignments($conn, $table, $data, $checkId);
+            echo json_encode([
+                'success' => true,
+                'action' => 'update',
+                'message' => 'Record existed, updated instead',
+                'sql' => $sql,
+                'affected_rows' => $conn->affected_rows
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database update failed', 'details' => $conn->error, 'sql' => $sql]);
+        }
+    } else {
+        // Row doesn't exist - INSERT
+        $clauses = buildInsertClauses($conn, $data);
+        $sql = "INSERT INTO `$table` ({$clauses['columns']}) VALUES ({$clauses['values']})";
+        $result = $conn->query($sql);
+        $insert_id = $conn->insert_id;
+
+        if ($result) {
+            saveConcernAssignments($conn, $table, $data, $insert_id);
+            echo json_encode([
+                'success' => true,
+                'action' => 'insert',
+                'sql' => $sql,
+                'insert_id' => $insert_id
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database insert failed', 'details' => $conn->error, 'sql' => $sql]);
+        }
+    }
+
+} elseif ($action === 'delete') {
+    // DELETE action
+
+    if ($primaryId === null || $primaryId === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing primary key value for delete', 'primaryKey' => $primaryKey]);
+        exit();
+    }
+    $id = $conn->real_escape_string($primaryId);
     $sql = "DELETE FROM `$table` WHERE `$primaryKey` = '$id' LIMIT 1";
-  }
-  $result = $conn->query($sql);
-  if ($result) {
-    echo json_encode([
-      'success' => true,
-      'sql' => $sql,
-      'affected_rows' => $conn->affected_rows
-    ]);
-  } else {
-    http_response_code(500);
-    echo json_encode([
-      'error' => 'Database delete failed',
-      'details' => $conn->error,
-      'sql' => $sql
-    ]);
-  }
-} else if ($action === 'update' || $action === null) {
-  // UPDATE statement
-  $set = [];
-  foreach ($data as $key => $value) {
-    if ($key !== $primaryKey && $key !== 'action' && $key !== 'concern_ids') {
-      // Convert null to empty string to avoid deprecated warning
-      $escaped = $conn->real_escape_string($value === null ? '' : $value);
-      $set[] = "`$key` = '$escaped'";
+
+    $result = $conn->query($sql);
+
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'action' => 'delete',
+            'sql' => $sql,
+            'affected_rows' => $conn->affected_rows
+        ]);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Database delete failed', 'details' => $conn->error, 'sql' => $sql]);
     }
-  }
-  $setClause = implode(', ', $set);
-  $noPrimaryKeyTables = ['personal', 'marital_info'];
-  if (in_array($table, $noPrimaryKeyTables)) {
-    // For tables without a primary key, update all rows (use with caution)
-    $sql = "UPDATE `$table` SET $setClause LIMIT 1";
-  } else {
-    $id = $primaryId === null ? '' : $conn->real_escape_string($primaryId);
+
+} elseif ($action === 'update' || $action === null) {
+    // UPDATE action (default if no action specified)
+
+    $setClause = buildSetClause($conn, $data, $primaryKey);
+
+    if (empty($setClause)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No fields to update']);
+        exit();
+    }
+
+    if ($primaryId === null || $primaryId === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing primary key value for update', 'primaryKey' => $primaryKey]);
+        exit();
+    }
+    $id = $conn->real_escape_string($primaryId);
     $sql = "UPDATE `$table` SET $setClause WHERE `$primaryKey` = '$id' LIMIT 1";
-  }
-  $result = $conn->query($sql);
-  if ($result) {
-    // Save concern assignments if present
-    if (isset($data['concern_ids']) && is_array($data['concern_ids'])) {
-      $concern_ids = $data['concern_ids'];
-      $portal_user_id = isset($data['portal_user_id']) ? intval($data['portal_user_id']) : 0;
-      if ($table === 'child') {
-        $beneficiary_id_field = 'child_id';
-      } elseif ($table === 'family_member') {
-        $beneficiary_id_field = 'family_member_id';
-      } elseif ($table === 'charity') {
-        $beneficiary_id_field = 'charity_id';
-      } else {
-        $beneficiary_id_field = null;
-      }
-      if ($beneficiary_id_field && $primaryId) {
-        // Delete old assignments
-        $conn->query("DELETE FROM beneficiary_concern_assignments WHERE $beneficiary_id_field = $primaryId AND portal_user_id = $portal_user_id");
-        // Insert new assignments
-        foreach ($concern_ids as $concern_id) {
-          $concern_id = intval($concern_id);
-          $conn->query("INSERT INTO beneficiary_concern_assignments (portal_user_id, $beneficiary_id_field, concern_id) VALUES ($portal_user_id, $primaryId, $concern_id)");
-        }
-      }
+
+    $result = $conn->query($sql);
+
+    if ($result) {
+        saveConcernAssignments($conn, $table, $data, $primaryId);
+        echo json_encode([
+            'success' => true,
+            'action' => 'update',
+            'sql' => $sql,
+            'affected_rows' => $conn->affected_rows
+        ]);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Database update failed', 'details' => $conn->error, 'sql' => $sql]);
     }
-    echo json_encode([
-      'success' => true,
-      'sql' => $sql,
-      'affected_rows' => $conn->affected_rows
-    ]);
-  } else {
-    http_response_code(500);
-    echo json_encode([
-      'error' => 'Database update failed',
-      'details' => $conn->error,
-      'sql' => $sql
-    ]);
-  }
+
 } else {
-  http_response_code(400);
-  echo json_encode([
-    'error' => 'Unknown action',
-    'action' => $action
-  ]);
+    http_response_code(400);
+    echo json_encode(['error' => 'Unknown action', 'action' => $action]);
 }
+
+// Close connection
+$conn->close();
