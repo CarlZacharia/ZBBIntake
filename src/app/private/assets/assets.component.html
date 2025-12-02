@@ -1797,8 +1797,8 @@
           <div class="form-group">
             <label>Title Holding Method *</label>
             <select
-              [(ngModel)]="editingRealEstate.title_holding"
-              name="title_holding"
+              [(ngModel)]="editingRealEstate.dispo_type"
+              name="dispo_type"
               required
             >
               @if (editingRealEstate.owned_by === 'Client' ||
@@ -1882,7 +1882,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.title_holding === 'TIC'">
+        <div *ngIf="editingRealEstate.dispo_type === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -1907,8 +1907,8 @@
           </div>
         </div>
 
-        @if (editingRealEstate.title_holding === 'Lady Bird Deed' ||
-        editingRealEstate.title_holding === 'Life Estate') {
+        @if (editingRealEstate.dispo_type === 'Lady Bird Deed' ||
+        editingRealEstate.dispo_type === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -2061,8 +2061,8 @@
           <div class="form-group">
             <label>Title Holding Method *</label>
             <select
-              [(ngModel)]="editingRealEstate.title_holding"
-              name="title_holding"
+              [(ngModel)]="editingRealEstate.dispo_type"
+              name="dispo_type"
               required
             >
               @if (editingRealEstate.owned_by === 'Client' ||
@@ -2134,7 +2134,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.title_holding === 'TIC'">
+        <div *ngIf="editingRealEstate.dispo_type === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -2160,8 +2160,8 @@
         </div>
 
         <!-- Beneficiary Information -->
-        @if (editingRealEstate.title_holding === 'Lady Bird Deed' ||
-        editingRealEstate.title_holding === 'Life Estate') {
+        @if (editingRealEstate.dispo_type === 'Lady Bird Deed' ||
+        editingRealEstate.dispo_type === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea

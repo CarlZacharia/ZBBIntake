@@ -7,6 +7,7 @@ import { authGuard, guestGuard } from './guards/auth.guard';
 import { IntakehubComponent } from './private/intakehub/intakehub.component';
 import { MainintakeComponent } from './private/mainintake/mainintake.component';
 import { BeneficiariesComponent } from './private/beneficiaries/beneficiaries.component';
+import { PlanningComponent } from './private/planning/planning.component';
 
 export const routes: Routes = [
   {

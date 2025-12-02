@@ -342,7 +342,7 @@
         <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
         <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.approximate_value)}}</div>
         <div class="asset-details">
-          <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
+          <span *ngIf="asset.dispo_type">Title: {{asset.dispo_type}}</span>
           <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
         </div>
       </div>
@@ -490,7 +490,7 @@
           <div class="asset-name">{{asset.property_type}}: {{asset.address_line1}}, {{asset.city}}, {{asset.state}}</div>
           <div class="asset-value">{{formatCurrency(asset.ownership_value || asset.net_value || asset.approximate_value)}}</div>
           <div class="asset-details">
-            <span *ngIf="asset.title_holding">Title: {{asset.title_holding}}</span>
+            <span *ngIf="asset.dispo_type">Title: {{asset.dispo_type}}</span>
             <span *ngIf="asset.owned_by"> | Owned by: {{asset.owned_by}}</span>
           </div>
         </div>

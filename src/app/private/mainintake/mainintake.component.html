@@ -85,6 +85,7 @@
       </button>
 
       <!-- Debts Card -->
+
       <button class="nav-card" [class.active]="activeSection === 'debts'" (click)="setActiveSection('debts')">
         <div class="nav-card-header">
           <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -140,6 +141,19 @@
           Complete Overview
         </div>
       </button>
+
+      <!-- Planning Page Button (moved below Summary) -->
+      <button class="nav-card" [class.active]="activeSection === 'planning'" (click)="goToPlanning()">
+        <div class="nav-card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4 4h12v2H4V4zm0 4h12v2H4V8zm0 4h8v2H4v-2z" />
+          </svg>
+          <span class="nav-title">Planning Page</span>
+        </div>
+        <div class="nav-card-info">
+          Asset & Heir Planning
+        </div>
+      </button>
     </aside>
 
     <!-- Main Content Area (80%) -->
@@ -166,6 +180,11 @@
       </div>
 
 
+
+      <!-- Planning Component -->
+      <div *ngIf="activeSection === 'planning'">
+        <app-planning></app-planning>
+      </div>
 
       <!-- Summary Component -->
       <div *ngIf="activeSection === 'summary'">

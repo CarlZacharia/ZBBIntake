@@ -9,13 +9,14 @@ import { BeneficiariesComponent } from '../beneficiaries/beneficiaries.component
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
 import { DebtsComponent } from '../debts/debts.component';
+import { PlanningComponent } from '../planning/planning.component';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { IClientData } from '../../models/case_data';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, BeneficiariesComponent, AssetsComponent, DebtsComponent, SummaryComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, BeneficiariesComponent, AssetsComponent, DebtsComponent, SummaryComponent, PlanningComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
@@ -27,6 +28,10 @@ export class MainintakeComponent {
       return this.totalDebts();
     }
   activeSection: string = 'personal';
+
+  goToPlanning() {
+    this.activeSection = 'planning';
+  }
   constructor(public ds: DataService, private authService: AuthService, private cdr: ChangeDetectorRef) {
     // No assetsChanged observable; rely on Angular reactivity
   }
