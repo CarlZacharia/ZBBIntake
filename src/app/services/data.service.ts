@@ -698,6 +698,130 @@ removeCharity(index: number) {
 }
 
   // Methods for managing assets
+    /**
+     * Returns an array of all possible heirs for the client: spouse, children, family members, charities.
+     * Each entry: { id, name, type }
+     */
+
+    getClientHeirsArray(): Array<{ id: string; name: string; type: string }> {
+      const data = this._clientdata();
+      const heirs: Array<{ id: string; name: string; type: string }> = [];
+
+      // Spouse
+      if (data.marital_info && data.marital_info.marital_status === 'Married' && data.marital_info.spouse_legal_name) {
+        heirs.push({
+          id: 'spouse',
+          name: data.marital_info.spouse_legal_name,
+          type: 'Spouse',
+        });
+      }
+
+      // Children (only with valid id)
+      if (Array.isArray(data.children)) {
+        data.children.forEach((child) => {
+          if (child.child_id != null) {
+            heirs.push({
+              id: `child_${child.child_id}`,
+              name: [child.legal_first_name, child.legal_middle_name, child.legal_last_name].filter(Boolean).join(' '),
+              type: 'Child',
+            });
+          }
+        });
+      }
+
+      // Family Members (only with valid id)
+      if (Array.isArray(data.family_members)) {
+        data.family_members.forEach((member) => {
+          if (member.family_member_id != null) {
+            heirs.push({
+              id: `family_member_${member.family_member_id}`,
+              name: member.legal_name,
+              type: 'FamilyMember',
+            });
+          }
+        });
+      }
+
+      // Charities (only with valid id)
+      if (Array.isArray(data.charities)) {
+        data.charities.forEach((charity) => {
+          if (charity.charity_id != null) {
+            heirs.push({
+              id: `charity_${charity.charity_id}`,
+              name: charity.organization_name,
+              type: 'Charity',
+            });
+          }
+        });
+      }
+
+      return heirs;
+    }
+
+    /**
+     * Returns an array of all possible heirs for the spouse: client, children, family members, charities.
+     * Each entry: { id, name, type }
+     * If not married, returns empty array.
+     */
+
+    getSpouseHeirsArray(): Array<{ id: string; name: string; type: string }> {
+      const data = this._clientdata();
+      const heirs: Array<{ id: string; name: string; type: string }> = [];
+
+      // Only if married
+      if (!(data.marital_info && data.marital_info.marital_status === 'Married' && data.marital_info.spouse_legal_name)) {
+        return heirs;
+      }
+
+      // Client (as husband or wife or just name)
+      const clientName = [data.personal.legal_first_name, data.personal.legal_middle_name, data.personal.legal_last_name].filter(Boolean).join(' ');
+      heirs.push({
+        id: 'client',
+        name: clientName,
+        type: 'Client',
+      });
+
+      // Children (only with valid id)
+      if (Array.isArray(data.children)) {
+        data.children.forEach((child) => {
+          if (child.child_id != null) {
+            heirs.push({
+              id: `child_${child.child_id}`,
+              name: [child.legal_first_name, child.legal_middle_name, child.legal_last_name].filter(Boolean).join(' '),
+              type: 'Child',
+            });
+          }
+        });
+      }
+
+      // Family Members (only with valid id)
+      if (Array.isArray(data.family_members)) {
+        data.family_members.forEach((member) => {
+          if (member.family_member_id != null) {
+            heirs.push({
+              id: `family_member_${member.family_member_id}`,
+              name: member.legal_name,
+              type: 'FamilyMember',
+            });
+          }
+        });
+      }
+
+      // Charities (only with valid id)
+      if (Array.isArray(data.charities)) {
+        data.charities.forEach((charity) => {
+          if (charity.charity_id != null) {
+            heirs.push({
+              id: `charity_${charity.charity_id}`,
+              name: charity.organization_name,
+              type: 'Charity',
+            });
+          }
+        });
+      }
+
+      return heirs;
+    }
   addRealEstate(
     asset: Partial<IRealEstate> & { description?: string; value?: number }
   ) {

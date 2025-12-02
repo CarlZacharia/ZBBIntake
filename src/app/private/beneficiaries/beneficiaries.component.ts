@@ -52,14 +52,10 @@ export class BeneficiariesComponent {
         if (Array.isArray(cleanData.children)) {
           cleanData.children = cleanData.children.map((child: any) => {
             if (Array.isArray(child.concern_ids)) {
-              child.concern_ids = child.concern_ids.map((id: any) =>
-                Number(id)
-              );
+              child.concern_ids = child.concern_ids.map((id: any) => Number(id));
             }
             if (Array.isArray(child.assigned_ids)) {
-              child.assigned_ids = child.assigned_ids.map((id: any) =>
-                Number(id)
-              );
+              child.assigned_ids = child.assigned_ids.map((id: any) => Number(id));
             }
             return child;
           });
@@ -78,14 +74,10 @@ export class BeneficiariesComponent {
         if (Array.isArray(cleanData.charities)) {
           cleanData.charities = cleanData.charities.map((charity: any) => {
             if (Array.isArray(charity.concern_ids)) {
-              charity.concern_ids = charity.concern_ids.map((id: any) =>
-                Number(id)
-              );
+              charity.concern_ids = charity.concern_ids.map((id: any) => Number(id));
             }
             if (Array.isArray(charity.assigned_ids)) {
-              charity.assigned_ids = charity.assigned_ids.map((id: any) =>
-                Number(id)
-              );
+              charity.assigned_ids = charity.assigned_ids.map((id: any) => Number(id));
             }
             return charity;
           });
@@ -93,13 +85,18 @@ export class BeneficiariesComponent {
         // Use cleanData in your component
         if (cleanData.beneficiary_concern_categories) {
           this.concernCategories = cleanData.beneficiary_concern_categories;
-          this.allConcerns = this.concernCategories.flatMap(
-            (cat) => cat.concerns
-          );
+          this.allConcerns = this.concernCategories.flatMap((cat) => cat.concerns);
         } else {
           this.concernCategories = [];
           this.allConcerns = [];
         }
+        // Log heirs arrays for verification (after all data cleaning and after data is set)
+        setTimeout(() => {
+          const clientHeirs = this.dataService.getClientHeirsArray();
+          const spouseHeirs = this.dataService.getSpouseHeirsArray();
+          console.log('Client Heirs Array:', clientHeirs);
+          console.log('Spouse Heirs Array:', spouseHeirs);
+        }, 0);
       }
     });
   }
