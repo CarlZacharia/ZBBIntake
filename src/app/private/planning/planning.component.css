@@ -1,0 +1,68 @@
+/* Planning Component Custom Color Scheme */
+.planning-container {
+	background: #f0f6ff;
+	border-radius: 10px;
+	padding: 2rem;
+	box-shadow: 0 2px 8px rgba(0, 80, 180, 0.08);
+}
+
+.planning-container h2 {
+	color: #1a4a7a;
+	border-bottom: 2px solid #1a4a7a;
+	padding-bottom: 0.5rem;
+}
+
+.heirs-section h3 {
+	color: #2a7ab9;
+}
+
+.heir-type {
+	font-weight: bold;
+	color: #1a4a7a;
+}
+
+.heir-name {
+	color: #0d2c4a;
+}
+
+.assets-section h3 {
+	color: #1a4a7a;
+	margin-top: 2rem;
+}
+
+.asset-group {
+	margin-bottom: 2rem;
+	background: #e6f0fa;
+	border-radius: 8px;
+	padding: 1rem;
+	box-shadow: 0 1px 4px rgba(0, 80, 180, 0.05);
+}
+
+.beneficiary-group {
+	color: #fff;
+	background: #2a7ab9;
+	padding: 0.5rem 1rem;
+	border-radius: 6px;
+	display: inline-block;
+}
+
+.planning-assets-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 0.5rem;
+}
+
+.planning-assets-table th, .planning-assets-table td {
+	border: 1px solid #b3d1f3;
+	padding: 0.5rem 1rem;
+	text-align: left;
+}
+
+.planning-assets-table th {
+	background: #d0e6fa;
+	color: #1a4a7a;
+}
+
+.planning-assets-table tr:nth-child(even) {
+	background: #f7fbff;
+}

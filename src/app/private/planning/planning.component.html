@@ -1,1 +1,45 @@
-<p>planning works!</p>
+<div class="planning-container">
+	<h2>Planning Overview</h2>
+
+	<div class="heirs-section">
+		<h3>Client Heirs</h3>
+		<ul>
+			<li *ngFor="let heir of clientHeirs">
+				<span class="heir-type">{{ heir.type }}</span>: <span class="heir-name">{{ heir.name }}</span>
+			</li>
+		</ul>
+		<h3 *ngIf="spouseHeirs.length">Spouse Heirs</h3>
+		<ul *ngIf="spouseHeirs.length">
+			<li *ngFor="let heir of spouseHeirs">
+				<span class="heir-type">{{ heir.type }}</span>: <span class="heir-name">{{ heir.name }}</span>
+			</li>
+		</ul>
+	</div>
+
+	<div class="assets-section">
+		<h3>Assets Grouped by Title Holding</h3>
+		<div *ngFor="let group of groupedAssets | keyvalue">
+			<div class="asset-group">
+				<h4 [ngClass]="{'beneficiary-group': group.key === 'beneficiary/tod/pod'}">
+					{{ group.key | titlecase }}
+				</h4>
+				<table class="planning-assets-table">
+					<thead>
+						<tr>
+							<th>Name/Description</th>
+							<th>Type</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let asset of group.value">
+							<td>{{ asset.property_type || asset.account_name || asset.business_name || asset.description || 'Asset' }}</td>
+							<td>{{ asset.title_holding || asset.dispo_type || 'Other' }}</td>
+							<td>{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

@@ -12,7 +12,7 @@ export interface IRealEstate {
   city: string;
   state: string;
   zip: string;
-  title_holding:
+  dispo_type:
     | 'Sole Ownership'
     | 'JTWROS'
     | 'TBE'
@@ -22,7 +22,7 @@ export interface IRealEstate {
     | 'Trust'
     | 'LLC'
     | 'Land Contract'
-    | 'Other'
+    | 'Other';
   title_details: string | null;
   approximate_value: number | null;
   mortgage_balance: number | null;
