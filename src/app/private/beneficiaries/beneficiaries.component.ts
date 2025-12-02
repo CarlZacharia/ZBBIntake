@@ -117,6 +117,8 @@ export class BeneficiariesComponent {
     } else {
       this.editingItem.concern_ids.splice(index, 1);
     }
+    // If any concerns are selected, force haveConcerns to true
+    this.editingItem.haveConcerns = this.editingItem.concern_ids.length > 0 ? true : this.editingItem.haveConcerns;
     this.saveConcernAssignments();
   }
 
@@ -194,6 +196,8 @@ getConcernById(concernId: number | string): any {
       legal_last_name: '',
       has_children: false,
       excluded_or_reduced: false,
+      haveConcerns: null,
+      concern_ids: [],
     };
   }
   editChild(index: number) {
@@ -208,6 +212,8 @@ getConcernById(concernId: number | string): any {
         (id: string | number) => Number(id)
       );
     }
+    // Set haveConcerns to true if any concerns exist
+    this.editingItem.haveConcerns = (this.editingItem.concern_ids && this.editingItem.concern_ids.length > 0) ? true : this.editingItem.haveConcerns;
   }
   removeChild(index: number) {
     this.dataService.removeChild(index);
@@ -230,7 +236,8 @@ addFamilyMember() {
     zip: '',
     concern_ids: [],
     concern_notes: '',
-    notes: ''
+    notes: '',
+    haveConcerns: null,
   };
 }
 
@@ -246,6 +253,8 @@ addFamilyMember() {
         (id: string | number) => Number(id)
       );
     }
+    // Set haveConcerns to true if any concerns exist
+    this.editingItem.haveConcerns = (this.editingItem.concern_ids && this.editingItem.concern_ids.length > 0) ? true : this.editingItem.haveConcerns;
   }
   removeFamilyMember(index: number) {
     this.dataService.removeFamilyMember(index);
@@ -282,9 +291,14 @@ addFamilyMember() {
     }
   }
 
+
   saveEdit() {
     // Convert boolean fields back to 0/1 before saving
     const itemToSave = this.convertCheckboxFieldsToInt(this.editingItem);
+    // Convert haveConcerns to 'Yes'/'No' string for DB
+    if (typeof itemToSave.haveConcerns === 'boolean') {
+      itemToSave.haveConcerns = itemToSave.haveConcerns ? 'Yes' : 'No';
+    }
     if (this.editingType === 'child') {
       if (this.editingIndex === this.children.length) {
         this.dataService.addChild(itemToSave);

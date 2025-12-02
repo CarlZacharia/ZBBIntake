@@ -332,6 +332,8 @@ export interface IChild {
   marital_status: 'Single' | 'Married' | 'Divorced' | 'Widowed' | null;
   has_children: boolean | number | string | null;
 
+  // Planning Concerns flag
+  haveConcerns: boolean | string | null;
   // Relationship & character assessment
   relationship_quality:
     | 'Close'
@@ -410,7 +412,7 @@ export interface IFamilyMember {
   zip: string | null;
   concern_ids: number[];
   concern_notes: string | null;
-
+  haveConcerns: boolean | string | null;
   notes: string | null;
 }
 
@@ -457,6 +459,7 @@ export interface ICharity {
   endowment_purpose: string | null;
   recognition_preferences: 'Anonymous' | 'Public' | 'Family_only' | null;
   notes: string | null;
+  haveConcerns: boolean | string | null;
 }
 
 export interface IFiduciary {

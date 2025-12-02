@@ -2,9 +2,7 @@
   <h2>Beneficiaries</h2>
   <div class="action-buttons">
     <button class="btn btn-primary" (click)="addChild()">Add Child</button>
-    <button class="btn btn-primary" (click)="addFamilyMember()">
-      Add Family Member
-    </button>
+    <button class="btn btn-primary" (click)="addFamilyMember()">Add Family Member</button>
     <button class="btn btn-primary" (click)="addCharity()">Add Charity</button>
   </div>
 
@@ -67,7 +65,6 @@
           <td>{{ member.legal_name }}</td>
           <td>{{ member.relationship }}</td>
           <td>{{ member.date_of_birth | date }}</td>
-
           <td class="actions">
             <button
               class="btn-small btn-delete"
@@ -104,8 +101,9 @@
         >
           <td>{{ charity.organization_name }}</td>
           <td>
-            {{ charity.contact_person }}<br />{{ charity.contact_email
-            }}<br />{{ charity.contact_phone }}
+            {{ charity.contact_person }}<br />
+            {{ charity.contact_email }}<br />
+            {{ charity.contact_phone }}
           </td>
           <td>{{ charity.intended_gift_type }}</td>
           <td class="actions">
@@ -123,780 +121,966 @@
       No charities added yet.
     </p>
   </section>
+</div>
 
-  <!-- Edit Modal/Form -->
+<!-- Edit Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngStyle]="{
+    display: editingType !== null ? 'block' : 'none',
+    background: 'rgba(0,0,0,0.5)'
+  }"
+  aria-modal="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div
+        class="modal-header"
+        [ngClass]="isAddMode ? 'bg-primary text-white' : 'bg-success text-white'"
+      >
+        <h5 class="modal-title">
+          {{ isAddMode ? "Add " + (editingType | titlecase) : "Edit " + (editingType | titlecase) }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          aria-label="Close"
+          (click)="cancelEdit()"
+        ></button>
+      </div>
 
-  <div
-    class="modal fade show"
-    tabindex="-1"
-    role="dialog"
-    [ngStyle]="{
-      display: editingType !== null ? 'block' : 'none',
-      background: 'rgba(0,0,0,0.5)'
-    }"
-    aria-modal="true"
-  >
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div
-          class="modal-header"
-          [ngClass]="
-            isAddMode ? 'bg-primary text-white' : 'bg-success text-white'
-          "
-        >
-          <h5 class="modal-title">
-            {{
-              isAddMode
-                ? "Add " + (editingType | titlecase)
-                : "Edit " + (editingType | titlecase)
-            }}
-          </h5>
-          <button
-            type="button"
-            class="close"
-            aria-label="Close"
-            (click)="cancelEdit()"
-          >
-            <span aria-hidden="true">X</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form (ngSubmit)="saveEdit()">
-            <!-- CHILD FORM -->
-            <ng-container *ngIf="editingType === 'child'">
-              <div class="form-row name-row mb-4">
-                <div class="form-group name-group">
-                  <label>First Name *</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.legal_first_name"
-                    name="first_name"
-                    required
-                    class="name-input first-name"
-                  />
-                </div>
-                <div class="form-group name-group">
-                  <label>Middle Name</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.legal_middle_name"
-                    name="middle_name"
-                    class="name-input middle-name"
-                  />
-                </div>
-                <div class="form-group name-group">
-                  <label>Last Name *</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.legal_last_name"
-                    name="last_name"
-                    required
-                    class="name-input last-name"
-                  />
-                </div>
-              </div>
+      <div class="modal-body">
+        <form #editForm="ngForm" (ngSubmit)="saveEdit()">
 
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Date of Birth</label>
-                  <input
-                    type="date"
-                    [(ngModel)]="editingItem.date_of_birth"
-                    name="date_of_birth"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Marital Status</label>
-                  <select
-                    [(ngModel)]="editingItem.marital_status"
-                    name="marital_status"
-                  >
-                    <option [ngValue]="null">Select...</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Child Of *</label>
-                  <select
-                    [(ngModel)]="editingItem.child_of"
-                    name="child_of"
-                    required
-                  >
-                    <option value="Both">Both Client & Spouse</option>
-                    <option value="Client">Client Only</option>
-                    <option value="Spouse">Spouse Only</option>
-                  </select>
-                </div>
-              </div>
+          <!-- ========================================== -->
+          <!-- CHILD FORM -->
+          <!-- ========================================== -->
+          <ng-container *ngIf="editingType === 'child'">
 
-              <div class="form-group">
-                <label>Address</label>
+
+            <!-- Name Row -->
+            <div class="form-row name-row mb-4">
+              <div class="form-group name-group">
+                <label>First Name <span class="text-danger">*</span></label>
                 <input
                   type="text"
-                  [(ngModel)]="editingItem.address"
-                  name="address"
-                />
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>City</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.city"
-                    name="city"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>State</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.state"
-                    name="state"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Relationship Quality</label>
-                  <select
-                    [(ngModel)]="editingItem.relationship_quality"
-                    name="relationship_quality"
-                  >
-                    <option [ngValue]="null">Select...</option>
-                    <option value="Close">Close</option>
-                    <option value="Good">Good</option>
-                    <option value="Distant">Distant</option>
-                    <option value="Estranged">Estranged</option>
-                    <option value="Complicated">Complicated</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Financially Responsible</label>
-                  <select
-                    [(ngModel)]="editingItem.financially_responsible"
-                    name="financially_responsible"
-                  >
-                    <option [ngValue]="null">Select...</option>
-                    <option value="Very">Very</option>
-                    <option value="Somewhat">Somewhat</option>
-                    <option value="Not_Really">Not Really</option>
-                    <option value="Concerning">Concerning</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.has_children"
-                      name="has_children"
-                    />
-                    Has Children</label
-                  >
-                </div>
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.excluded_or_reduced"
-                      name="excluded"
-                    />
-                    Excluded or Reduced Inheritance</label
-                  >
-                </div>
-              </div>
-              <div class="form-group" *ngIf="editingItem.excluded_or_reduced">
-                <label>Exclusion Reason</label>
-                <textarea
-                  [(ngModel)]="editingItem.exclusion_reason"
-                  name="exclusion_reason"
-                  rows="3"
-                ></textarea>
-              </div>
-
-              <div class="form-group">
-                <label>Child Comment</label>
-                <textarea
-                  [(ngModel)]="editingItem.child_comment"
-                  name="child_comment"
-                  rows="2"
-                ></textarea>
-              </div>
-
-              <!-- Beneficiary Concerns Section -->
-              <div class="mb-3">
-                <label class="form-label">Planning Concerns </label>
-                <div class="w-100">
-                  <ul class="w-100 p-2">
-                    <ng-container *ngFor="let category of concernCategories">
-                      <li class="dropdown-header fw-bold">
-                        {{ category.category_name }}
-                      </li>
-                      <li *ngFor="let concern of category.concerns">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            [checked]="
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            (change)="toggleConcern(concern.id)"
-                          />
-                          <label class="form-check-label w-75">
-                            {{ concern.concern_name }}
-                          </label>
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_snt) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-warning ms-2"
-                            title="May indicate Special Needs Trust"
-                            >SNT</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_medicaid) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-danger ms-2"
-                            title="May affect Medicaid eligibility"
-                            >Medicaid</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_guardian) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-purple ms-2"
-                            title="May indicate need for Guardian"
-                            >Guardian</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_spendthrift) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-secondary ms-2"
-                            title="May indicate need for Spendthrift provisions"
-                            >Spendthrift</span
-                          >
-                        </div>
-                      </li>
-                    </ng-container>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Selected concerns badges -->
-              <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
-                <div class="d-flex flex-wrap gap-2">
-                  <ng-container
-                    *ngFor="let concernId of editingItem.concern_ids"
-                  >
-                    <span
-                      class="badge rounded-pill me-1"
-                      [ngClass]="{
-                        'bg-danger':
-                          +getConcernById(concernId)?.suggests_snt === 1,
-                        'bg-primary':
-                          +getConcernById(concernId)?.suggests_trust === 1 &&
-                          +getConcernById(concernId)?.suggests_snt !== 1,
-                        'bg-secondary':
-                          +getConcernById(concernId)?.suggests_trust !== 1
-                      }"
-                    >
-                      {{ getConcernById(concernId)?.concern_name }}
-                      <button
-                        type="button"
-                        class="btn-close btn-close-white btn-sm ms-2"
-                        aria-label="Remove"
-                        (click)="toggleConcern(concernId)"
-                      ></button>
-                    </span>
-                  </ng-container>
-                </div>
-              </div>
-
-              <!-- Concern notes -->
-              <div class="mb-3">
-                <label class="form-label">Concern Details / Notes</label>
-                <textarea
-                  [(ngModel)]="editingItem.concern_notes"
-                  name="concern_notes"
-                  rows="3"
                   class="form-control"
-                  placeholder="Additional details about any concerns selected above..."
-                ></textarea>
-              </div>
-
-              <!-- Planning Alert -->
-              <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                Selected concerns may indicate a Special Needs Trust is
-                appropriate for this beneficiary.
-              </div>
-            </ng-container>
-
-            <!-- FAMILY MEMBER FORM -->
-            <ng-container *ngIf="editingType === 'family'">
-              <div class="form-group">
-                <label>Legal Name *</label>
-                <input
-                  type="text"
-                  [(ngModel)]="editingItem.legal_name"
-                  name="legal_name"
+                  [(ngModel)]="editingItem.legal_first_name"
+                  name="child_first_name"
                   required
+                  #childFirstName="ngModel"
+                  [class.is-invalid]="childFirstName.invalid && childFirstName.touched"
+                />
+                <div class="invalid-feedback" *ngIf="childFirstName.invalid && childFirstName.touched">
+                  First name is required
+                </div>
+              </div>
+              <div class="form-group name-group">
+                <label>Middle Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.legal_middle_name"
+                  name="child_middle_name"
                 />
               </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Relationship *</label>
-                  <select
-                    [(ngModel)]="editingItem.relationship"
-                    name="relationship"
-                    required
-                  >
-                    <option value="Grandchild">Grandchild</option>
-                    <option value="Parent">Parent</option>
-                    <option value="Sibling">Sibling</option>
-                    <option value="Niece">Niece</option>
-                    <option value="Nephew">Nephew</option>
-                    <option value="Aunt_uncle">Aunt/Uncle</option>
-                    <option value="Cousin">Cousin</option>
-                    <option value="Other_dependent">Other Dependent</option>
-                    <option value="Close_friend">Close Friend</option>
-                    <option value="Godchild">Godchild</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Date of Birth</label>
-                  <input
-                    type="date"
-                    [(ngModel)]="editingItem.date_of_birth"
-                    name="dob"
-                  />
+              <div class="form-group name-group">
+                <label>Last Name <span class="text-danger">*</span></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.legal_last_name"
+                  name="child_last_name"
+                  required
+                  #childLastName="ngModel"
+                  [class.is-invalid]="childLastName.invalid && childLastName.touched"
+                />
+                <div class="invalid-feedback" *ngIf="childLastName.invalid && childLastName.touched">
+                  Last name is required
                 </div>
               </div>
+            </div>
+
+            <!-- DOB, Marital Status, Child Of -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="editingItem.date_of_birth"
+                  name="child_date_of_birth"
+                />
+              </div>
+              <div class="form-group">
+                <label>Marital Status</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.marital_status"
+                  name="child_marital_status"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Child Of <span class="text-danger">*</span></label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.child_of"
+                  name="child_of"
+                  required
+                  #childOf="ngModel"
+                  [class.is-invalid]="childOf.invalid && childOf.touched"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Both">Both Client & Spouse</option>
+                  <option value="Client">Client Only</option>
+                  <option value="Spouse">Spouse Only</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="childOf.invalid && childOf.touched">
+                  Please select who this child belongs to
+                </div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label>Address</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editingItem.address"
+                name="child_address"
+              />
+            </div>
+
+            <!-- City, State, ZIP -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.city"
+                  name="child_city"
+                />
+              </div>
+              <div class="form-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.state"
+                  name="child_state"
+                />
+              </div>
+              <div class="form-group">
+                <label>ZIP</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.zip"
+                  name="child_zip"
+                />
+              </div>
+            </div>
+
+            <!-- Relationship Quality, Financial Responsibility -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Relationship Quality</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.relationship_quality"
+                  name="child_relationship_quality"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Close">Close</option>
+                  <option value="Good">Good</option>
+                  <option value="Distant">Distant</option>
+                  <option value="Estranged">Estranged</option>
+                  <option value="Complicated">Complicated</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Financially Responsible</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.financially_responsible"
+                  name="child_financially_responsible"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Very">Very</option>
+                  <option value="Somewhat">Somewhat</option>
+                  <option value="Not_Really">Not Really</option>
+                  <option value="Concerning">Concerning</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Checkboxes -->
+            <div class="form-row">
+              <div class="form-group checkbox-group">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="editingItem.has_children"
+                    name="child_has_children"
+                    id="child_has_children"
+                  />
+                  <label class="form-check-label" for="child_has_children">
+                    Has Children
+                  </label>
+                </div>
+              </div>
+              <div class="form-group checkbox-group">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="editingItem.excluded_or_reduced"
+                    name="child_excluded"
+                    id="child_excluded"
+                  />
+                  <label class="form-check-label" for="child_excluded">
+                    Excluded or Reduced Inheritance
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Exclusion Reason (conditional) -->
+            <div class="form-group" *ngIf="editingItem.excluded_or_reduced">
+              <label>Exclusion Reason</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.exclusion_reason"
+                name="child_exclusion_reason"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <!-- Child Comment -->
+            <div class="form-group">
+              <label>Child Comment</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.child_comment"
+                name="child_comment"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <!-- Have Concerns Yes/No -->
+            <div class="form-group mb-3">
+              <label class="form-label fw-bold">Do you have any planning concerns for this child?</label>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="child_haveConcerns"
+                  id="child_haveConcerns_yes"
+                  [value]="true"
+                  [(ngModel)]="editingItem.haveConcerns"
+                  [disabled]="false"
+                />
+                <label class="form-check-label" for="child_haveConcerns_yes">Yes</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="child_haveConcerns"
+                  id="child_haveConcerns_no"
+                  [value]="false"
+                  [(ngModel)]="editingItem.haveConcerns"
+                  [disabled]="editingItem.concern_ids && editingItem.concern_ids.length > 0"
+                />
+                <label class="form-check-label" for="child_haveConcerns_no">No</label>
+              </div>
+            </div>
+
+            <!-- Planning Concerns Section -->
+            <div class="mb-3" *ngIf="editingItem.haveConcerns">
+              <label class="form-label fw-bold">Planning Concerns</label>
+              <div class="border rounded p-2" style="max-height: 250px; overflow-y: auto;">
+                <ul class="list-unstyled mb-0">
+                  <ng-container *ngFor="let category of concernCategories">
+                    <li class="fw-bold text-muted mt-2 mb-1">
+                      {{ category.category_name }}
+                    </li>
+                    <li *ngFor="let concern of category.concerns" class="ms-2">
+                      <div class="form-check d-flex align-items-center">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          [id]="'child_concern_' + concern.id"
+                          [checked]="editingItem.concern_ids?.includes(+concern.id)"
+                          (change)="toggleConcern(concern.id)"
+                        />
+                        <label class="form-check-label flex-grow-1" [for]="'child_concern_' + concern.id">
+                          {{ concern.concern_name }}
+                        </label>
+                        <span
+                          *ngIf="$any(concern.suggests_snt) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-warning ms-1"
+                          title="May indicate Special Needs Trust"
+                        >SNT</span>
+                        <span
+                          *ngIf="$any(concern.suggests_medicaid) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-danger ms-1"
+                          title="May affect Medicaid eligibility"
+                        >Medicaid</span>
+                        <span
+                          *ngIf="$any(concern.suggests_guardian) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-purple ms-1"
+                          title="May indicate need for Guardian"
+                        >Guardian</span>
+                        <span
+                          *ngIf="$any(concern.suggests_spendthrift) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-secondary ms-1"
+                          title="May indicate need for Spendthrift provisions"
+                        >Spendthrift</span>
+                      </div>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Selected Concerns Badges -->
+            <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
+              <label class="form-label">Selected Concerns</label>
+              <div class="d-flex flex-wrap gap-2">
+                <ng-container *ngFor="let concernId of editingItem.concern_ids">
+                  <span
+                    class="badge rounded-pill"
+                    [ngClass]="{
+                      'bg-danger': +getConcernById(concernId)?.suggests_snt === 1,
+                      'bg-primary': +getConcernById(concernId)?.suggests_trust === 1 && +getConcernById(concernId)?.suggests_snt !== 1,
+                      'bg-secondary': +getConcernById(concernId)?.suggests_trust !== 1
+                    }"
+                  >
+                    {{ getConcernById(concernId)?.concern_name }}
+                    <button
+                      type="button"
+                      class="btn-close btn-close-white btn-sm ms-1"
+                      aria-label="Remove"
+                      (click)="toggleConcern(concernId)"
+                    ></button>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Concern Notes -->
+            <div class="mb-3"  *ngIf="editingItem.haveConcerns">
+              <label class="form-label">Concern Details / Notes</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.concern_notes"
+                name="child_concern_notes"
+                rows="3"
+                placeholder="Additional details about any concerns selected above..."
+              ></textarea>
+            </div>
+
+            <!-- SNT Planning Alert -->
+            <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              Selected concerns may indicate a Special Needs Trust is appropriate for this beneficiary.
+            </div>
+
+          </ng-container>
+
+          <!-- ========================================== -->
+          <!-- FAMILY MEMBER FORM -->
+          <!-- ========================================== -->
+          <ng-container *ngIf="editingType === 'family'">
 
 
+            <!-- Legal Name -->
+            <div class="form-group mb-3">
+              <label>Legal Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editingItem.legal_name"
+                name="family_legal_name"
+                required
+                #familyLegalName="ngModel"
+                [class.is-invalid]="familyLegalName.invalid && familyLegalName.touched"
+              />
+              <div class="invalid-feedback" *ngIf="familyLegalName.invalid && familyLegalName.touched">
+                Legal name is required
+              </div>
+            </div>
 
+            <!-- Relationship and DOB -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Relationship <span class="text-danger">*</span></label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.relationship"
+                  name="family_relationship"
+                  required
+                  #familyRelationship="ngModel"
+                  [class.is-invalid]="familyRelationship.invalid && familyRelationship.touched"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Grandchild">Grandchild</option>
+                  <option value="Parent">Parent</option>
+                  <option value="Sibling">Sibling</option>
+                  <option value="Niece">Niece</option>
+                  <option value="Nephew">Nephew</option>
+                  <option value="Aunt_uncle">Aunt/Uncle</option>
+                  <option value="Cousin">Cousin</option>
+                  <option value="Other_dependent">Other Dependent</option>
+                  <option value="Close_friend">Close Friend</option>
+                  <option value="Godchild">Godchild</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="familyRelationship.invalid && familyRelationship.touched">
+                  Relationship is required
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="editingItem.date_of_birth"
+                  name="family_dob"
+                />
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label>Address</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editingItem.address"
+                name="family_address"
+              />
+            </div>
+
+            <!-- City, State, ZIP -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.city"
+                  name="family_city"
+                />
+              </div>
+              <div class="form-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.state"
+                  name="family_state"
+                />
+              </div>
+              <div class="form-group">
+                <label>ZIP</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.zip"
+                  name="family_zip"
+                />
+              </div>
+            </div>
+
+            <!-- Have Concerns Yes/No -->
+            <div class="form-group mb-3">
+              <label class="form-label fw-bold">Do you have any planning concerns for this family member?</label>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="family_haveConcerns"
+                  id="family_haveConcerns_yes"
+                  [value]="true"
+                  [(ngModel)]="editingItem.haveConcerns"
+                  [disabled]="false"
+                />
+                <label class="form-check-label" for="family_haveConcerns_yes">Yes</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="family_haveConcerns"
+                  id="family_haveConcerns_no"
+                  [value]="false"
+                  [(ngModel)]="editingItem.haveConcerns"
+                  [disabled]="editingItem.concern_ids && editingItem.concern_ids.length > 0"
+                />
+                <label class="form-check-label" for="family_haveConcerns_no">No</label>
+              </div>
+            </div>
+
+            <!-- Planning Concerns Section -->
+            <div class="mb-3" *ngIf="editingItem.haveConcerns">
+              <label class="form-label fw-bold">Planning Concerns</label>
+              <div class="border rounded p-2" style="max-height: 250px; overflow-y: auto;">
+                <ul class="list-unstyled mb-0">
+                  <ng-container *ngFor="let category of concernCategories">
+                    <li class="fw-bold text-muted mt-2 mb-1">
+                      {{ category.category_name }}
+                    </li>
+                    <li *ngFor="let concern of category.concerns" class="ms-2">
+                      <div class="form-check d-flex align-items-center">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          [id]="'family_concern_' + concern.id"
+                          [checked]="editingItem.concern_ids?.includes(+concern.id)"
+                          (change)="toggleConcern(concern.id)"
+                        />
+                        <label class="form-check-label flex-grow-1" [for]="'family_concern_' + concern.id">
+                          {{ concern.concern_name }}
+                        </label>
+                        <span
+                          *ngIf="$any(concern.suggests_snt) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-warning ms-1"
+                          title="May indicate Special Needs Trust"
+                        >SNT</span>
+                        <span
+                          *ngIf="$any(concern.suggests_medicaid) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-danger ms-1"
+                          title="May affect Medicaid eligibility"
+                        >Medicaid</span>
+                        <span
+                          *ngIf="$any(concern.suggests_guardian) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-purple ms-1"
+                          title="May indicate need for Guardian"
+                        >Guardian</span>
+                        <span
+                          *ngIf="$any(concern.suggests_spendthrift) === '1' && editingItem.concern_ids?.includes(+concern.id)"
+                          class="badge bg-secondary ms-1"
+                          title="May indicate need for Spendthrift provisions"
+                        >Spendthrift</span>
+                      </div>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Selected Concerns Badges -->
+            <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
+              <label class="form-label">Selected Concerns</label>
+              <div class="d-flex flex-wrap gap-2">
+                <ng-container *ngFor="let concernId of editingItem.concern_ids">
+                  <span
+                    class="badge rounded-pill"
+                    [ngClass]="{
+                      'bg-danger': +getConcernById(concernId)?.suggests_snt === 1,
+                      'bg-primary': +getConcernById(concernId)?.suggests_trust === 1 && +getConcernById(concernId)?.suggests_snt !== 1,
+                      'bg-secondary': +getConcernById(concernId)?.suggests_trust !== 1
+                    }"
+                  >
+                    {{ getConcernById(concernId)?.concern_name }}
+                    <button
+                      type="button"
+                      class="btn-close btn-close-white btn-sm ms-1"
+                      aria-label="Remove"
+                      (click)="toggleConcern(concernId)"
+                    ></button>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Concern Notes -->
+            <div class="mb-3"  *ngIf="editingItem.haveConcerns">
+              <label class="form-label">Concern Details / Notes</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.concern_notes"
+                name="family_concern_notes"
+                rows="3"
+                placeholder="Additional details about any concerns selected above..."
+              ></textarea>
+            </div>
+
+            <!-- SNT Planning Alert -->
+            <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              Selected concerns may indicate a Special Needs Trust is appropriate for this beneficiary.
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.notes"
+                name="family_notes"
+                rows="3"
+              ></textarea>
+            </div>
+
+          </ng-container>
+
+          <!-- ========================================== -->
+          <!-- CHARITY FORM -->
+          <!-- ========================================== -->
+          <ng-container *ngIf="editingType === 'charity'">
+
+            <!-- Organization Name -->
+            <div class="form-group mb-3">
+              <label>Organization Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editingItem.organization_name"
+                name="charity_organization_name"
+                required
+                #charityOrgName="ngModel"
+                [class.is-invalid]="charityOrgName.invalid && charityOrgName.touched"
+              />
+              <div class="invalid-feedback" *ngIf="charityOrgName.invalid && charityOrgName.touched">
+                Organization name is required
+              </div>
+            </div>
+
+            <!-- Mission Description -->
+            <div class="form-group mb-3">
+              <label>Mission Description</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.mission_description"
+                name="charity_mission_description"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <!-- Website and Address -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Website</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  [(ngModel)]="editingItem.website"
+                  name="charity_website"
+                  placeholder="https://"
+                />
+              </div>
               <div class="form-group">
                 <label>Address</label>
                 <input
                   type="text"
-                  [(ngModel)]="editingItem.address"
-                  name="address"
-                />
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>City</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.city"
-                    name="city"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>State</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.state"
-                    name="state"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
-                </div>
-              </div>
-
-
-              <!-- Beneficiary Concerns Section -->
-              <div class="mb-3">
-                <label class="form-label">Planning Concerns </label>
-                <div class="w-100">
-                  <ul class="w-100 p-2">
-                    <ng-container *ngFor="let category of concernCategories">
-                      <li class="dropdown-header fw-bold">
-                        {{ category.category_name }}
-                      </li>
-                      <li *ngFor="let concern of category.concerns">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            [checked]="
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            (change)="toggleConcern(concern.id)"
-                          />
-                          <label class="form-check-label w-75">
-                            {{ concern.concern_name }}
-                          </label>
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_snt) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-warning ms-2"
-                            title="May indicate Special Needs Trust"
-                            >SNT</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_medicaid) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-danger ms-2"
-                            title="May affect Medicaid eligibility"
-                            >Medicaid</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_guardian) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-purple ms-2"
-                            title="May indicate need for Guardian"
-                            >Guardian</span
-                          >
-                          <span
-                            *ngIf="
-                              $any(concern.suggests_spendthrift) === '1' &&
-                              editingItem.concern_ids?.includes(+concern.id)
-                            "
-                            class="badge bg-secondary ms-2"
-                            title="May indicate need for Spendthrift provisions"
-                            >Spendthrift</span
-                          >
-                        </div>
-                      </li>
-                    </ng-container>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Selected concerns badges -->
-              <div class="mb-3" *ngIf="editingItem.concern_ids?.length">
-                <div class="d-flex flex-wrap gap-2">
-                  <ng-container
-                    *ngFor="let concernId of editingItem.concern_ids"
-                  >
-                    <span
-                      class="badge rounded-pill me-1"
-                      [ngClass]="{
-                        'bg-danger':
-                          +getConcernById(concernId)?.suggests_snt === 1,
-                        'bg-primary':
-                          +getConcernById(concernId)?.suggests_trust === 1 &&
-                          +getConcernById(concernId)?.suggests_snt !== 1,
-                        'bg-secondary':
-                          +getConcernById(concernId)?.suggests_trust !== 1
-                      }"
-                    >
-                      {{ getConcernById(concernId)?.concern_name }}
-                      <button
-                        type="button"
-                        class="btn-close btn-close-white btn-sm ms-2"
-                        aria-label="Remove"
-                        (click)="toggleConcern(concernId)"
-                      ></button>
-                    </span>
-                  </ng-container>
-                </div>
-              </div>
-
-              <!-- Concern notes -->
-              <div class="mb-3">
-                <label class="form-label">Concern Details / Notes</label>
-                <textarea
-                  [(ngModel)]="editingItem.concern_notes"
-                  name="concern_notes"
-                  rows="3"
                   class="form-control"
-                  placeholder="Additional details about any concerns selected above..."
-                ></textarea>
-              </div>
-
-              <!-- Planning Alert -->
-              <div class="alert alert-info mb-3" *ngIf="hasSntIndicator">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                Selected concerns may indicate a Special Needs Trust is
-                appropriate for this beneficiary.
-              </div>
-
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea
-                  [(ngModel)]="editingItem.notes"
-                  name="notes"
-                  rows="3"
-                ></textarea>
-              </div>
-            </ng-container>
-
-            <!-- CHARITY FORM -->
-            <ng-container *ngIf="editingType === 'charity'">
-              <div class="form-group">
-                <label>Organization Name</label>
-                <input
-                  type="text"
-                  [(ngModel)]="editingItem.organization_name"
-                  name="organization_name"
+                  [(ngModel)]="editingItem.address"
+                  name="charity_address"
                 />
               </div>
-
-              <div class="form-group">
-                <label>Mission Description</label>
-                <textarea
-                  [(ngModel)]="editingItem.mission_description"
-                  name="mission_description"
-                  rows="2"
-                ></textarea>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Website</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.website"
-                    name="website"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Address</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.address"
-                    name="address"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>City</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.city"
-                    name="city"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>State</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.state"
-                    name="state"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>ZIP</label>
-                  <input type="text" [(ngModel)]="editingItem.zip" name="zip" />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Contact Person</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.contact_person"
-                    name="contact_person"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Contact Phone</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.contact_phone"
-                    name="contact_phone"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Contact Email</label>
-                  <input
-                    type="email"
-                    [(ngModel)]="editingItem.contact_email"
-                    name="contact_email"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.current_donor"
-                      name="current_donor"
-                    />
-                    Current Donor</label
-                  >
-                </div>
-                <div class="form-group" *ngIf="editingItem.current_donor">
-                  <label>Annual Contribution Amount</label>
-                  <input
-                    type="number"
-                    [(ngModel)]="editingItem.annual_contribution_amount"
-                    name="annual_contribution_amount"
-                  />
-                </div>
-                <div class="form-group" *ngIf="editingItem.current_donor">
-                  <label>Years Supporting</label>
-                  <input
-                    type="number"
-                    [(ngModel)]="editingItem.years_supporting"
-                    name="years_supporting"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Personal Connection</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.personal_connection"
-                    name="personal_connection"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Intended Gift Type</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.intended_gift_type"
-                    name="intended_gift_type"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Intended Percentage</label>
-                  <input
-                    type="number"
-                    [(ngModel)]="editingItem.intended_percentage"
-                    name="intended_percentage"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Intended Dollar Amount</label>
-                  <input
-                    type="number"
-                    [(ngModel)]="editingItem.intended_dollar_amount"
-                    name="intended_dollar_amount"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Intended Asset Description</label>
-                <input
-                  type="text"
-                  [(ngModel)]="editingItem.intended_asset_description"
-                  name="intended_asset_description"
-                />
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Gift Restrictions</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.gift_restrictions"
-                    name="gift_restrictions"
-                  />
-                </div>
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.memorial_gift"
-                      name="memorial_gift"
-                    />
-                    Memorial Gift</label
-                  >
-                </div>
-                <div class="form-group" *ngIf="editingItem.memorial_gift">
-                  <label>Memorial Name</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.memorial_name"
-                    name="memorial_name"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group checkbox-group">
-                  <label
-                    ><input
-                      type="checkbox"
-                      [(ngModel)]="editingItem.endowment_fund"
-                      name="endowment_fund"
-                    />
-                    Endowment Fund</label
-                  >
-                </div>
-                <div class="form-group" *ngIf="editingItem.endowment_fund">
-                  <label>Endowment Purpose</label>
-                  <input
-                    type="text"
-                    [(ngModel)]="editingItem.endowment_purpose"
-                    name="endowment_purpose"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Recognition Preferences</label>
-                <input
-                  type="text"
-                  [(ngModel)]="editingItem.recognition_preferences"
-                  name="recognition_preferences"
-                />
-              </div>
-
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea
-                  [(ngModel)]="editingItem.notes"
-                  name="notes"
-                  rows="3"
-                ></textarea>
-              </div>
-            </ng-container>
-
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="cancelEdit()"
-              >
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">Save</button>
             </div>
-          </form>
-        </div>
+
+            <!-- City, State, ZIP -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.city"
+                  name="charity_city"
+                />
+              </div>
+              <div class="form-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.state"
+                  name="charity_state"
+                />
+              </div>
+              <div class="form-group">
+                <label>ZIP</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.zip"
+                  name="charity_zip"
+                />
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Contact Person</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.contact_person"
+                  name="charity_contact_person"
+                />
+              </div>
+              <div class="form-group">
+                <label>Contact Phone</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  [(ngModel)]="editingItem.contact_phone"
+                  name="charity_contact_phone"
+                />
+              </div>
+              <div class="form-group">
+                <label>Contact Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="editingItem.contact_email"
+                  name="charity_contact_email"
+                />
+              </div>
+            </div>
+
+            <!-- Current Donor Section -->
+            <div class="form-row align-items-end">
+              <div class="form-group checkbox-group">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="editingItem.current_donor"
+                    name="charity_current_donor"
+                    id="charity_current_donor"
+                  />
+                  <label class="form-check-label" for="charity_current_donor">
+                    Current Donor
+                  </label>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="editingItem.current_donor">
+                <label>Annual Contribution Amount</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="editingItem.annual_contribution_amount"
+                    name="charity_annual_contribution_amount"
+                  />
+                </div>
+              </div>
+              <div class="form-group" *ngIf="editingItem.current_donor">
+                <label>Years Supporting</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="editingItem.years_supporting"
+                  name="charity_years_supporting"
+                />
+              </div>
+            </div>
+
+            <!-- Personal Connection and Gift Type -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Personal Connection</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.personal_connection"
+                  name="charity_personal_connection"
+                  placeholder="How are you connected to this charity?"
+                />
+              </div>
+              <div class="form-group">
+                <label>Intended Gift Type</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="editingItem.intended_gift_type"
+                  name="charity_intended_gift_type"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  <option value="Percentage">Percentage of Estate</option>
+                  <option value="Fixed_Amount">Fixed Dollar Amount</option>
+                  <option value="Specific_Asset">Specific Asset</option>
+                  <option value="Residuary">Residuary Beneficiary</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Intended Percentage and Dollar Amount -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Intended Percentage</label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="editingItem.intended_percentage"
+                    name="charity_intended_percentage"
+                    min="0"
+                    max="100"
+                  />
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Intended Dollar Amount</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="editingItem.intended_dollar_amount"
+                    name="charity_intended_dollar_amount"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Intended Asset Description -->
+            <div class="form-group mb-3">
+              <label>Intended Asset Description</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editingItem.intended_asset_description"
+                name="charity_intended_asset_description"
+                placeholder="Describe specific asset if applicable"
+              />
+            </div>
+
+            <!-- Gift Restrictions and Memorial Gift -->
+            <div class="form-row align-items-end">
+              <div class="form-group">
+                <label>Gift Restrictions</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.gift_restrictions"
+                  name="charity_gift_restrictions"
+                  placeholder="Any restrictions on how gift should be used"
+                />
+              </div>
+              <div class="form-group checkbox-group">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="editingItem.memorial_gift"
+                    name="charity_memorial_gift"
+                    id="charity_memorial_gift"
+                  />
+                  <label class="form-check-label" for="charity_memorial_gift">
+                    Memorial Gift
+                  </label>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="editingItem.memorial_gift">
+                <label>Memorial Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.memorial_name"
+                  name="charity_memorial_name"
+                  placeholder="In memory of..."
+                />
+              </div>
+            </div>
+
+            <!-- Endowment Fund -->
+            <div class="form-row align-items-end">
+              <div class="form-group checkbox-group">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="editingItem.endowment_fund"
+                    name="charity_endowment_fund"
+                    id="charity_endowment_fund"
+                  />
+                  <label class="form-check-label" for="charity_endowment_fund">
+                    Endowment Fund
+                  </label>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="editingItem.endowment_fund">
+                <label>Endowment Purpose</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editingItem.endowment_purpose"
+                  name="charity_endowment_purpose"
+                  placeholder="Purpose of the endowment"
+                />
+              </div>
+            </div>
+
+            <!-- Recognition Preferences -->
+            <div class="form-group mb-3">
+              <label>Recognition Preferences</label>
+              <select
+                class="form-control"
+                [(ngModel)]="editingItem.recognition_preferences"
+                name="charity_recognition_preferences"
+              >
+                <option [ngValue]="null">Select...</option>
+                <option value="Full_Name">Full Name Recognition</option>
+                <option value="Anonymous">Anonymous</option>
+                <option value="Family_Name">Family Name Only</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="editingItem.notes"
+                name="charity_notes"
+                rows="3"
+              ></textarea>
+            </div>
+
+          </ng-container>
+
+          <!-- ========================================== -->
+          <!-- MODAL FOOTER (Single footer for all forms) -->
+          <!-- ========================================== -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="cancelEdit()"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="editForm.invalid"
+            >
+              {{ isAddMode ? 'Add' : 'Save' }}
+            </button>
+          </div>
+
+        </form>
       </div>
     </div>
   </div>

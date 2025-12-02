@@ -7,14 +7,23 @@ function getInput() {
 }
 
 // CREATE
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO child (client_id, name, dob, relationship) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isss",
-        $data['client_id'],
-        $data['name'],
-        $data['dob'],
-        $data['relationship']
+    // Set defaults for each field if missing or null
+    $portal_user_id = $data['portal_user_id'] ?? null;
+    $name = $data['name'] ?? '';
+    $dob = $data['dob'] ?? null;
+    $relationship = $data['relationship'] ?? 'child';
+    $haveConcerns = $data['haveConcerns'] ?? null;
+
+    $stmt = $conn->prepare("INSERT INTO child (portal_user_id, name, dob, relationship, haveconcerns) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("issss",
+        $portal_user_id,
+        $name,
+        $dob,
+        $relationship,
+        $haveConcerns
     );
     $stmt->execute();
     echo json_encode(['child_id' => $stmt->insert_id]);
@@ -46,12 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE child SET client_id=?, name=?, dob=?, relationship=? WHERE child_id=?");
-    $stmt->bind_param("isssi",
-        $data['client_id'],
+    $haveConcerns = $data['haveConcerns'] ?? null;
+    $stmt = $conn->prepare("UPDATE child SET portal_user_id=?, name=?, dob=?, relationship=?, haveconcerns=? WHERE child_id=?");
+    $stmt->bind_param("issssi",
+        $data['portal_user_id'],
         $data['name'],
         $data['dob'],
         $data['relationship'],
+        $haveConcerns,
         $id
     );
     $stmt->execute();

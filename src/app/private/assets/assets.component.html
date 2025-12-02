@@ -2340,13 +2340,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
-      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+      <button class="btn btn-primary" [disabled]="!form.valid" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -2480,7 +2481,7 @@
           <button class="btn btn-secondary" (click)="closeEditModal()">
             Cancel
           </button>
-          <button class="btn btn-primary" (click)="saveEditAsset()">
+          <button class="btn btn-primary" [disabled]="!form.valid" (click)="saveEditAsset()">
             Save Changes
           </button>
         </div>
@@ -2612,13 +2613,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
-      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+      <button class="btn btn-primary" [disabled]="!form.valid" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -2748,15 +2750,16 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
       </button>
-      <button class="btn btn-primary" (click)="saveEditAsset()">
+      <button class="btn btn-primary" [disabled]="!form.valid" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -2874,13 +2877,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
-      <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+      <button class="btn btn-primary" [disabled]="!form.valid" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -2998,8 +3002,7 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
@@ -3007,6 +3010,8 @@
       <button class="btn btn-primary" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -3161,13 +3166,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
       <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -3321,8 +3327,7 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
@@ -3330,6 +3335,8 @@
       <button class="btn btn-primary" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -3541,13 +3548,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
       <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -3758,8 +3766,7 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
@@ -3767,6 +3774,8 @@
       <button class="btn btn-primary" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -3967,13 +3976,14 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
       <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -4159,8 +4169,7 @@
             rows="3"
           ></textarea>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
@@ -4168,6 +4177,8 @@
       <button class="btn btn-primary" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -4327,13 +4338,14 @@
             <option value="Spouse">Spouse</option>
           </select>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeAddModal()">
         Cancel
       </button>
       <button class="btn btn-primary" (click)="saveNewAsset()">Save</button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
@@ -4494,8 +4506,7 @@
             <option value="Spouse">Spouse</option>
           </select>
         </div>
-      </form>
-    </div>
+
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="closeEditModal()">
         Cancel
@@ -4503,6 +4514,8 @@
       <button class="btn btn-primary" (click)="saveEditAsset()">
         Save Changes
       </button>
+    </div>
+      </form>
     </div>
   </div>
 </div>
