@@ -1,19 +1,25 @@
 <div class="planning-container">
 	<h2>Planning Overview</h2>
 
-	<div class="heirs-section">
-		<h3>Client Heirs</h3>
-		<ul>
-			<li *ngFor="let heir of clientHeirs">
-				<span class="heir-type">{{ heir.type }}</span>: <span class="heir-name">{{ heir.name }}</span>
-			</li>
-		</ul>
-		<h3 *ngIf="spouseHeirs.length">Spouse Heirs</h3>
-		<ul *ngIf="spouseHeirs.length">
-			<li *ngFor="let heir of spouseHeirs">
-				<span class="heir-type">{{ heir.type }}</span>: <span class="heir-name">{{ heir.name }}</span>
-			</li>
-		</ul>
+	<div class="heirs-section" style="display: flex; gap: 2em; align-items: flex-start;">
+		<div class="heirs-column" style="flex: 1; margin-top: 1.5em;">
+			<h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Client Heirs</h3>
+			<ul style="list-style: none; padding: 0;">
+				<li *ngFor="let heir of clientHeirs" style="display: flex; gap: 0.5em; align-items: center;">
+					<span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
+					<span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
+				</li>
+			</ul>
+		</div>
+		<div class="heirs-column" style="flex: 1; margin-top: 1.5em;" *ngIf="spouseHeirs.length">
+			<h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Spouse Heirs</h3>
+			<ul style="list-style: none; padding: 0;">
+				<li *ngFor="let heir of spouseHeirs" style="display: flex; gap: 0.5em; align-items: center;">
+					<span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
+					<span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 	<div class="assets-section">

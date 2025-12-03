@@ -48,6 +48,11 @@ export class PlanningComponent {
       if (!groupMap[group]) groupMap[group] = [];
       groupMap[group].push(asset);
     });
+    // Console log each group and its assets
+    Object.entries(groupMap).forEach(([group, assets]) => {
+      console.log(`Group: ${group}`);
+      console.log(assets);
+    });
     return groupMap;
   }
 }
