@@ -13,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO retirement_account_holdings (
             portal_user_id, account_name, balance, account_type, institution_name, account_number_encrypted,
             approximate_value, primary_beneficiaries, contingent_beneficiaries, rmd_age_reached, ownership_form,
-            notes, owned_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            notes, owned_by, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "isssssdssssss",
+        "isssssdsssssss",
         $data['portal_user_id'],
         $data['account_name'],
         $data['balance'],
@@ -30,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['rmd_age_reached'],
         $data['ownership_form'],
         $data['notes'],
-        $data['owned_by']
+        $data['owned_by'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['retirement_account_id' => $stmt->insert_id]);
@@ -66,11 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE retirement_account_holdings SET
             portal_user_id=?, account_name=?, balance=?, account_type=?, institution_name=?, account_number_encrypted=?,
             approximate_value=?, primary_beneficiaries=?, contingent_beneficiaries=?, rmd_age_reached=?, ownership_form=?,
-            notes=?, owned_by=?
+            notes=?, owned_by=?, has_bene=?
         WHERE retirement_account_id=?
     ");
     $stmt->bind_param(
-        "isssssdssssssi",
+        "isssssdsssssssi",
         $data['portal_user_id'],
         $data['account_name'],
         $data['balance'],
@@ -84,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['ownership_form'],
         $data['notes'],
         $data['owned_by'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

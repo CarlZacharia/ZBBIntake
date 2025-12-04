@@ -1803,7 +1803,7 @@
             >
               @if (editingRealEstate.owned_by === 'Client' ||
               editingRealEstate.owned_by === 'Spouse' && ds.isMarried()) {
-              <option value="Will">
+              <option value="Sole Ownership">
                 Sole Ownership (Fee Simple)
               </option>
               } @if (editingRealEstate.owned_by !== 'Client' &&
@@ -2318,17 +2318,28 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingBankAccount.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="POD">Payable on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input
+                type="radio"
+                [(ngModel)]="editingBankAccount.has_bene"
+                name="has_bene"
+                [value]="'Yes'"
+                required
+              />
+              Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input
+                type="radio"
+                [(ngModel)]="editingBankAccount.has_bene"
+                name="has_bene"
+                [value]="'No'"
+                required
+              />
+              No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -2455,17 +2466,14 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingBankAccount.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="POD">Payable on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingBankAccount.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingBankAccount.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -2591,17 +2599,14 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingNQAccount.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingNQAccount.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingNQAccount.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -2729,15 +2734,12 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingNQAccount.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingNQAccount.has_bene"
+            name="has_bene"
             required
           >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 
@@ -2856,16 +2858,14 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingRetirementAccount.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="BD">Beneficiary Designation</option>
-            <option value="Trust">Trust</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingRetirementAccount.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingRetirementAccount.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -2982,14 +2982,12 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingRetirementAccount.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingRetirementAccount.has_bene"
+            name="has_bene"
             required
           >
-            <option value="Will">None</option>
-            <option value="BD">Beneficiary Designation</option>
-            <option value="Trust">Trust</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 
@@ -3144,17 +3142,14 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingLifeInsurance.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="BD">Beneficiary Designation</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingLifeInsurance.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingLifeInsurance.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -3306,15 +3301,12 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingLifeInsurance.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingLifeInsurance.has_bene"
+            name="has_bene"
             required
           >
-            <option value="Will">None</option>
-            <option value="BD">Beneficiary Designation</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 
@@ -3526,17 +3518,14 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingBusinessInterest.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingBusinessInterest.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingBusinessInterest.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -3745,15 +3734,12 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingBusinessInterest.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingBusinessInterest.has_bene"
+            name="has_bene"
             required
           >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 
@@ -3939,31 +3925,25 @@
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingDigitalAsset.ownership_form"
-            name="ownership_form"
-            required
-          >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
-          </select>
+          <div style="display: flex; align-items: center; gap: 1.5em;">
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingDigitalAsset.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3em;">
+              <input type="radio" [(ngModel)]="editingDigitalAsset.has_bene" name="has_bene" [value]="'No'" required /> No
+            </label>
+          </div>
         </div>
 
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingDigitalAsset.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingDigitalAsset.has_bene"
+            name="has_bene"
             required
           >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 
@@ -4149,14 +4129,12 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingDigitalAsset.ownership_form"
-            name="ownership_form"
+            [(ngModel)]="editingDigitalAsset.has_bene"
+            name="has_bene"
+            required
           >
-            <option value="Will">None</option>
-            <option value="TOD">Transfer on Death</option>
-            <option value="Trust">Trust</option>
-            <option value="LLC">LLC</option>
-            <option value="Other">Other</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
 

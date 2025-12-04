@@ -23,6 +23,7 @@ export interface IRealEstate {
     | 'LLC'
     | 'Land Contract'
     | 'Other';
+  has_bene: string | 'No';
   title_details: string | null;
   approximate_value: number | null;
   mortgage_balance: number | null;
@@ -30,7 +31,17 @@ export interface IRealEstate {
   beneficiaries_on_deed: string | null;
   intended_beneficiary: string | null;
   special_notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' |   null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
   ownership_value: number | null; // net_value * (ownership_percentage / 100)
@@ -60,8 +71,19 @@ export interface IBankAccount {
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   ownership_form: string | null;
+  has_bene: string | 'No';
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' |   null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -85,8 +107,19 @@ export interface INQAccount {
   primary_beneficiaries: IBeneficiary[];
   contingent_beneficiaries: IBeneficiary[];
   ownership_form: string | null;
+  has_bene: string | 'No';
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -115,6 +148,7 @@ export interface IRetirementAccount {
   contingent_beneficiaries: IBeneficiary[];
   rmd_age_reached: boolean | number | string | null;
   ownership_form: string | null;
+  has_bene: string | 'Yes';
   notes: string | null;
   owned_by: 'Client' | 'Spouse' | null;
 }
@@ -136,8 +170,19 @@ export interface ILifeInsurance {
   trust_name: string | null;
   annual_premium: number | null;
   ownership_form: string | null;
+  has_bene: string | 'Yes';
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -168,8 +213,19 @@ export interface IBusinessInterest {
   successor_is_family: boolean | number | string | null;
   should_business_be_sold: boolean | number | string | null;
   ownership_form: string | null;
+  has_bene: string | 'No';
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   other_owners: string | null;
 }
 
@@ -206,8 +262,19 @@ export interface IDigitalAsset {
     | null;
   access_instructions: string | null;
   ownership_form: string | null;
+  has_bene: string | 'No';
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
 }
@@ -243,10 +310,21 @@ export interface IOtherAsset {
   special_instructions: string | null;
   appraisal_exists: boolean | number | string | null;
   appraisal_date: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
   ownership_percentage: number | null;
   other_owners: string | null;
   ownership_form: string | null;
+  has_bene: string | 'No';
   notes: string | null;
 }
 
@@ -270,7 +348,17 @@ export interface IDebt {
   current_balance: number | null;
   monthly_payment: number | null;
   notes: string | null;
-  owned_by: 'Client' | 'Spouse' | 'Client & Spouse' | 'Client & Other' | 'Spouse & Other' | 'Client, Spouse & Other' | 'Trust' | 'LLC' | 'Other' | null;
+  owned_by:
+    | 'Client'
+    | 'Spouse'
+    | 'Client & Spouse'
+    | 'Client & Other'
+    | 'Spouse & Other'
+    | 'Client, Spouse & Other'
+    | 'Trust'
+    | 'LLC'
+    | 'Other'
+    | null;
 }
 
 /**

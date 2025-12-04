@@ -1,12 +1,10 @@
-// planning.service.ts
 import { Injectable } from '@angular/core';
 import {
   Asset,
   AssetCategory,
   OwnedBy,
-  OwnershipForm,
   RealEstateMode,
-  DispoType,
+  OwnershipForm,
   BeneficiaryTarget,
   NormalizedAssets
 } from '../models/asset.model';
@@ -81,45 +79,28 @@ export class PlanningService {
     if (r.ownedBy === 'Client, Spouse & Other') ownedBy = OwnedBy.ClientSpouseAndOther;
 
 
-    // Map backend dispo_type to frontend ownership_form
-    const ownershipFormRaw = (r.ownership_form || r.dispo_type || '') as string;
-
-
-    let ownershipForm: OwnershipForm | undefined = undefined;
-    if (ownershipFormRaw.includes('TBE')) ownershipForm = OwnershipForm.TBE;
-    else if (ownershipFormRaw.includes('JTWROS')) ownershipForm = OwnershipForm.JTWROS;
-    else if (ownershipFormRaw.includes('TIC')) ownershipForm = OwnershipForm.TIC;
-
-    // If not set, but owned by both client and spouse, default to TBE
-    if (!ownershipForm && ownedBy === OwnedBy.ClientAndSpouse) {
-      ownershipForm = OwnershipForm.TBE;
-    }
-    // If user mistakenly sets JTWROS for ClientAndSpouse, correct to TBE
-    if (ownershipForm === OwnershipForm.JTWROS && ownedBy === OwnedBy.ClientAndSpouse) {
-      ownershipForm = OwnershipForm.TBE;
-    }
-    // Otherwise, default to Sole
-    if (!ownershipForm) {
-      ownershipForm = OwnershipForm.Sole;
+    // Map backend ownership_form to allowed frontend values
+    const ownershipFormRaw = (r.ownership_form || '').trim();
+    let ownershipForm: OwnershipForm;
+    switch (ownershipFormRaw) {
+      case 'TBE': ownershipForm = OwnershipForm.TBE; break;
+      case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
+      case 'TIC': ownershipForm = OwnershipForm.TIC; break;
+      case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
+      case 'LLC': ownershipForm = OwnershipForm.LLC; break;
+      default:
+        // If not set, but owned by both client and spouse, default to TBE
+        if (ownedBy === OwnedBy.ClientAndSpouse) ownershipForm = OwnershipForm.TBE;
+        else ownershipForm = OwnershipForm.Sole;
+        break;
     }
 
     let realEstateMode: RealEstateMode | undefined = RealEstateMode.FeeSimple;
-    if (ownershipFormRaw.includes('Lady Bird')) realEstateMode = RealEstateMode.LadyBird;
-    if (ownershipFormRaw.includes('Life Estate')) realEstateMode = RealEstateMode.LifeEstate;
-    if (ownershipFormRaw.includes('Land Contract')) realEstateMode = RealEstateMode.LandContract;
+    if (r.realEstateMode && Object.values(RealEstateMode).includes(r.realEstateMode)) {
+      realEstateMode = r.realEstateMode;
+    }
     if (ownedBy === OwnedBy.LLC || ownedBy === OwnedBy.Trust) {
       realEstateMode = RealEstateMode.EntityOwned;
-    }
-
-    let dispoType = DispoType.Will;
-    if (ownershipForm === OwnershipForm.TBE || ownershipForm === OwnershipForm.JTWROS) {
-      dispoType = DispoType.Joint;
-    }
-    if (realEstateMode === RealEstateMode.LadyBird || realEstateMode === RealEstateMode.LifeEstate) {
-      dispoType = DispoType.Beneficiary;
-    }
-    if (realEstateMode === RealEstateMode.EntityOwned) {
-      dispoType = DispoType.Trust;  // treated like entity/trust for planning
     }
 
     let beneficiaryTarget: BeneficiaryTarget | undefined;
@@ -139,7 +120,6 @@ export class PlanningService {
       ownedBy,
       ownershipForm,
       realEstateMode,
-      dispoType,
       beneficiaryTarget,
       approximate_value: r.approximate_value ?? null
     };
@@ -147,13 +127,18 @@ export class PlanningService {
 
 private mapBank(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  let dispoType: DispoType = DispoType.Will;
-  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
-  if (ownershipFormRaw === 'Will') {
-    dispoType = DispoType.Will;
+  let ownershipForm: OwnershipForm = OwnershipForm.Sole;
+  const ownershipFormRaw = (r.ownership_form || '').trim();
+  switch (ownershipFormRaw) {
+    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
+    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
+    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
+    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
+    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
+    default: ownershipForm = OwnershipForm.Sole; break;
   }
   if (r.joint_owner_name) {
-    dispoType = DispoType.Joint;
+    ownershipForm = OwnershipForm.JTWROS;
   }
   // No beneficiaryTarget logic yet
   return {
@@ -162,37 +147,53 @@ private mapBank(r: any): Asset {
     name: `${r.institution_name} ${r.account_type}`,
     category: AssetCategory.Bank,
     ownedBy,
-    dispoType,
+    ownershipForm,
     approximate_value: r.approximate_value ?? null
   };
 }
 
 private mapNQ(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
-  const dispoType = ownershipFormRaw === 'TOD' ? DispoType.TOD : DispoType.Will;
+  const ownershipFormRaw = (r.ownership_form || '').trim();
+  let ownershipForm: OwnershipForm;
+  switch (ownershipFormRaw) {
+    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
+    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
+    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
+    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
+    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
+    default: ownershipForm = OwnershipForm.Sole; break;
+  }
   return {
     id: r.nq_account_id ?? r.id,
     idname: 'nq_account_id',
     name: `${r.institution_name} ${r.account_type}`,
     category: AssetCategory.NQ,
     ownedBy,
-    dispoType,
+    ownershipForm,
     approximate_value: r.approximate_value ?? null
   };
 }
 
 private mapRetirement(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
-  const dispoType = ownershipFormRaw === 'BD' ? DispoType.BD : DispoType.Beneficiary;
+  const ownershipFormRaw = (r.ownership_form || '').trim();
+  let ownershipForm: OwnershipForm;
+  switch (ownershipFormRaw) {
+    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
+    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
+    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
+    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
+    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
+    default: ownershipForm = OwnershipForm.Sole; break;
+  }
   return {
     id: r.retirement_account_id ?? r.id,
     idname: 'retirement_account_id',
     name: `${r.institution_name} ${r.account_type}`,
     category: AssetCategory.Retirement,
     ownedBy,
-    dispoType,
+    ownershipForm,
     approximate_value: r.approximate_value ?? null
   };
 }
@@ -206,7 +207,7 @@ private mapRetirement(r: any): Asset {
       name: r.name,
       category: AssetCategory.LifeInsurance,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
-      dispoType: DispoType.Beneficiary,
+      ownershipForm: OwnershipForm.TRUST,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null
     };
@@ -219,7 +220,7 @@ private mapRetirement(r: any): Asset {
       name: r.name,
       category: AssetCategory.Business,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy ?? 'LLC'),
-      dispoType: this.mapDispoTypeGeneric(r),
+      ownershipForm: this.mapOwnershipFormGeneric(r),
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null
     };
@@ -232,7 +233,7 @@ private mapRetirement(r: any): Asset {
       name: r.name,
       category: AssetCategory.Digital,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
-      dispoType: this.mapDispoTypeGeneric(r),
+      ownershipForm: this.mapOwnershipFormGeneric(r),
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null
     };
@@ -245,7 +246,7 @@ private mapRetirement(r: any): Asset {
       name: r.name,
       category: AssetCategory.Other,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
-      dispoType: this.mapDispoTypeGeneric(r),
+      ownershipForm: this.mapOwnershipFormGeneric(r),
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null
     };
@@ -277,17 +278,16 @@ private mapRetirement(r: any): Asset {
     }
   }
 
-  private mapDispoTypeGeneric(r: any): DispoType {
-    // crude example; you will align with your true raw fields
-    if (r.joint === true || (r.owners || '').includes('Joint')) {
-      return DispoType.Joint;
+  private mapOwnershipFormGeneric(r: any): OwnershipForm {
+    const raw = (r.ownership_form || '').trim();
+    switch (raw) {
+      case 'Sole': return OwnershipForm.Sole;
+      case 'JTWROS': return OwnershipForm.JTWROS;
+      case 'TBE': return OwnershipForm.TBE;
+      case 'TIC': return OwnershipForm.TIC;
+      case 'Trust': return OwnershipForm.TRUST;
+      case 'LLC': return OwnershipForm.LLC;
+      default: return OwnershipForm.Sole;
     }
-    if (r.beneficiary) {
-      return DispoType.Beneficiary;
-    }
-    if (r.inTrust === true) {
-      return DispoType.Trust;
-    }
-    return DispoType.Will;
   }
 }

@@ -13,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO bank_account_holdings (
             portal_user_id, bank_name, account_number, balance, ownership_form, account_type, account_number_encrypted,
             approximate_value, joint_owner_name, primary_beneficiaries, contingent_beneficiaries, notes, owned_by,
-            ownership_percentage, other_owners
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ownership_percentage, other_owners, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "issdsssssssssss",
+        "issdsssssssssssss",
         $data['portal_user_id'],
         $data['bank_name'],
         $data['account_number'],
@@ -32,7 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['notes'],
         $data['owned_by'],
         $data['ownership_percentage'],
-        $data['other_owners']
+        $data['other_owners'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['bank_account_id' => $stmt->insert_id]);
@@ -68,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE bank_account_holdings SET
             portal_user_id=?, bank_name=?, account_number=?, balance=?, ownership_form=?, account_type=?, account_number_encrypted=?,
             approximate_value=?, joint_owner_name=?, primary_beneficiaries=?, contingent_beneficiaries=?, notes=?, owned_by=?,
-            ownership_percentage=?, other_owners=?
+            ownership_percentage=?, other_owners=?, has_bene=?
         WHERE bank_account_id=?
     ");
     $stmt->bind_param(
-        "issdsssssssssssi",
+        "issdsssssssssssssi",
         $data['portal_user_id'],
         $data['bank_name'],
         $data['account_number'],
@@ -88,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['owned_by'],
         $data['ownership_percentage'],
         $data['other_owners'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

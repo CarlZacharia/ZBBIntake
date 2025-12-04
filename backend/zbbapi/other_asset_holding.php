@@ -14,11 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO other_asset_holdings (
             portal_user_id, asset_type, description, approximate_value, debtOwed, netValue, is_heirloom,
             intended_recipient, special_instructions, appraisal_exists, appraisal_date, owned_by,
-            ownership_percentage, other_owners, ownership_form, notes
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ownership_percentage, other_owners, ownership_form, notes, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "issddisssissssss",
+        "issddisssisssssss",
         $data['portal_user_id'],
         $data['asset_type'],
         $data['description'],
@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['ownership_percentage'],
         $data['other_owners'],
         $data['ownership_form'],
-        $data['notes']
+        $data['notes'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['other_asset_id' => $stmt->insert_id]);
@@ -70,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE other_asset_holdings SET
             portal_user_id=?, asset_type=?, description=?, approximate_value=?, debtOwed=?, netValue=?, is_heirloom=?,
             intended_recipient=?, special_instructions=?, appraisal_exists=?, appraisal_date=?, owned_by=?,
-            ownership_percentage=?, other_owners=?, ownership_form=?, notes=?
+            ownership_percentage=?, other_owners=?, ownership_form=?, notes=?, has_bene=?
         WHERE other_asset_id=?
     ");
     $stmt->bind_param(
-        "issddisssissssssi",
+        "issddisssisssssssi",
         $data['portal_user_id'],
         $data['asset_type'],
         $data['description'],
@@ -91,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['other_owners'],
         $data['ownership_form'],
         $data['notes'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

@@ -24,6 +24,8 @@ export enum OwnershipForm {
   JTWROS = 'JTWROS',
   TIC = 'TIC',
   TBE = 'TBE',
+  TRUST = 'Trust',
+  LLC = 'LLC',
 }
 
 export enum RealEstateMode {
@@ -59,7 +61,6 @@ export interface Asset {
   ownedBy: OwnedBy;
   ownershipForm?: OwnershipForm;
   realEstateMode?: RealEstateMode;
-  dispoType: DispoType;
   beneficiaryTarget?: BeneficiaryTarget;
   approximate_value?: number | null;
 }

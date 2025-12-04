@@ -6,7 +6,6 @@ function getInput() {
     return json_decode(file_get_contents('php://input'), true);
 }
 
-
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
@@ -14,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO real_estate_holdings (
             portal_user_id, description, value, ownership_form, property_type, address_line1, address_line2, city, state, zip,
             title_details, approximate_value, mortgage_balance, net_value, beneficiaries_on_deed, intended_beneficiary,
-            special_notes, owned_by, ownership_percentage, other_owners, ownership_value
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            special_notes, owned_by, ownership_percentage, other_owners, ownership_value, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "isdsissssssddssssdds",
+        "isdsissssssddssssddss",
         $data['portal_user_id'],
         $data['description'],
         $data['value'],
@@ -39,7 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['owned_by'],
         $data['ownership_percentage'],
         $data['other_owners'],
-        $data['ownership_value']
+        $data['ownership_value'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['real_estate_id' => $stmt->insert_id]);
@@ -78,11 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE real_estate_holdings SET
             portal_user_id=?, description=?, value=?, ownership_form=?, property_type=?, address_line1=?, address_line2=?, city=?, state=?, zip=?,
             title_details=?, approximate_value=?, mortgage_balance=?, net_value=?, beneficiaries_on_deed=?, intended_beneficiary=?,
-            special_notes=?, owned_by=?, ownership_percentage=?, other_owners=?, ownership_value=?
+            special_notes=?, owned_by=?, ownership_percentage=?, other_owners=?, ownership_value=?, has_bene=?
         WHERE real_estate_id=?
     ");
     $stmt->bind_param(
-        "isdsissssssddssssddsi",
+        "isdsissssssddssssddsii",
         $data['portal_user_id'],
         $data['description'],
         $data['value'],
@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['ownership_percentage'],
         $data['other_owners'],
         $data['ownership_value'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

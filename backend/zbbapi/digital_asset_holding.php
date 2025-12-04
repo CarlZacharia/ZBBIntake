@@ -14,11 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO digital_asset_holdings (
             portal_user_id, asset_type, asset_name, platform_or_service, approximate_value, username, access_location,
             wallet_type, seed_phrase_location, intended_disposition, access_instructions, ownership_form, notes,
-            owned_by, ownership_percentage, other_owners
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            owned_by, ownership_percentage, other_owners, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "issssdssssssssss",
+        "issssdsssssssssss",
         $data['portal_user_id'],
         $data['asset_type'],
         $data['asset_name'],
@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['notes'],
         $data['owned_by'],
         $data['ownership_percentage'],
-        $data['other_owners']
+        $data['other_owners'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['digital_asset_id' => $stmt->insert_id]);
@@ -70,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE digital_asset_holdings SET
             portal_user_id=?, asset_type=?, asset_name=?, platform_or_service=?, approximate_value=?, username=?, access_location=?,
             wallet_type=?, seed_phrase_location=?, intended_disposition=?, access_instructions=?, ownership_form=?, notes=?,
-            owned_by=?, ownership_percentage=?, other_owners=?
+            owned_by=?, ownership_percentage=?, other_owners=?, has_bene=?
         WHERE digital_asset_id=?
     ");
     $stmt->bind_param(
-        "issssdssssssssssi",
+        "issssdsssssssssssi",
         $data['portal_user_id'],
         $data['asset_type'],
         $data['asset_name'],
@@ -91,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['owned_by'],
         $data['ownership_percentage'],
         $data['other_owners'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

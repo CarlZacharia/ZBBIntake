@@ -13,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO life_insurance_holdings (
             portal_user_id, insurance_company, policy_type, policy_number, face_value, approximate_value, cash_value,
             primary_beneficiaries, contingent_beneficiaries, owned_by_trust, trust_name, annual_premium, ownership_form,
-            notes, owned_by, ownership_percentage, other_owners
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            notes, owned_by, ownership_percentage, other_owners, has_bene
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "isssddssissssssss",
+        "isssddssisssssssss",
         $data['portal_user_id'],
         $data['insurance_company'],
         $data['policy_type'],
@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['notes'],
         $data['owned_by'],
         $data['ownership_percentage'],
-        $data['other_owners']
+        $data['other_owners'],
+        $data['has_bene']
     );
     $stmt->execute();
     echo json_encode(['life_insurance_id' => $stmt->insert_id]);
@@ -70,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         UPDATE life_insurance_holdings SET
             portal_user_id=?, insurance_company=?, policy_type=?, policy_number=?, face_value=?, approximate_value=?, cash_value=?,
             primary_beneficiaries=?, contingent_beneficiaries=?, owned_by_trust=?, trust_name=?, annual_premium=?, ownership_form=?,
-            notes=?, owned_by=?, ownership_percentage=?, other_owners=?
+            notes=?, owned_by=?, ownership_percentage=?, other_owners=?, has_bene=?
         WHERE life_insurance_id=?
     ");
     $stmt->bind_param(
-        "isssddssissssssssi",
+        "isssddssisssssssssi",
         $data['portal_user_id'],
         $data['insurance_company'],
         $data['policy_type'],
@@ -92,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data['owned_by'],
         $data['ownership_percentage'],
         $data['other_owners'],
+        $data['has_bene'],
         $id
     );
     $stmt->execute();

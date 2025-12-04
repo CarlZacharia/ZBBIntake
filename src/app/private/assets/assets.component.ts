@@ -297,6 +297,12 @@ export class AssetsComponent {
 
     switch (this.currentAssetType) {
       case 'real_estate':
+        if (
+          asset.ownership_form === 'Lady Bird Deed' ||
+          asset.ownership_form === 'Life Estate'
+        ) {
+          asset.has_bene = 'Yes';
+        }
         this.ds.addRealEstate(asset as IRealEstate);
         break;
       case 'bank_account':
@@ -333,6 +339,12 @@ export class AssetsComponent {
 
     switch (this.currentAssetType) {
       case 'real_estate':
+        if (
+          asset.ownership_form === 'Lady Bird Deed' ||
+          asset.ownership_form === 'Life Estate'
+        ) {
+          asset.has_bene = 'Yes';
+        }
         this.ds.updateRealEstate(asset);
         break;
       case 'bank_account':

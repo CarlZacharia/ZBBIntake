@@ -874,6 +874,7 @@ removeCharity(index: number) {
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? null,
       ownership_value: asset.ownership_value ?? null,
+      has_bene: asset.has_bene ?? 'No',
     };
     this._clientdata.update((current) => ({
       ...current,
@@ -983,6 +984,7 @@ removeCharity(index: number) {
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? null,
+      has_bene: asset.has_bene ?? 'No',
     };
     this._clientdata.update((current) => ({
       ...current,
@@ -1093,6 +1095,7 @@ removeCharity(index: number) {
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
       other_owners: asset.other_owners ?? null,
+      has_bene: asset.has_bene ?? 'No',
     };
     this._clientdata.update((current) => ({
       ...current,
@@ -1625,6 +1628,7 @@ removeCharity(index: number) {
     ownership_percentage: null,
     other_owners: null,
     ownership_value: null,
+    has_bene: 'No',
   };
 
   public bankAccount: IBankAccount = {
@@ -1642,6 +1646,7 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
+    has_bene: 'No',
   };
 
   public nqAccount: INQAccount = {
@@ -1660,6 +1665,7 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
+    has_bene: 'No',
   };
 
   public retirementAccount: IRetirementAccount = {
@@ -1676,6 +1682,7 @@ removeCharity(index: number) {
     ownership_form: null,
     notes: null,
     owned_by: null,
+    has_bene: 'Yes',
   };
 
   public businessInterest: IBusinessInterest = {
@@ -1697,6 +1704,7 @@ removeCharity(index: number) {
     notes: null,
     owned_by: null,
     other_owners: null,
+    has_bene: 'No',
   };
 
   public lifeInsurance: ILifeInsurance = {
@@ -1717,6 +1725,7 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
+    has_bene: 'Yes',
   };
 
   public digitalAsset: IDigitalAsset = {
@@ -1736,6 +1745,7 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
+    has_bene: 'No',
   };
 
   public otherAsset: IOtherAsset = {
@@ -1755,6 +1765,7 @@ removeCharity(index: number) {
     other_owners: null,
     ownership_form: null,
     notes: null,
+    has_bene: 'No',
   };
 
   /**
