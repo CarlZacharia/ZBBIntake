@@ -837,7 +837,7 @@ removeCharity(index: number) {
       city: asset.city ?? '',
       state: asset.state ?? '',
       zip: asset.zip ?? '',
-      dispo_type: asset.dispo_type ?? '',
+      dispo_type: asset.ownership_form ?? '', // send dispo_type to backend
       title_details: asset.title_details ?? '',
       approximate_value: asset.approximate_value ?? null,
       mortgage_balance: asset.mortgage_balance ?? null,
@@ -862,7 +862,7 @@ removeCharity(index: number) {
       city: asset.city ?? '',
       state: asset.state ?? '',
       zip: asset.zip ?? '',
-      dispo_type: asset.dispo_type ?? 'Other',
+      ownership_form: asset.ownership_form ?? 'Other',
       title_details: asset.title_details ?? null,
       approximate_value: asset.approximate_value ?? null,
       mortgage_balance: asset.mortgage_balance ?? null,
@@ -958,6 +958,7 @@ removeCharity(index: number) {
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
         : asset.contingent_beneficiaries ?? '',
+      dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? '',
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -977,7 +978,7 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? null,
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
-      dispo_type: asset.dispo_type ?? null,
+      ownership_form: asset.ownership_form ?? null,
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -1067,6 +1068,7 @@ removeCharity(index: number) {
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
         : asset.contingent_beneficiaries ?? '',
+      dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -1086,7 +1088,7 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? '',
       primary_beneficiaries: asset.primary_beneficiaries ?? [],
       contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
-      dispo_type: asset.dispo_type ?? null,
+      ownership_form: asset.ownership_form ?? null,
       notes: asset.notes ?? null,
       owned_by: asset.owned_by ?? null,
       ownership_percentage: asset.ownership_percentage ?? null,
@@ -1165,18 +1167,23 @@ removeCharity(index: number) {
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
         : asset.contingent_beneficiaries ?? '',
+      dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       retirement_account_id: null,
       portal_user_id: this.pui,
       action: 'insert',
     };
     this.saveClientSection('retirement_account_holdings', payload).subscribe();
+    const localAsset: IRetirementAccount = {
+      ...asset,
+      ownership_form: asset.ownership_form ?? null,
+    } as IRetirementAccount;
     this._clientdata.update((current) => ({
       ...current,
       assets: {
         ...current.assets,
         retirement_account_holdings: [
           ...current.assets.retirement_account_holdings,
-          asset as IRetirementAccount,
+          localAsset,
         ],
       },
     }));
@@ -1606,7 +1613,7 @@ removeCharity(index: number) {
     city: '',
     state: '',
     zip: '',
-    dispo_type: 'Sole Ownership',
+    ownership_form: 'Sole Ownership',
     title_details: null,
     approximate_value: 0,
     mortgage_balance: 0,
@@ -1630,7 +1637,7 @@ removeCharity(index: number) {
     joint_owner_name: null,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1648,7 +1655,7 @@ removeCharity(index: number) {
     joint_owner_name: null,
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1666,7 +1673,7 @@ removeCharity(index: number) {
     primary_beneficiaries: [],
     contingent_beneficiaries: [],
     rmd_age_reached: false,
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
   };
@@ -1686,7 +1693,7 @@ removeCharity(index: number) {
     intended_successor: null,
     successor_is_family: null,
     should_business_be_sold: null,
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
     other_owners: null,
@@ -1705,7 +1712,7 @@ removeCharity(index: number) {
     owned_by_trust: false,
     trust_name: null,
     annual_premium: 0,
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1724,7 +1731,7 @@ removeCharity(index: number) {
     seed_phrase_location: null,
     intended_disposition: null,
     access_instructions: null,
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
     owned_by: null,
     ownership_percentage: null,
@@ -1746,7 +1753,7 @@ removeCharity(index: number) {
     owned_by: null,
     ownership_percentage: null,
     other_owners: null,
-    dispo_type: null,
+    ownership_form: null,
     notes: null,
   };
 

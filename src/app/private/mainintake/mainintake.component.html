@@ -100,7 +100,7 @@
 
         <!-- Estate Value Summary (distinct, styled div) -->
         <div class="estate-summary-card" style="margin: 1.5em 0; padding: 1em; border-radius: 8px; background: #f7fafc; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 2px solid #cbd5e1;">
-          <h3 style="margin-bottom: 0.5em; color: #2d3748; font-weight: 600;">Estate Value Summary</h3>
+          <h3 style="margin-bottom: 0.5em; color: #2d3748; font-weight: 600;text-align: center;text-decoration: underline;">ESTATE VALUE SUMMARY</h3>
           <div style="margin-bottom: 0.5em;">
             <span style="font-weight: 500; color: #4a5568;">Total Assets:</span>
             <span style="float: right; color: #2b6cb0;">{{ ds.totalAssetValue() | currency:'USD':'symbol':'1.0-0' }}</span>
@@ -114,11 +114,11 @@
             <span style="float: right; color: #c53030;">{{ ds.securedDebts() | currency:'USD':'symbol':'1.0-0' }}</span>
           </div>
           <div style="margin-bottom: 0.5em;">
-            <span style="font-weight: 500; color: #4a5568;">Total All Debts:</span>
+            <span style="font-weight: 500; color: #4a5568;">Total Debts:</span>
             <span style="float: right; color: #c53030;">{{ ds.totalAllDebts() | currency:'USD':'symbol':'1.0-0' }}</span>
           </div>
           <div style="margin-top: 0.75em; font-size: 1.1em; font-weight: 600; color: #276749;">
-            Net Estate Value:
+            Net Estate:
             <span style="float: right; color: #276749;">{{ ds.netEstateValue() | currency:'USD':'symbol':'1.0-0' }}</span>
           </div>
         </div>

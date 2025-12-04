@@ -9,12 +9,32 @@ function getInput() {
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO life_insurance_holding (client_id, company, policy_number, value) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("issd",
-        $data['client_id'],
-        $data['company'],
+    $stmt = $conn->prepare("
+        INSERT INTO life_insurance_holdings (
+            portal_user_id, insurance_company, policy_type, policy_number, face_value, approximate_value, cash_value,
+            primary_beneficiaries, contingent_beneficiaries, owned_by_trust, trust_name, annual_premium, ownership_form,
+            notes, owned_by, ownership_percentage, other_owners
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "isssddssissssssss",
+        $data['portal_user_id'],
+        $data['insurance_company'],
+        $data['policy_type'],
         $data['policy_number'],
-        $data['value']
+        $data['face_value'],
+        $data['approximate_value'],
+        $data['cash_value'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['owned_by_trust'],
+        $data['trust_name'],
+        $data['annual_premium'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['ownership_percentage'],
+        $data['other_owners']
     );
     $stmt->execute();
     echo json_encode(['life_insurance_id' => $stmt->insert_id]);
@@ -34,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['id'])) {
 // READ ONE
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("SELECT * FROM life_insurance_holding WHERE life_insurance_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM life_insurance_holdings WHERE life_insurance_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -46,23 +66,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE life_insurance_holding SET client_id=?, company=?, policy_number=?, value=? WHERE life_insurance_id=?");
-    $stmt->bind_param("issdi",
-        $data['client_id'],
-        $data['company'],
+    $stmt = $conn->prepare("
+        UPDATE life_insurance_holdings SET
+            portal_user_id=?, insurance_company=?, policy_type=?, policy_number=?, face_value=?, approximate_value=?, cash_value=?,
+            primary_beneficiaries=?, contingent_beneficiaries=?, owned_by_trust=?, trust_name=?, annual_premium=?, ownership_form=?,
+            notes=?, owned_by=?, ownership_percentage=?, other_owners=?
+        WHERE life_insurance_id=?
+    ");
+    $stmt->bind_param(
+        "isssddssissssssssi",
+        $data['portal_user_id'],
+        $data['insurance_company'],
+        $data['policy_type'],
         $data['policy_number'],
-        $data['value'],
+        $data['face_value'],
+        $data['approximate_value'],
+        $data['cash_value'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['owned_by_trust'],
+        $data['trust_name'],
+        $data['annual_premium'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['ownership_percentage'],
+        $data['other_owners'],
         $id
     );
     $stmt->execute();
-    echo json_encode(['message' => 'Life insurance holding updated']);
+    echo json_encode(['message' => 'Life insurance holdings updated']);
     $stmt->close();
 }
 
 // DELETE
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("DELETE FROM life_insurance_holding WHERE life_insurance_id = ?");
+    $stmt = $conn->prepare("DELETE FROM life_insurance_holdings WHERE life_insurance_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     echo json_encode(['message' => 'Life insurance holding deleted']);

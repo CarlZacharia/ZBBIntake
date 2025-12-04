@@ -9,11 +9,28 @@ function getInput() {
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO retirement_account_holding (client_id, account_name, balance) VALUES (?, ?, ?)");
-    $stmt->bind_param("isd",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        INSERT INTO retirement_account_holdings (
+            portal_user_id, account_name, balance, account_type, institution_name, account_number_encrypted,
+            approximate_value, primary_beneficiaries, contingent_beneficiaries, rmd_age_reached, ownership_form,
+            notes, owned_by
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "isssssdssssss",
+        $data['portal_user_id'],
         $data['account_name'],
-        $data['balance']
+        $data['balance'],
+        $data['account_type'],
+        $data['institution_name'],
+        $data['account_number_encrypted'],
+        $data['approximate_value'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['rmd_age_reached'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by']
     );
     $stmt->execute();
     echo json_encode(['retirement_account_id' => $stmt->insert_id]);
@@ -45,15 +62,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE retirement_account_holding SET client_id=?, account_name=?, balance=? WHERE retirement_account_id=?");
-    $stmt->bind_param("isdi",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        UPDATE retirement_account_holdings SET
+            portal_user_id=?, account_name=?, balance=?, account_type=?, institution_name=?, account_number_encrypted=?,
+            approximate_value=?, primary_beneficiaries=?, contingent_beneficiaries=?, rmd_age_reached=?, ownership_form=?,
+            notes=?, owned_by=?
+        WHERE retirement_account_id=?
+    ");
+    $stmt->bind_param(
+        "isssssdssssssi",
+        $data['portal_user_id'],
         $data['account_name'],
         $data['balance'],
+        $data['account_type'],
+        $data['institution_name'],
+        $data['account_number_encrypted'],
+        $data['approximate_value'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['rmd_age_reached'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
         $id
     );
     $stmt->execute();
-    echo json_encode(['message' => 'Retirement account holding updated']);
+    echo json_encode(['message' => 'Retirement account holdings updated']);
     $stmt->close();
 }
 

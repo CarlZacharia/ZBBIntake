@@ -1797,8 +1797,8 @@
           <div class="form-group">
             <label>Title Holding Method *</label>
             <select
-              [(ngModel)]="editingRealEstate.dispo_type"
-              name="dispo_type"
+              [(ngModel)]="editingRealEstate.ownership_form"
+              name="ownership_form"
               required
             >
               @if (editingRealEstate.owned_by === 'Client' ||
@@ -1882,7 +1882,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.dispo_type === 'TIC'">
+        <div *ngIf="editingRealEstate.ownership_form === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -1907,8 +1907,8 @@
           </div>
         </div>
 
-        @if (editingRealEstate.dispo_type === 'Lady Bird Deed' ||
-        editingRealEstate.dispo_type === 'Life Estate') {
+        @if (editingRealEstate.ownership_form === 'Lady Bird Deed' ||
+        editingRealEstate.ownership_form === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -2061,8 +2061,8 @@
           <div class="form-group">
             <label>Title Holding Method *</label>
             <select
-              [(ngModel)]="editingRealEstate.dispo_type"
-              name="dispo_type"
+              [(ngModel)]="editingRealEstate.ownership_form"
+              name="ownership_form"
               required
             >
               @if (editingRealEstate.owned_by === 'Client' ||
@@ -2134,7 +2134,7 @@
         </div>
 
         <!-- Tenants in Common Fields -->
-        <div *ngIf="editingRealEstate.dispo_type === 'TIC'">
+        <div *ngIf="editingRealEstate.ownership_form === 'TIC'">
           <div class="form-row">
             <div class="form-group">
               <label>Ownership Percentage</label>
@@ -2160,8 +2160,8 @@
         </div>
 
         <!-- Beneficiary Information -->
-        @if (editingRealEstate.dispo_type === 'Lady Bird Deed' ||
-        editingRealEstate.dispo_type === 'Life Estate') {
+        @if (editingRealEstate.ownership_form === 'Lady Bird Deed' ||
+        editingRealEstate.ownership_form === 'Life Estate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -2319,8 +2319,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingBankAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingBankAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -2456,8 +2456,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingBankAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingBankAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -2592,8 +2592,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingNQAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingNQAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -2729,8 +2729,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingNQAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingNQAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -2857,8 +2857,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingRetirementAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingRetirementAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -2982,8 +2982,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingRetirementAccount.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingRetirementAccount.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3145,8 +3145,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingLifeInsurance.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingLifeInsurance.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3306,8 +3306,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingLifeInsurance.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingLifeInsurance.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3527,8 +3527,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingBusinessInterest.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingBusinessInterest.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3745,8 +3745,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingBusinessInterest.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingBusinessInterest.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3940,8 +3940,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingDigitalAsset.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingDigitalAsset.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -3955,8 +3955,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingDigitalAsset.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingDigitalAsset.ownership_form"
+            name="ownership_form"
             required
           >
             <option value="Will">None</option>
@@ -4149,8 +4149,8 @@
         <div class="form-group" *ngIf="isMarried">
           <label>Beneficiary Designation?</label>
           <select
-            [(ngModel)]="editingDigitalAsset.dispo_type"
-            name="dispo_type"
+            [(ngModel)]="editingDigitalAsset.ownership_form"
+            name="ownership_form"
           >
             <option value="Will">None</option>
             <option value="TOD">Transfer on Death</option>

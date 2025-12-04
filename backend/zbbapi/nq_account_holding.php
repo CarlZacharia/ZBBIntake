@@ -9,11 +9,30 @@ function getInput() {
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO nq_account_holding (client_id, account_name, balance) VALUES (?, ?, ?)");
-    $stmt->bind_param("isd",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        INSERT INTO nq_account_holdings (
+            portal_user_id, account_name, balance, institution_name, account_type, account_number_encrypted,
+            approximate_value, joint_owner_name, primary_beneficiaries, contingent_beneficiaries, ownership_form,
+            notes, owned_by, ownership_percentage, other_owners
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "issssdsissssssss",
+        $data['portal_user_id'],
         $data['account_name'],
-        $data['balance']
+        $data['balance'],
+        $data['institution_name'],
+        $data['account_type'],
+        $data['account_number_encrypted'],
+        $data['approximate_value'],
+        $data['joint_owner_name'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['ownership_percentage'],
+        $data['other_owners']
     );
     $stmt->execute();
     echo json_encode(['nq_account_id' => $stmt->insert_id]);
@@ -45,15 +64,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE nq_account_holding SET client_id=?, account_name=?, balance=? WHERE nq_account_id=?");
-    $stmt->bind_param("isdi",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        UPDATE nq_account_holdings SET
+            portal_user_id=?, account_name=?, balance=?, institution_name=?, account_type=?, account_number_encrypted=?,
+            approximate_value=?, joint_owner_name=?, primary_beneficiaries=?, contingent_beneficiaries=?, ownership_form=?,
+            notes=?, owned_by=?, ownership_percentage=?, other_owners=?
+        WHERE nq_account_id=?
+    ");
+    $stmt->bind_param(
+        "issssdsissssssssi",
+        $data['portal_user_id'],
         $data['account_name'],
         $data['balance'],
+        $data['institution_name'],
+        $data['account_type'],
+        $data['account_number_encrypted'],
+        $data['approximate_value'],
+        $data['joint_owner_name'],
+        $data['primary_beneficiaries'],
+        $data['contingent_beneficiaries'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['ownership_percentage'],
+        $data['other_owners'],
         $id
     );
     $stmt->execute();
-    echo json_encode(['message' => 'NQ account holding updated']);
+    echo json_encode(['message' => 'NQ account holdings updated']);
     $stmt->close();
 }
 

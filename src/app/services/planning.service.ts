@@ -76,21 +76,37 @@ export class PlanningService {
     if (r.ownedBy === 'Spouse') ownedBy = OwnedBy.Spouse;
     if (r.ownedBy === 'Trust') ownedBy = OwnedBy.Trust;
     if (r.ownedBy === 'LLC') ownedBy = OwnedBy.LLC;
-    if (r.ownedBy === 'Client and spouse') ownedBy = OwnedBy.ClientAndSpouse;
-    if (r.ownedBy === 'Client and other') ownedBy = OwnedBy.ClientAndOther;
-    if (r.ownedBy === 'Client spouse and other') ownedBy = OwnedBy.ClientSpouseAndOther;
+    if (r.ownedBy === 'Client & Spouse') ownedBy = OwnedBy.ClientAndSpouse;
+    if (r.ownedBy === 'Client & Other') ownedBy = OwnedBy.ClientAndOther;
+    if (r.ownedBy === 'Client, Spouse & Other') ownedBy = OwnedBy.ClientSpouseAndOther;
 
-    const deedType = (r.deedType || '') as string;
 
-    let ownershipForm: OwnershipForm | undefined = OwnershipForm.Sole;
-    if (deedType.includes('TBE')) ownershipForm = OwnershipForm.TBE;
-    if (deedType.includes('JTWROS')) ownershipForm = OwnershipForm.JTWROS;
-    if (deedType.includes('TIC')) ownershipForm = OwnershipForm.TIC;
+    // Map backend dispo_type to frontend ownership_form
+    const ownershipFormRaw = (r.ownership_form || r.dispo_type || '') as string;
+
+
+    let ownershipForm: OwnershipForm | undefined = undefined;
+    if (ownershipFormRaw.includes('TBE')) ownershipForm = OwnershipForm.TBE;
+    else if (ownershipFormRaw.includes('JTWROS')) ownershipForm = OwnershipForm.JTWROS;
+    else if (ownershipFormRaw.includes('TIC')) ownershipForm = OwnershipForm.TIC;
+
+    // If not set, but owned by both client and spouse, default to TBE
+    if (!ownershipForm && ownedBy === OwnedBy.ClientAndSpouse) {
+      ownershipForm = OwnershipForm.TBE;
+    }
+    // If user mistakenly sets JTWROS for ClientAndSpouse, correct to TBE
+    if (ownershipForm === OwnershipForm.JTWROS && ownedBy === OwnedBy.ClientAndSpouse) {
+      ownershipForm = OwnershipForm.TBE;
+    }
+    // Otherwise, default to Sole
+    if (!ownershipForm) {
+      ownershipForm = OwnershipForm.Sole;
+    }
 
     let realEstateMode: RealEstateMode | undefined = RealEstateMode.FeeSimple;
-    if (deedType.includes('Lady Bird')) realEstateMode = RealEstateMode.LadyBird;
-    if (deedType.includes('Life Estate')) realEstateMode = RealEstateMode.LifeEstate;
-    if (deedType.includes('Land Contract')) realEstateMode = RealEstateMode.LandContract;
+    if (ownershipFormRaw.includes('Lady Bird')) realEstateMode = RealEstateMode.LadyBird;
+    if (ownershipFormRaw.includes('Life Estate')) realEstateMode = RealEstateMode.LifeEstate;
+    if (ownershipFormRaw.includes('Land Contract')) realEstateMode = RealEstateMode.LandContract;
     if (ownedBy === OwnedBy.LLC || ownedBy === OwnedBy.Trust) {
       realEstateMode = RealEstateMode.EntityOwned;
     }
@@ -132,15 +148,13 @@ export class PlanningService {
 private mapBank(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
   let dispoType: DispoType = DispoType.Will;
-
-  if (r.dispo_type === 'Will') {
+  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
+  if (ownershipFormRaw === 'Will') {
     dispoType = DispoType.Will;
   }
-
   if (r.joint_owner_name) {
     dispoType = DispoType.Joint;
   }
-
   // No beneficiaryTarget logic yet
   return {
     id: r.bank_account_id ?? r.id,
@@ -155,8 +169,8 @@ private mapBank(r: any): Asset {
 
 private mapNQ(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const dispoType = r.dispo_type === 'TOD' ? DispoType.TOD : DispoType.Will;
-
+  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
+  const dispoType = ownershipFormRaw === 'TOD' ? DispoType.TOD : DispoType.Will;
   return {
     id: r.nq_account_id ?? r.id,
     idname: 'nq_account_id',
@@ -170,8 +184,8 @@ private mapNQ(r: any): Asset {
 
 private mapRetirement(r: any): Asset {
   const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const dispoType = r.dispo_type === 'BD' ? DispoType.BD : DispoType.Beneficiary;
-
+  const ownershipFormRaw = r.ownership_form || r.dispo_type || '';
+  const dispoType = ownershipFormRaw === 'BD' ? DispoType.BD : DispoType.Beneficiary;
   return {
     id: r.retirement_account_id ?? r.id,
     idname: 'retirement_account_id',

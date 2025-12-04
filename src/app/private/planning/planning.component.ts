@@ -1,3 +1,4 @@
+
 // assets-planning.component.ts
 import { Component, OnInit } from '@angular/core';
 import { PlanningService } from '../../services/planning.service';
@@ -44,5 +45,15 @@ export class PlanningComponent implements OnInit {
     this.normalized = this.planningService.normalizeAssets(normalizedInput);
   }
 
+    // Utility to map ownershipForm code to user-friendly label
+  ownershipFormLabel(form: string | undefined): string {
+    switch (form) {
+      case 'TBE': return 'Tenants by the Entirety';
+      case 'JTWROS': return 'Joint Tenants with Right of Survivorship';
+      case 'TIC': return 'Tenants in Common';
+      case 'Sole': return 'Sole Ownership';
+      default: return form || '';
+    }
+  }
 
 }

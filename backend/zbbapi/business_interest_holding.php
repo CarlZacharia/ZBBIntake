@@ -9,11 +9,33 @@ function getInput() {
 // CREATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getInput();
-    $stmt = $conn->prepare("INSERT INTO business_interest_holding (client_id, business_name, value) VALUES (?, ?, ?)");
-    $stmt->bind_param("isd",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        INSERT INTO business_interest_holdings (
+            portal_user_id, business_name, business_type, ownership_percentage, approximate_value, has_other_owners,
+            other_owners_names, buy_sell_agreement_exists, buy_sell_document_id, succession_plan_exists, business_vision_after_death,
+            intended_successor, successor_is_family, should_business_be_sold, ownership_form, notes, owned_by, other_owners
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "issddississsssssss",
+        $data['portal_user_id'],
         $data['business_name'],
-        $data['value']
+        $data['business_type'],
+        $data['ownership_percentage'],
+        $data['approximate_value'],
+        $data['has_other_owners'],
+        $data['other_owners_names'],
+        $data['buy_sell_agreement_exists'],
+        $data['buy_sell_document_id'],
+        $data['succession_plan_exists'],
+        $data['business_vision_after_death'],
+        $data['intended_successor'],
+        $data['successor_is_family'],
+        $data['should_business_be_sold'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['other_owners']
     );
     $stmt->execute();
     echo json_encode(['business_interest_id' => $stmt->insert_id]);
@@ -22,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // READ ALL
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['id'])) {
-    $result = $conn->query("SELECT * FROM business_interest_holding");
+    $result = $conn->query("SELECT * FROM bank_account_holdings");
     $rows = [];
     while ($row = $result->fetch_assoc()) {
         $rows[] = $row;
@@ -33,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['id'])) {
 // READ ONE
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("SELECT * FROM business_interest_holding WHERE business_interest_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM bank_account_holdings WHERE bank_account_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -45,25 +67,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = getInput();
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("UPDATE business_interest_holding SET client_id=?, business_name=?, value=? WHERE business_interest_id=?");
-    $stmt->bind_param("isdi",
-        $data['client_id'],
+    $stmt = $conn->prepare("
+        UPDATE business_interest_holdings SET
+            portal_user_id=?, business_name=?, business_type=?, ownership_percentage=?, approximate_value=?, has_other_owners=?,
+            other_owners_names=?, buy_sell_agreement_exists=?, buy_sell_document_id=?, succession_plan_exists=?, business_vision_after_death=?,
+            intended_successor=?, successor_is_family=?, should_business_be_sold=?, ownership_form=?, notes=?, owned_by=?, other_owners=?
+        WHERE business_interest_id=?
+    ");
+    $stmt->bind_param(
+        "issddississsssssssi",
+        $data['portal_user_id'],
         $data['business_name'],
-        $data['value'],
+        $data['business_type'],
+        $data['ownership_percentage'],
+        $data['approximate_value'],
+        $data['has_other_owners'],
+        $data['other_owners_names'],
+        $data['buy_sell_agreement_exists'],
+        $data['buy_sell_document_id'],
+        $data['succession_plan_exists'],
+        $data['business_vision_after_death'],
+        $data['intended_successor'],
+        $data['successor_is_family'],
+        $data['should_business_be_sold'],
+        $data['ownership_form'],
+        $data['notes'],
+        $data['owned_by'],
+        $data['other_owners'],
         $id
     );
     $stmt->execute();
-    echo json_encode(['message' => 'Business interest holding updated']);
+    echo json_encode(['message' => 'Business interest holdings updated']);
     $stmt->close();
 }
 
 // DELETE
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("DELETE FROM business_interest_holding WHERE business_interest_id = ?");
+    $stmt = $conn->prepare("DELETE FROM bank_account_holdings WHERE bank_account_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    echo json_encode(['message' => 'Business interest holding deleted']);
+    echo json_encode(['message' => 'Bank account holdings deleted']);
     $stmt->close();
 }
 
