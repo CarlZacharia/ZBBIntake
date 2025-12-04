@@ -1,58 +1,48 @@
-import { Component } from '@angular/core';
+// assets-planning.component.ts
+import { Component, OnInit } from '@angular/core';
+import { PlanningService } from '../../services/planning.service';
+import { DataService } from '../../services/data.service'; // your existing service
+import { NormalizedAssets } from '../../models/asset.model';
 import { CommonModule } from '@angular/common';
-import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-planning',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './planning.component.html',
-  styleUrls: ['./planning.component.css']
+  styleUrls: ['./planning.component.css'],
 })
-export class PlanningComponent {
-  constructor(public ds: DataService) {}
+export class PlanningComponent implements OnInit {
 
-  // Heirs arrays
+  normalized!: NormalizedAssets;
   get clientHeirs() {
-    return this.ds.getClientHeirsArray();
+    return this.dataService.getClientHeirsArray();
   }
   get spouseHeirs() {
-    return this.ds.getSpouseHeirsArray();
+    return this.dataService.getSpouseHeirsArray();
   }
 
-  // All assets
-  get assets() {
-    return this.ds.assets();
+
+  constructor(
+    private dataService: DataService,
+    private planningService: PlanningService
+  ) {}
+
+
+  ngOnInit(): void {
+    const assets = this.dataService.assets(); // however you fetch them
+    const normalizedInput = {
+      realEstate: assets.real_estate_holdings ?? [],
+      bank: assets.bank_account_holdings ?? [],
+      nq: assets.nq_account_holdings ?? [],
+      retirement: assets.retirement_account_holdings ?? [],
+      lifeInsurance: assets.life_insurance_holdings ?? [],
+      business: assets.business_interest_holdings ?? [],
+      digital: assets.digital_asset_holdings ?? [],
+      other: assets.other_asset_holdings ?? []
+    };
+    this.normalized = this.planningService.normalizeAssets(normalizedInput);
   }
 
-  // Group assets by title_holding, with unified group for beneficiary designation/TOD/POD
-  get groupedAssets() {
-    const allAssets = [
-      ...(this.assets.real_estate_holdings || []),
-      ...(this.assets.bank_account_holdings || []),
-      ...(this.assets.nq_account_holdings || []),
-      ...(this.assets.retirement_account_holdings || []),
-      ...(this.assets.life_insurance_holdings || []),
-      ...(this.assets.business_interest_holdings || []),
-      ...(this.assets.digital_asset_holdings || []),
-      ...(this.assets.other_asset_holdings || [])
-    ];
-    // Normalize title_holding for grouping
-    const groupMap: { [key: string]: any[] } = {};
-    allAssets.forEach(asset => {
-      let group = (asset.dispo_type || '').toLowerCase();
-      if (["beneficiary designation", "tod", "pod"].includes(group)) {
-        group = "beneficiary/tod/pod";
-      }
-      if (!group) group = 'other';
-      if (!groupMap[group]) groupMap[group] = [];
-      groupMap[group].push(asset);
-    });
-    // Console log each group and its assets
-    Object.entries(groupMap).forEach(([group, assets]) => {
-      console.log(`Group: ${group}`);
-      console.log(assets);
-    });
-    return groupMap;
-  }
+
 }

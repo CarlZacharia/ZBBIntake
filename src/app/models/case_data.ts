@@ -34,6 +34,10 @@ export interface IRealEstate {
   ownership_percentage: number | null;
   other_owners: string | null;
   ownership_value: number | null; // net_value * (ownership_percentage / 100)
+  /**
+   * Computed name for display: property_type, address_line1, city, state
+   */
+  name?: string;
 }
 
 /**
