@@ -6,14 +6,13 @@ import {
   RealEstateMode,
   OwnershipForm,
   BeneficiaryTarget,
-  NormalizedAssets
+  NormalizedAssets,
 } from '../models/asset.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlanningService {
-
   constructor() {}
 
   /**
@@ -29,15 +28,16 @@ export class PlanningService {
     digital: any[];
     other: any[];
   }): NormalizedAssets {
-
-    const realEstate = input.realEstate.map(r => this.mapRealEstate(r));
-    const bank = input.bank.map(r => this.mapBank(r));
-    const nq = input.nq.map(r => this.mapNQ(r));
-    const retirement = input.retirement.map(r => this.mapRetirement(r));
-    const lifeInsurance = input.lifeInsurance.map(r => this.mapLifeInsurance(r));
-    const business = input.business.map(r => this.mapBusiness(r));
-    const digital = input.digital.map(r => this.mapDigital(r));
-    const other = input.other.map(r => this.mapOther(r));
+    const realEstate = input.realEstate.map((r) => this.mapRealEstate(r));
+    const bank = input.bank.map((r) => this.mapBank(r));
+    const nq = input.nq.map((r) => this.mapNQ(r));
+    const retirement = input.retirement.map((r) => this.mapRetirement(r));
+    const lifeInsurance = input.lifeInsurance.map((r) =>
+      this.mapLifeInsurance(r),
+    );
+    const business = input.business.map((r) => this.mapBusiness(r));
+    const digital = input.digital.map((r) => this.mapDigital(r));
+    const other = input.other.map((r) => this.mapOther(r));
 
     const all: Asset[] = [
       ...realEstate,
@@ -47,7 +47,7 @@ export class PlanningService {
       ...lifeInsurance,
       ...business,
       ...digital,
-      ...other
+      ...other,
     ];
 
     return {
@@ -59,7 +59,7 @@ export class PlanningService {
       business,
       digital,
       other,
-      all
+      all,
     };
   }
 
@@ -76,27 +76,41 @@ export class PlanningService {
     if (r.ownedBy === 'LLC') ownedBy = OwnedBy.LLC;
     if (r.ownedBy === 'Client & Spouse') ownedBy = OwnedBy.ClientAndSpouse;
     if (r.ownedBy === 'Client & Other') ownedBy = OwnedBy.ClientAndOther;
-    if (r.ownedBy === 'Client, Spouse & Other') ownedBy = OwnedBy.ClientSpouseAndOther;
-
+    if (r.ownedBy === 'Client, Spouse & Other')
+      ownedBy = OwnedBy.ClientSpouseAndOther;
 
     // Map backend ownership_form to allowed frontend values
     const ownershipFormRaw = (r.ownership_form || '').trim();
     let ownershipForm: OwnershipForm;
     switch (ownershipFormRaw) {
-      case 'TBE': ownershipForm = OwnershipForm.TBE; break;
-      case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
-      case 'TIC': ownershipForm = OwnershipForm.TIC; break;
-      case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
-      case 'LLC': ownershipForm = OwnershipForm.LLC; break;
+      case 'TBE':
+        ownershipForm = OwnershipForm.TBE;
+        break;
+      case 'JTWROS':
+        ownershipForm = OwnershipForm.JTWROS;
+        break;
+      case 'TIC':
+        ownershipForm = OwnershipForm.TIC;
+        break;
+      case 'Trust':
+        ownershipForm = OwnershipForm.TRUST;
+        break;
+      case 'LLC':
+        ownershipForm = OwnershipForm.LLC;
+        break;
       default:
         // If not set, but owned by both client and spouse, default to TBE
-        if (ownedBy === OwnedBy.ClientAndSpouse) ownershipForm = OwnershipForm.TBE;
+        if (ownedBy === OwnedBy.ClientAndSpouse)
+          ownershipForm = OwnershipForm.TBE;
         else ownershipForm = OwnershipForm.Sole;
         break;
     }
 
     let realEstateMode: RealEstateMode | undefined = RealEstateMode.FeeSimple;
-    if (r.realEstateMode && Object.values(RealEstateMode).includes(r.realEstateMode)) {
+    if (
+      r.realEstateMode &&
+      Object.values(RealEstateMode).includes(r.realEstateMode)
+    ) {
       realEstateMode = r.realEstateMode;
     }
     if (ownedBy === OwnedBy.LLC || ownedBy === OwnedBy.Trust) {
@@ -104,14 +118,23 @@ export class PlanningService {
     }
 
     let beneficiaryTarget: BeneficiaryTarget | undefined;
-    if (r.remainderTo === 'Spouse') beneficiaryTarget = BeneficiaryTarget.Spouse;
-    if (r.remainderTo === 'Client') beneficiaryTarget = BeneficiaryTarget.Client;
-    if (r.remainderTo === 'Children') beneficiaryTarget = BeneficiaryTarget.Child;
-    if (r.remainderTo === 'Family') beneficiaryTarget = BeneficiaryTarget.Family;
-    if (r.remainderTo === 'Charity') beneficiaryTarget = BeneficiaryTarget.Charity;
+    if (r.remainderTo === 'Spouse')
+      beneficiaryTarget = BeneficiaryTarget.Spouse;
+    if (r.remainderTo === 'Client')
+      beneficiaryTarget = BeneficiaryTarget.Client;
+    if (r.remainderTo === 'Children')
+      beneficiaryTarget = BeneficiaryTarget.Child;
+    if (r.remainderTo === 'Family')
+      beneficiaryTarget = BeneficiaryTarget.Family;
+    if (r.remainderTo === 'Charity')
+      beneficiaryTarget = BeneficiaryTarget.Charity;
 
     // Compute name from property_type, address_line1, city, state
-    const computedName = `${r.property_type || ''}, ${r.address_line1 || ''}, ${r.city || ''}, ${r.state || ''}`.replace(/(, )+/g, ', ').replace(/^, |, $/g, '').trim();
+    const computedName =
+      `${r.property_type || ''}, ${r.address_line1 || ''}, ${r.city || ''}, ${r.state || ''}`
+        .replace(/(, )+/g, ', ')
+        .replace(/^, |, $/g, '')
+        .trim();
     return {
       id: r.real_estate_id,
       idname: 'real_estate_id',
@@ -119,86 +142,129 @@ export class PlanningService {
       category: AssetCategory.RealEstate,
       ownedBy,
       ownershipForm,
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
       realEstateMode,
       beneficiaryTarget,
-      approximate_value: r.approximate_value ?? null
+      approximate_value: r.approximate_value ?? null,
     };
   }
 
-private mapBank(r: any): Asset {
-  const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  let ownershipForm: OwnershipForm = OwnershipForm.Sole;
-  const ownershipFormRaw = (r.ownership_form || '').trim();
-  switch (ownershipFormRaw) {
-    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
-    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
-    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
-    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
-    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
-    default: ownershipForm = OwnershipForm.Sole; break;
+  private mapBank(r: any): Asset {
+    const ownedBy = this.mapOwnedByGeneric(r.owned_by);
+    let ownershipForm: OwnershipForm = OwnershipForm.Sole;
+    const ownershipFormRaw = (r.ownership_form || '').trim();
+    switch (ownershipFormRaw) {
+      case 'JTWROS':
+        ownershipForm = OwnershipForm.JTWROS;
+        break;
+      case 'TBE':
+        ownershipForm = OwnershipForm.TBE;
+        break;
+      case 'TIC':
+        ownershipForm = OwnershipForm.TIC;
+        break;
+      case 'Trust':
+        ownershipForm = OwnershipForm.TRUST;
+        break;
+      case 'LLC':
+        ownershipForm = OwnershipForm.LLC;
+        break;
+      default:
+        ownershipForm = OwnershipForm.Sole;
+        break;
+    }
+    if (r.joint_owner_name) {
+      ownershipForm = OwnershipForm.JTWROS;
+    }
+    // No beneficiaryTarget logic yet
+    return {
+      id: r.bank_account_id ?? r.id,
+      idname: 'bank_account_id',
+      name: `${r.institution_name} ${r.account_type}`,
+      category: AssetCategory.Bank,
+      ownedBy,
+      ownershipForm,
+      approximate_value: r.approximate_value ?? null,
+    };
   }
-  if (r.joint_owner_name) {
-    ownershipForm = OwnershipForm.JTWROS;
+
+  private mapNQ(r: any): Asset {
+    const ownedBy = this.mapOwnedByGeneric(r.owned_by);
+    const ownershipFormRaw = (r.ownership_form || '').trim();
+    let ownershipForm: OwnershipForm;
+    switch (ownershipFormRaw) {
+      case 'JTWROS':
+        ownershipForm = OwnershipForm.JTWROS;
+        break;
+      case 'TBE':
+        ownershipForm = OwnershipForm.TBE;
+        break;
+      case 'TIC':
+        ownershipForm = OwnershipForm.TIC;
+        break;
+      case 'Trust':
+        ownershipForm = OwnershipForm.TRUST;
+        break;
+      case 'LLC':
+        ownershipForm = OwnershipForm.LLC;
+        break;
+      default:
+        ownershipForm = OwnershipForm.Sole;
+        break;
+    }
+    return {
+      id: r.nq_account_id ?? r.id,
+      idname: 'nq_account_id',
+      name: `${r.institution_name} ${r.account_type}`,
+      category: AssetCategory.NQ,
+      ownedBy,
+      ownershipForm,
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
+      approximate_value: r.approximate_value ?? null,
+    };
   }
-  // No beneficiaryTarget logic yet
-  return {
-    id: r.bank_account_id ?? r.id,
-    idname: 'bank_account_id',
-    name: `${r.institution_name} ${r.account_type}`,
-    category: AssetCategory.Bank,
-    ownedBy,
-    ownershipForm,
-    approximate_value: r.approximate_value ?? null
-  };
-}
 
-private mapNQ(r: any): Asset {
-  const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const ownershipFormRaw = (r.ownership_form || '').trim();
-  let ownershipForm: OwnershipForm;
-  switch (ownershipFormRaw) {
-    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
-    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
-    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
-    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
-    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
-    default: ownershipForm = OwnershipForm.Sole; break;
+  private mapRetirement(r: any): Asset {
+    const ownedBy = this.mapOwnedByGeneric(r.owned_by);
+    const ownershipFormRaw = (r.ownership_form || '').trim();
+    let ownershipForm: OwnershipForm;
+    switch (ownershipFormRaw) {
+      case 'JTWROS':
+        ownershipForm = OwnershipForm.JTWROS;
+        break;
+      case 'TBE':
+        ownershipForm = OwnershipForm.TBE;
+        break;
+      case 'TIC':
+        ownershipForm = OwnershipForm.TIC;
+        break;
+      case 'Trust':
+        ownershipForm = OwnershipForm.TRUST;
+        break;
+      case 'LLC':
+        ownershipForm = OwnershipForm.LLC;
+        break;
+      default:
+        ownershipForm = OwnershipForm.Sole;
+        break;
+    }
+    return {
+      id: r.retirement_account_id ?? r.id,
+      idname: 'retirement_account_id',
+      name: `${r.institution_name} ${r.account_type}`,
+      category: AssetCategory.Retirement,
+      ownedBy,
+      ownershipForm,
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
+      approximate_value: r.approximate_value ?? null,
+    };
   }
-  return {
-    id: r.nq_account_id ?? r.id,
-    idname: 'nq_account_id',
-    name: `${r.institution_name} ${r.account_type}`,
-    category: AssetCategory.NQ,
-    ownedBy,
-    ownershipForm,
-    approximate_value: r.approximate_value ?? null
-  };
-}
-
-private mapRetirement(r: any): Asset {
-  const ownedBy = this.mapOwnedByGeneric(r.owned_by);
-  const ownershipFormRaw = (r.ownership_form || '').trim();
-  let ownershipForm: OwnershipForm;
-  switch (ownershipFormRaw) {
-    case 'JTWROS': ownershipForm = OwnershipForm.JTWROS; break;
-    case 'TBE': ownershipForm = OwnershipForm.TBE; break;
-    case 'TIC': ownershipForm = OwnershipForm.TIC; break;
-    case 'Trust': ownershipForm = OwnershipForm.TRUST; break;
-    case 'LLC': ownershipForm = OwnershipForm.LLC; break;
-    default: ownershipForm = OwnershipForm.Sole; break;
-  }
-  return {
-    id: r.retirement_account_id ?? r.id,
-    idname: 'retirement_account_id',
-    name: `${r.institution_name} ${r.account_type}`,
-    category: AssetCategory.Retirement,
-    ownedBy,
-    ownershipForm,
-    approximate_value: r.approximate_value ?? null
-  };
-}
-
-
 
   private mapLifeInsurance(r: any): Asset {
     return {
@@ -208,8 +274,11 @@ private mapRetirement(r: any): Asset {
       category: AssetCategory.LifeInsurance,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
       ownershipForm: OwnershipForm.TRUST,
+            has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
-      approximate_value: r.approximate_value ?? null
+      approximate_value: r.approximate_value ?? null,
     };
   }
 
@@ -221,8 +290,11 @@ private mapRetirement(r: any): Asset {
       category: AssetCategory.Business,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy ?? 'LLC'),
       ownershipForm: this.mapOwnershipFormGeneric(r),
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
-      approximate_value: r.approximate_value ?? null
+      approximate_value: r.approximate_value ?? null,
     };
   }
 
@@ -234,8 +306,11 @@ private mapRetirement(r: any): Asset {
       category: AssetCategory.Digital,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
       ownershipForm: this.mapOwnershipFormGeneric(r),
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
-      approximate_value: r.approximate_value ?? null
+      approximate_value: r.approximate_value ?? null,
     };
   }
 
@@ -247,8 +322,11 @@ private mapRetirement(r: any): Asset {
       category: AssetCategory.Other,
       ownedBy: this.mapOwnedByGeneric(r.ownedBy),
       ownershipForm: this.mapOwnershipFormGeneric(r),
+      has_bene: r.has_bene,
+      primary_beneficiaries: r.primary_beneficiaries,
+      secondary_beneficiaries: r.secondary_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
-      approximate_value: r.approximate_value ?? null
+      approximate_value: r.approximate_value ?? null,
     };
   }
 
@@ -256,38 +334,61 @@ private mapRetirement(r: any): Asset {
 
   private mapOwnedByGeneric(raw: string | undefined): OwnedBy {
     switch (raw) {
-      case 'Client': return OwnedBy.Client;
-      case 'Spouse': return OwnedBy.Spouse;
-      case 'Client and spouse': return OwnedBy.ClientAndSpouse;
-      case 'Client and other': return OwnedBy.ClientAndOther;
-      case 'Client spouse and other': return OwnedBy.ClientSpouseAndOther;
-      case 'Trust': return OwnedBy.Trust;
-      case 'LLC': return OwnedBy.LLC;
-      default: return OwnedBy.Client;
+      case 'Client':
+        return OwnedBy.Client;
+      case 'Spouse':
+        return OwnedBy.Spouse;
+      case 'Client and spouse':
+        return OwnedBy.ClientAndSpouse;
+      case 'Client and other':
+        return OwnedBy.ClientAndOther;
+      case 'Client spouse and other':
+        return OwnedBy.ClientSpouseAndOther;
+      case 'Trust':
+        return OwnedBy.Trust;
+      case 'LLC':
+        return OwnedBy.LLC;
+      default:
+        return OwnedBy.Client;
     }
   }
 
-  private mapBeneficiaryTargetGeneric(raw: string | undefined): BeneficiaryTarget | undefined {
+  private mapBeneficiaryTargetGeneric(
+    raw: string | undefined,
+  ): BeneficiaryTarget | undefined {
     switch (raw) {
-      case 'Spouse': return BeneficiaryTarget.Spouse;
-      case 'Client': return BeneficiaryTarget.Client;
-      case 'Children': return BeneficiaryTarget.Child;
-      case 'Family': return BeneficiaryTarget.Family;
-      case 'Charity': return BeneficiaryTarget.Charity;
-      default: return undefined;
+      case 'Spouse':
+        return BeneficiaryTarget.Spouse;
+      case 'Client':
+        return BeneficiaryTarget.Client;
+      case 'Children':
+        return BeneficiaryTarget.Child;
+      case 'Family':
+        return BeneficiaryTarget.Family;
+      case 'Charity':
+        return BeneficiaryTarget.Charity;
+      default:
+        return undefined;
     }
   }
 
   private mapOwnershipFormGeneric(r: any): OwnershipForm {
     const raw = (r.ownership_form || '').trim();
     switch (raw) {
-      case 'Sole': return OwnershipForm.Sole;
-      case 'JTWROS': return OwnershipForm.JTWROS;
-      case 'TBE': return OwnershipForm.TBE;
-      case 'TIC': return OwnershipForm.TIC;
-      case 'Trust': return OwnershipForm.TRUST;
-      case 'LLC': return OwnershipForm.LLC;
-      default: return OwnershipForm.Sole;
+      case 'Sole':
+        return OwnershipForm.Sole;
+      case 'JTWROS':
+        return OwnershipForm.JTWROS;
+      case 'TBE':
+        return OwnershipForm.TBE;
+      case 'TIC':
+        return OwnershipForm.TIC;
+      case 'Trust':
+        return OwnershipForm.TRUST;
+      case 'LLC':
+        return OwnershipForm.LLC;
+      default:
+        return OwnershipForm.Sole;
     }
   }
 }

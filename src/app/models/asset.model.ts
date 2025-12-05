@@ -63,6 +63,9 @@ export interface Asset {
   realEstateMode?: RealEstateMode;
   beneficiaryTarget?: BeneficiaryTarget;
   approximate_value?: number | null;
+  has_bene?: 'Yes' | 'No' | null;
+  primary_beneficiaries?: any[];
+  secondary_beneficiaries?: any[];
 }
 
 // Optional grouping return type

@@ -15,15 +15,18 @@ import {
   IBeneficiary
 } from '../../models/case_data';
 
-type AssetType = 'real_estate' | 'bank_account' | 'nq_account' | 'retirement_account' | 'life_insurance' | 'business_interest' | 'digital_asset' | 'other_asset';
+import { BeneficiaryDesignationComponent } from '../beneficiary-designation/beneficiary-designation.component';
+
+type AssetType = 'real_estate_holdings' | 'bank_account_holdings' | 'nq_account_holdings' | 'retirement_account_holdings' | 'life_insurance_holdings' | 'business_interest_holdings' | 'digital_asset_holdings' | 'other_asset_holdings';
 
 @Component({
   selector: 'app-assets',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BeneficiaryDesignationComponent],
   templateUrl: './assets.component.html',
   styleUrls: ['./assets.component.css']
 })
 export class AssetsComponent {
+
     // Grouped asset and debt properties for table rendering
     get assetsGroups() {
       const assets = this.assets();
@@ -130,14 +133,14 @@ export class AssetsComponent {
   getAllAssets(assetType: string): any[] {
     const assets = this.assets();
     switch (assetType) {
-      case 'real_estate': return assets.real_estate_holdings;
-      case 'bank_account': return assets.bank_account_holdings || [];
-      case 'nq_account': return assets.nq_account_holdings || [];
-      case 'retirement_account': return assets.retirement_account_holdings;
-      case 'life_insurance': return assets.life_insurance_holdings;
-      case 'business_interest': return assets.business_interest_holdings;
-      case 'digital_asset': return assets.digital_asset_holdings;
-      case 'other_asset': return assets.other_asset_holdings;
+      case 'real_estate_holdings': return assets.real_estate_holdings;
+      case 'bank_account_holdings': return assets.bank_account_holdings || [];
+      case 'nq_account_holdings': return assets.nq_account_holdings || [];
+      case 'retirement_account_holdings': return assets.retirement_account_holdings;
+      case 'life_insurance_holdings': return assets.life_insurance_holdings;
+      case 'business_interest_holdings': return assets.business_interest_holdings;
+      case 'digital_asset_holdings': return assets.digital_asset_holdings;
+      case 'other_asset_holdings': return assets.other_asset_holdings;
       default: return [];
     }
   }
@@ -162,28 +165,28 @@ export class AssetsComponent {
       let value = 0;
       // Always coerce approximate_value to number
       switch (assetType) {
-        case 'real_estate':
+        case 'real_estate_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'bank_account':
+        case 'bank_account_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'nq_account':
+        case 'nq_account_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'retirement_account':
+        case 'retirement_account_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'life_insurance':
+        case 'life_insurance_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'business_interest':
+        case 'business_interest_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'digital_asset':
+        case 'digital_asset_holdings':
           value = +asset.approximate_value || 0;
           break;
-        case 'other_asset':
+        case 'other_asset_holdings':
           // Use netValue if present, else approximate_value
           value = (asset.netValue != null ? +asset.netValue : +asset.approximate_value) || 0;
           break;
@@ -193,7 +196,7 @@ export class AssetsComponent {
   }
 
   getGrandTotal(ownership?: 'Client' | 'Spouse' |null): number {
-    const types: AssetType[] = ['real_estate', 'bank_account', 'nq_account', 'retirement_account', 'life_insurance', 'business_interest', 'digital_asset', 'other_asset'];
+    const types: AssetType[] = ['real_estate_holdings', 'bank_account_holdings', 'nq_account_holdings', 'retirement_account_holdings', 'life_insurance_holdings', 'business_interest_holdings', 'digital_asset_holdings', 'other_asset_holdings'];
     const total = types.reduce((sum, type) => {
       const val = this.getTotalValue(type, ownership);
       return sum + (isNaN(val) ? 0 : val);
@@ -233,28 +236,28 @@ export class AssetsComponent {
 
   private initializeEditingAsset(assetType: AssetType) {
     switch (assetType) {
-      case 'real_estate':
+      case 'real_estate_holdings':
         this.editingRealEstate = { ...this.ds.realEstate };
         break;
-      case 'bank_account':
+      case 'bank_account_holdings':
         this.editingBankAccount = { ...this.ds.bankAccount };
         break;
-      case 'nq_account':
+      case 'nq_account_holdings':
         this.editingNQAccount = { ...this.ds.nqAccount };
         break;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         this.editingRetirementAccount = { ...this.ds.retirementAccount };
         break;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         this.editingLifeInsurance = { ...this.ds.lifeInsurance };
         break;
-      case 'business_interest':
+      case 'business_interest_holdings':
         this.editingBusinessInterest = { ...this.ds.businessInterest };
         break;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         this.editingDigitalAsset = { ...this.ds.digitalAsset };
         break;
-      case 'other_asset':
+      case 'other_asset_holdings':
         this.editingOtherAsset = { ...this.ds.otherAsset };
         break;
     }
@@ -262,28 +265,28 @@ export class AssetsComponent {
 
   private setEditingAsset(assetType: AssetType, asset: any) {
     switch (assetType) {
-      case 'real_estate':
+      case 'real_estate_holdings':
         this.editingRealEstate = asset;
         break;
-      case 'bank_account':
+      case 'bank_account_holdings':
         this.editingBankAccount = asset;
         break;
-      case 'nq_account':
+      case 'nq_account_holdings':
         this.editingNQAccount = asset;
         break;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         this.editingRetirementAccount = asset;
         break;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         this.editingLifeInsurance = asset;
         break;
-      case 'business_interest':
+      case 'business_interest_holdings':
         this.editingBusinessInterest = asset;
         break;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         this.editingDigitalAsset = asset;
         break;
-      case 'other_asset':
+      case 'other_asset_holdings':
         this.editingOtherAsset = asset;
         break;
     }
@@ -296,34 +299,28 @@ export class AssetsComponent {
     if (!asset) return;
 
     switch (this.currentAssetType) {
-      case 'real_estate':
-        if (
-          asset.ownership_form === 'Lady Bird Deed' ||
-          asset.ownership_form === 'Life Estate'
-        ) {
-          asset.has_bene = 'Yes';
-        }
+      case 'real_estate_holdings':
         this.ds.addRealEstate(asset as IRealEstate);
         break;
-      case 'bank_account':
+      case 'bank_account_holdings':
         this.ds.addBankAccount(asset as IBankAccount);
         break;
-      case 'nq_account':
+      case 'nq_account_holdings':
         this.ds.addNQAccount(asset as INQAccount);
         break;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         this.ds.addRetirementAccount(asset as IRetirementAccount);
         break;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         this.ds.addLifeInsurance(asset as ILifeInsurance);
         break;
-      case 'business_interest':
+      case 'business_interest_holdings':
         this.ds.addBusinessInterest(asset as IBusinessInterest);
         break;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         this.ds.addDigitalAsset(asset as IDigitalAsset);
         break;
-      case 'other_asset':
+      case 'other_asset_holdings':
         this.ds.addOtherAsset(asset as IOtherAsset);
         break;
     }
@@ -338,34 +335,28 @@ export class AssetsComponent {
     if (!asset) return;
 
     switch (this.currentAssetType) {
-      case 'real_estate':
-        if (
-          asset.ownership_form === 'Lady Bird Deed' ||
-          asset.ownership_form === 'Life Estate'
-        ) {
-          asset.has_bene = 'Yes';
-        }
+      case 'real_estate_holdings':
         this.ds.updateRealEstate(asset);
         break;
-      case 'bank_account':
+      case 'bank_account_holdings':
         this.ds.updateBankAccount(asset);
         break;
-      case 'nq_account':
+      case 'nq_account_holdings':
         this.ds.updateNQAccount(asset);
         break;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         this.ds.updateRetirementAccount(asset);
         break;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         this.ds.updateLifeInsurance(asset);
         break;
-      case 'business_interest':
+      case 'business_interest_holdings':
         this.ds.updateBusinessInterest(asset);
         break;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         this.ds.updateDigitalAsset(asset);
         break;
-      case 'other_asset':
+      case 'other_asset_holdings':
         this.ds.updateOtherAsset(asset);
         break;
     }
@@ -385,28 +376,28 @@ export class AssetsComponent {
     }
 
     switch (assetType) {
-      case 'real_estate':
+      case 'real_estate_holdings':
         this.ds.removeRealEstate(actualIndex);
         break;
-      case 'bank_account':
+      case 'bank_account_holdings':
         this.ds.removeBankAccount(actualIndex);
         break;
-      case 'nq_account':
+      case 'nq_account_holdings':
         this.ds.removeNQAccount(actualIndex);
         break;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         this.ds.removeRetirementAccount(actualIndex);
         break;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         this.ds.removeLifeInsurance(actualIndex);
         break;
-      case 'business_interest':
+      case 'business_interest_holdings':
         this.ds.removeBusinessInterest(actualIndex);
         break;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         this.ds.removeDigitalAsset(actualIndex);
         break;
-      case 'other_asset':
+      case 'other_asset_holdings':
         this.ds.removeOtherAsset(actualIndex);
         break;
     }
@@ -414,14 +405,14 @@ export class AssetsComponent {
 
   private getCurrentEditingAsset(): any {
     switch (this.currentAssetType) {
-      case 'real_estate': return this.editingRealEstate;
-      case 'bank_account': return this.editingBankAccount;
-      case 'nq_account': return this.editingNQAccount;
-      case 'retirement_account': return this.editingRetirementAccount;
-      case 'life_insurance': return this.editingLifeInsurance;
-      case 'business_interest': return this.editingBusinessInterest;
-      case 'digital_asset': return this.editingDigitalAsset;
-      case 'other_asset': return this.editingOtherAsset;
+      case 'real_estate_holdings': return this.editingRealEstate;
+      case 'bank_account_holdings': return this.editingBankAccount;
+      case 'nq_account_holdings': return this.editingNQAccount;
+      case 'retirement_account_holdings': return this.editingRetirementAccount;
+      case 'life_insurance_holdings': return this.editingLifeInsurance;
+      case 'business_interest_holdings': return this.editingBusinessInterest;
+      case 'digital_asset_holdings': return this.editingDigitalAsset;
+      case 'other_asset_holdings': return this.editingOtherAsset;
       default: return null;
     }
   }
@@ -436,21 +427,21 @@ export class AssetsComponent {
 
   getAssetDisplayName(assetType: string, asset: any): string {
     switch (assetType) {
-      case 'real_estate':
+      case 'real_estate_holdings':
         return `${asset.address_line1}, ${asset.city}`;
-      case 'nq_account':
+      case 'nq_account_holdings':
         return `${asset.institution_name} - ${asset.account_type}`;
-      case 'bank_account':
+      case 'bank_account_holdings':
         return `${asset.institution_name} - ${asset.account_type}`;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         return `${asset.institution_name} - ${asset.account_type}`;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         return `${asset.insurance_company} - ${asset.policy_type}`;
-      case 'business_interest':
+      case 'business_interest_holdings':
         return asset.business_name;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         return asset.asset_name;
-      case 'other_asset':
+      case 'other_asset_holdings':
         return asset.description;
       default:
         return 'Unknown Asset';
@@ -459,21 +450,21 @@ export class AssetsComponent {
 
   getAssetValue(assetType: string, asset: any): number {
     switch (assetType) {
-      case 'real_estate':
+      case 'real_estate_holdings':
         return +asset.approximate_value || 0;
-      case 'bank_account':
+      case 'bank_account_holdings':
         return asset.approximate_value || 0;
-      case 'nq_account':
+      case 'nq_account_holdings':
         return asset.approximate_value || 0;
-      case 'retirement_account':
+      case 'retirement_account_holdings':
         return asset.approximate_value || 0;
-      case 'life_insurance':
+      case 'life_insurance_holdings':
         return asset.approximate_value || 0;
-      case 'business_interest':
+      case 'business_interest_holdings':
         return asset.approximate_value || 0;
-      case 'digital_asset':
+      case 'digital_asset_holdings':
         return asset.approximate_value || 0;
-      case 'other_asset':
+      case 'other_asset_holdings':
         return asset.approximate_value || 0;
       default:
         return 0;
@@ -497,4 +488,19 @@ export class AssetsComponent {
     this.editingDigitalAsset = null;
     this.editingOtherAsset = null;
   }
+
+  onBeneficiarySaved(result: any) {
+  // Update the asset with beneficiary data
+  const editingAsset = this.getCurrentEditingAsset();
+  if (editingAsset) {
+    editingAsset.primary_beneficiaries = result.primary_beneficiaries;
+    editingAsset.contingent_beneficiaries = result.contingent_beneficiaries;
+    editingAsset.beneficiary_scenario = result.scenario;
+    this.saveEditAsset();
+  }
+}
+
+closeBeneficiaryDesignation() {
+  // Handle cancel - maybe just collapse the section
+}
 }
