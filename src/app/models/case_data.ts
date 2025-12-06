@@ -203,6 +203,8 @@ export interface IBusinessInterest {
     | 'ther';
   ownership_percentage: number | null;
   approximate_value: number | null;
+    primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
   has_other_owners: boolean | number | string | null;
   other_owners_names: string | null;
   buy_sell_agreement_exists: boolean | number | string | null;
@@ -277,6 +279,8 @@ export interface IDigitalAsset {
     | null;
   ownership_percentage: number | null;
   other_owners: string | null;
+    primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
 }
 
 /**
@@ -325,6 +329,8 @@ export interface IOtherAsset {
   other_owners: string | null;
   ownership_form: string | null;
   has_bene: string | 'No';
+    primary_beneficiaries: IBeneficiary[];
+  contingent_beneficiaries: IBeneficiary[];
   notes: string | null;
 }
 
@@ -367,6 +373,7 @@ export interface IDebt {
 export interface IBeneficiary {
   beneficiary_id: number | null;
   beneficiary_type: 'Child' | 'Spouse' | 'Family_member' | 'Other';
+  name?: string | null;
   child_id: number | null; // Links to IChild
   spouse_id: number | null; // Could link to spouse info
   family_member_id: number | null; // Links to IFamilyMember

@@ -21,12 +21,23 @@ import { BeneficiaryDesignationComponent } from '../beneficiary-designation/bene
 
 @Component({
   selector: 'app-assets',
-  imports: [CommonModule, FormsModule, BeneficiaryDesignationComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './assets.component.html',
   styleUrls: ['./assets.component.css']
 })
 export class AssetsComponent {
-
+bankAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+bankAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+nqAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+nqAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+retirementAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+retirementAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+lifeInsurancePrimaryDistType: 'equal' | 'unequal' = 'equal';
+lifeInsuranceSecondaryDistType: 'equal' | 'unequal' = 'equal';
+businessInterestPrimaryDistType: 'equal' | 'unequal' = 'equal';
+businessInterestSecondaryDistType: 'equal' | 'unequal' = 'equal';
+digitalAssetPrimaryDistType: 'equal' | 'unequal' = 'equal';
+digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
     // Grouped asset and debt properties for table rendering
     get assetsGroups() {
       const assets = this.assets();
@@ -106,6 +117,12 @@ export class AssetsComponent {
     return this.isMarriedSignal();
   }
 
+    get clientHeirs() {
+    return this.ds.getClientHeirsArray();
+  }
+  get spouseHeirs() {
+    return this.ds.getSpouseHeirsArray();
+  }
 
     formatCurrency(value: number): string {
       if (isNaN(value) || value == null) return '$0';
@@ -502,5 +519,207 @@ getAllAssets(assetType: AssetType): any[] {
 
 closeBeneficiaryDesignation() {
   // Handle cancel - maybe just collapse the section
+}
+
+getHeirsForAsset(assetType: string): any[] {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return [];
+
+  if (asset.owned_by === 'Spouse') {
+    return this.spouseHeirs || [];
+  }
+  return this.clientHeirs || [];
+}
+
+// Get editing asset by type
+getEditingAsset(assetType: string): any {
+  switch (assetType) {
+    case 'bank_account': return this.editingBankAccount;
+    case 'nq_account': return this.editingNQAccount;
+    case 'retirement_account': return this.editingRetirementAccount;
+    case 'life_insurance': return this.editingLifeInsurance;
+    case 'business_interest': return this.editingBusinessInterest;
+    case 'digital_asset': return this.editingDigitalAsset;
+    default: return null;
+  }
+}
+
+// Get available heirs for primary (exclude already chosen primaries)
+getAvailablePrimaryHeirs(assetType: string): any[] {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return [];
+
+  const allHeirs = this.getHeirsForAsset(assetType);
+  const chosenPrimaryIds = (asset.primary_beneficiaries || []).map((b: any) => b.heir_id || b.name);
+
+  return allHeirs.filter(heir => !chosenPrimaryIds.includes(heir.id || heir.name));
+}
+
+// Get available heirs for secondary (exclude already chosen primaries AND secondaries)
+getAvailableSecondaryHeirs(assetType: string): any[] {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return [];
+
+  const allHeirs = this.getHeirsForAsset(assetType);
+  const chosenPrimaryIds = (asset.primary_beneficiaries || []).map((b: any) => b.heir_id || b.name);
+  const chosenSecondaryIds = (asset.contingent_beneficiaries || []).map((b: any) => b.heir_id || b.name);
+  const excludedIds = [...chosenPrimaryIds, ...chosenSecondaryIds];
+
+  return allHeirs.filter(heir => !excludedIds.includes(heir.id || heir.name));
+}
+
+// Add a beneficiary
+addBeneficiary(assetType: string, type: 'primary' | 'secondary', heir: any): void {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return;
+
+  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+
+  if (!asset[arrayName]) {
+    asset[arrayName] = [];
+  }
+
+  const newBene = {
+    heir_id: heir.id || null,
+    name: heir.name,
+    percentage: 0,
+    value: 0
+  };
+
+  asset[arrayName].push(newBene);
+
+  // Recalculate if equal distribution
+  this.recalculateDistribution(assetType, type);
+}
+
+// Remove a beneficiary
+removeBeneficiary(assetType: string, type: 'primary' | 'secondary', index: number): void {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return;
+
+  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+
+  if (asset[arrayName] && asset[arrayName].length > index) {
+    asset[arrayName].splice(index, 1);
+    this.recalculateDistribution(assetType, type);
+  }
+}
+
+// Get distribution type for an asset
+getDistributionType(assetType: string, type: 'primary' | 'secondary'): 'equal' | 'unequal' {
+  const propName = this.getDistTypeProperty(assetType, type);
+  return (this as any)[propName] || 'equal';
+}
+
+// Get the property name for distribution type
+getDistTypeProperty(assetType: string, type: 'primary' | 'secondary'): string {
+  const prefix = assetType.replace(/_/g, '').replace(/account/g, 'Account').replace(/insurance/g, 'Insurance').replace(/interest/g, 'Interest').replace(/asset/g, 'Asset');
+  const camelCase = prefix.charAt(0).toLowerCase() + prefix.slice(1);
+  return `${camelCase}${type === 'primary' ? 'Primary' : 'Secondary'}DistType`;
+}
+
+// Recalculate distribution
+recalculateDistribution(assetType: string, type: 'primary' | 'secondary'): void {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return;
+
+  const distType = this.getDistributionType(assetType, type);
+  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+  const beneficiaries = asset[arrayName] || [];
+  const assetValue = asset.approximate_value || 0;
+
+  if (distType === 'equal' && beneficiaries.length > 0) {
+    const equalPercentage = 100 / beneficiaries.length;
+    beneficiaries.forEach((bene: any) => {
+      bene.percentage = equalPercentage;
+      bene.value = (equalPercentage / 100) * assetValue;
+    });
+  }
+}
+
+// Recalculate a single beneficiary value (for unequal distribution)
+recalculateBeneficiaryValue(assetType: string, type: 'primary' | 'secondary', index: number): void {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset) return;
+
+  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+  const bene = asset[arrayName]?.[index];
+
+  if (bene) {
+    const assetValue = asset.approximate_value || 0;
+    bene.value = ((bene.percentage || 0) / 100) * assetValue;
+  }
+}
+
+// Convenience methods for recalculating by asset type
+recalculateBankAccountPrimary(): void {
+  this.recalculateDistribution('bank_account', 'primary');
+}
+
+recalculateBankAccountSecondary(): void {
+  this.recalculateDistribution('bank_account', 'secondary');
+}
+
+recalculateNQAccountPrimary(): void {
+  this.recalculateDistribution('nq_account', 'primary');
+}
+
+recalculateNQAccountSecondary(): void {
+  this.recalculateDistribution('nq_account', 'secondary');
+}
+
+recalculateRetirementAccountPrimary(): void {
+  this.recalculateDistribution('retirement_account', 'primary');
+}
+
+recalculateRetirementAccountSecondary(): void {
+  this.recalculateDistribution('retirement_account', 'secondary');
+}
+
+recalculateLifeInsurancePrimary(): void {
+  this.recalculateDistribution('life_insurance', 'primary');
+}
+
+recalculateLifeInsuranceSecondary(): void {
+  this.recalculateDistribution('life_insurance', 'secondary');
+}
+
+recalculateBusinessInterestPrimary(): void {
+  this.recalculateDistribution('business_interest', 'primary');
+}
+
+recalculateBusinessInterestSecondary(): void {
+  this.recalculateDistribution('business_interest', 'secondary');
+}
+
+recalculateDigitalAssetPrimary(): void {
+  this.recalculateDistribution('digital_asset', 'primary');
+}
+
+recalculateDigitalAssetSecondary(): void {
+  this.recalculateDistribution('digital_asset', 'secondary');
+}
+
+// Get totals
+getPrimaryTotal(assetType: string): number {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset?.primary_beneficiaries) return 0;
+  return asset.primary_beneficiaries.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
+}
+
+getSecondaryTotal(assetType: string): number {
+  const asset = this.getEditingAsset(assetType);
+  if (!asset?.contingent_beneficiaries) return 0;
+  return asset.contingent_beneficiaries.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
+}
+
+// Initialize beneficiary arrays when opening modals
+initializeBeneficiaryArrays(asset: any): void {
+  if (!asset.primary_beneficiaries) {
+    asset.primary_beneficiaries = [];
+  }
+  if (!asset.contingent_beneficiaries) {
+    asset.contingent_beneficiaries = [];
+  }
 }
 }

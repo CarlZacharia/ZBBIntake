@@ -65,7 +65,7 @@ export interface Asset {
   approximate_value?: number | null;
   has_bene?: 'Yes' | 'No' | null;
   primary_beneficiaries?: any[];
-  secondary_beneficiaries?: any[];
+  contingent_beneficiaries?: any[];
 }
 
 // Optional grouping return type

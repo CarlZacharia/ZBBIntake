@@ -189,7 +189,7 @@ h4 {
   background: white;
   border-radius: 8px;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -468,4 +468,173 @@ h4 {
   .grand-total h3 {
     font-size: 18px;
   }
+}
+
+/* Beneficiary Designation Section */
+.beneficiary-designation-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #007bff;
+}
+
+.beneficiary-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.beneficiary-column {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fafafa;
+}
+
+.beneficiary-column h4 {
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+.distribution-type {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.distribution-type label {
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.beneficiary-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.available-heirs,
+.chosen-beneficiaries {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: #fff;
+  min-height: 150px;
+}
+
+.available-heirs h5,
+.chosen-beneficiaries h5 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.heir-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.heir-item {
+  padding: 0.5rem 0.75rem;
+  background: #e3f2fd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.heir-item:hover {
+  background: #bbdefb;
+  transform: translateX(3px);
+}
+
+.heir-item.clickable {
+  border-left: 3px solid #2196f3;
+}
+
+.beneficiary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.beneficiary-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.bene-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.percentage-input {
+  width: 60px;
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  text-align: right;
+}
+
+.bene-percentage {
+  min-width: 50px;
+  text-align: right;
+  color: #666;
+}
+
+.bene-value {
+  min-width: 80px;
+  text-align: right;
+  font-weight: 500;
+  color: #2e7d32;
+}
+
+.btn-remove {
+  background: #ef5350;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove:hover {
+  background: #d32f2f;
+}
+
+.no-heirs,
+.no-beneficiaries {
+  color: #999;
+  font-style: italic;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+}
+
+.total-row {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ddd;
+  text-align: right;
+  font-size: 0.9rem;
 }

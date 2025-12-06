@@ -144,7 +144,7 @@ export class PlanningService {
       ownershipForm,
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       realEstateMode,
       beneficiaryTarget,
       approximate_value: r.approximate_value ?? null,
@@ -223,7 +223,7 @@ export class PlanningService {
       ownershipForm,
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       approximate_value: r.approximate_value ?? null,
     };
   }
@@ -261,7 +261,7 @@ export class PlanningService {
       ownershipForm,
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       approximate_value: r.approximate_value ?? null,
     };
   }
@@ -276,7 +276,7 @@ export class PlanningService {
       ownershipForm: OwnershipForm.TRUST,
             has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null,
     };
@@ -292,7 +292,7 @@ export class PlanningService {
       ownershipForm: this.mapOwnershipFormGeneric(r),
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null,
     };
@@ -308,7 +308,7 @@ export class PlanningService {
       ownershipForm: this.mapOwnershipFormGeneric(r),
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null,
     };
@@ -324,7 +324,7 @@ export class PlanningService {
       ownershipForm: this.mapOwnershipFormGeneric(r),
       has_bene: r.has_bene,
       primary_beneficiaries: r.primary_beneficiaries,
-      secondary_beneficiaries: r.secondary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
       beneficiaryTarget: this.mapBeneficiaryTargetGeneric(r.beneficiary),
       approximate_value: r.approximate_value ?? null,
     };
