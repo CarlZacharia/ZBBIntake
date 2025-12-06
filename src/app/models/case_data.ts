@@ -392,7 +392,7 @@ export interface IAssets {
 }
 
 // In case_data.ts
-export type AssetType = 'real_estate_holdings' | 'bank_account_holdings' | 'nq_account_holdings' | 'retirement_account_holdings' | 'life_insurance_holdings' | 'business_interest_holdings' | 'digital_asset_holdings' | 'other_asset_holdings';
+export type AssetType = 'real_estate' | 'bank_account' | 'nq_account' | 'retirement_account' | 'life_insurance' | 'business_interest' | 'digital_asset' | 'other_asset';
 // --- CORE INTERFACE DEFINITIONS ---
 
 export interface IAddress {

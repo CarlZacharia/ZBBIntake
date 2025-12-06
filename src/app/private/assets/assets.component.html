@@ -2731,17 +2731,17 @@
           </select>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingNQAccount.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+<div class="form-group" *ngIf="isMarried">
+  <label>Beneficiary Designation?</label>
+  <div style="display: flex; align-items: center; gap: 1.5em;">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingNQAccount.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingNQAccount.has_bene" name="has_bene" [value]="'No'" required /> No
+    </label>
+  </div>
+</div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -2979,17 +2979,17 @@
           </label>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingRetirementAccount.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+<div class="form-group" *ngIf="isMarried">
+  <label>Beneficiary Designation?</label>
+  <div style="display: flex; align-items: center; gap: 1.5em;">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingRetirementAccount.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingRetirementAccount.has_bene" name="has_bene" [value]="'No'" required /> No
+    </label>
+  </div>
+</div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -3298,17 +3298,17 @@
           </select>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingLifeInsurance.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+<div class="form-group" *ngIf="isMarried">
+  <label>Beneficiary Designation?</label>
+  <div style="display: flex; align-items: center; gap: 1.5em;">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingLifeInsurance.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingLifeInsurance.has_bene" name="has_bene" [value]="'No'" required /> No
+    </label>
+  </div>
+</div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -3731,17 +3731,17 @@
           </select>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingBusinessInterest.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+<div class="form-group" *ngIf="isMarried">
+  <label>Beneficiary Designation?</label>
+  <div style="display: flex; align-items: center; gap: 1.5em;">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingBusinessInterest.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingBusinessInterest.has_bene" name="has_bene" [value]="'No'" required /> No
+    </label>
+  </div>
+</div>
 
         <!-- Notes -->
         <div class="form-group">
@@ -3935,17 +3935,7 @@
           </div>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingDigitalAsset.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+
 
         <!-- Notes -->
         <div class="form-group">
@@ -4126,17 +4116,17 @@
           </select>
         </div>
 
-        <div class="form-group" *ngIf="isMarried">
-          <label>Beneficiary Designation?</label>
-          <select
-            [(ngModel)]="editingDigitalAsset.has_bene"
-            name="has_bene"
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+<div class="form-group" *ngIf="isMarried">
+  <label>Beneficiary Designation?</label>
+  <div style="display: flex; align-items: center; gap: 1.5em;">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingDigitalAsset.has_bene" name="has_bene" [value]="'Yes'" required /> Yes
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="editingDigitalAsset.has_bene" name="has_bene" [value]="'No'" required /> No
+    </label>
+  </div>
+</div>
 
         <!-- Notes -->
         <div class="form-group">

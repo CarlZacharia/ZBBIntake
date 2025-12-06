@@ -70,7 +70,68 @@ export class BeneficiaryDesignationComponent implements OnInit, OnChanges {
     }
   }
 
-  // Computed values
+  // ============================================
+  // TEMPLATE HELPER GETTERS (avoid arrow functions in template)
+  // ============================================
+
+  get currentStepValue(): string {
+    return this.currentStep();
+  }
+
+  get isStepAfterStructure(): boolean {
+    const step = this.currentStep();
+    return step === 'scenario' || step === 'primary' || step === 'secondary' || step === 'review';
+  }
+
+  get isStepAfterScenario(): boolean {
+    const step = this.currentStep();
+    return step === 'primary' || step === 'secondary' || step === 'review';
+  }
+
+  get isStepAfterPrimary(): boolean {
+    const step = this.currentStep();
+    return step === 'secondary' || step === 'review';
+  }
+
+  get hasPrimarySelected(): boolean {
+    return this.designation().primaryBeneficiaries.some(b => b.selected);
+  }
+
+  get hasSecondarySelected(): boolean {
+    return this.designation().secondaryBeneficiaries.some(b => b.selected);
+  }
+
+  get showSecondaryReview(): boolean {
+    const d = this.designation();
+    return d.hasSecondary && d.secondaryBeneficiaries.some(b => b.selected);
+  }
+
+  get designationValue(): IBeneficiaryDesignation {
+    return this.designation();
+  }
+
+  get scenarioOptionsValue(): OwnershipScenarioOptions {
+    return this.scenarioOptions();
+  }
+
+  get primaryValidationValue() {
+    return this.primaryValidation();
+  }
+
+  get secondaryValidationValue() {
+    return this.secondaryValidation();
+  }
+
+  // Check if heir is disabled in secondary (sole primary selected)
+  isHeirDisabledInSecondary(heir: ISelectableHeir): boolean {
+    const primary = this.designation().primaryBeneficiaries.filter(b => b.selected);
+    return primary.length === 1 && primary[0]?.id === heir.id;
+  }
+
+  // ============================================
+  // COMPUTED VALUES
+  // ============================================
+
   get isMarried(): boolean {
     return this.ds.isMarried();
   }

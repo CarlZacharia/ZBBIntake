@@ -12,38 +12,38 @@
 
   <!-- Progress Steps -->
   <div class="step-progress">
-    <div class="step" [class.active]="currentStep() === 'structure'" [class.completed]="currentStep() !== 'structure'">
+    <div class="step" [class.active]="currentStepValue === 'structure'" [class.completed]="isStepAfterStructure">
       <span class="step-number">1</span>
       <span class="step-label">Structure</span>
     </div>
     <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep() === 'scenario'"
-         [class.completed]="['primary', 'secondary', 'review'].includes(currentStep())">
+    <div class="step" [class.active]="currentStepValue === 'scenario'"
+         [class.completed]="isStepAfterScenario">
       <span class="step-number">2</span>
       <span class="step-label">Scenario</span>
     </div>
     <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep() === 'primary'"
-         [class.completed]="['secondary', 'review'].includes(currentStep())">
+    <div class="step" [class.active]="currentStepValue === 'primary'"
+         [class.completed]="isStepAfterPrimary">
       <span class="step-number">3</span>
       <span class="step-label">Primary</span>
     </div>
-    <div class="step-connector" *ngIf="designation().hasSecondary"></div>
-    <div class="step" *ngIf="designation().hasSecondary"
-         [class.active]="currentStep() === 'secondary'"
-         [class.completed]="currentStep() === 'review'">
+    <div class="step-connector" *ngIf="designationValue.hasSecondary"></div>
+    <div class="step" *ngIf="designationValue.hasSecondary"
+         [class.active]="currentStepValue === 'secondary'"
+         [class.completed]="currentStepValue === 'review'">
       <span class="step-number">4</span>
       <span class="step-label">Secondary</span>
     </div>
     <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep() === 'review'">
-      <span class="step-number">{{ designation().hasSecondary ? '5' : '4' }}</span>
+    <div class="step" [class.active]="currentStepValue === 'review'">
+      <span class="step-number">{{ designationValue.hasSecondary ? '5' : '4' }}</span>
       <span class="step-label">Review</span>
     </div>
   </div>
 
   <!-- Step 1: Structure Choice -->
-  <div class="step-content" *ngIf="currentStep() === 'structure'">
+  <div class="step-content" *ngIf="currentStepValue === 'structure'">
     <h4>Beneficiary Structure</h4>
     <p class="step-description">
       How would you like to structure the beneficiary designations for this asset?
@@ -51,7 +51,7 @@
 
     <div class="option-cards">
       <div class="option-card"
-           [class.selected]="designation().hasSecondary"
+           [class.selected]="designationValue.hasSecondary"
            (click)="onStructureChange(true)">
         <div class="option-icon">👥</div>
         <h5>Primary &amp; Secondary</h5>
@@ -60,7 +60,7 @@
       </div>
 
       <div class="option-card"
-           [class.selected]="!designation().hasSecondary"
+           [class.selected]="!designationValue.hasSecondary"
            (click)="onStructureChange(false)">
         <div class="option-icon">👤</div>
         <h5>Primary Only</h5>
@@ -75,19 +75,19 @@
   </div>
 
   <!-- Step 2: Scenario Selection -->
-  <div class="step-content" *ngIf="currentStep() === 'scenario'">
+  <div class="step-content" *ngIf="currentStepValue === 'scenario'">
     <h4>Planning Scenario</h4>
 
-    <div *ngIf="scenarioOptions().requireScenarioChoice; else autoScenario">
+    <div *ngIf="scenarioOptionsValue.requireScenarioChoice; else autoScenario">
       <p class="step-description">
         Since this asset is jointly owned, which scenario would you like to plan for?
       </p>
 
       <div class="scenario-options">
         <div class="scenario-card"
-             [class.selected]="designation().scenario === 'client_dies_first'"
+             [class.selected]="designationValue.scenario === 'client_dies_first'"
              (click)="onScenarioChange('client_dies_first')"
-             *ngIf="scenarioOptions().showClientDiesFirst">
+             *ngIf="scenarioOptionsValue.showClientDiesFirst">
           <div class="scenario-header">
             <span class="scenario-icon">⚰️</span>
             <h5>{{ clientName }} Dies First</h5>
@@ -96,9 +96,9 @@
         </div>
 
         <div class="scenario-card"
-             [class.selected]="designation().scenario === 'spouse_dies_first'"
+             [class.selected]="designationValue.scenario === 'spouse_dies_first'"
              (click)="onScenarioChange('spouse_dies_first')"
-             *ngIf="scenarioOptions().showSpouseDiesFirst">
+             *ngIf="scenarioOptionsValue.showSpouseDiesFirst">
           <div class="scenario-header">
             <span class="scenario-icon">⚰️</span>
             <h5>{{ spouseName }} Dies First</h5>
@@ -111,7 +111,7 @@
     <ng-template #autoScenario>
       <div class="auto-scenario-notice">
         <p>
-          <strong>Scenario:</strong> {{ getScenarioLabel(designation().scenario) }}
+          <strong>Scenario:</strong> {{ getScenarioLabel(designationValue.scenario) }}
         </p>
         <p class="muted">
           Based on asset ownership ({{ ownedBy }}), this is the applicable planning scenario.
@@ -128,16 +128,16 @@
   </div>
 
   <!-- Step 3: Primary Beneficiaries -->
-  <div class="step-content" *ngIf="currentStep() === 'primary'">
+  <div class="step-content" *ngIf="currentStepValue === 'primary'">
     <h4>Primary Beneficiaries</h4>
     <p class="step-description">
       Select who should receive this asset first.
-      <span class="scenario-badge">{{ getScenarioLabel(designation().scenario) }}</span>
+      <span class="scenario-badge">{{ getScenarioLabel(designationValue.scenario) }}</span>
     </p>
 
     <!-- Heir Selection -->
     <div class="heir-selection">
-      <div class="heir-item" *ngFor="let heir of designation().primaryBeneficiaries">
+      <div class="heir-item" *ngFor="let heir of designationValue.primaryBeneficiaries">
         <label class="heir-checkbox">
           <input type="checkbox"
                  [checked]="heir.selected"
@@ -150,24 +150,24 @@
     </div>
 
     <!-- Distribution Type -->
-    <div class="distribution-section" *ngIf="designation().primaryBeneficiaries.some(b => b.selected)">
+    <div class="distribution-section" *ngIf="hasPrimarySelected">
       <h5>Distribution</h5>
 
       <div class="distribution-toggle">
-        <button [class.active]="designation().primaryDistribution === 'equal'"
+        <button [class.active]="designationValue.primaryDistribution === 'equal'"
                 (click)="onDistributionTypeChange('primary', 'equal')">
           Equal Shares
         </button>
-        <button [class.active]="designation().primaryDistribution === 'unequal'"
+        <button [class.active]="designationValue.primaryDistribution === 'unequal'"
                 (click)="onDistributionTypeChange('primary', 'unequal')">
           Custom Percentages
         </button>
       </div>
 
       <!-- Percentage Entry -->
-      <div class="percentage-grid" *ngIf="designation().primaryDistribution === 'unequal'">
+      <div class="percentage-grid" *ngIf="designationValue.primaryDistribution === 'unequal'">
         <div class="percentage-row"
-             *ngFor="let heir of designation().primaryBeneficiaries"
+             *ngFor="let heir of designationValue.primaryBeneficiaries"
              [class.hidden]="!heir.selected">
           <span class="heir-label">{{ heir.name }}</span>
           <div class="percentage-input">
@@ -188,9 +188,9 @@
       </div>
 
       <!-- Equal Distribution Display -->
-      <div class="equal-distribution-display" *ngIf="designation().primaryDistribution === 'equal'">
+      <div class="equal-distribution-display" *ngIf="designationValue.primaryDistribution === 'equal'">
         <div class="equal-row"
-             *ngFor="let heir of designation().primaryBeneficiaries"
+             *ngFor="let heir of designationValue.primaryBeneficiaries"
              [class.hidden]="!heir.selected">
           <span class="heir-label">{{ heir.name }}</span>
           <span class="percentage">{{ heir.percentage | number:'1.2-2' }}%</span>
@@ -205,10 +205,10 @@
       </div>
 
       <!-- Validation Message -->
-      <div class="validation-message" [class.error]="!primaryValidation().isValid">
-        <span *ngIf="primaryValidation().isValid" class="success">✓ Total: 100%</span>
-        <span *ngIf="!primaryValidation().isValid" class="error">
-          {{ primaryValidation().message }}
+      <div class="validation-message" [class.error]="!primaryValidationValue.isValid">
+        <span *ngIf="primaryValidationValue.isValid" class="success">✓ Total: 100%</span>
+        <span *ngIf="!primaryValidationValue.isValid" class="error">
+          {{ primaryValidationValue.message }}
         </span>
       </div>
     </div>
@@ -218,13 +218,13 @@
       <button class="btn-primary"
               (click)="nextStep()"
               [disabled]="!canProceedToSecondary">
-        {{ designation().hasSecondary ? 'Continue to Secondary' : 'Review' }}
+        {{ designationValue.hasSecondary ? 'Continue to Secondary' : 'Review' }}
       </button>
     </div>
   </div>
 
   <!-- Step 4: Secondary Beneficiaries -->
-  <div class="step-content" *ngIf="currentStep() === 'secondary'">
+  <div class="step-content" *ngIf="currentStepValue === 'secondary'">
     <h4>Secondary (Contingent) Beneficiaries</h4>
     <p class="step-description">
       Select who should receive this asset if the primary beneficiaries predecease the owner.
@@ -232,23 +232,21 @@
 
     <div class="primary-reminder">
       <strong>Primary:</strong>
-      <span *ngFor="let heir of designation().primaryBeneficiaries; let last = last">
+      <ng-container *ngFor="let heir of designationValue.primaryBeneficiaries; let last = last">
         <span *ngIf="heir.selected">{{ heir.name }} ({{ heir.percentage | number:'1.0-0' }}%){{ last ? '' : ', ' }}</span>
-      </span>
+      </ng-container>
     </div>
 
     <!-- Heir Selection (excluding sole primary if only one) -->
     <div class="heir-selection">
       <div class="heir-item"
-           *ngFor="let heir of designation().secondaryBeneficiaries"
-           [class.disabled]="designation().primaryBeneficiaries.length === 1 &&
-                             designation().primaryBeneficiaries[0]?.id === heir.id">
+           *ngFor="let heir of designationValue.secondaryBeneficiaries"
+           [class.disabled]="isHeirDisabledInSecondary(heir)">
         <label class="heir-checkbox">
           <input type="checkbox"
                  [checked]="heir.selected"
                  (change)="onSecondaryBeneficiaryToggle(heir)"
-                 [disabled]="designation().primaryBeneficiaries.length === 1 &&
-                             designation().primaryBeneficiaries[0]?.id === heir.id">
+                 [disabled]="isHeirDisabledInSecondary(heir)">
           <span class="heir-icon">{{ getHeirTypeIcon(heir.type) }}</span>
           <span class="heir-name">{{ heir.name }}</span>
           <span class="heir-type-badge">{{ heir.type }}</span>
@@ -257,24 +255,24 @@
     </div>
 
     <!-- Distribution Type -->
-    <div class="distribution-section" *ngIf="designation().secondaryBeneficiaries.some(b => b.selected)">
+    <div class="distribution-section" *ngIf="hasSecondarySelected">
       <h5>Distribution</h5>
 
       <div class="distribution-toggle">
-        <button [class.active]="designation().secondaryDistribution === 'equal'"
+        <button [class.active]="designationValue.secondaryDistribution === 'equal'"
                 (click)="onDistributionTypeChange('secondary', 'equal')">
           Equal Shares
         </button>
-        <button [class.active]="designation().secondaryDistribution === 'unequal'"
+        <button [class.active]="designationValue.secondaryDistribution === 'unequal'"
                 (click)="onDistributionTypeChange('secondary', 'unequal')">
           Custom Percentages
         </button>
       </div>
 
       <!-- Percentage Entry -->
-      <div class="percentage-grid" *ngIf="designation().secondaryDistribution === 'unequal'">
+      <div class="percentage-grid" *ngIf="designationValue.secondaryDistribution === 'unequal'">
         <div class="percentage-row"
-             *ngFor="let heir of designation().secondaryBeneficiaries"
+             *ngFor="let heir of designationValue.secondaryBeneficiaries"
              [class.hidden]="!heir.selected">
           <span class="heir-label">{{ heir.name }}</span>
           <div class="percentage-input">
@@ -295,9 +293,9 @@
       </div>
 
       <!-- Equal Distribution Display -->
-      <div class="equal-distribution-display" *ngIf="designation().secondaryDistribution === 'equal'">
+      <div class="equal-distribution-display" *ngIf="designationValue.secondaryDistribution === 'equal'">
         <div class="equal-row"
-             *ngFor="let heir of designation().secondaryBeneficiaries"
+             *ngFor="let heir of designationValue.secondaryBeneficiaries"
              [class.hidden]="!heir.selected">
           <span class="heir-label">{{ heir.name }}</span>
           <span class="percentage">{{ heir.percentage | number:'1.2-2' }}%</span>
@@ -312,10 +310,10 @@
       </div>
 
       <!-- Validation Message -->
-      <div class="validation-message" [class.error]="!secondaryValidation().isValid">
-        <span *ngIf="secondaryValidation().isValid" class="success">✓ Total: 100%</span>
-        <span *ngIf="!secondaryValidation().isValid" class="error">
-          {{ secondaryValidation().message }}
+      <div class="validation-message" [class.error]="!secondaryValidationValue.isValid">
+        <span *ngIf="secondaryValidationValue.isValid" class="success">✓ Total: 100%</span>
+        <span *ngIf="!secondaryValidationValue.isValid" class="error">
+          {{ secondaryValidationValue.message }}
         </span>
       </div>
     </div>
@@ -327,7 +325,7 @@
   </div>
 
   <!-- Step 5: Review -->
-  <div class="step-content" *ngIf="currentStep() === 'review'">
+  <div class="step-content" *ngIf="currentStepValue === 'review'">
     <h4>Review Beneficiary Designation</h4>
 
     <div class="review-summary">
@@ -339,7 +337,7 @@
 
       <div class="review-section">
         <h5>Planning Scenario</h5>
-        <p>{{ getScenarioLabel(designation().scenario) }}</p>
+        <p>{{ getScenarioLabel(designationValue.scenario) }}</p>
       </div>
 
       <div class="review-section">
@@ -355,18 +353,20 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let heir of designation().primaryBeneficiaries" [class.hidden]="!heir.selected">
-              <td>{{ heir.name }}</td>
-              <td>{{ heir.type }}</td>
-              <td>{{ heir.percentage | number:'1.2-2' }}%</td>
-              <td>{{ formatCurrency(heir.calculatedValue) }}</td>
-              <td>{{ heir.perStirpes ? 'Yes' : 'No' }}</td>
-            </tr>
+            <ng-container *ngFor="let heir of designationValue.primaryBeneficiaries">
+              <tr *ngIf="heir.selected">
+                <td>{{ heir.name }}</td>
+                <td>{{ heir.type }}</td>
+                <td>{{ heir.percentage | number:'1.2-2' }}%</td>
+                <td>{{ formatCurrency(heir.calculatedValue) }}</td>
+                <td>{{ heir.perStirpes ? 'Yes' : 'No' }}</td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
 
-      <div class="review-section" *ngIf="designation().hasSecondary && designation().secondaryBeneficiaries.some(b => b.selected)">
+      <div class="review-section" *ngIf="showSecondaryReview">
         <h5>Secondary Beneficiaries</h5>
         <table class="review-table">
           <thead>
@@ -379,13 +379,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let heir of designation().secondaryBeneficiaries" [class.hidden]="!heir.selected">
-              <td>{{ heir.name }}</td>
-              <td>{{ heir.type }}</td>
-              <td>{{ heir.percentage | number:'1.2-2' }}%</td>
-              <td>{{ formatCurrency(heir.calculatedValue) }}</td>
-              <td>{{ heir.perStirpes ? 'Yes' : 'No' }}</td>
-            </tr>
+            <ng-container *ngFor="let heir of designationValue.secondaryBeneficiaries">
+              <tr *ngIf="heir.selected">
+                <td>{{ heir.name }}</td>
+                <td>{{ heir.type }}</td>
+                <td>{{ heir.percentage | number:'1.2-2' }}%</td>
+                <td>{{ formatCurrency(heir.calculatedValue) }}</td>
+                <td>{{ heir.perStirpes ? 'Yes' : 'No' }}</td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
