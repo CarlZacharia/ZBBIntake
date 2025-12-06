@@ -94,7 +94,7 @@
 }
 
 :host ::ng-deep .btn-primary {
-  background: linear-gradient(135deg, #d4a146 0%, #c99438 100%) !important;
+  background: #00008b;
   border: none;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(212, 161, 70, 0.3);
@@ -204,3 +204,5 @@ select .select, .select-bordered, .textarea, .textarea-bordered {
 .input-bordered {
   background-color: aliceblue;
 }
+
+

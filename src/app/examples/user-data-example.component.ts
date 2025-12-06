@@ -35,7 +35,7 @@ import { AuthService } from '../services/auth.service';
     }
 
     .btn {
-      background: #007bff;
+      background: #00008B;
       color: white;
       border: none;
       padding: 8px 16px;

@@ -22,15 +22,15 @@
   margin-right: 0.5rem;
 }
 .badge-radio.enduser {
-  border-color: #007bff;
+  border-color: #00008B;
 }
 .badge-radio.facility {
   border-color: #28a745;
 }
 .badge-radio.selected.enduser {
-  background: #007bff;
+  background: #00008B;
   color: #fff;
-  border-color: #007bff;
+  border-color: #00008B;
 }
 .badge-radio.selected.facility {
   background: #28a745;

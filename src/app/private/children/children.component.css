@@ -34,7 +34,7 @@ h3 {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #00008B;
   color: white;
 }
 
@@ -233,7 +233,7 @@ h3 {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #00008B;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 

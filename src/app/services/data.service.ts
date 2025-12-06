@@ -441,12 +441,10 @@ export class DataService {
   // Save method that can return a Promise/Observable for API calls
   async savePersonalInfo(): Promise<boolean> {
     try {
-      console.log('Saving personal information:', this.personal());
       // Use the new saveclientdata method
       const savedData = await this.saveclientdata().toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
-        console.log('Setting clientdata after savePersonalInfo:', savedData);
         this._clientdata.set(savedData as IClientData);
         return true;
       }

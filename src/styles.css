@@ -33,13 +33,10 @@ input[type="radio"].ng-invalid[required] {
   outline: 1px solid red !important;
 }
 
-
-/* stylelint-disable */
-
-
-/* stylelint-enable */
-
-/* You can add global styles to this file, and also import other style files */
+.btn-primary {
+  background-color: #00008B;
+  color: white;
+}
 
 /* Global Animation - Card Slide In */
 @keyframes slideIn {
