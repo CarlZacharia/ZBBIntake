@@ -215,6 +215,7 @@ h4 {
 .modal-header.add-modal-header {
   background-color: #28a745;
   border-bottom: none;
+  color:gold;
 }
 
 .modal-header.add-modal-header h3 {
@@ -230,7 +231,8 @@ h4 {
 }
 
 .modal-header.edit-modal-header {
-  background-color: #eeeeee;
+  background-color: gold;
+  color:darkblue;
   border-bottom: none;
 }
 
@@ -578,6 +580,7 @@ h4 {
   box-shadow: 0 1px 4px rgba(44, 62, 80, 0.07);
   border-bottom: 1px solid #d0e6d5;
   margin-bottom: 0.5rem;
+  position: relative;
 }
 
 .bene-name {
@@ -621,6 +624,7 @@ h4 {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
 }
 
 .btn-remove:hover {

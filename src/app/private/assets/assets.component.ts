@@ -12,7 +12,6 @@ import {
   IDigitalAsset,
   IOtherAsset,
   AssetType,
-  IBeneficiary,
 } from '../../models/case_data';
 
 
@@ -590,16 +589,7 @@ export class AssetsComponent {
     this.editingOtherAsset = null;
   }
 
-  onBeneficiarySaved(result: any) {
-    // Update the asset with beneficiary data
-    const editingAsset = this.getCurrentEditingAsset();
-    if (editingAsset) {
-      editingAsset.primary_beneficiaries = result.primary_beneficiaries;
-      editingAsset.contingent_beneficiaries = result.contingent_beneficiaries;
-      editingAsset.beneficiary_scenario = result.scenario;
-      this.saveEditAsset();
-    }
-  }
+
 
 
 
@@ -877,12 +867,5 @@ export class AssetsComponent {
   }
 
   // Initialize beneficiary arrays when opening modals
-  initializeBeneficiaryArrays(asset: any): void {
-    if (!asset.primary_beneficiaries) {
-      asset.primary_beneficiaries = [];
-    }
-    if (!asset.contingent_beneficiaries) {
-      asset.contingent_beneficiaries = [];
-    }
-  }
+
 }
