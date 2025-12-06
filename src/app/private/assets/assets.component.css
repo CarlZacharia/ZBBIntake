@@ -562,18 +562,22 @@ h4 {
 .beneficiary-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 .beneficiary-item {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: 1.25rem;
+  padding: 0.75rem 0.5rem;
   background: #e8f5e9;
-  border-radius: 4px;
-  font-size: 0.85rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 4px rgba(44, 62, 80, 0.07);
+  border-bottom: 1px solid #d0e6d5;
+  margin-bottom: 0.5rem;
 }
 
 .bene-name {

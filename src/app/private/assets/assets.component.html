@@ -2373,7 +2373,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBankAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
+          <div *ngFor="let bene of getSafeBeneficiaryArray(editingBankAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="bankAccountPrimaryDistType === 'unequal'"
                      type="number"
@@ -2425,7 +2425,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBankAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
+          <div *ngFor="let bene of getSafeBeneficiaryArray(editingBankAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="bankAccountSecondaryDistType === 'unequal'"
                      type="number"
@@ -2614,7 +2614,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingBankAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
+          <div *ngFor="let bene of getSafeBeneficiaryArray(editingBankAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="bankAccountPrimaryDistType === 'unequal'"
                  type="number"
@@ -2665,7 +2665,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingBankAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingBankAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="bankAccountSecondaryDistType === 'unequal'"
                  type="number"
@@ -2848,7 +2848,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingNQAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
+      <div *ngFor="let bene of getSafeBeneficiaryArray(editingNQAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="nqAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'primary', i)" class="percentage-input">
           <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -2885,7 +2885,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingNQAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
+      <div *ngFor="let bene of getSafeBeneficiaryArray(editingNQAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="nqAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'secondary', i)" class="percentage-input">
           <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3037,85 +3037,79 @@
 
 <!-- Beneficiary Designation Section -->
 <div *ngIf="editingNQAccount.has_bene === 'Yes'" class="beneficiary-designation-section">
-  <div class="beneficiary-columns">
-    <!-- Primary Beneficiaries Column -->
-    <div class="beneficiary-column">
-      <h4>Primary Beneficiaries</h4>
-      <div class="distribution-type">
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="nqAccountPrimaryDistType" name="nqPrimaryDist" value="equal" (change)="recalculateNQAccountPrimary()"> Equal Amounts
-        </label>
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="nqAccountPrimaryDistType" name="nqPrimaryDist" value="unequal"> Unequal Amounts
-        </label>
-      </div>
-      <div class="beneficiary-selection">
-        <div class="available-heirs">
-          <h5>Available Heirs</h5>
-          <div class="heir-list">
-            <div *ngFor="let heir of getAvailablePrimaryHeirs('nq_account')"
-                 class="heir-item clickable"
-                 (click)="addBeneficiary('nq_account', 'primary', heir)">
-              {{ heir.name }}
-            </div>
-            <div *ngIf="getAvailablePrimaryHeirs('nq_account').length === 0" class="no-heirs">No available heirs</div>
-          </div>
+  <!-- Primary Beneficiaries Row -->
+  <h4>Primary Beneficiaries</h4>
+  <div class="distribution-type">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="nqAccountPrimaryDistType" name="nqPrimaryDist" value="equal" (change)="recalculateNQAccountPrimary()"> Equal Amounts
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="nqAccountPrimaryDistType" name="nqPrimaryDist" value="unequal"> Unequal Amounts
+    </label>
+  </div>
+  <div class="beneficiary-selection">
+    <div class="available-heirs">
+      <h5>Available Heirs</h5>
+      <div class="heir-list">
+        <div *ngFor="let heir of getAvailablePrimaryHeirs('nq_account')"
+             class="heir-item clickable"
+             (click)="addBeneficiary('nq_account', 'primary', heir)">
+          {{ heir.name }}
         </div>
-        <div class="chosen-beneficiaries">
-          <h5>Chosen</h5>
-          <div class="beneficiary-list">
-            <div *ngFor="let bene of editingNQAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
-              <span class="bene-name">{{ bene.name }}</span>
-              <input *ngIf="nqAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'primary', i)" class="percentage-input">
-              <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
-              <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
-              <button type="button" class="btn-remove" (click)="removeBeneficiary('nq_account', 'primary', i)">&times;</button>
-            </div>
-            <div *ngIf="editingNQAccount.primary_beneficiaries && editingNQAccount.primary_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
-          </div>
-          <div class="total-row" *ngIf="editingNQAccount.primary_beneficiaries && editingNQAccount.primary_beneficiaries.length > 0">
-            <strong>Total: {{ getPrimaryTotal('nq_account') | number:'1.2-2' }}%</strong>
-          </div>
-        </div>
+        <div *ngIf="getAvailablePrimaryHeirs('nq_account').length === 0" class="no-heirs">No available heirs</div>
       </div>
     </div>
-    <!-- Secondary Beneficiaries Column -->
-    <div class="beneficiary-column">
-      <h4>Secondary Beneficiaries</h4>
-      <div class="distribution-type">
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="nqAccountSecondaryDistType" name="nqSecondaryDist" value="equal" (change)="recalculateNQAccountSecondary()"> Equal Amounts
-        </label>
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="nqAccountSecondaryDistType" name="nqSecondaryDist" value="unequal"> Unequal Amounts
-        </label>
+    <div class="chosen-beneficiaries">
+      <h5>Chosen</h5>
+      <div class="beneficiary-list">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingNQAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
+          <span class="bene-name">{{ bene.name }}</span>
+          <input *ngIf="nqAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'primary', i)" class="percentage-input">
+          <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
+          <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
+          <button type="button" class="btn-remove" (click)="removeBeneficiary('nq_account', 'primary', i)">&times;</button>
+        </div>
+        <div *ngIf="editingNQAccount.primary_beneficiaries && editingNQAccount.primary_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
       </div>
-      <div class="beneficiary-selection">
-        <div class="available-heirs">
-          <h5>Available Heirs</h5>
-          <div class="heir-list">
-            <div *ngFor="let heir of getAvailableSecondaryHeirs('nq_account')" class="heir-item clickable" (click)="addBeneficiary('nq_account', 'secondary', heir)">
-              {{ heir.name }}
-            </div>
-            <div *ngIf="getAvailableSecondaryHeirs('nq_account').length === 0" class="no-heirs">No available heirs</div>
-          </div>
+      <div class="total-row" *ngIf="editingNQAccount.primary_beneficiaries && editingNQAccount.primary_beneficiaries.length > 0">
+        <strong>Total: {{ getPrimaryTotal('nq_account') | number:'1.2-2' }}%</strong>
+      </div>
+    </div>
+  </div>
+  <!-- Secondary Beneficiaries Row -->
+  <h4>Secondary Beneficiaries</h4>
+  <div class="distribution-type">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="nqAccountSecondaryDistType" name="nqSecondaryDist" value="equal" (change)="recalculateNQAccountSecondary()"> Equal Amounts
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="nqAccountSecondaryDistType" name="nqSecondaryDist" value="unequal"> Unequal Amounts
+    </label>
+  </div>
+  <div class="beneficiary-selection">
+    <div class="available-heirs">
+      <h5>Available Heirs</h5>
+      <div class="heir-list">
+        <div *ngFor="let heir of getAvailableSecondaryHeirs('nq_account')" class="heir-item clickable" (click)="addBeneficiary('nq_account', 'secondary', heir)">
+          {{ heir.name }}
         </div>
-        <div class="chosen-beneficiaries">
-          <h5>Chosen</h5>
-          <div class="beneficiary-list">
-            <div *ngFor="let bene of editingNQAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
-              <span class="bene-name">{{ bene.name }}</span>
-              <input *ngIf="nqAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'secondary', i)" class="percentage-input">
-              <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
-              <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
-              <button type="button" class="btn-remove" (click)="removeBeneficiary('nq_account', 'secondary', i)">&times;</button>
-            </div>
-            <div *ngIf="editingNQAccount.contingent_beneficiaries && editingNQAccount.contingent_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
-          </div>
-          <div class="total-row" *ngIf="editingNQAccount.contingent_beneficiaries && editingNQAccount.contingent_beneficiaries.length > 0">
-            <strong>Total: {{ getSecondaryTotal('nq_account') | number:'1.2-2' }}%</strong>
-          </div>
+        <div *ngIf="getAvailableSecondaryHeirs('nq_account').length === 0" class="no-heirs">No available heirs</div>
+      </div>
+    </div>
+    <div class="chosen-beneficiaries">
+      <h5>Chosen</h5>
+      <div class="beneficiary-list">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingNQAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
+          <span class="bene-name">{{ bene.name }}</span>
+          <input *ngIf="nqAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'nqSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('nq_account', 'secondary', i)" class="percentage-input">
+          <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
+          <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
+          <button type="button" class="btn-remove" (click)="removeBeneficiary('nq_account', 'secondary', i)">&times;</button>
         </div>
+        <div *ngIf="editingNQAccount.contingent_beneficiaries && editingNQAccount.contingent_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
+      </div>
+      <div class="total-row" *ngIf="editingNQAccount.contingent_beneficiaries && editingNQAccount.contingent_beneficiaries.length > 0">
+        <strong>Total: {{ getSecondaryTotal('nq_account') | number:'1.2-2' }}%</strong>
       </div>
     </div>
   </div>
@@ -3268,7 +3262,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingRetirementAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingRetirementAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="retirementAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'primary', i)" class="percentage-input">
           <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3301,7 +3295,7 @@
     <div class="chosen-beneficiaries">
       <h5>Chosen</h5>
       <div class="beneficiary-list">
-        <div *ngFor="let bene of editingRetirementAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingRetirementAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
           <span class="bene-name">{{ bene.name }}</span>
           <input *ngIf="retirementAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'secondary', i)" class="percentage-input">
           <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3440,74 +3434,70 @@
 
 <!-- Beneficiary Designation Section -->
 <div *ngIf="editingRetirementAccount.has_bene === 'Yes'" class="beneficiary-designation-section">
-  <div class="beneficiary-columns">
-    <div class="beneficiary-column">
-      <h4>Primary Beneficiaries</h4>
-      <div class="distribution-type">
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="retirementAccountPrimaryDistType" name="retirementPrimaryDist" value="equal" (change)="recalculateRetirementAccountPrimary()"> Equal Amounts
-        </label>
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="retirementAccountPrimaryDistType" name="retirementPrimaryDist" value="unequal"> Unequal Amounts
-        </label>
-      </div>
-      <div class="beneficiary-selection">
-        <div class="available-heirs">
-          <h5>Available Heirs</h5>
-          <div class="heir-list">
-            <div *ngFor="let heir of getAvailablePrimaryHeirs('retirement_account')" class="heir-item clickable" (click)="addBeneficiary('retirement_account', 'primary', heir)">{{ heir.name }}</div>
-            <div *ngIf="getAvailablePrimaryHeirs('retirement_account').length === 0" class="no-heirs">No available heirs</div>
-          </div>
-        </div>
-        <div class="chosen-beneficiaries">
-          <h5>Chosen</h5>
-          <div class="beneficiary-list">
-            <div *ngFor="let bene of editingRetirementAccount.primary_beneficiaries; let i = index" class="beneficiary-item">
-              <span class="bene-name">{{ bene.name }}</span>
-              <input *ngIf="retirementAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'primary', i)" class="percentage-input">
-              <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
-              <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
-              <button type="button" class="btn-remove" (click)="removeBeneficiary('retirement_account', 'primary', i)">&times;</button>
-            </div>
-            <div *ngIf="editingRetirementAccount.primary_beneficiaries && editingRetirementAccount.primary_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
-          </div>
-          <div class="total-row" *ngIf="editingRetirementAccount.primary_beneficiaries && editingRetirementAccount.primary_beneficiaries.length > 0"><strong>Total: {{ getPrimaryTotal('retirement_account') | number:'1.2-2' }}%</strong></div>
-        </div>
+  <!-- Primary Beneficiaries Row -->
+  <h4>Primary Beneficiaries</h4>
+  <div class="distribution-type">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="retirementAccountPrimaryDistType" name="retirementPrimaryDist" value="equal" (change)="recalculateRetirementAccountPrimary()"> Equal Amounts
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="retirementAccountPrimaryDistType" name="retirementPrimaryDist" value="unequal"> Unequal Amounts
+    </label>
+  </div>
+  <div class="beneficiary-selection">
+    <div class="available-heirs">
+      <h5>Available Heirs</h5>
+      <div class="heir-list">
+        <div *ngFor="let heir of getAvailablePrimaryHeirs('retirement_account')" class="heir-item clickable" (click)="addBeneficiary('retirement_account', 'primary', heir)">{{ heir.name }}</div>
+        <div *ngIf="getAvailablePrimaryHeirs('retirement_account').length === 0" class="no-heirs">No available heirs</div>
       </div>
     </div>
-    <div class="beneficiary-column">
-      <h4>Secondary Beneficiaries</h4>
-      <div class="distribution-type">
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="retirementAccountSecondaryDistType" name="retirementSecondaryDist" value="equal" (change)="recalculateRetirementAccountSecondary()"> Equal Amounts
-        </label>
-        <label style="display: flex; align-items: center; gap: 0.3em;">
-          <input type="radio" [(ngModel)]="retirementAccountSecondaryDistType" name="retirementSecondaryDist" value="unequal"> Unequal Amounts
-        </label>
-      </div>
-      <div class="beneficiary-selection">
-        <div class="available-heirs">
-          <h5>Available Heirs</h5>
-          <div class="heir-list">
-            <div *ngFor="let heir of getAvailableSecondaryHeirs('retirement_account')" class="heir-item clickable" (click)="addBeneficiary('retirement_account', 'secondary', heir)">{{ heir.name }}</div>
-            <div *ngIf="getAvailableSecondaryHeirs('retirement_account').length === 0" class="no-heirs">No available heirs</div>
-          </div>
+    <div class="chosen-beneficiaries">
+      <h5>Chosen</h5>
+      <div class="beneficiary-list">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingRetirementAccount, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
+          <span class="bene-name">{{ bene.name }}</span>
+          <input *ngIf="retirementAccountPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'primary', i)" class="percentage-input">
+          <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
+          <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
+          <button type="button" class="btn-remove" (click)="removeBeneficiary('retirement_account', 'primary', i)">&times;</button>
         </div>
-        <div class="chosen-beneficiaries">
-          <h5>Chosen</h5>
-          <div class="beneficiary-list">
-            <div *ngFor="let bene of editingRetirementAccount.contingent_beneficiaries; let i = index" class="beneficiary-item">
-              <span class="bene-name">{{ bene.name }}</span>
-              <input *ngIf="retirementAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'secondary', i)" class="percentage-input">
-              <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
-              <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
-              <button type="button" class="btn-remove" (click)="removeBeneficiary('retirement_account', 'secondary', i)">&times;</button>
-            </div>
-            <div *ngIf="editingRetirementAccount.contingent_beneficiaries && editingRetirementAccount.contingent_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
-          </div>
-          <div class="total-row" *ngIf="editingRetirementAccount.contingent_beneficiaries && editingRetirementAccount.contingent_beneficiaries.length > 0"><strong>Total: {{ getSecondaryTotal('retirement_account') | number:'1.2-2' }}%</strong></div>
-        </div>
+        <div *ngIf="editingRetirementAccount.primary_beneficiaries && editingRetirementAccount.primary_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
       </div>
+      <div class="total-row" *ngIf="editingRetirementAccount.primary_beneficiaries && editingRetirementAccount.primary_beneficiaries.length > 0"><strong>Total: {{ getPrimaryTotal('retirement_account') | number:'1.2-2' }}%</strong></div>
+    </div>
+  </div>
+  <!-- Secondary Beneficiaries Row -->
+  <h4>Secondary Beneficiaries</h4>
+  <div class="distribution-type">
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="retirementAccountSecondaryDistType" name="retirementSecondaryDist" value="equal" (change)="recalculateRetirementAccountSecondary()"> Equal Amounts
+    </label>
+    <label style="display: flex; align-items: center; gap: 0.3em;">
+      <input type="radio" [(ngModel)]="retirementAccountSecondaryDistType" name="retirementSecondaryDist" value="unequal"> Unequal Amounts
+    </label>
+  </div>
+  <div class="beneficiary-selection">
+    <div class="available-heirs">
+      <h5>Available Heirs</h5>
+      <div class="heir-list">
+        <div *ngFor="let heir of getAvailableSecondaryHeirs('retirement_account')" class="heir-item clickable" (click)="addBeneficiary('retirement_account', 'secondary', heir)">{{ heir.name }}</div>
+        <div *ngIf="getAvailableSecondaryHeirs('retirement_account').length === 0" class="no-heirs">No available heirs</div>
+      </div>
+    </div>
+    <div class="chosen-beneficiaries">
+      <h5>Chosen</h5>
+      <div class="beneficiary-list">
+        <div *ngFor="let bene of getSafeBeneficiaryArray(editingRetirementAccount, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
+          <span class="bene-name">{{ bene.name }}</span>
+          <input *ngIf="retirementAccountSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'retirementSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('retirement_account', 'secondary', i)" class="percentage-input">
+          <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
+          <span class="bene-value">{{ (bene.calculated_value || 0) | currency }}</span>
+          <button type="button" class="btn-remove" (click)="removeBeneficiary('retirement_account', 'secondary', i)">&times;</button>
+        </div>
+        <div *ngIf="editingRetirementAccount.contingent_beneficiaries && editingRetirementAccount.contingent_beneficiaries.length === 0" class="no-beneficiaries">Click an heir to add</div>
+      </div>
+      <div class="total-row" *ngIf="editingRetirementAccount.contingent_beneficiaries && editingRetirementAccount.contingent_beneficiaries.length > 0"><strong>Total: {{ getSecondaryTotal('retirement_account') | number:'1.2-2' }}%</strong></div>
     </div>
   </div>
 </div>
@@ -3697,7 +3687,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingLifeInsurance.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingLifeInsurance, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="lifeInsurancePrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'lifePrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('life_insurance', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3731,7 +3721,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingLifeInsurance.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingLifeInsurance, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="lifeInsuranceSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'lifeSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('life_insurance', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3929,7 +3919,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingLifeInsurance.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingLifeInsurance, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="lifeInsurancePrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'lifePrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('life_insurance', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -3963,7 +3953,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingLifeInsurance.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingLifeInsurance, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="lifeInsuranceSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'lifeSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('life_insurance', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4221,7 +4211,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBusinessInterest.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingBusinessInterest, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="businessInterestPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'businessPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('business_interest', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4255,7 +4245,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBusinessInterest.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingBusinessInterest, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="businessInterestSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'businessSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('business_interest', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4510,7 +4500,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBusinessInterest.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingBusinessInterest, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="businessInterestPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'businessPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('business_interest', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4544,7 +4534,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingBusinessInterest.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingBusinessInterest, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="businessInterestSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'businessSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('business_interest', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4776,7 +4766,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingDigitalAsset.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingBusinessInterest, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="digitalAssetPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'digitalPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('digital_asset', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -4810,7 +4800,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingDigitalAsset.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingDigitalAsset, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="digitalAssetSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'digitalSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('digital_asset', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -5041,7 +5031,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingDigitalAsset.primary_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingDigitalAsset, 'primary_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="digitalAssetPrimaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'digitalPrimaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('digital_asset', 'primary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>
@@ -5075,7 +5065,7 @@
         <div class="chosen-beneficiaries">
           <h5>Chosen</h5>
           <div class="beneficiary-list">
-            <div *ngFor="let bene of editingDigitalAsset.contingent_beneficiaries; let i = index" class="beneficiary-item">
+            <div *ngFor="let bene of getSafeBeneficiaryArray(editingDigitalAsset, 'contingent_beneficiaries'); let i = index" class="beneficiary-item">
               <span class="bene-name">{{ bene.name }}</span>
               <input *ngIf="digitalAssetSecondaryDistType === 'unequal'" type="number" [(ngModel)]="bene.percentage" [name]="'digitalSecondaryPct' + i" min="0" max="100" step="0.01" (ngModelChange)="recalculateBeneficiaryValue('digital_asset', 'secondary', i)" class="percentage-input">
               <span class="bene-percentage">{{ (bene.percentage || 0) | number:'1.2-2' }}%</span>

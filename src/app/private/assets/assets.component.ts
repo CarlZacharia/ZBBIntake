@@ -1,4 +1,3 @@
-
 import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,50 +12,48 @@ import {
   IDigitalAsset,
   IOtherAsset,
   AssetType,
-  IBeneficiary
+  IBeneficiary,
 } from '../../models/case_data';
-
-import { BeneficiaryDesignationComponent } from '../beneficiary-designation/beneficiary-designation.component';
 
 
 @Component({
   selector: 'app-assets',
   imports: [CommonModule, FormsModule],
   templateUrl: './assets.component.html',
-  styleUrls: ['./assets.component.css']
+  styleUrls: ['./assets.component.css'],
 })
 export class AssetsComponent {
-bankAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
-bankAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
-nqAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
-nqAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
-retirementAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
-retirementAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
-lifeInsurancePrimaryDistType: 'equal' | 'unequal' = 'equal';
-lifeInsuranceSecondaryDistType: 'equal' | 'unequal' = 'equal';
-businessInterestPrimaryDistType: 'equal' | 'unequal' = 'equal';
-businessInterestSecondaryDistType: 'equal' | 'unequal' = 'equal';
-digitalAssetPrimaryDistType: 'equal' | 'unequal' = 'equal';
-digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
-    // Grouped asset and debt properties for table rendering
-    get assetsGroups() {
-      const assets = this.assets();
-      return {
-        real_estate_holdings: assets.real_estate_holdings || [],
-        bank_account_holdings: assets.bank_account_holdings || [],
-        nq_account_holdings: assets.nq_account_holdings || [],
-        retirement_account_holdings: assets.retirement_account_holdings || [],
-        life_insurance_holdings: assets.life_insurance_holdings || [],
-        business_interest_holdings: assets.business_interest_holdings || [],
-        digital_asset_holdings: assets.digital_asset_holdings || [],
-        other_asset_holdings: assets.other_asset_holdings || []
-      };
-    }
+  bankAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+  bankAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  nqAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+  nqAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  retirementAccountPrimaryDistType: 'equal' | 'unequal' = 'equal';
+  retirementAccountSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  lifeInsurancePrimaryDistType: 'equal' | 'unequal' = 'equal';
+  lifeInsuranceSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  businessInterestPrimaryDistType: 'equal' | 'unequal' = 'equal';
+  businessInterestSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  digitalAssetPrimaryDistType: 'equal' | 'unequal' = 'equal';
+  digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
+  // Grouped asset and debt properties for table rendering
+  get assetsGroups() {
+    const assets = this.assets();
+    return {
+      real_estate_holdings: assets.real_estate_holdings || [],
+      bank_account_holdings: assets.bank_account_holdings || [],
+      nq_account_holdings: assets.nq_account_holdings || [],
+      retirement_account_holdings: assets.retirement_account_holdings || [],
+      life_insurance_holdings: assets.life_insurance_holdings || [],
+      business_interest_holdings: assets.business_interest_holdings || [],
+      digital_asset_holdings: assets.digital_asset_holdings || [],
+      other_asset_holdings: assets.other_asset_holdings || [],
+    };
+  }
 
-    // Debts from DataService
-    get debts() {
-      return this.ds.debts();
-    }
+  // Debts from DataService
+  get debts() {
+    return this.ds.debts();
+  }
   // Auto-calculate netValue for real estate
   onRealEstateValueChange() {
     if (this.editingRealEstate) {
@@ -80,7 +77,6 @@ digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
   showEditModal = false;
   currentAssetType: AssetType | null = null;
 
-
   // Editing asset references
   editingRealEstate: IRealEstate | null = null;
   editingBankAccount: IBankAccount | null = null;
@@ -95,15 +91,62 @@ digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
   // Reactive data access
   readonly assets = computed(() => this.ds.assets());
   readonly maritalInfo = computed(() => this.ds.maritalInfo());
-  readonly isMarriedSignal = computed(() => this.maritalInfo().marital_status === 'Married');
+  readonly isMarriedSignal = computed(
+    () => this.maritalInfo().marital_status === 'Married',
+  );
 
   // US States for dropdowns
   states = [
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+    'AL',
+    'AK',
+    'AZ',
+    'AR',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'FL',
+    'GA',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'OH',
+    'OK',
+    'OR',
+    'PA',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY',
   ];
 
   showTable: 'single' | 'married' | 'default' = 'default';
@@ -117,22 +160,22 @@ digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
     return this.isMarriedSignal();
   }
 
-    get clientHeirs() {
+  get clientHeirs() {
     return this.ds.getClientHeirsArray();
   }
   get spouseHeirs() {
     return this.ds.getSpouseHeirsArray();
   }
 
-    formatCurrency(value: number): string {
-      if (isNaN(value) || value == null) return '$0';
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(value);
-    }
+  formatCurrency(value: number): string {
+    if (isNaN(value) || value == null) return '$0';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
   // --- Asset Filtering Methods ---
 
   getClientAssets(assetType: AssetType): any[] {
@@ -147,24 +190,36 @@ digitalAssetSecondaryDistType: 'equal' | 'unequal' = 'equal';
     return this.getAssetsByOwnership(assetType, null);
   }
 
-getAllAssets(assetType: AssetType): any[] {
-  const assets = this.assets();
-  switch (assetType) {
-    case 'real_estate': return assets.real_estate_holdings || [];
-    case 'bank_account': return assets.bank_account_holdings || [];
-    case 'nq_account': return assets.nq_account_holdings || [];
-    case 'retirement_account': return assets.retirement_account_holdings || [];
-    case 'life_insurance': return assets.life_insurance_holdings || [];
-    case 'business_interest': return assets.business_interest_holdings || [];
-    case 'digital_asset': return assets.digital_asset_holdings || [];
-    case 'other_asset': return assets.other_asset_holdings || [];
-    default: return [];
+  getAllAssets(assetType: AssetType): any[] {
+    const assets = this.assets();
+    switch (assetType) {
+      case 'real_estate':
+        return assets.real_estate_holdings || [];
+      case 'bank_account':
+        return assets.bank_account_holdings || [];
+      case 'nq_account':
+        return assets.nq_account_holdings || [];
+      case 'retirement_account':
+        return assets.retirement_account_holdings || [];
+      case 'life_insurance':
+        return assets.life_insurance_holdings || [];
+      case 'business_interest':
+        return assets.business_interest_holdings || [];
+      case 'digital_asset':
+        return assets.digital_asset_holdings || [];
+      case 'other_asset':
+        return assets.other_asset_holdings || [];
+      default:
+        return [];
+    }
   }
-}
 
-  private getAssetsByOwnership(assetType: AssetType, ownership: 'Client' | 'Spouse' |null): any[] {
+  private getAssetsByOwnership(
+    assetType: AssetType,
+    ownership: 'Client' | 'Spouse' | null,
+  ): any[] {
     const allAssets = this.getAllAssets(assetType);
-     if (ownership === null) {
+    if (ownership === null) {
       // Joint assets are those without owned_by set
       return allAssets.filter((asset: any) => !asset.owned_by);
     }
@@ -173,10 +228,14 @@ getAllAssets(assetType: AssetType): any[] {
 
   // --- Total Calculation Methods ---
 
-  getTotalValue(assetType: AssetType, ownership?: 'Client' | 'Spouse' |null): number {
-    const assets = ownership !== undefined
-      ? this.getAssetsByOwnership(assetType, ownership)
-      : this.getAllAssets(assetType);
+  getTotalValue(
+    assetType: AssetType,
+    ownership?: 'Client' | 'Spouse' | null,
+  ): number {
+    const assets =
+      ownership !== undefined
+        ? this.getAssetsByOwnership(assetType, ownership)
+        : this.getAllAssets(assetType);
 
     return assets.reduce((total, asset) => {
       let value = 0;
@@ -205,15 +264,27 @@ getAllAssets(assetType: AssetType): any[] {
           break;
         case 'other_asset':
           // Use netValue if present, else approximate_value
-          value = (asset.netValue != null ? +asset.netValue : +asset.approximate_value) || 0;
+          value =
+            (asset.netValue != null
+              ? +asset.netValue
+              : +asset.approximate_value) || 0;
           break;
       }
       return total + value;
     }, 0);
   }
 
-  getGrandTotal(ownership?: 'Client' | 'Spouse' |null): number {
-    const types: AssetType[] = ['real_estate', 'bank_account', 'nq_account', 'retirement_account', 'life_insurance', 'business_interest', 'digital_asset', 'other_asset'];
+  getGrandTotal(ownership?: 'Client' | 'Spouse' | null): number {
+    const types: AssetType[] = [
+      'real_estate',
+      'bank_account',
+      'nq_account',
+      'retirement_account',
+      'life_insurance',
+      'business_interest',
+      'digital_asset',
+      'other_asset',
+    ];
     const total = types.reduce((sum, type) => {
       const val = this.getTotalValue(type, ownership);
       return sum + (isNaN(val) ? 0 : val);
@@ -229,7 +300,11 @@ getAllAssets(assetType: AssetType): any[] {
     this.showAddModal = true;
   }
 
-  openEditModal(assetType: AssetType, index: number, ownership?: 'Client' | 'Spouse' |null) {
+  openEditModal(
+    assetType: AssetType,
+    index: number,
+    ownership?: 'Client' | 'Spouse' | null,
+  ) {
     this.currentAssetType = assetType;
     this.editingIndex = index;
 
@@ -248,8 +323,6 @@ getAllAssets(assetType: AssetType): any[] {
     this.setEditingAsset(assetType, { ...asset });
     this.showEditModal = true;
   }
-
-
 
   private initializeEditingAsset(assetType: AssetType) {
     switch (assetType) {
@@ -381,7 +454,11 @@ getAllAssets(assetType: AssetType): any[] {
     this.closeEditModal();
   }
 
-  deleteAsset(assetType: AssetType, index: number, ownership?: 'Client' | 'Spouse' |null) {
+  deleteAsset(
+    assetType: AssetType,
+    index: number,
+    ownership?: 'Client' | 'Spouse' | null,
+  ) {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
     let actualIndex = index;
@@ -422,15 +499,24 @@ getAllAssets(assetType: AssetType): any[] {
 
   private getCurrentEditingAsset(): any {
     switch (this.currentAssetType) {
-      case 'real_estate': return this.editingRealEstate;
-      case 'bank_account': return this.editingBankAccount;
-      case 'nq_account': return this.editingNQAccount;
-      case 'retirement_account': return this.editingRetirementAccount;
-      case 'life_insurance': return this.editingLifeInsurance;
-      case 'business_interest': return this.editingBusinessInterest;
-      case 'digital_asset': return this.editingDigitalAsset;
-      case 'other_asset': return this.editingOtherAsset;
-      default: return null;
+      case 'real_estate':
+        return this.editingRealEstate;
+      case 'bank_account':
+        return this.editingBankAccount;
+      case 'nq_account':
+        return this.editingNQAccount;
+      case 'retirement_account':
+        return this.editingRetirementAccount;
+      case 'life_insurance':
+        return this.editingLifeInsurance;
+      case 'business_interest':
+        return this.editingBusinessInterest;
+      case 'digital_asset':
+        return this.editingDigitalAsset;
+      case 'other_asset':
+        return this.editingOtherAsset;
+      default:
+        return null;
     }
   }
 
@@ -439,8 +525,6 @@ getAllAssets(assetType: AssetType): any[] {
     this.currentAssetType = null;
     this.clearEditingAssets();
   }
-
-
 
   getAssetDisplayName(assetType: AssetType, asset: any): string {
     switch (assetType) {
@@ -507,219 +591,298 @@ getAllAssets(assetType: AssetType): any[] {
   }
 
   onBeneficiarySaved(result: any) {
-  // Update the asset with beneficiary data
-  const editingAsset = this.getCurrentEditingAsset();
-  if (editingAsset) {
-    editingAsset.primary_beneficiaries = result.primary_beneficiaries;
-    editingAsset.contingent_beneficiaries = result.contingent_beneficiaries;
-    editingAsset.beneficiary_scenario = result.scenario;
-    this.saveEditAsset();
-  }
-}
-
-closeBeneficiaryDesignation() {
-  // Handle cancel - maybe just collapse the section
-}
-
-getHeirsForAsset(assetType: string): any[] {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return [];
-
-  if (asset.owned_by === 'Spouse') {
-    return this.spouseHeirs || [];
-  }
-  return this.clientHeirs || [];
-}
-
-// Get editing asset by type
-getEditingAsset(assetType: string): any {
-  switch (assetType) {
-    case 'bank_account': return this.editingBankAccount;
-    case 'nq_account': return this.editingNQAccount;
-    case 'retirement_account': return this.editingRetirementAccount;
-    case 'life_insurance': return this.editingLifeInsurance;
-    case 'business_interest': return this.editingBusinessInterest;
-    case 'digital_asset': return this.editingDigitalAsset;
-    default: return null;
-  }
-}
-
-// Get available heirs for primary (exclude already chosen primaries)
-getAvailablePrimaryHeirs(assetType: string): any[] {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return [];
-
-  const allHeirs = this.getHeirsForAsset(assetType);
-  const chosenPrimaryIds = (asset.primary_beneficiaries || []).map((b: any) => b.heir_id || b.name);
-
-  return allHeirs.filter(heir => !chosenPrimaryIds.includes(heir.id || heir.name));
-}
-
-// Get available heirs for secondary (exclude already chosen primaries AND secondaries)
-getAvailableSecondaryHeirs(assetType: string): any[] {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return [];
-
-  const allHeirs = this.getHeirsForAsset(assetType);
-  const chosenPrimaryIds = (asset.primary_beneficiaries || []).map((b: any) => b.heir_id || b.name);
-  const chosenSecondaryIds = (asset.contingent_beneficiaries || []).map((b: any) => b.heir_id || b.name);
-  const excludedIds = [...chosenPrimaryIds, ...chosenSecondaryIds];
-
-  return allHeirs.filter(heir => !excludedIds.includes(heir.id || heir.name));
-}
-
-// Add a beneficiary
-addBeneficiary(assetType: string, type: 'primary' | 'secondary', heir: any): void {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return;
-
-  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
-
-  if (!asset[arrayName]) {
-    asset[arrayName] = [];
+    // Update the asset with beneficiary data
+    const editingAsset = this.getCurrentEditingAsset();
+    if (editingAsset) {
+      editingAsset.primary_beneficiaries = result.primary_beneficiaries;
+      editingAsset.contingent_beneficiaries = result.contingent_beneficiaries;
+      editingAsset.beneficiary_scenario = result.scenario;
+      this.saveEditAsset();
+    }
   }
 
-  const newBene = {
-    heir_id: heir.id || null,
-    name: heir.name,
-    percentage: 0,
-    value: 0
-  };
 
-  asset[arrayName].push(newBene);
 
-  // Recalculate if equal distribution
-  this.recalculateDistribution(assetType, type);
-}
+  getHeirsForAsset(assetType: string): any[] {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return [];
 
-// Remove a beneficiary
-removeBeneficiary(assetType: string, type: 'primary' | 'secondary', index: number): void {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return;
+    if (asset.owned_by === 'Spouse') {
+      return this.spouseHeirs || [];
+    }
+    return this.clientHeirs || [];
+  }
 
-  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+  // Get editing asset by type
+  getEditingAsset(assetType: string): any {
+    switch (assetType) {
+      case 'bank_account':
+        return this.editingBankAccount;
+      case 'nq_account':
+        return this.editingNQAccount;
+      case 'retirement_account':
+        return this.editingRetirementAccount;
+      case 'life_insurance':
+        return this.editingLifeInsurance;
+      case 'business_interest':
+        return this.editingBusinessInterest;
+      case 'digital_asset':
+        return this.editingDigitalAsset;
+      default:
+        return null;
+    }
+  }
 
-  if (asset[arrayName] && asset[arrayName].length > index) {
-    asset[arrayName].splice(index, 1);
+  // Get available heirs for primary (exclude already chosen primaries)
+  getAvailablePrimaryHeirs(assetType: string): any[] {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return [];
+
+    const allHeirs = this.getHeirsForAsset(assetType);
+    const primaryBenes = Array.isArray(asset.primary_beneficiaries)
+      ? asset.primary_beneficiaries
+      : [];
+    const chosenPrimaryIds = primaryBenes.map((b: any) => b.heir_id || b.name);
+
+    return allHeirs.filter(
+      (heir) => !chosenPrimaryIds.includes(heir.id || heir.name),
+    );
+  }
+
+  getAvailableSecondaryHeirs(assetType: string): any[] {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return [];
+
+    const allHeirs = this.getHeirsForAsset(assetType);
+    const primaryBenes = Array.isArray(asset.primary_beneficiaries)
+      ? asset.primary_beneficiaries
+      : [];
+    const secondaryBenes = Array.isArray(asset.contingent_beneficiaries)
+      ? asset.contingent_beneficiaries
+      : [];
+
+    const chosenPrimaryIds = primaryBenes.map((b: any) => b.heir_id || b.name);
+    const chosenSecondaryIds = secondaryBenes.map(
+      (b: any) => b.heir_id || b.name,
+    );
+    const excludedIds = [...chosenPrimaryIds, ...chosenSecondaryIds];
+
+    return allHeirs.filter(
+      (heir) => !excludedIds.includes(heir.id || heir.name),
+    );
+  }
+
+  // Add a beneficiary
+  addBeneficiary(
+    assetType: string,
+    type: 'primary' | 'secondary',
+    heir: any,
+  ): void {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return;
+
+    const arrayName =
+      type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+
+    if (!asset[arrayName]) {
+      asset[arrayName] = [];
+    }
+
+    const newBene = {
+      heir_id: heir.id || null,
+      name: heir.name,
+      percentage: 0,
+      calculated_value: 0, // <-- changed
+    };
+
+    asset[arrayName].push(newBene);
     this.recalculateDistribution(assetType, type);
   }
-}
 
-// Get distribution type for an asset
-getDistributionType(assetType: string, type: 'primary' | 'secondary'): 'equal' | 'unequal' {
-  const propName = this.getDistTypeProperty(assetType, type);
-  return (this as any)[propName] || 'equal';
-}
+  recalculateDistribution(
+    assetType: string,
+    type: 'primary' | 'secondary',
+  ): void {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return;
 
-// Get the property name for distribution type
-getDistTypeProperty(assetType: string, type: 'primary' | 'secondary'): string {
-  const prefix = assetType.replace(/_/g, '').replace(/account/g, 'Account').replace(/insurance/g, 'Insurance').replace(/interest/g, 'Interest').replace(/asset/g, 'Asset');
-  const camelCase = prefix.charAt(0).toLowerCase() + prefix.slice(1);
-  return `${camelCase}${type === 'primary' ? 'Primary' : 'Secondary'}DistType`;
-}
-
-// Recalculate distribution
-recalculateDistribution(assetType: string, type: 'primary' | 'secondary'): void {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return;
-
-  const distType = this.getDistributionType(assetType, type);
-  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
-  const beneficiaries = asset[arrayName] || [];
-  const assetValue = asset.approximate_value || 0;
-
-  if (distType === 'equal' && beneficiaries.length > 0) {
-    const equalPercentage = 100 / beneficiaries.length;
-    beneficiaries.forEach((bene: any) => {
-      bene.percentage = equalPercentage;
-      bene.value = (equalPercentage / 100) * assetValue;
-    });
-  }
-}
-
-// Recalculate a single beneficiary value (for unequal distribution)
-recalculateBeneficiaryValue(assetType: string, type: 'primary' | 'secondary', index: number): void {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset) return;
-
-  const arrayName = type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
-  const bene = asset[arrayName]?.[index];
-
-  if (bene) {
+    const distType = this.getDistributionType(assetType, type);
+    const arrayName =
+      type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+    const beneficiaries = asset[arrayName] || [];
     const assetValue = asset.approximate_value || 0;
-    bene.value = ((bene.percentage || 0) / 100) * assetValue;
+
+    if (distType === 'equal' && beneficiaries.length > 0) {
+      const equalPercentage = 100 / beneficiaries.length;
+      beneficiaries.forEach((bene: any) => {
+        bene.percentage = equalPercentage;
+        bene.calculated_value = (equalPercentage / 100) * assetValue; // <-- changed
+      });
+    }
   }
-}
 
-// Convenience methods for recalculating by asset type
-recalculateBankAccountPrimary(): void {
-  this.recalculateDistribution('bank_account', 'primary');
-}
+  recalculateBeneficiaryValue(
+    assetType: string,
+    type: 'primary' | 'secondary',
+    index: number,
+  ): void {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return;
 
-recalculateBankAccountSecondary(): void {
-  this.recalculateDistribution('bank_account', 'secondary');
-}
+    const arrayName =
+      type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+    const bene = asset[arrayName]?.[index];
 
-recalculateNQAccountPrimary(): void {
-  this.recalculateDistribution('nq_account', 'primary');
-}
-
-recalculateNQAccountSecondary(): void {
-  this.recalculateDistribution('nq_account', 'secondary');
-}
-
-recalculateRetirementAccountPrimary(): void {
-  this.recalculateDistribution('retirement_account', 'primary');
-}
-
-recalculateRetirementAccountSecondary(): void {
-  this.recalculateDistribution('retirement_account', 'secondary');
-}
-
-recalculateLifeInsurancePrimary(): void {
-  this.recalculateDistribution('life_insurance', 'primary');
-}
-
-recalculateLifeInsuranceSecondary(): void {
-  this.recalculateDistribution('life_insurance', 'secondary');
-}
-
-recalculateBusinessInterestPrimary(): void {
-  this.recalculateDistribution('business_interest', 'primary');
-}
-
-recalculateBusinessInterestSecondary(): void {
-  this.recalculateDistribution('business_interest', 'secondary');
-}
-
-recalculateDigitalAssetPrimary(): void {
-  this.recalculateDistribution('digital_asset', 'primary');
-}
-
-recalculateDigitalAssetSecondary(): void {
-  this.recalculateDistribution('digital_asset', 'secondary');
-}
-
-// Get totals
-getPrimaryTotal(assetType: string): number {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset?.primary_beneficiaries) return 0;
-  return asset.primary_beneficiaries.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
-}
-
-getSecondaryTotal(assetType: string): number {
-  const asset = this.getEditingAsset(assetType);
-  if (!asset?.contingent_beneficiaries) return 0;
-  return asset.contingent_beneficiaries.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
-}
-
-// Initialize beneficiary arrays when opening modals
-initializeBeneficiaryArrays(asset: any): void {
-  if (!asset.primary_beneficiaries) {
-    asset.primary_beneficiaries = [];
+    if (bene) {
+      const assetValue = asset.approximate_value || 0;
+      bene.calculated_value = ((bene.percentage || 0) / 100) * assetValue; // <-- changed
+    }
   }
-  if (!asset.contingent_beneficiaries) {
-    asset.contingent_beneficiaries = [];
+
+  // Add this helper method to AssetsComponent
+  getSafeBeneficiaryArray(
+    asset: any,
+    field: 'primary_beneficiaries' | 'contingent_beneficiaries',
+  ): any[] {
+    if (!asset) return [];
+    const value = asset[field];
+
+    // Already an array
+    if (Array.isArray(value)) return value;
+
+    // It's a JSON string - parse it and update the asset
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        asset[field] = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        asset[field] = [];
+      }
+      return asset[field];
+    }
+
+    // Null/undefined - initialize as empty array
+    asset[field] = [];
+    return asset[field];
   }
-}
+
+  // Remove a beneficiary
+  removeBeneficiary(
+    assetType: string,
+    type: 'primary' | 'secondary',
+    index: number,
+  ): void {
+    const asset = this.getEditingAsset(assetType);
+    if (!asset) return;
+
+    const arrayName =
+      type === 'primary' ? 'primary_beneficiaries' : 'contingent_beneficiaries';
+
+    if (asset[arrayName] && asset[arrayName].length > index) {
+      asset[arrayName].splice(index, 1);
+      this.recalculateDistribution(assetType, type);
+    }
+  }
+
+  // Get distribution type for an asset
+  getDistributionType(
+    assetType: string,
+    type: 'primary' | 'secondary',
+  ): 'equal' | 'unequal' {
+    const propName = this.getDistTypeProperty(assetType, type);
+    return (this as any)[propName] || 'equal';
+  }
+
+  // Get the property name for distribution type
+  getDistTypeProperty(
+    assetType: string,
+    type: 'primary' | 'secondary',
+  ): string {
+    const prefix = assetType
+      .replace(/_/g, '')
+      .replace(/account/g, 'Account')
+      .replace(/insurance/g, 'Insurance')
+      .replace(/interest/g, 'Interest')
+      .replace(/asset/g, 'Asset');
+    const camelCase = prefix.charAt(0).toLowerCase() + prefix.slice(1);
+    return `${camelCase}${type === 'primary' ? 'Primary' : 'Secondary'}DistType`;
+  }
+
+  // Recalculate distribution
+
+  // Convenience methods for recalculating by asset type
+  recalculateBankAccountPrimary(): void {
+    this.recalculateDistribution('bank_account', 'primary');
+  }
+
+  recalculateBankAccountSecondary(): void {
+    this.recalculateDistribution('bank_account', 'secondary');
+  }
+
+  recalculateNQAccountPrimary(): void {
+    this.recalculateDistribution('nq_account', 'primary');
+  }
+
+  recalculateNQAccountSecondary(): void {
+    this.recalculateDistribution('nq_account', 'secondary');
+  }
+
+  recalculateRetirementAccountPrimary(): void {
+    this.recalculateDistribution('retirement_account', 'primary');
+  }
+
+  recalculateRetirementAccountSecondary(): void {
+    this.recalculateDistribution('retirement_account', 'secondary');
+  }
+
+  recalculateLifeInsurancePrimary(): void {
+    this.recalculateDistribution('life_insurance', 'primary');
+  }
+
+  recalculateLifeInsuranceSecondary(): void {
+    this.recalculateDistribution('life_insurance', 'secondary');
+  }
+
+  recalculateBusinessInterestPrimary(): void {
+    this.recalculateDistribution('business_interest', 'primary');
+  }
+
+  recalculateBusinessInterestSecondary(): void {
+    this.recalculateDistribution('business_interest', 'secondary');
+  }
+
+  recalculateDigitalAssetPrimary(): void {
+    this.recalculateDistribution('digital_asset', 'primary');
+  }
+
+  recalculateDigitalAssetSecondary(): void {
+    this.recalculateDistribution('digital_asset', 'secondary');
+  }
+
+  // Get totals
+  getPrimaryTotal(assetType: string): number {
+    const asset = this.getEditingAsset(assetType);
+    const benes = Array.isArray(asset?.primary_beneficiaries)
+      ? asset.primary_beneficiaries
+      : [];
+    return benes.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
+  }
+
+  getSecondaryTotal(assetType: string): number {
+    const asset = this.getEditingAsset(assetType);
+    const benes = Array.isArray(asset?.contingent_beneficiaries)
+      ? asset.contingent_beneficiaries
+      : [];
+    return benes.reduce((sum: number, b: any) => sum + (b.percentage || 0), 0);
+  }
+
+  // Initialize beneficiary arrays when opening modals
+  initializeBeneficiaryArrays(asset: any): void {
+    if (!asset.primary_beneficiaries) {
+      asset.primary_beneficiaries = [];
+    }
+    if (!asset.contingent_beneficiaries) {
+      asset.contingent_beneficiaries = [];
+    }
+  }
 }

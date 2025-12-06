@@ -48,7 +48,7 @@ import { IDebt } from '../models/case_data';
   providedIn: 'root',
 })
 export class DataService {
-  homestate: string | null = null ;
+  homestate: string | null = null;
 
   booleanFields = [
     'special_needs',
@@ -82,7 +82,7 @@ export class DataService {
     if (!data.marital_info) {
       console.warn(
         'spouse_ssn_encrypted is missing from marital_info:',
-        data.marital_info
+        data.marital_info,
       );
     }
     this._clientdata.set(data);
@@ -99,13 +99,17 @@ export class DataService {
    * @param data The data object (must include portal_user_id)
    */
 
-  saveClientSection(table: string, data: any, asset_id_type?: string): Observable<any> {
-      const payload: any = { table, data };
-      if (asset_id_type) {
-        payload.asset_id_type = asset_id_type;
-      }
-      return this.http.post(this.UPDATE_URL, payload);
+  saveClientSection(
+    table: string,
+    data: any,
+    asset_id_type?: string,
+  ): Observable<any> {
+    const payload: any = { table, data };
+    if (asset_id_type) {
+      payload.asset_id_type = asset_id_type;
     }
+    return this.http.post(this.UPDATE_URL, payload);
+  }
 
   private readonly authService = inject(AuthService);
   private readonly http = inject(HttpClient);
@@ -219,7 +223,7 @@ export class DataService {
     if (!debts || debts.length === 0) return 0;
     return debts.reduce(
       (sum, debt) => sum + (Number(debt.current_balance) || 0),
-      0
+      0,
     );
   });
 
@@ -231,14 +235,14 @@ export class DataService {
     if (Array.isArray(assets.real_estate_holdings)) {
       total += assets.real_estate_holdings.reduce(
         (sum, re) => sum + (Number(re.mortgage_balance) || 0),
-        0
+        0,
       );
     }
     // debtOwed from other asset holdings
     if (Array.isArray(assets.other_asset_holdings)) {
       total += assets.other_asset_holdings.reduce(
         (sum, oa) => sum + (Number(oa.debtOwed) || 0),
-        0
+        0,
       );
     }
     return total;
@@ -263,56 +267,56 @@ export class DataService {
     if (Array.isArray(assets.bank_account_holdings)) {
       total += assets.bank_account_holdings.reduce(
         (sum, acc) => sum + Number(acc.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // NQ accounts
     if (Array.isArray(assets.nq_account_holdings)) {
       total += assets.nq_account_holdings.reduce(
         (sum, acc) => sum + Number(acc.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Retirement accounts
     if (Array.isArray(assets.retirement_account_holdings)) {
       total += assets.retirement_account_holdings.reduce(
         (sum, acc) => sum + Number(acc.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Real estate
     if (Array.isArray(assets.real_estate_holdings)) {
       total += assets.real_estate_holdings.reduce(
         (sum, asset) => sum + Number(asset.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Life insurance
     if (Array.isArray(assets.life_insurance_holdings)) {
       total += assets.life_insurance_holdings.reduce(
         (sum, asset) => sum + Number(asset.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Business interests
     if (Array.isArray(assets.business_interest_holdings)) {
       total += assets.business_interest_holdings.reduce(
         (sum, asset) => sum + Number(asset.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Digital assets
     if (Array.isArray(assets.digital_asset_holdings)) {
       total += assets.digital_asset_holdings.reduce(
         (sum, asset) => sum + Number(asset.approximate_value ?? 0),
-        0
+        0,
       );
     }
     // Other assets
     if (Array.isArray(assets.other_asset_holdings)) {
       total += assets.other_asset_holdings.reduce(
         (sum, asset) => sum + Number(asset.approximate_value ?? 0),
-        0
+        0,
       );
     }
     return total;
@@ -367,7 +371,7 @@ export class DataService {
     this.saveSection(
       'marital_info',
       this._clientdata().marital_info,
-      portal_user_id
+      portal_user_id,
     );
     this.autoSave();
   }
@@ -492,20 +496,20 @@ export class DataService {
       const portal_user_id = this.pui;
       if (!portal_user_id) {
         console.warn(
-          'Cannot save guardianship_preferences: portal_user_id is not set'
+          'Cannot save guardianship_preferences: portal_user_id is not set',
         );
         return false;
       }
       // Save to backend and await response
       const savedData = await this.saveClientSection(
         'guardianship_preferences',
-        { ...this.guardianPreferences, portal_user_id }
+        { ...this.guardianPreferences, portal_user_id },
       ).toPromise();
       if (savedData) {
         // Update local state with saved data (cast to IClientData)
         console.log(
           'Setting clientdata after saveGuardianPreferences:',
-          savedData
+          savedData,
         );
         this._clientdata.set(savedData as IClientData);
         return true;
@@ -521,309 +525,375 @@ export class DataService {
   // To add, update, or remove beneficiaries, update the local _clientdata signal and call saveclientdata() to persist changes.
 
   // Example: Add a child
-addChild(child: IChild) {
-  this.saveClientSection('child', {
-    ...child,
-    action: 'insert',
-    portal_user_id: this.pui
-  }, 'child_id').subscribe({
-    next: (response) => {
-      console.log('Child added:', response);
-      const newChild = { ...child, child_id: response.insert_id };
-      this._clientdata.update((current) => ({
-        ...current,
-        children: [...current.children, newChild],
-      }));
-    },
-    error: (err) => console.error('Child add failed:', err)
-  });
-}
+  addChild(child: IChild) {
+    this.saveClientSection(
+      'child',
+      {
+        ...child,
+        action: 'insert',
+        portal_user_id: this.pui,
+      },
+      'child_id',
+    ).subscribe({
+      next: (response) => {
+        console.log('Child added:', response);
+        const newChild = { ...child, child_id: response.insert_id };
+        this._clientdata.update((current) => ({
+          ...current,
+          children: [...current.children, newChild],
+        }));
+      },
+      error: (err) => console.error('Child add failed:', err),
+    });
+  }
   // Example: Update a child
-updateChild(index: number, updates: Partial<IChild>) {
-  // Update local state
-  this._clientdata.update((current) => ({
-    ...current,
-    children: current.children.map((child, i) =>
-      i === index ? { ...child, ...updates } : child
-    ),
-  }));
+  updateChild(index: number, updates: Partial<IChild>) {
+    // Update local state
+    this._clientdata.update((current) => ({
+      ...current,
+      children: current.children.map((child, i) =>
+        i === index ? { ...child, ...updates } : child,
+      ),
+    }));
 
-  // Save to server via clientupdate.php
-  const child = this._clientdata().children[index];
-  this.saveClientSection('child', {
-    ...child,
-    action: 'update',
-    portal_user_id: this.pui
-  }, 'child_id').subscribe({
-    next: (response) => console.log('Child saved:', response),
-    error: (err) => console.error('Child save failed:', err)
-  });
-}
+    // Save to server via clientupdate.php
+    const child = this._clientdata().children[index];
+    this.saveClientSection(
+      'child',
+      {
+        ...child,
+        action: 'update',
+        portal_user_id: this.pui,
+      },
+      'child_id',
+    ).subscribe({
+      next: (response) => console.log('Child saved:', response),
+      error: (err) => console.error('Child save failed:', err),
+    });
+  }
 
   // Example: Remove a child
-removeChild(index: number) {
-  // Get the child before removing from local state
-  const child = this._clientdata().children[index];
+  removeChild(index: number) {
+    // Get the child before removing from local state
+    const child = this._clientdata().children[index];
 
-  // Update local state
-  this._clientdata.update((current) => ({
-    ...current,
-    children: current.children.filter((_, i) => i !== index),
-  }));
+    // Update local state
+    this._clientdata.update((current) => ({
+      ...current,
+      children: current.children.filter((_, i) => i !== index),
+    }));
 
-  // Delete from server via clientupdate.php
-  this.saveClientSection('child', {
-    child_id: child.child_id,
-    portal_user_id: this.pui,
-    action: 'delete'
-  }, 'child_id').subscribe({
-    next: (response) => console.log('Child deleted:', response),
-    error: (err) => console.error('Child delete failed:', err)
-  });
-}
+    // Delete from server via clientupdate.php
+    this.saveClientSection(
+      'child',
+      {
+        child_id: child.child_id,
+        portal_user_id: this.pui,
+        action: 'delete',
+      },
+      'child_id',
+    ).subscribe({
+      next: (response) => console.log('Child deleted:', response),
+      error: (err) => console.error('Child delete failed:', err),
+    });
+  }
 
   // Family members
-addFamilyMember(familyMember: IFamilyMember) {
-  // Save to server first, then update local state with the returned ID
-  this.saveClientSection('family_member', {
-    ...familyMember,
-    action: 'insert',
-    portal_user_id: this.pui
-  }, 'family_member_id').subscribe({
-    next: (response) => {
-      console.log('Family member added:', response);
-      // Update local state with the new ID from the database
-      const newMember = { ...familyMember, family_member_id: response.insert_id };
-      this._clientdata.update((current) => ({
-        ...current,
-        family_members: [...current.family_members, newMember],
-      }));
-    },
-    error: (err) => console.error('Family member add failed:', err)
-  });
-}
+  addFamilyMember(familyMember: IFamilyMember) {
+    // Save to server first, then update local state with the returned ID
+    this.saveClientSection(
+      'family_member',
+      {
+        ...familyMember,
+        action: 'insert',
+        portal_user_id: this.pui,
+      },
+      'family_member_id',
+    ).subscribe({
+      next: (response) => {
+        console.log('Family member added:', response);
+        // Update local state with the new ID from the database
+        const newMember = {
+          ...familyMember,
+          family_member_id: response.insert_id,
+        };
+        this._clientdata.update((current) => ({
+          ...current,
+          family_members: [...current.family_members, newMember],
+        }));
+      },
+      error: (err) => console.error('Family member add failed:', err),
+    });
+  }
 
-updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
-  this._clientdata.update((current) => ({
-    ...current,
-    family_members: current.family_members.map((member, i) =>
-      i === index ? { ...member, ...updates } : member
-    ),
-  }));
+  updateFamilyMember(index: number, updates: Partial<IFamilyMember>) {
+    this._clientdata.update((current) => ({
+      ...current,
+      family_members: current.family_members.map((member, i) =>
+        i === index ? { ...member, ...updates } : member,
+      ),
+    }));
 
-  const member = this._clientdata().family_members[index];
-  this.saveClientSection('family_member', {
-    ...member,
-    action: 'update',
-    portal_user_id: this.pui
-  }, 'family_member_id').subscribe({
-    next: (response) => console.log('Family member saved:', response),
-    error: (err) => console.error('Family member save failed:', err)
-  });
-}
+    const member = this._clientdata().family_members[index];
+    this.saveClientSection(
+      'family_member',
+      {
+        ...member,
+        action: 'update',
+        portal_user_id: this.pui,
+      },
+      'family_member_id',
+    ).subscribe({
+      next: (response) => console.log('Family member saved:', response),
+      error: (err) => console.error('Family member save failed:', err),
+    });
+  }
 
+  removeFamilyMember(index: number) {
+    const member = this._clientdata().family_members[index];
 
-removeFamilyMember(index: number) {
-  const member = this._clientdata().family_members[index];
+    this._clientdata.update((current) => ({
+      ...current,
+      family_members: current.family_members.filter((_, i) => i !== index),
+    }));
 
-  this._clientdata.update((current) => ({
-    ...current,
-    family_members: current.family_members.filter((_, i) => i !== index),
-  }));
-
-  this.saveClientSection('family_member', {
-    family_member_id: member.family_member_id,
-    portal_user_id: this.pui,
-    action: 'delete'
-  }, 'family_member_id').subscribe({
-    next: (response) => console.log('Family member deleted:', response),
-    error: (err) => console.error('Family member delete failed:', err)
-  });
-}
+    this.saveClientSection(
+      'family_member',
+      {
+        family_member_id: member.family_member_id,
+        portal_user_id: this.pui,
+        action: 'delete',
+      },
+      'family_member_id',
+    ).subscribe({
+      next: (response) => console.log('Family member deleted:', response),
+      error: (err) => console.error('Family member delete failed:', err),
+    });
+  }
 
   // Charities
-addCharity(charity: ICharity) {
-  this.saveClientSection('charity', {
-    ...charity,
-    action: 'insert',
-    portal_user_id: this.pui
-  }, 'charity_id').subscribe({
-    next: (response) => {
-      console.log('Charity added:', response);
-      const newCharity = { ...charity, charity_id: response.insert_id };
-      this._clientdata.update((current) => ({
-        ...current,
-        charities: [...current.charities, newCharity],
-      }));
-    },
-    error: (err) => console.error('Charity add failed:', err)
-  });
-}
+  addCharity(charity: ICharity) {
+    this.saveClientSection(
+      'charity',
+      {
+        ...charity,
+        action: 'insert',
+        portal_user_id: this.pui,
+      },
+      'charity_id',
+    ).subscribe({
+      next: (response) => {
+        console.log('Charity added:', response);
+        const newCharity = { ...charity, charity_id: response.insert_id };
+        this._clientdata.update((current) => ({
+          ...current,
+          charities: [...current.charities, newCharity],
+        }));
+      },
+      error: (err) => console.error('Charity add failed:', err),
+    });
+  }
 
-updateCharity(index: number, updates: Partial<ICharity>) {
-  this._clientdata.update((current) => ({
-    ...current,
-    charities: current.charities.map((charity, i) =>
-      i === index ? { ...charity, ...updates } : charity
-    ),
-  }));
+  updateCharity(index: number, updates: Partial<ICharity>) {
+    this._clientdata.update((current) => ({
+      ...current,
+      charities: current.charities.map((charity, i) =>
+        i === index ? { ...charity, ...updates } : charity,
+      ),
+    }));
 
-  const charity = this._clientdata().charities[index];
-  this.saveClientSection('charity', {
-    ...charity,
-    action: 'update',
-    portal_user_id: this.pui
-  }, 'charity_id').subscribe({
-    next: (response) => console.log('Charity saved:', response),
-    error: (err) => console.error('Charity save failed:', err)
-  });
-}
+    const charity = this._clientdata().charities[index];
+    this.saveClientSection(
+      'charity',
+      {
+        ...charity,
+        action: 'update',
+        portal_user_id: this.pui,
+      },
+      'charity_id',
+    ).subscribe({
+      next: (response) => console.log('Charity saved:', response),
+      error: (err) => console.error('Charity save failed:', err),
+    });
+  }
 
-removeCharity(index: number) {
-  const charity = this._clientdata().charities[index];
+  removeCharity(index: number) {
+    const charity = this._clientdata().charities[index];
 
-  this._clientdata.update((current) => ({
-    ...current,
-    charities: current.charities.filter((_, i) => i !== index),
-  }));
+    this._clientdata.update((current) => ({
+      ...current,
+      charities: current.charities.filter((_, i) => i !== index),
+    }));
 
-  this.saveClientSection('charity', {
-    charity_id: charity.charity_id,
-    portal_user_id: this.pui,
-    action: 'delete'
-  }, 'charity_id').subscribe({
-    next: (response) => console.log('Charity deleted:', response),
-    error: (err) => console.error('Charity delete failed:', err)
-  });
-}
+    this.saveClientSection(
+      'charity',
+      {
+        charity_id: charity.charity_id,
+        portal_user_id: this.pui,
+        action: 'delete',
+      },
+      'charity_id',
+    ).subscribe({
+      next: (response) => console.log('Charity deleted:', response),
+      error: (err) => console.error('Charity delete failed:', err),
+    });
+  }
 
   // Methods for managing assets
-    /**
-     * Returns an array of all possible heirs for the client: spouse, children, family members, charities.
-     * Each entry: { id, name, type }
-     */
+  /**
+   * Returns an array of all possible heirs for the client: spouse, children, family members, charities.
+   * Each entry: { id, name, type }
+   */
 
-    getClientHeirsArray(): Array<{ id: string; name: string; type: string }> {
-      const data = this._clientdata();
-      const heirs: Array<{ id: string; name: string; type: string }> = [];
+  getClientHeirsArray(): Array<{ id: string; name: string; type: string }> {
+    const data = this._clientdata();
+    const heirs: Array<{ id: string; name: string; type: string }> = [];
 
-      // Spouse
-      if (data.marital_info && data.marital_info.marital_status === 'Married' && data.marital_info.spouse_legal_name) {
-        heirs.push({
-          id: 'spouse',
-          name: data.marital_info.spouse_legal_name,
-          type: 'Spouse',
-        });
-      }
-
-      // Children (only with valid id)
-      if (Array.isArray(data.children)) {
-        data.children.forEach((child) => {
-          if (child.child_id != null) {
-            heirs.push({
-              id: `child_${child.child_id}`,
-              name: [child.legal_first_name, child.legal_middle_name, child.legal_last_name].filter(Boolean).join(' '),
-              type: 'Child',
-            });
-          }
-        });
-      }
-
-      // Family Members (only with valid id)
-      if (Array.isArray(data.family_members)) {
-        data.family_members.forEach((member) => {
-          if (member.family_member_id != null) {
-            heirs.push({
-              id: `family_member_${member.family_member_id}`,
-              name: member.legal_name,
-              type: 'FamilyMember',
-            });
-          }
-        });
-      }
-
-      // Charities (only with valid id)
-      if (Array.isArray(data.charities)) {
-        data.charities.forEach((charity) => {
-          if (charity.charity_id != null) {
-            heirs.push({
-              id: `charity_${charity.charity_id}`,
-              name: charity.organization_name,
-              type: 'Charity',
-            });
-          }
-        });
-      }
-
-      return heirs;
-    }
-
-    /**
-     * Returns an array of all possible heirs for the spouse: client, children, family members, charities.
-     * Each entry: { id, name, type }
-     * If not married, returns empty array.
-     */
-
-    getSpouseHeirsArray(): Array<{ id: string; name: string; type: string }> {
-      const data = this._clientdata();
-      const heirs: Array<{ id: string; name: string; type: string }> = [];
-
-      // Only if married
-      if (!(data.marital_info && data.marital_info.marital_status === 'Married' && data.marital_info.spouse_legal_name)) {
-        return heirs;
-      }
-
-      // Client (as husband or wife or just name)
-      const clientName = [data.personal.legal_first_name, data.personal.legal_middle_name, data.personal.legal_last_name].filter(Boolean).join(' ');
+    // Spouse
+    if (
+      data.marital_info &&
+      data.marital_info.marital_status === 'Married' &&
+      data.marital_info.spouse_legal_name
+    ) {
       heirs.push({
-        id: 'client',
-        name: clientName,
-        type: 'Client',
+        id: 'spouse',
+        name: data.marital_info.spouse_legal_name,
+        type: 'Spouse',
       });
+    }
 
-      // Children (only with valid id)
-      if (Array.isArray(data.children)) {
-        data.children.forEach((child) => {
-          if (child.child_id != null) {
-            heirs.push({
-              id: `child_${child.child_id}`,
-              name: [child.legal_first_name, child.legal_middle_name, child.legal_last_name].filter(Boolean).join(' '),
-              type: 'Child',
-            });
-          }
-        });
-      }
+    // Children (only with valid id)
+    if (Array.isArray(data.children)) {
+      data.children.forEach((child) => {
+        if (child.child_id != null) {
+          heirs.push({
+            id: `child_${child.child_id}`,
+            name: [
+              child.legal_first_name,
+              child.legal_middle_name,
+              child.legal_last_name,
+            ]
+              .filter(Boolean)
+              .join(' '),
+            type: 'Child',
+          });
+        }
+      });
+    }
 
-      // Family Members (only with valid id)
-      if (Array.isArray(data.family_members)) {
-        data.family_members.forEach((member) => {
-          if (member.family_member_id != null) {
-            heirs.push({
-              id: `family_member_${member.family_member_id}`,
-              name: member.legal_name,
-              type: 'FamilyMember',
-            });
-          }
-        });
-      }
+    // Family Members (only with valid id)
+    if (Array.isArray(data.family_members)) {
+      data.family_members.forEach((member) => {
+        if (member.family_member_id != null) {
+          heirs.push({
+            id: `family_member_${member.family_member_id}`,
+            name: member.legal_name,
+            type: 'FamilyMember',
+          });
+        }
+      });
+    }
 
-      // Charities (only with valid id)
-      if (Array.isArray(data.charities)) {
-        data.charities.forEach((charity) => {
-          if (charity.charity_id != null) {
-            heirs.push({
-              id: `charity_${charity.charity_id}`,
-              name: charity.organization_name,
-              type: 'Charity',
-            });
-          }
-        });
-      }
+    // Charities (only with valid id)
+    if (Array.isArray(data.charities)) {
+      data.charities.forEach((charity) => {
+        if (charity.charity_id != null) {
+          heirs.push({
+            id: `charity_${charity.charity_id}`,
+            name: charity.organization_name,
+            type: 'Charity',
+          });
+        }
+      });
+    }
 
+    return heirs;
+  }
+
+  /**
+   * Returns an array of all possible heirs for the spouse: client, children, family members, charities.
+   * Each entry: { id, name, type }
+   * If not married, returns empty array.
+   */
+
+  getSpouseHeirsArray(): Array<{ id: string; name: string; type: string }> {
+    const data = this._clientdata();
+    const heirs: Array<{ id: string; name: string; type: string }> = [];
+
+    // Only if married
+    if (
+      !(
+        data.marital_info &&
+        data.marital_info.marital_status === 'Married' &&
+        data.marital_info.spouse_legal_name
+      )
+    ) {
       return heirs;
     }
+
+    // Client (as husband or wife or just name)
+    const clientName = [
+      data.personal.legal_first_name,
+      data.personal.legal_middle_name,
+      data.personal.legal_last_name,
+    ]
+      .filter(Boolean)
+      .join(' ');
+    heirs.push({
+      id: 'client',
+      name: clientName,
+      type: 'Client',
+    });
+
+    // Children (only with valid id)
+    if (Array.isArray(data.children)) {
+      data.children.forEach((child) => {
+        if (child.child_id != null) {
+          heirs.push({
+            id: `child_${child.child_id}`,
+            name: [
+              child.legal_first_name,
+              child.legal_middle_name,
+              child.legal_last_name,
+            ]
+              .filter(Boolean)
+              .join(' '),
+            type: 'Child',
+          });
+        }
+      });
+    }
+
+    // Family Members (only with valid id)
+    if (Array.isArray(data.family_members)) {
+      data.family_members.forEach((member) => {
+        if (member.family_member_id != null) {
+          heirs.push({
+            id: `family_member_${member.family_member_id}`,
+            name: member.legal_name,
+            type: 'FamilyMember',
+          });
+        }
+      });
+    }
+
+    // Charities (only with valid id)
+    if (Array.isArray(data.charities)) {
+      data.charities.forEach((charity) => {
+        if (charity.charity_id != null) {
+          heirs.push({
+            id: `charity_${charity.charity_id}`,
+            name: charity.organization_name,
+            type: 'Charity',
+          });
+        }
+      });
+    }
+
+    return heirs;
+  }
   addRealEstate(
-    asset: Partial<IRealEstate> & { description?: string; value?: number }
+    asset: Partial<IRealEstate> & { description?: string; value?: number },
   ) {
     // Prepare payload matching MariaDB table columns
     const payload = {
@@ -906,7 +976,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         real_estate_holdings: current.assets.real_estate_holdings.map((a) =>
-          a.real_estate_id === realEstateId ? { ...a, ...asset } : a
+          a.real_estate_id === realEstateId ? { ...a, ...asset } : a,
         ),
       },
     }));
@@ -929,7 +999,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         real_estate_holdings: current.assets.real_estate_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -940,7 +1010,7 @@ removeCharity(index: number) {
       institution_name?: string;
       account_number?: string;
       balance?: number;
-    }
+    },
   ) {
     // Prepare payload matching MariaDB table columns
     const payload = {
@@ -955,10 +1025,10 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? '',
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
       dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? '',
@@ -1012,10 +1082,10 @@ removeCharity(index: number) {
       bank_account_id: asset.bank_account_id,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
     };
     this.saveClientSection('bank_account_holdings', updatedAsset).subscribe();
     // Update local state by account_id
@@ -1024,7 +1094,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         bank_account_holdings: current.assets.bank_account_holdings.map((a) =>
-          a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a
+          a.bank_account_id === asset.bank_account_id ? { ...a, ...asset } : a,
         ),
       },
     }));
@@ -1046,7 +1116,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         bank_account_holdings: current.assets.bank_account_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -1066,10 +1136,10 @@ removeCharity(index: number) {
       joint_owner_name: asset.joint_owner_name ?? '',
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
       dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       notes: asset.notes ?? '',
       owned_by: asset.owned_by ?? null,
@@ -1120,10 +1190,10 @@ removeCharity(index: number) {
       nq_account_id: asset.nq_account_id,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
     };
     this.saveClientSection('nq_account_holdings', updatedAsset).subscribe();
     // Update local state by account_id
@@ -1132,7 +1202,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         nq_account_holdings: current.assets.nq_account_holdings.map((a) =>
-          a.nq_account_id === asset.nq_account_id ? { ...a, ...asset } : a
+          a.nq_account_id === asset.nq_account_id ? { ...a, ...asset } : a,
         ),
       },
     }));
@@ -1154,7 +1224,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         nq_account_holdings: current.assets.nq_account_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -1166,10 +1236,10 @@ removeCharity(index: number) {
       ...asset,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
       dispo_type: asset.ownership_form ?? null, // send dispo_type to backend
       retirement_account_id: null,
       portal_user_id: this.pui,
@@ -1195,7 +1265,7 @@ removeCharity(index: number) {
   updateRetirementAccount(asset: IRetirementAccount) {
     if (!asset.retirement_account_id) {
       console.warn(
-        'Cannot update: retirement_account retirement_account_id is missing.'
+        'Cannot update: retirement_account retirement_account_id is missing.',
       );
       return;
     }
@@ -1205,14 +1275,14 @@ removeCharity(index: number) {
       retirement_account_id: asset.retirement_account_id,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
     };
     this.saveClientSection(
       'retirement_account_holdings',
-      updatedAsset
+      updatedAsset,
     ).subscribe();
     // Update local state by retirement_account_id
     this._clientdata.update((current) => ({
@@ -1223,7 +1293,7 @@ removeCharity(index: number) {
           current.assets.retirement_account_holdings.map((a) =>
             a.retirement_account_id === asset.retirement_account_id
               ? { ...a, ...asset }
-              : a
+              : a,
           ),
       },
     }));
@@ -1233,7 +1303,7 @@ removeCharity(index: number) {
     const asset = this._clientdata().assets.retirement_account_holdings[index];
     if (!asset.retirement_account_id) {
       console.warn(
-        'Cannot delete: retirement_account retirement_account_id is missing.'
+        'Cannot delete: retirement_account retirement_account_id is missing.',
       );
       return;
     }
@@ -1248,7 +1318,7 @@ removeCharity(index: number) {
         ...current.assets,
         retirement_account_holdings:
           current.assets.retirement_account_holdings.filter(
-            (_, i) => i !== index
+            (_, i) => i !== index,
           ),
       },
     }));
@@ -1270,7 +1340,7 @@ removeCharity(index: number) {
   updateLifeInsurance(asset: ILifeInsurance) {
     if (!asset.life_insurance_id) {
       console.warn(
-        'Cannot update: life_insurance life_insurance_id is missing.'
+        'Cannot update: life_insurance life_insurance_id is missing.',
       );
       return;
     }
@@ -1280,10 +1350,10 @@ removeCharity(index: number) {
       life_insurance_id: asset.life_insurance_id,
       primary_beneficiaries: Array.isArray(asset.primary_beneficiaries)
         ? JSON.stringify(asset.primary_beneficiaries)
-        : asset.primary_beneficiaries ?? '',
+        : (asset.primary_beneficiaries ?? ''),
       contingent_beneficiaries: Array.isArray(asset.contingent_beneficiaries)
         ? JSON.stringify(asset.contingent_beneficiaries)
-        : asset.contingent_beneficiaries ?? '',
+        : (asset.contingent_beneficiaries ?? ''),
     };
     this.saveClientSection('life_insurance_holdings', updatedAsset).subscribe();
     // Update local state by life_insurance_id
@@ -1295,7 +1365,7 @@ removeCharity(index: number) {
           (a) =>
             a.life_insurance_id === asset.life_insurance_id
               ? { ...a, ...asset }
-              : a
+              : a,
         ),
       },
     }));
@@ -1305,7 +1375,7 @@ removeCharity(index: number) {
     const asset = this._clientdata().assets.life_insurance_holdings[index];
     if (!asset.life_insurance_id) {
       console.warn(
-        'Cannot delete: life_insurance life_insurance_id is missing.'
+        'Cannot delete: life_insurance life_insurance_id is missing.',
       );
       return;
     }
@@ -1319,7 +1389,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         life_insurance_holdings: current.assets.life_insurance_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -1341,7 +1411,7 @@ removeCharity(index: number) {
   updateBusinessInterest(asset: IBusinessInterest) {
     if (!asset.business_interest_id) {
       console.warn(
-        'Cannot update: business_interest business_interest_id is missing.'
+        'Cannot update: business_interest business_interest_id is missing.',
       );
       return;
     }
@@ -1352,7 +1422,7 @@ removeCharity(index: number) {
     };
     this.saveClientSection(
       'business_interest_holdings',
-      updatedAsset
+      updatedAsset,
     ).subscribe();
     // Update local state by business_interest_id
     this._clientdata.update((current) => ({
@@ -1363,7 +1433,7 @@ removeCharity(index: number) {
           current.assets.business_interest_holdings.map((a) =>
             a.business_interest_id === asset.business_interest_id
               ? { ...a, ...asset }
-              : a
+              : a,
           ),
       },
     }));
@@ -1373,7 +1443,7 @@ removeCharity(index: number) {
     const asset = this._clientdata().assets.business_interest_holdings[index];
     if (!asset.business_interest_id) {
       console.warn(
-        'Cannot delete: business_interest business_interest_id is missing.'
+        'Cannot delete: business_interest business_interest_id is missing.',
       );
       return;
     }
@@ -1388,7 +1458,7 @@ removeCharity(index: number) {
         ...current.assets,
         business_interest_holdings:
           current.assets.business_interest_holdings.filter(
-            (_, i) => i !== index
+            (_, i) => i !== index,
           ),
       },
     }));
@@ -1423,8 +1493,11 @@ removeCharity(index: number) {
       ...current,
       assets: {
         ...current.assets,
-        digital_asset_holdings: current.assets.digital_asset_holdings.map((a) =>
-          a.digital_asset_id === asset.digital_asset_id ? { ...a, ...asset } : a
+        digital_asset_holdings: current.assets.digital_asset_holdings.map(
+          (a) =>
+            a.digital_asset_id === asset.digital_asset_id
+              ? { ...a, ...asset }
+              : a,
         ),
       },
     }));
@@ -1446,7 +1519,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         digital_asset_holdings: current.assets.digital_asset_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -1479,7 +1552,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         other_asset_holdings: current.assets.other_asset_holdings.map((a) =>
-          a.other_asset_id === asset.other_asset_id ? { ...a, ...asset } : a
+          a.other_asset_id === asset.other_asset_id ? { ...a, ...asset } : a,
         ),
       },
     }));
@@ -1501,7 +1574,7 @@ removeCharity(index: number) {
       assets: {
         ...current.assets,
         other_asset_holdings: current.assets.other_asset_holdings.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         ),
       },
     }));
@@ -1692,7 +1765,7 @@ removeCharity(index: number) {
     business_type: 'LLC',
     ownership_percentage: null,
     approximate_value: null,
-        primary_beneficiaries: [],
+    primary_beneficiaries: [],
     contingent_beneficiaries: [],
     has_other_owners: false,
     other_owners_names: null,
@@ -1737,7 +1810,7 @@ removeCharity(index: number) {
     asset_name: '',
     platform_or_service: null,
     approximate_value: null,
-        primary_beneficiaries: [],
+    primary_beneficiaries: [],
     contingent_beneficiaries: [],
     username: null,
     access_location: null,
@@ -1758,7 +1831,7 @@ removeCharity(index: number) {
     asset_type: 'Other',
     description: '',
     approximate_value: null,
-        primary_beneficiaries: [],
+    primary_beneficiaries: [],
     contingent_beneficiaries: [],
     debtOwed: 0,
     netValue: null,
@@ -1955,16 +2028,63 @@ removeCharity(index: number) {
     if (!userId) {
       return throwError(() => new Error('User not authenticated'));
     }
-    // Single API call returns all client data, including children, family_members, charities, etc.
     return this.http.get<IClientData>(`${this.API_URL}?id=${userId}`).pipe(
-      map((response) => (response ? this.convertBooleans(response) : null)),
+      map((response) => {
+        if (!response) return null;
+        let data = this.convertBooleans(response);
+        data = this.parseJsonFields(data);
+        return data;
+      }),
       catchError((error) => {
         if (error.status === 404) {
           return [null];
         }
         throw error;
-      })
+      }),
     );
+  }
+
+  private parseJsonFields(data: IClientData): IClientData {
+    // Parse beneficiary arrays in all asset types that have them
+    const assetHoldings = [
+      'bank_account_holdings',
+      'nq_account_holdings',
+      'retirement_account_holdings',
+      'life_insurance_holdings',
+      'business_interest_holdings',
+      'digital_asset_holdings',
+    ];
+
+    if (data.assets) {
+      for (const holdingType of assetHoldings) {
+        const holdings = (data.assets as any)[holdingType];
+        if (Array.isArray(holdings)) {
+          for (const asset of holdings) {
+            asset.primary_beneficiaries = this.parseJsonArray(
+              asset.primary_beneficiaries,
+            );
+            asset.contingent_beneficiaries = this.parseJsonArray(
+              asset.contingent_beneficiaries,
+            );
+          }
+        }
+      }
+    }
+
+    return data;
+  }
+
+  private parseJsonArray(value: any): any[] {
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string' && value) {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
   }
 
   convertBooleans(obj: any): any {
@@ -2012,7 +2132,7 @@ removeCharity(index: number) {
    */
   saveDebt(
     action: 'insert' | 'update' | 'delete',
-    debt: IDebt
+    debt: IDebt,
   ): Observable<any> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) return throwError(() => new Error('User not authenticated'));
@@ -2064,7 +2184,7 @@ removeCharity(index: number) {
     // Save the full client data object (POST to clientdata.php)
     return this.http.post<IClientData>(
       `${this.API_URL}?id=${userId}`,
-      dataToSave
+      dataToSave,
     );
   }
 
