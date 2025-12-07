@@ -6,6 +6,68 @@
   box-shadow: 0 2px 8px rgba(0, 80, 180, 0.08);
 }
 
+/* View Toggle Button Group */
+.view-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: #d0e6fa;
+  border-radius: 8px;
+}
+
+.view-toggle-btn {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #a3cffa;
+  border-radius: 6px;
+  background: #fff;
+  color: #1a4a7a;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.view-toggle-btn:hover:not(:disabled) {
+  background: #a3cffa;
+  color: #1a4a7a;
+}
+
+.view-toggle-btn.active {
+  background: #2a7ab9;
+  color: #fff;
+  border-color: #2a7ab9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.view-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #e2e8f0;
+}
+
+/* Coming Soon Placeholder */
+.coming-soon {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f7fafc;
+  border: 2px dashed #a3cffa;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.coming-soon h3 {
+  color: #1a4a7a;
+  margin-bottom: 0.5rem;
+}
+
+.coming-soon p {
+  color: #4a6785;
+  font-style: italic;
+}
+
 .planning-container h2 {
   color: #1a4a7a;
   border-bottom: 2px solid #1a4a7a;
@@ -152,7 +214,6 @@
   margin-left: 0.3rem;
   display: inline-block;
   transition: transform 0.2s ease;
-  cursor:pointer;
 }
 
 .beneficiary-tables {

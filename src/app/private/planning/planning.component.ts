@@ -4,11 +4,14 @@ import { PlanningService } from '../../services/planning.service';
 import { DataService } from '../../services/data.service';
 import { NormalizedAssets, Asset } from '../../models/asset.model';
 import { CommonModule } from '@angular/common';
+import { Planningc1Component } from '../planning/planningc1/planningc1.component';
+
+type PlanningView = 'overview' | 'clientFirst' | 'spouseFirst' | 'bothDeceased';
 
 @Component({
   selector: 'app-planning',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Planningc1Component],
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.css'],
 })
@@ -17,6 +20,13 @@ export class PlanningComponent implements OnInit {
   normalized!: NormalizedAssets;
   showBeneficiaryModal = false;
   expandedAssets: Set<string> = new Set();
+
+  // View toggle
+  currentView: PlanningView = 'overview';
+
+  // Client and spouse names for scenarios
+  clientName: string = 'Client';
+  spouseName: string = 'Spouse';
 
   get clientHeirs() {
     return this.dataService.getClientHeirsArray();
@@ -187,6 +197,22 @@ export class PlanningComponent implements OnInit {
       other: assets.other_asset_holdings ?? [],
     };
     this.normalized = this.planningService.normalizeAssets(normalizedInput);
+
+    // Get client and spouse names from data service if available
+    const client = this.dataService.personal?.();
+    const spouse = this.dataService.maritalInfo?.();
+    if (client?.legal_first_name && client?.legal_last_name) {
+      this.clientName = `${client.legal_first_name} ${client.legal_last_name}`;
+    }
+    if (spouse?.spouse_legal_name) {
+      this.spouseName = `${spouse.spouse_legal_name}`;
+    }
+  }
+
+  // ============ VIEW TOGGLE ============
+
+  setView(view: PlanningView): void {
+    this.currentView = view;
   }
 
   // ============ HELPER METHODS ============

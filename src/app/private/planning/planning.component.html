@@ -1,6 +1,64 @@
 <div class="planning-container">
   <h2>Planning Overview</h2>
 
+  <!-- Scenario Toggle Button Group -->
+  <div class="view-toggle-group">
+    <button
+      class="view-toggle-btn"
+      [class.active]="currentView === 'overview'"
+      (click)="setView('overview')">
+      Current Overview
+    </button>
+    <button
+      class="view-toggle-btn"
+      [class.active]="currentView === 'clientFirst'"
+      (click)="setView('clientFirst')">
+      {{ clientName }} Passes First
+    </button>
+    <button
+      class="view-toggle-btn"
+      [class.active]="currentView === 'spouseFirst'"
+      (click)="setView('spouseFirst')"
+      [disabled]="true">
+      {{ spouseName }} Passes First
+    </button>
+    <button
+      class="view-toggle-btn"
+      [class.active]="currentView === 'bothDeceased'"
+      (click)="setView('bothDeceased')"
+      [disabled]="true">
+      Both Deceased
+    </button>
+  </div>
+
+  <!-- Client Passes First Scenario -->
+  <ng-container *ngIf="currentView === 'clientFirst'">
+    <app-planningc1
+      [normalizedAssets]="normalized"
+      [clientName]="clientName"
+      [spouseName]="spouseName">
+    </app-planningc1>
+  </ng-container>
+
+  <!-- Spouse Passes First Scenario (Coming Soon) -->
+  <ng-container *ngIf="currentView === 'spouseFirst'">
+    <div class="coming-soon">
+      <h3>{{ spouseName }} Passes First Scenario</h3>
+      <p>Coming soon...</p>
+    </div>
+  </ng-container>
+
+  <!-- Both Deceased Scenario (Coming Soon) -->
+  <ng-container *ngIf="currentView === 'bothDeceased'">
+    <div class="coming-soon">
+      <h3>Both Deceased Scenario</h3>
+      <p>Coming soon...</p>
+    </div>
+  </ng-container>
+
+  <!-- Current Overview (existing content) -->
+  <ng-container *ngIf="currentView === 'overview'">
+
   <!-- Heirs Section -->
   <div class="heirs-section" style="display: flex; gap: 2em; align-items: flex-start;">
     <div class="heirs-column" style="flex: 1; margin-top: 1.5em;">
@@ -63,13 +121,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -77,13 +134,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -138,13 +194,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -152,13 +207,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -213,13 +267,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -227,13 +280,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -288,13 +340,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -302,13 +353,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -363,13 +413,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -377,13 +426,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -444,13 +492,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -458,13 +505,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -519,13 +565,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -533,13 +578,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -594,13 +638,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -608,13 +651,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -669,13 +711,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -683,13 +724,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -748,13 +788,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -762,13 +801,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -827,13 +865,12 @@
                   <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                        <tr><th colspan="2">Primary Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.primary_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -841,13 +878,12 @@
                   <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
                     <table class="beneficiary-subtable">
                       <thead>
-                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                        <tr><th colspan="2">Contingent Beneficiaries</th></tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let bene of asset.contingent_beneficiaries">
                           <td>{{ bene.name }}</td>
                           <td class="text-right">{{ bene.percentage }}%</td>
-                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -867,5 +903,7 @@
   <ng-template #noLLCAssets>
     <p class="no-assets-message">No LLC assets</p>
   </ng-template>
+
+  </ng-container><!-- End of overview view -->
 
 </div>

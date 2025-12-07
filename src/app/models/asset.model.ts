@@ -15,6 +15,7 @@ export enum OwnedBy {
   ClientAndSpouse = 'ClientAndSpouse',
   ClientAndOther = 'ClientAndOther',
   ClientSpouseAndOther = 'ClientSpouseAndOther',
+  SpouseAndOther = 'SpouseAndOther',
   Trust = 'Trust',
   LLC = 'LLC',
 }
@@ -25,6 +26,8 @@ export enum OwnershipForm {
   TIC = 'TIC',
   TBE = 'TBE',
   TRUST = 'Trust',
+  LifeEstate = 'LifeEstate',
+  LadyBird = 'LadyBird',
   LLC = 'LLC',
 }
 

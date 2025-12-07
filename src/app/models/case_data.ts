@@ -17,11 +17,11 @@ export interface IRealEstate {
     | 'JTWROS'
     | 'TBE'
     | 'TIC'
-    | 'Life Estate'
-    | 'Lady Bird Deed'
+    | 'LifeEstate'
+    | 'LadyBird'
     | 'Trust'
     | 'LLC'
-    | 'Land Contract'
+    | 'LandContract'
     | 'Other';
   has_bene: string | 'No';
   title_details: string | null;

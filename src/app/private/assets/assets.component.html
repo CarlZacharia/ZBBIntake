@@ -1820,22 +1820,22 @@
               editingRealEstate.owned_by === 'Client & Spouse' ||
               editingRealEstate.owned_by === 'Client & Other' ||
               editingRealEstate.owned_by === 'Client, Spouse & Other') {
-              <option value="Life Estate - Client">
+              <option value="LifeEstate">
                 Life Estate (Client as Life Tenant)
               </option>
               } @if (editingRealEstate.owned_by === 'Spouse' ||
               editingRealEstate.owned_by === 'Client & Spouse' ||
               editingRealEstate.owned_by === 'Spouse & Other' ||
               editingRealEstate.owned_by === 'Client, Spouse & Other') {
-              <option value="Life Estate - Spouse">
+              <option value="LifeEstate">
                 Life Estate (Spouse as Life Tenant)
               </option>
               } @if (editingRealEstate.owned_by !== 'Trust' &&
               editingRealEstate.owned_by !== 'LLC') {
-              <option value="Life Estate">Life Estate</option>
+              <option value="LifeEstate">Life Estate</option>
               }@if (editingRealEstate.owned_by !== 'Trust' &&
               editingRealEstate.owned_by !== 'LLC') {
-              <option value="Lady Bird Deed">
+              <option value="LadyBird">
                 Enhanced Life Estate (Lady Bird Deed)
               </option>
               } @if (editingRealEstate.owned_by === 'Trust') {
@@ -1907,8 +1907,8 @@
           </div>
         </div>
 
-        @if (editingRealEstate.ownership_form === 'Lady Bird Deed' ||
-        editingRealEstate.ownership_form === 'Life Estate') {
+        @if (editingRealEstate.ownership_form === 'LadyBird' ||
+        editingRealEstate.ownership_form === 'LifeEstate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
@@ -2082,10 +2082,10 @@
               <option value="TBE">Tenants by the Entirety</option>
               } @if (editingRealEstate.owned_by !== 'Trust' &&
               editingRealEstate.owned_by !== 'LLC') {
-              <option value="Life Estate">Life Estate</option>
+              <option value="LifeEstate">Life Estate</option>
               }@if (editingRealEstate.owned_by !== 'Trust' &&
               editingRealEstate.owned_by !== 'LLC') {
-              <option value="Lady Bird Deed">
+              <option value="LadyBird">
                 Enhanced Life Estate (Lady Bird Deed)
               </option>
               } @if (editingRealEstate.owned_by === 'Trust') {
@@ -2160,8 +2160,8 @@
         </div>
 
         <!-- Beneficiary Information -->
-        @if (editingRealEstate.ownership_form === 'Lady Bird Deed' ||
-        editingRealEstate.ownership_form === 'Life Estate') {
+        @if (editingRealEstate.ownership_form === 'LadyBird' ||
+        editingRealEstate.ownership_form === 'LifeEstate') {
         <div class="form-group">
           <label>Beneficiaries on Deed</label>
           <textarea
