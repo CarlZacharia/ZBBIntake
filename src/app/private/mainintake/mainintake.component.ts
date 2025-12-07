@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PersonalComponent } from '../personal/personal.component';
 import { BeneficiariesComponent } from '../beneficiaries/beneficiaries.component';
-
 import { AssetsComponent } from '../assets/assets.component';
 import { SummaryComponent } from './summary/summary.component';
 import { DebtsComponent } from '../debts/debts.component';
@@ -13,10 +12,12 @@ import { PlanningComponent } from '../planning/planning.component';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { IClientData } from '../../models/case_data';
+import { EstatePlanComponent } from '../estateplan/estateplan.component';
+import { EstatePlanService } from '../../services/estateplan.service';
 
 @Component({
   selector: 'app-mainintake',
-  imports: [CommonModule, RouterLink, PersonalComponent, BeneficiariesComponent, AssetsComponent, DebtsComponent, SummaryComponent, PlanningComponent],
+  imports: [CommonModule, RouterLink, PersonalComponent, BeneficiariesComponent, AssetsComponent, DebtsComponent, SummaryComponent, PlanningComponent, PipesModule, EstatePlanComponent],
   templateUrl: './mainintake.component.html',
   styleUrl: './mainintake.component.css'
 })
@@ -32,8 +33,9 @@ export class MainintakeComponent {
   goToPlanning() {
     this.activeSection = 'planning';
   }
-  constructor(public ds: DataService, private authService: AuthService, private cdr: ChangeDetectorRef) {
-    // No assetsChanged observable; rely on Angular reactivity
+
+  constructor(public ds: DataService, private authService: AuthService, private cdr: ChangeDetectorRef, public estatePlanService: EstatePlanService) {
+
   }
 
   // Computed signals for reactive data access
@@ -150,6 +152,29 @@ export class MainintakeComponent {
       maximumFractionDigits: 0
     }).format(value);
   }
+
+get estatePlanCounts(): { wills: number; trusts: number; poas: number; healthcare: number } {
+  const plan = this.estatePlanService.getCurrentPlan();
+  if (!plan) {
+    return { wills: 0, trusts: 0, poas: 0, healthcare: 0 };
+  }
+
+  let wills = 0;
+  if (plan.clientWill) wills++;
+  if (plan.spouseWill) wills++;
+
+  const trusts = plan.trusts?.length || 0;
+
+  let poas = 0;
+  if (plan.clientFinancialPOA) poas++;
+  if (plan.spouseFinancialPOA) poas++;
+
+  let healthcare = 0;
+  if (plan.clientHealthcarePOA) healthcare++;
+  if (plan.spouseHealthcarePOA) healthcare++;
+
+  return { wills, trusts, poas, healthcare };
+}
 
   logout(): void {
     this.authService.logout();

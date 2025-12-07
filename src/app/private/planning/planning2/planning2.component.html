@@ -314,7 +314,7 @@
             <td>{{ categoryLabel(asset.category) }}</td>
             <td>{{ asset.name }}</td>
             <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
-            <td class="text-center">{{ asset.inheritors[0]?.name || 'Other' }}</td>
+            <td class="text-center">{{ asset.inheritors[0].name || 'Other' }}</td>
             <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
           </tr>
         </ng-container>

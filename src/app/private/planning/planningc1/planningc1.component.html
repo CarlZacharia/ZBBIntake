@@ -326,7 +326,7 @@
             <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
             <td class="text-center">
               <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
-                {{ asset.inheritors[0]?.name || spouseName }}
+                {{ asset.inheritors[0].name || spouseName }}
                 <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
               </span>
             </td>

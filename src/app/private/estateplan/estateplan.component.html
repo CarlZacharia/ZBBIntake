@@ -1,0 +1,850 @@
+<div class="estateplan-container">
+  <h2 class="section-title">Estate Plan Documents</h2>
+
+  <!-- Validation Alerts -->
+  <div *ngIf="validation && validation.hasConflicts" class="validation-alerts">
+    <div class="alert alert-warning">
+      <strong>⚠️ Potential Conflicts Detected:</strong>
+      <ul>
+        <li *ngFor="let conflict of validation.conflicts">{{ conflict.message }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Tab Navigation -->
+  <div class="tab-navigation">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'wills'"
+      (click)="setActiveTab('wills')">
+      Wills
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'trusts'"
+      (click)="setActiveTab('trusts')">
+      Trusts
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'poa'"
+      (click)="setActiveTab('poa')">
+      Powers of Attorney
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'healthcare'"
+      (click)="setActiveTab('healthcare')">
+      Healthcare Directives
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'fiduciaries'"
+      (click)="setActiveTab('fiduciaries')">
+      Fiduciary Pool
+    </button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- WILLS TAB -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'wills'" class="tab-content">
+    <!-- Will Sub-Tabs -->
+    <div class="sub-tab-navigation">
+      <button
+        class="sub-tab-btn"
+        [class.active]="activeWillSubTab === 'client'"
+        (click)="setWillSubTab('client')">
+        {{ clientName }}'s Will
+      </button>
+      <button
+        class="sub-tab-btn"
+        [class.active]="activeWillSubTab === 'spouse'"
+        (click)="setWillSubTab('spouse')">
+        {{ spouseName }}'s Will
+      </button>
+    </div>
+
+    <!-- Client Will -->
+    <div *ngIf="activeWillSubTab === 'client'" class="will-content">
+      <ng-container *ngIf="clientWill; else noClientWill">
+        <ng-container *ngTemplateOutlet="willEditor; context: { $implicit: clientWill, willType: 'client', ownerName: clientName }"></ng-container>
+      </ng-container>
+      <ng-template #noClientWill>
+        <div class="no-document">
+          <p>{{ clientName }}'s Will has not been created yet.</p>
+          <button class="btn btn-primary" (click)="initializeClientWill()">Create Will</button>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Spouse Will -->
+    <div *ngIf="activeWillSubTab === 'spouse'" class="will-content">
+      <ng-container *ngIf="spouseWill; else noSpouseWill">
+        <ng-container *ngTemplateOutlet="willEditor; context: { $implicit: spouseWill, willType: 'spouse', ownerName: spouseName }"></ng-container>
+      </ng-container>
+      <ng-template #noSpouseWill>
+        <div class="no-document">
+          <p>{{ spouseName }}'s Will has not been created yet.</p>
+          <button class="btn btn-primary" (click)="initializeSpouseWill()">Create Will</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TRUSTS TAB -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'trusts'" class="tab-content">
+    <div class="section-header">
+      <h3>Trusts</h3>
+      <button class="btn btn-primary btn-sm" (click)="addNewTrust()">+ Add Trust</button>
+    </div>
+
+    <div *ngIf="trusts.length === 0" class="no-document">
+      <p>No trusts have been added yet.</p>
+    </div>
+
+    <div *ngFor="let trust of trusts" class="trust-card">
+      <div class="card-header">
+        <input type="text" [(ngModel)]="trust.name" placeholder="Trust Name" class="form-control trust-name-input">
+        <button class="btn btn-danger btn-sm" (click)="removeTrust(trust.id)">Remove</button>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Trust Type</label>
+            <select [(ngModel)]="trust.type" class="form-control">
+              <option value="Revocable">Revocable Living Trust</option>
+              <option value="Irrevocable">Irrevocable Trust</option>
+              <option value="Testamentary">Testamentary Trust</option>
+              <option value="SpecialNeeds">Special Needs Trust</option>
+              <option value="ILIT">Irrevocable Life Insurance Trust (ILIT)</option>
+              <option value="QPRT">Qualified Personal Residence Trust (QPRT)</option>
+              <option value="GRAT">Grantor Retained Annuity Trust (GRAT)</option>
+              <option value="CRT">Charitable Remainder Trust (CRT)</option>
+              <option value="CLT">Charitable Lead Trust (CLT)</option>
+              <option value="SLAT">Spousal Lifetime Access Trust (SLAT)</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date Executed</label>
+            <input type="date" [(ngModel)]="trust.dateExecuted" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <select [(ngModel)]="trust.state" class="form-control">
+              <option value="">Select...</option>
+              <option *ngFor="let st of states" [value]="st">{{ st }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Grantor(s)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [checked]="trust.grantors.includes('Client')"
+                (change)="toggleGrantor(trust, 'Client')">
+              {{ clientName }}
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [checked]="trust.grantors.includes('Spouse')"
+                (change)="toggleGrantor(trust, 'Spouse')">
+              {{ spouseName }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Trustees -->
+        <fieldset class="fiduciary-fieldset">
+          <legend>Trustees</legend>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Primary Trustee</label>
+              <select [(ngModel)]="trust.trustees.primary" class="form-control">
+                <option [ngValue]="null">Select...</option>
+                <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Secondary Trustee</label>
+              <select [(ngModel)]="trust.trustees.secondary" class="form-control">
+                <option [ngValue]="null">Select...</option>
+                <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tertiary Trustee</label>
+              <select [(ngModel)]="trust.trustees.tertiary" class="form-control">
+                <option [ngValue]="null">Select...</option>
+                <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="trust.notes" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- POWERS OF ATTORNEY TAB -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'poa'" class="tab-content">
+    <div class="poa-grid">
+      <!-- Client POA -->
+      <div class="poa-card">
+        <h4>{{ clientName }}'s Financial Power of Attorney</h4>
+        <ng-container *ngIf="clientPOA; else noClientPOA">
+          <ng-container *ngTemplateOutlet="poaEditor; context: { $implicit: clientPOA, ownerName: clientName }"></ng-container>
+        </ng-container>
+        <ng-template #noClientPOA>
+          <div class="no-document">
+            <p>Not created yet.</p>
+            <button class="btn btn-primary btn-sm" (click)="initializeClientPOA()">Create POA</button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Spouse POA -->
+      <div class="poa-card">
+        <h4>{{ spouseName }}'s Financial Power of Attorney</h4>
+        <ng-container *ngIf="spousePOA; else noSpousePOA">
+          <ng-container *ngTemplateOutlet="poaEditor; context: { $implicit: spousePOA, ownerName: spouseName }"></ng-container>
+        </ng-container>
+        <ng-template #noSpousePOA>
+          <div class="no-document">
+            <p>Not created yet.</p>
+            <button class="btn btn-primary btn-sm" (click)="initializeSpousePOA()">Create POA</button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- HEALTHCARE DIRECTIVES TAB -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'healthcare'" class="tab-content">
+    <div class="healthcare-grid">
+      <!-- Client Healthcare -->
+      <div class="healthcare-card">
+        <h4>{{ clientName }}'s Healthcare Directive</h4>
+        <ng-container *ngIf="clientHealthcare; else noClientHealthcare">
+          <ng-container *ngTemplateOutlet="healthcareEditor; context: { $implicit: clientHealthcare, ownerName: clientName }"></ng-container>
+        </ng-container>
+        <ng-template #noClientHealthcare>
+          <div class="no-document">
+            <p>Not created yet.</p>
+            <button class="btn btn-primary btn-sm" (click)="initializeClientHealthcare()">Create Healthcare Directive</button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Spouse Healthcare -->
+      <div class="healthcare-card">
+        <h4>{{ spouseName }}'s Healthcare Directive</h4>
+        <ng-container *ngIf="spouseHealthcare; else noSpouseHealthcare">
+          <ng-container *ngTemplateOutlet="healthcareEditor; context: { $implicit: spouseHealthcare, ownerName: spouseName }"></ng-container>
+        </ng-container>
+        <ng-template #noSpouseHealthcare>
+          <div class="no-document">
+            <p>Not created yet.</p>
+            <button class="btn btn-primary btn-sm" (click)="initializeSpouseHealthcare()">Create Healthcare Directive</button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- FIDUCIARY POOL TAB -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'fiduciaries'" class="tab-content">
+    <div class="section-header">
+      <h3>Fiduciary Pool</h3>
+      <p class="section-description">
+        People and entities available to serve as executors, trustees, agents, or beneficiaries.
+      </p>
+    </div>
+
+    <!-- Automatic from Client Data -->
+    <fieldset class="fiduciary-section">
+      <legend>From Client Data</legend>
+      <p class="hint-text">These are automatically pulled from your children, family members, and charities.</p>
+
+      <div *ngIf="clientHeirsForDisplay.length === 0" class="no-items">
+        No family members or charities have been added to client data.
+      </div>
+
+      <table *ngIf="clientHeirsForDisplay.length > 0" class="fiduciary-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Relationship</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let heir of clientHeirsForDisplay">
+            <td>{{ heir.name }}</td>
+            <td>{{ heir.type }}</td>
+            <td>{{ heir.type === 'Charity' ? 'Entity' : 'Individual' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+
+    <!-- Manually Added -->
+    <fieldset class="fiduciary-section">
+      <legend>Additional People / Entities</legend>
+      <p class="hint-text">Add professionals, friends, or others not listed above.</p>
+      <button class="btn btn-primary btn-sm" (click)="openAddFiduciaryModal()" style="margin-bottom: 1rem;">+ Add Person/Entity</button>
+
+      <div *ngIf="manualFiduciaryPool.length === 0" class="no-items">
+        No additional fiduciaries have been added.
+      </div>
+
+      <table *ngIf="manualFiduciaryPool.length > 0" class="fiduciary-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Relationship</th>
+            <th>Type</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of manualFiduciaryPool">
+            <td>{{ member.name }}</td>
+            <td>{{ member.relationship }}</td>
+            <td>{{ member.isEntity ? member.entityType : 'Individual' }}</td>
+            <td>{{ member.phone }}</td>
+            <td>
+              <button class="btn btn-link btn-sm" (click)="openEditFiduciaryModal(member)">Edit</button>
+              <button class="btn btn-link btn-sm text-danger" (click)="removeFiduciary(member.id)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+
+    <!-- Combined Pool Summary -->
+    <fieldset class="fiduciary-section" *ngIf="fiduciaryPool.length > 0">
+      <legend>Combined Pool ({{ fiduciaryPool.length }} Total)</legend>
+      <p class="hint-text">All available people and entities for selection in estate planning documents.</p>
+      <div class="combined-pool-list">
+        <span *ngFor="let member of fiduciaryPool" class="pool-chip">{{ member.name }}</span>
+      </div>
+    </fieldset>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- TEMPLATES -->
+<!-- ============================================================ -->
+
+<!-- Will Editor Template -->
+<ng-template #willEditor let-will let-willType="willType" let-ownerName="ownerName">
+  <div class="will-editor">
+    <!-- Basic Info -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date Executed</label>
+        <input type="date" [(ngModel)]="will.dateExecuted" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>State</label>
+        <select [(ngModel)]="will.state" class="form-control">
+          <option value="">Select...</option>
+          <option *ngFor="let st of states" [value]="st">{{ st }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Executors -->
+    <fieldset class="fiduciary-fieldset">
+      <legend>Executors / Personal Representatives</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Primary</label>
+          <select [ngModel]="will.executors.primary?.poolId"
+                  (ngModelChange)="setExecutor(will, 'primary', $event)"
+                  class="form-control">
+            <option value="">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Secondary</label>
+          <select [ngModel]="will.executors.secondary?.poolId"
+                  (ngModelChange)="setExecutor(will, 'secondary', $event)"
+                  class="form-control">
+            <option value="">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tertiary</label>
+          <select [ngModel]="will.executors.tertiary?.poolId"
+                  (ngModelChange)="setExecutor(will, 'tertiary', $event)"
+                  class="form-control">
+            <option value="">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint-text">Don't see someone? <a (click)="openAddFiduciaryModal()" class="link">Add to Fiduciary Pool</a></p>
+    </fieldset>
+
+    <!-- Specific Devises (Real Property) -->
+    <fieldset class="bequest-fieldset">
+      <legend>Specific Devises (Real Property)</legend>
+      <div *ngIf="will.specificDevises.length === 0" class="no-items">
+        No specific devises added.
+      </div>
+      <div *ngFor="let devise of will.specificDevises" class="bequest-item" [class.has-conflict]="hasConflict(devise.assetId, devise.assetIdname)">
+        <div class="bequest-header">
+          <span class="asset-name">{{ devise.assetName }}</span>
+          <span class="asset-value" *ngIf="devise.assetValue">{{ devise.assetValue | currency:'USD':'symbol':'1.0-0' }}</span>
+          <button class="btn btn-link btn-sm text-danger" (click)="removeSpecificDevise(willType, devise.id)">Remove</button>
+        </div>
+        <div *ngIf="hasConflict(devise.assetId, devise.assetIdname)" class="conflict-warning">
+          ⚠️ {{ getConflictMessage(devise.assetId, devise.assetIdname) }}
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Primary Beneficiary</label>
+            <select [(ngModel)]="devise.primaryBeneficiary.poolId" class="form-control"
+                    (ngModelChange)="updateBeneficiaryName(devise.primaryBeneficiary, $event)">
+              <option value="">Select...</option>
+              <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Per Stirpes?</label>
+            <select [(ngModel)]="devise.primaryBeneficiary.perStirpes" class="form-control">
+              <option [ngValue]="true">Per Stirpes</option>
+              <option [ngValue]="false">Per Capita</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="add-bequest">
+        <label>Add Real Property:</label>
+        <select #deviseSelect (change)="onAddSpecificDevise(willType, deviseSelect.value); deviseSelect.value = ''" class="form-control">
+          <option value="">Select asset to add...</option>
+          <option *ngFor="let asset of getAvailableAssetsForDevise(willType)" [value]="getAssetKey(asset)">
+            {{ asset.name }} ({{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }})
+          </option>
+        </select>
+      </div>
+    </fieldset>
+
+    <!-- Specific Bequests (Personal Property) -->
+    <fieldset class="bequest-fieldset">
+      <legend>Specific Bequests (Personal Property)</legend>
+      <div *ngIf="will.specificBequests.length === 0" class="no-items">
+        No specific bequests added.
+      </div>
+      <div *ngFor="let bequest of will.specificBequests" class="bequest-item" [class.has-conflict]="hasConflict(bequest.assetId, bequest.assetIdname)">
+        <div class="bequest-header">
+          <span class="asset-name">{{ bequest.assetName }}</span>
+          <span class="asset-value" *ngIf="bequest.assetValue">{{ bequest.assetValue | currency:'USD':'symbol':'1.0-0' }}</span>
+          <button class="btn btn-link btn-sm text-danger" (click)="removeSpecificBequest(willType, bequest.id)">Remove</button>
+        </div>
+        <div *ngIf="hasConflict(bequest.assetId, bequest.assetIdname)" class="conflict-warning">
+          ⚠️ {{ getConflictMessage(bequest.assetId, bequest.assetIdname) }}
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Primary Beneficiary</label>
+            <select [(ngModel)]="bequest.primaryBeneficiary.poolId" class="form-control"
+                    (ngModelChange)="updateBeneficiaryName(bequest.primaryBeneficiary, $event)">
+              <option value="">Select...</option>
+              <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Per Stirpes?</label>
+            <select [(ngModel)]="bequest.primaryBeneficiary.perStirpes" class="form-control">
+              <option [ngValue]="true">Per Stirpes</option>
+              <option [ngValue]="false">Per Capita</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="add-bequest">
+        <label>Add Personal Property:</label>
+        <select #bequestSelect (change)="onAddSpecificBequest(willType, bequestSelect.value); bequestSelect.value = ''" class="form-control">
+          <option value="">Select asset to add...</option>
+          <option *ngFor="let asset of getAvailableAssetsForBequest(willType)" [value]="getAssetKey(asset)">
+            {{ asset.name }} ({{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }})
+          </option>
+        </select>
+      </div>
+    </fieldset>
+
+    <!-- General Bequests (Cash) -->
+    <fieldset class="bequest-fieldset">
+      <legend>General Bequests (Cash)</legend>
+      <div *ngIf="will.generalBequests.length === 0" class="no-items">
+        No general bequests added.
+      </div>
+      <div *ngFor="let bequest of will.generalBequests" class="bequest-item">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Amount</label>
+            <input type="number" [(ngModel)]="bequest.amount" class="form-control" placeholder="0">
+          </div>
+          <div class="form-group flex-2">
+            <label>Beneficiary</label>
+            <select [(ngModel)]="bequest.primaryBeneficiary.poolId" class="form-control"
+                    (ngModelChange)="updateBeneficiaryName(bequest.primaryBeneficiary, $event)">
+              <option value="">Select...</option>
+              <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" [(ngModel)]="bequest.description" class="form-control" placeholder="e.g., For education">
+          </div>
+          <div class="form-group form-group-btn">
+            <button class="btn btn-danger btn-sm" (click)="removeGeneralBequest(willType, bequest.id)">Remove</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="addGeneralBequest(willType)">+ Add Cash Bequest</button>
+    </fieldset>
+
+    <!-- Residuary -->
+    <fieldset class="residuary-fieldset">
+      <legend>Residuary Estate</legend>
+      <div class="form-group">
+        <label>Distribution Method</label>
+        <select [(ngModel)]="will.residuary.distributionMethod" class="form-control" style="max-width: 200px;">
+          <option value="perStirpes">Per Stirpes</option>
+          <option value="perCapita">Per Capita</option>
+        </select>
+      </div>
+
+      <h5>Primary Residuary Beneficiaries</h5>
+      <div class="residuary-total" [class.error]="getResiduaryTotal(will, 'primary') !== 100 && will.residuary.primaryBeneficiaries.length > 0">
+        Total: {{ getResiduaryTotal(will, 'primary') }}%
+        <span *ngIf="getResiduaryTotal(will, 'primary') !== 100 && will.residuary.primaryBeneficiaries.length > 0"> (must equal 100%)</span>
+      </div>
+      <div *ngFor="let bene of will.residuary.primaryBeneficiaries; let i = index" class="residuary-row">
+        <select [(ngModel)]="bene.poolId" class="form-control"
+                (ngModelChange)="updateBeneficiaryName(bene, $event)">
+          <option value="">Select...</option>
+          <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+        </select>
+        <input type="number" [(ngModel)]="bene.percentage" class="form-control percentage-input" placeholder="%">
+        <span class="percent-sign">%</span>
+        <button class="btn btn-link btn-sm text-danger" (click)="removeResiduaryBeneficiary(willType, 'primary', i)">Remove</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="addResiduaryBeneficiary(willType, 'primary')">+ Add Primary Beneficiary</button>
+
+      <h5 style="margin-top: 1rem;">Contingent Residuary Beneficiaries</h5>
+      <p class="hint-text">If all primary beneficiaries predecease.</p>
+      <div class="residuary-total" [class.error]="getResiduaryTotal(will, 'contingent') !== 100 && will.residuary.contingentBeneficiaries.length > 0">
+        Total: {{ getResiduaryTotal(will, 'contingent') }}%
+      </div>
+      <div *ngFor="let bene of will.residuary.contingentBeneficiaries; let i = index" class="residuary-row">
+        <select [(ngModel)]="bene.poolId" class="form-control"
+                (ngModelChange)="updateBeneficiaryName(bene, $event)">
+          <option value="">Select...</option>
+          <option *ngFor="let f of fiduciaryPool" [value]="f.id">{{ f.name }}</option>
+        </select>
+        <input type="number" [(ngModel)]="bene.percentage" class="form-control percentage-input" placeholder="%">
+        <span class="percent-sign">%</span>
+        <button class="btn btn-link btn-sm text-danger" (click)="removeResiduaryBeneficiary(willType, 'contingent', i)">Remove</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="addResiduaryBeneficiary(willType, 'contingent')">+ Add Contingent Beneficiary</button>
+    </fieldset>
+
+    <!-- Notes -->
+    <fieldset>
+      <legend>Additional Notes</legend>
+      <textarea [(ngModel)]="will.notes" class="form-control" rows="3" placeholder="Any special provisions or notes..."></textarea>
+    </fieldset>
+  </div>
+</ng-template>
+
+<!-- POA Editor Template -->
+<ng-template #poaEditor let-poa let-ownerName="ownerName">
+  <div class="poa-editor">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type</label>
+        <select [(ngModel)]="poa.type" class="form-control">
+          <option value="Durable">Durable</option>
+          <option value="Springing">Springing</option>
+          <option value="Limited">Limited</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date Executed</label>
+        <input type="date" [(ngModel)]="poa.dateExecuted" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>State</label>
+        <select [(ngModel)]="poa.state" class="form-control">
+          <option value="">Select...</option>
+          <option *ngFor="let st of states" [value]="st">{{ st }}</option>
+        </select>
+      </div>
+    </div>
+
+    <fieldset class="fiduciary-fieldset">
+      <legend>Agents</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Primary Agent</label>
+          <select [(ngModel)]="poa.agents.primary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Secondary Agent</label>
+          <select [(ngModel)]="poa.agents.secondary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tertiary Agent</label>
+          <select [(ngModel)]="poa.agents.tertiary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Special Powers</legend>
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="poa.giftingAuthority">
+          Gifting Authority
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="poa.realEstateAuthority">
+          Real Estate Authority
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="poa.retirementAccountAuthority">
+          Retirement Account Authority
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea [(ngModel)]="poa.notes" class="form-control" rows="2"></textarea>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Healthcare Editor Template -->
+<ng-template #healthcareEditor let-directive let-ownerName="ownerName">
+  <div class="healthcare-editor">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date Executed</label>
+        <input type="date" [(ngModel)]="directive.dateExecuted" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>State</label>
+        <select [(ngModel)]="directive.state" class="form-control">
+          <option value="">Select...</option>
+          <option *ngFor="let st of states" [value]="st">{{ st }}</option>
+        </select>
+      </div>
+    </div>
+
+    <fieldset class="fiduciary-fieldset">
+      <legend>Healthcare Surrogates / Agents</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Primary</label>
+          <select [(ngModel)]="directive.surrogates.primary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Secondary</label>
+          <select [(ngModel)]="directive.surrogates.secondary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tertiary</label>
+          <select [(ngModel)]="directive.surrogates.tertiary" class="form-control">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let f of fiduciaryPool" [ngValue]="selectFiduciary(f.id)">{{ f.name }}</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset *ngIf="directive.livingWillProvisions">
+      <legend>Living Will Provisions</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Terminal Condition</label>
+          <select [(ngModel)]="directive.livingWillProvisions.terminalCondition" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="WithholdLifeSupport">Withhold Life Support</option>
+            <option value="ContinueLifeSupport">Continue Life Support</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Permanent Unconscious</label>
+          <select [(ngModel)]="directive.livingWillProvisions.permanentUnconscious" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="WithholdLifeSupport">Withhold Life Support</option>
+            <option value="ContinueLifeSupport">Continue Life Support</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>End-Stage Condition</label>
+          <select [(ngModel)]="directive.livingWillProvisions.endStageCondition" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="WithholdLifeSupport">Withhold Life Support</option>
+            <option value="ContinueLifeSupport">Continue Life Support</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Artificial Nutrition/Hydration</label>
+          <select [(ngModel)]="directive.livingWillProvisions.artificialNutrition" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="Withhold">Withhold</option>
+            <option value="Continue">Continue</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pain Management</label>
+          <select [(ngModel)]="directive.livingWillProvisions.painManagement" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="AggressivePainRelief">Aggressive Pain Relief</option>
+            <option value="Standard">Standard</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Organ Donation</label>
+          <select [(ngModel)]="directive.livingWillProvisions.organDonation" class="form-control">
+            <option value="NotSpecified">Not Specified</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Limited">Limited</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea [(ngModel)]="directive.notes" class="form-control" rows="2"></textarea>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ============================================================ -->
+<!-- FIDUCIARY MODAL -->
+<!-- ============================================================ -->
+<div *ngIf="showFiduciaryModal" class="modal-overlay" (click)="cancelFiduciaryEdit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>{{ editingFiduciary?.id ? 'Edit' : 'Add' }} Person / Entity</h3>
+
+    <div *ngIf="editingFiduciary" class="modal-body">
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="editingFiduciary.isEntity">
+          This is an entity (not an individual)
+        </label>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label>{{ editingFiduciary.isEntity ? 'Entity Name' : 'Full Name' }} *</label>
+          <input type="text" [(ngModel)]="editingFiduciary.name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>{{ editingFiduciary.isEntity ? 'Entity Type' : 'Relationship' }}</label>
+          <select *ngIf="!editingFiduciary.isEntity" [(ngModel)]="editingFiduciary.relationship" class="form-control">
+            <option value="">Select...</option>
+            <option *ngFor="let rel of relationshipTypes" [value]="rel">{{ rel }}</option>
+          </select>
+          <select *ngIf="editingFiduciary.isEntity" [(ngModel)]="editingFiduciary.entityType" class="form-control">
+            <option value="">Select...</option>
+            <option value="Trust">Trust</option>
+            <option value="Bank">Bank/Trust Company</option>
+            <option value="Corporation">Corporation</option>
+            <option value="LawFirm">Law Firm</option>
+            <option value="Charity">Charity</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" [(ngModel)]="editingFiduciary.address" class="form-control">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label>City</label>
+          <input type="text" [(ngModel)]="editingFiduciary.city" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <select [(ngModel)]="editingFiduciary.state" class="form-control">
+            <option value="">Select...</option>
+            <option *ngFor="let st of states" [value]="st">{{ st }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ZIP</label>
+          <input type="text" [(ngModel)]="editingFiduciary.zip" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" [(ngModel)]="editingFiduciary.phone" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="editingFiduciary.email" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea [(ngModel)]="editingFiduciary.notes" class="form-control" rows="2"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cancelFiduciaryEdit()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveFiduciary()" [disabled]="!editingFiduciary?.name">Save</button>
+    </div>
+  </div>
+</div>

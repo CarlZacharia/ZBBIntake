@@ -98,6 +98,23 @@
         </div>
       </button>
 
+<button class="nav-card" [class.active]="activeSection === 'estateplan'" (click)="setActiveSection('estateplan')">
+        <div class="nav-card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H8V3a1 1 0 10-2 0zm0 4V4h8v2H6zm-2 2h12v10H4V6z" clip-rule="evenodd" />
+          </svg>
+          <span class="nav-title">Estate Plan</span>
+        </div>
+        <div class="nav-card-status">
+          <ul class="sidebar-counts">
+          <li>{{ estatePlanCounts.wills }} Will{{ estatePlanCounts.wills !== 1 ? 's' : '' }}</li>
+          <li>{{ estatePlanCounts.trusts }} Trust{{ estatePlanCounts.trusts !== 1 ? 's' : '' }}</li>
+          <li>{{ estatePlanCounts.poas }} POA{{ estatePlanCounts.poas !== 1 ? 's' : '' }}</li>
+          <li>{{ estatePlanCounts.healthcare }} Healthcare</li>
+          </ul>
+        </div>
+      </button>
+
         <!-- Estate Value Summary (distinct, styled div) -->
         <div class="estate-summary-card" style="margin: 1.5em 0; padding: 1em; border-radius: 8px; background: #f7fafc; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 2px solid #cbd5e1;">
           <h3 style="margin-bottom: 0.5em; color: #2d3748; font-weight: 600;text-align: center;text-decoration: underline;">ESTATE VALUE SUMMARY</h3>
@@ -179,7 +196,10 @@
         <app-debts></app-debts>
       </div>
 
-
+      <!--Estate Plan Component-->
+      <div *ngIf="activeSection === 'estateplan'">
+        <app-estateplan></app-estateplan>
+      </div>
 
       <!-- Planning Component -->
       <div *ngIf="activeSection === 'planning'">
