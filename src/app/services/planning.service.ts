@@ -187,6 +187,8 @@ export class PlanningService {
       ownedBy,
       ownershipForm,
       approximate_value: r.approximate_value ?? null,
+      primary_beneficiaries: r.primary_beneficiaries,
+      contingent_beneficiaries: r.contingent_beneficiaries,
     };
   }
 

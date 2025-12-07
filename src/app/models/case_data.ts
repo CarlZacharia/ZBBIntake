@@ -49,6 +49,8 @@ export interface IRealEstate {
    * Computed name for display: property_type, address_line1, city, state
    */
   name?: string;
+  primary_beneficiaries: [],
+  contingent_beneficiaries: [],
 }
 
 /**

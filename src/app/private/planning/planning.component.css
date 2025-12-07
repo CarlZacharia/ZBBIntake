@@ -1,68 +1,240 @@
 /* Planning Component Custom Color Scheme */
 .planning-container {
-	background: #f0f6ff;
-	border-radius: 10px;
-	padding: 2rem;
-	box-shadow: 0 2px 8px rgba(0, 80, 180, 0.08);
+  background: #f0f6ff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 80, 180, 0.08);
 }
 
 .planning-container h2 {
-	color: #1a4a7a;
-	border-bottom: 2px solid #1a4a7a;
-	padding-bottom: 0.5rem;
+  color: #1a4a7a;
+  border-bottom: 2px solid #1a4a7a;
+  padding-bottom: 0.5rem;
 }
 
+/* Main table title styling (Client Assets, Spouse Assets, etc.) */
+.table-main-title {
+  font-size: 1.5rem;
+  color: #1a4a7a;
+  border-bottom: 3px solid #1a4a7a;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Section title for each sub-table (Client Probate Assets, etc.) */
+.table-section-title {
+  font-size: 1.15rem;
+  color: #fff;
+  background: #2a7ab9;
+  padding: 0.6rem 1rem;
+  margin: 1.5rem 0 0 0;
+  border-radius: 6px 6px 0 0;
+  letter-spacing: 0.3px;
+}
+
+/* Section divider between major sections (Client vs Spouse vs Trust vs LLC) */
+.section-divider {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #1a4a7a, #2a7ab9, #1a4a7a);
+  margin: 2.5rem 0 1.5rem 0;
+  border-radius: 4px;
+}
+
+/* Heirs section */
 .heirs-section h3 {
-	color: #2a7ab9;
+  color: #2a7ab9;
 }
 
 .heir-type {
-	font-weight: bold;
-	color: #1a4a7a;
+  font-weight: bold;
+  color: #1a4a7a;
 }
 
 .heir-name {
-	color: #0d2c4a;
+  color: #0d2c4a;
 }
 
+/* Assets section */
 .assets-section h3 {
-	color: #1a4a7a;
-	margin-top: 2rem;
+  color: #1a4a7a;
+  margin-top: 2rem;
 }
 
 .asset-group {
-	margin-bottom: 2rem;
-	background: #e6f0fa;
-	border-radius: 8px;
-	padding: 1rem;
-	box-shadow: 0 1px 4px rgba(0, 80, 180, 0.05);
+  margin-bottom: 2rem;
+  background: #e6f0fa;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 80, 180, 0.05);
 }
 
 .beneficiary-group {
-	color: #fff;
-	background: #2a7ab9;
-	padding: 0.5rem 1rem;
-	border-radius: 6px;
-	display: inline-block;
+  color: #fff;
+  background: #2a7ab9;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  display: inline-block;
 }
 
+/* Main assets table styling */
 .planning-assets-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 0.5rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 80, 180, 0.1);
 }
 
-.planning-assets-table th, .planning-assets-table td {
-	border: 1px solid #b3d1f3;
-	padding: 0.5rem 1rem;
-	text-align: left;
+.planning-assets-table th,
+.planning-assets-table td {
+  border: 1px solid #b3d1f3;
+  padding: 0.6rem 1rem;
+  text-align: left;
 }
 
 .planning-assets-table th {
-	background: #d0e6fa;
-	color: #1a4a7a;
+  background: #1a4a7a;
+  color: #fff;
+  font-weight: 600;
+  border-color: #1a4a7a;
 }
 
-.planning-assets-table tr:nth-child(even) {
-	background: #f7fbff;
+.planning-assets-table tbody tr:nth-child(odd):not(.subtotal-row) {
+  background: #fff;
+}
+
+.planning-assets-table tbody tr:nth-child(even):not(.subtotal-row) {
+  background: #f7fbff;
+}
+
+.planning-assets-table tbody tr:hover:not(.subtotal-row) {
+  background: #e6f0fa;
+}
+
+/* Subtotal row styling */
+.subtotal-row td {
+  background: #d0e6fa !important;
+  border-top: 2px solid #1a4a7a;
+  padding: 0.6rem 1rem;
+}
+
+/* Beneficiary sub-row styling */
+.beneficiary-row td {
+  background: #e8f4e8 !important;
+  padding: 0.6rem 1rem 0.6rem 2rem !important;
+  border-top: none !important;
+}
+
+.beneficiary-details {
+  font-size: 0.9rem;
+  color: #2d5a2d;
+}
+
+/* Beneficiary toggle button */
+.bene-toggle {
+  cursor: pointer;
+  color: #2a7ab9;
+  font-weight: 500;
+  user-select: none;
+}
+
+.bene-toggle:hover {
+  color: #1a4a7a;
+  text-decoration: underline;
+}
+
+.toggle-icon {
+  font-size: 0.7rem;
+  margin-left: 0.3rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+  cursor:pointer;
+}
+
+.beneficiary-tables {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.beneficiary-table-wrapper {
+  flex: 1;
+  min-width: 200px;
+  max-width: 350px;
+}
+
+.beneficiary-subtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.beneficiary-subtable th {
+  background: #3d8b3d;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.beneficiary-subtable td {
+  background: #f0f8f0;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #c5e1c5;
+}
+
+.beneficiary-subtable tr:nth-child(even) td {
+  background: #e0f0e0;
+}
+
+/* No assets message (simple text when no table) */
+.no-assets-message {
+  font-style: italic;
+  color: #6b7c93;
+  margin: 1rem 0 1.5rem 0;
+  padding: 0;
+}
+
+/* Text alignment utilities */
+.text-center,
+.planning-assets-table th.text-center,
+.planning-assets-table td.text-center {
+  text-align: center !important;
+}
+
+.text-right,
+.planning-assets-table th.text-right,
+.planning-assets-table td.text-right {
+  text-align: right !important;
+}
+
+/* Ensure subtotal row values are right-aligned */
+.subtotal-row td {
+  text-align: right !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .planning-container {
+    padding: 1rem;
+  }
+
+  .planning-assets-table th,
+  .planning-assets-table td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .table-section-title {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .table-main-title {
+    font-size: 1.25rem;
+  }
 }

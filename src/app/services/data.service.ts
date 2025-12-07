@@ -943,6 +943,8 @@ export class DataService {
       other_owners: asset.other_owners ?? null,
       ownership_value: asset.ownership_value ?? null,
       has_bene: asset.has_bene ?? 'No',
+      primary_beneficiaries: asset.primary_beneficiaries ?? [],
+      contingent_beneficiaries: asset.contingent_beneficiaries ?? [],
     };
     this._clientdata.update((current) => ({
       ...current,
@@ -1701,6 +1703,8 @@ export class DataService {
     other_owners: null,
     ownership_value: null,
     has_bene: 'No',
+    primary_beneficiaries: [],
+    contingent_beneficiaries: [],
   };
 
   public bankAccount: IBankAccount = {

@@ -1,55 +1,871 @@
 <div class="planning-container">
-	<h2>Planning Overview</h2>
+  <h2>Planning Overview</h2>
 
-	<div class="heirs-section" style="display: flex; gap: 2em; align-items: flex-start;">
-		<div class="heirs-column" style="flex: 1; margin-top: 1.5em;">
-			<h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Client Heirs</h3>
-			<ul style="list-style: none; padding: 0;">
-				<li *ngFor="let heir of clientHeirs" style="display: flex; gap: 0.5em; align-items: center;">
-					<span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
-					<span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
-				</li>
-			</ul>
-		</div>
-		<div class="heirs-column" style="flex: 1; margin-top: 1.5em;" *ngIf="spouseHeirs.length">
-			<h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Spouse Heirs</h3>
-			<ul style="list-style: none; padding: 0;">
-				<li *ngFor="let heir of spouseHeirs" style="display: flex; gap: 0.5em; align-items: center;">
-					<span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
-					<span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
-				</li>
-			</ul>
-		</div>
-	</div>
+  <!-- Heirs Section -->
+  <div class="heirs-section" style="display: flex; gap: 2em; align-items: flex-start;">
+    <div class="heirs-column" style="flex: 1; margin-top: 1.5em;">
+      <h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Client Heirs</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li *ngFor="let heir of clientHeirs" style="display: flex; gap: 0.5em; align-items: center;">
+          <span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
+          <span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="heirs-column" style="flex: 1; margin-top: 1.5em;" *ngIf="spouseHeirs.length">
+      <h3 style="font-size: 1.25em; font-weight: 700; color: #2b6cb0; margin-bottom: 0.75em; letter-spacing: 0.5px;">Spouse Heirs</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li *ngFor="let heir of spouseHeirs" style="display: flex; gap: 0.5em; align-items: center;">
+          <span class="heir-type" style="display: inline-block; min-width: 110px; font-weight: 500;">{{ heir.type }}</span>
+          <span style="display: inline-block; min-width: 140px;">{{ heir.name }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-<div style="width:100%; height:10px; background-color:darkblue;margin-top:30px;margin-bottom:30px"></div>
+  <!-- ============================================================ -->
+  <!-- CLIENT ASSETS SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-divider"></div>
+  <h2 class="table-main-title">Client Assets</h2>
 
+  <!-- Client Probate Assets -->
+  <ng-container *ngIf="clientProbateAssets.length; else noClientProbate">
+    <h3 class="table-section-title">Client Probate Assets</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of clientProbateAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientProbate>
+    <p class="no-assets-message">No client probate assets</p>
+  </ng-template>
 
-<h2 style="font-size: 1.5rem;">All Normalized Assets (JSON)</h2>
-<pre style="background:#f5f5f5; padding:1em; border-radius:6px; max-height:400px; overflow:auto;">
-		{{ normalized | json }}
-</pre>
+  <!-- Client Non-Probate Assets -->
+  <ng-container *ngIf="clientNonProbateAssets.length; else noClientNonProbate">
+    <h3 class="table-section-title">Client Non-Probate Assets</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of clientNonProbateAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientNonProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientNonProbate>
+    <p class="no-assets-message">No client non-probate assets</p>
+  </ng-template>
 
-<h2 style="font-size: 1.25rem; margin-top:2em;">Sample Real Estate Table</h2>
-<table style="width:100%; border-collapse:collapse; margin-bottom:2em;">
-	<thead>
-		<tr style="background:#e2e8f0;">
-			<th style="padding:0.5em; border:1px solid #cbd5e1;">Name</th>
-			<th style="padding:0.5em; border:1px solid #cbd5e1;">Owned By</th>
-			<th style="padding:0.5em; border:1px solid #cbd5e1;">Ownership Form</th>
-			<th style="padding:0.5em; border:1px solid #cbd5e1;">Approx. Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr *ngFor="let asset of normalized.realEstate">
-			<td style="padding:0.5em; border:1px solid #cbd5e1;">{{ asset.name }}</td>
-			<td style="padding:0.5em; border:1px solid #cbd5e1;">{{ asset.ownedBy }}</td>
-			<td style="padding:0.5em; border:1px solid #cbd5e1;">{{ ownershipFormLabel(asset.ownershipForm) }}</td>
-      <td style="padding:0.5em; border:1px solid #cbd5e1;">{{ asset.has_bene }}</td>
-			<td style="padding:0.5em; border:1px solid #cbd5e1;">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
-		</tr>
-	</tbody>
-</table>
+  <!-- Client Joint with Spouse -->
+  <ng-container *ngIf="clientJointWithSpouseAssets.length; else noClientJointSpouse">
+    <h3 class="table-section-title">Client Joint with Spouse</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of clientJointWithSpouseAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientJointWithSpouseTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientJointSpouse>
+    <p class="no-assets-message">No client joint with spouse assets</p>
+  </ng-template>
 
+  <!-- Client Joint with Spouse and Others -->
+  <ng-container *ngIf="clientJointWithSpouseAndOthersAssets.length; else noClientJointSpouseOthers">
+    <h3 class="table-section-title">Client Joint with Spouse and Others</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of clientJointWithSpouseAndOthersAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientJointWithSpouseAndOthersTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientJointSpouseOthers>
+    <p class="no-assets-message">No client joint with spouse and others assets</p>
+  </ng-template>
+
+  <!-- Client and Others -->
+  <ng-container *ngIf="clientAndOthersAssets.length; else noClientOthers">
+    <h3 class="table-section-title">Client and Others</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of clientAndOthersAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientAndOthersTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientOthers>
+    <p class="no-assets-message">No client and others assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- SPOUSE ASSETS SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-divider"></div>
+  <h2 class="table-main-title">Spouse Assets</h2>
+
+  <!-- Spouse Probate Assets -->
+  <ng-container *ngIf="spouseProbateAssets.length; else noSpouseProbate">
+    <h3 class="table-section-title">Spouse Probate Assets</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of spouseProbateAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ spouseProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseProbate>
+    <p class="no-assets-message">No spouse probate assets</p>
+  </ng-template>
+
+  <!-- Spouse Non-Probate Assets -->
+  <ng-container *ngIf="spouseNonProbateAssets.length; else noSpouseNonProbate">
+    <h3 class="table-section-title">Spouse Non-Probate Assets</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of spouseNonProbateAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ spouseNonProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseNonProbate>
+    <p class="no-assets-message">No spouse non-probate assets</p>
+  </ng-template>
+
+  <!-- Spouse Joint with Client -->
+  <ng-container *ngIf="spouseJointWithClientAssets.length; else noSpouseJointClient">
+    <h3 class="table-section-title">Spouse Joint with Client</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of spouseJointWithClientAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientJointWithSpouseTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseJointClient>
+    <p class="no-assets-message">No spouse joint with client assets</p>
+  </ng-template>
+
+  <!-- Spouse Joint with Client and Others -->
+  <ng-container *ngIf="spouseJointWithClientAndOthersAssets.length; else noSpouseJointClientOthers">
+    <h3 class="table-section-title">Spouse Joint with Client and Others</h3>
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of spouseJointWithClientAndOthersAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ clientJointWithSpouseAndOthersTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseJointClientOthers>
+    <p class="no-assets-message">No spouse joint with client and others assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- TRUST ASSETS SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-divider"></div>
+  <h2 class="table-main-title">Trust Assets</h2>
+
+  <ng-container *ngIf="trustAssets.length; else noTrustAssets">
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of trustAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Total Trust Assets:</strong></td>
+          <td class="text-right"><strong>{{ trustTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noTrustAssets>
+    <p class="no-assets-message">No trust assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- LLC ASSETS SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-divider"></div>
+  <h2 class="table-main-title">LLC Assets</h2>
+
+  <ng-container *ngIf="llcAssets.length; else noLLCAssets">
+    <table class="planning-assets-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Ownership Form</th>
+          <th class="text-center">Beneficiaries?</th>
+          <th class="text-right">Approx. Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of llcAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ ownershipFormLabel(asset.ownershipForm) }}</td>
+            <td class="text-center">
+              <span *ngIf="asset.has_bene !== 'Yes'">{{ getBeneficiaryLabel(asset.has_bene) }}</span>
+              <span *ngIf="asset.has_bene === 'Yes'" class="bene-toggle" (click)="toggleBeneficiaryDetails(asset)">
+                Yes <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.approximate_value | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="asset.has_bene === 'Yes' && isExpanded(asset)" class="beneficiary-row">
+            <td colspan="5">
+              <div class="beneficiary-details">
+                <div class="beneficiary-tables">
+                  <div *ngIf="asset.primary_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Primary Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.primary_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="asset.contingent_beneficiaries?.length" class="beneficiary-table-wrapper">
+                    <table class="beneficiary-subtable">
+                      <thead>
+                        <tr><th colspan="3">Contingent Beneficiaries</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let bene of asset.contingent_beneficiaries">
+                          <td>{{ bene.name }}</td>
+                          <td class="text-right">{{ bene.percentage }}%</td>
+                          <td class="text-right">{{ bene.calculated_value | currency }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Total LLC Assets:</strong></td>
+          <td class="text-right"><strong>{{ llcTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noLLCAssets>
+    <p class="no-assets-message">No LLC assets</p>
+  </ng-template>
 
 </div>
