@@ -36,6 +36,7 @@ type WillSubTab = 'client' | 'spouse';
   styleUrls: ['./estateplan.component.css'],
 })
 export class EstatePlanComponent implements OnInit, OnDestroy {
+
   // Tab state
   activeTab: EstatePlanTab = 'wills';
   activeWillSubTab: WillSubTab = 'client';
@@ -409,6 +410,27 @@ export class EstatePlanComponent implements OnInit, OnDestroy {
     const will = willType === 'client' ? this.clientWill : this.spouseWill;
     if (!will) return;
 
+    const ownedBy = (asset.ownedBy || '').toString();
+    const isJointlyOwned = ownedBy.includes('Client') && ownedBy.includes('Spouse');
+
+    // Create primary beneficiary - auto-populate spouse if jointly owned
+    let primaryBene = createEmptyBeneficiaryDesignation();
+
+    if (isJointlyOwned) {
+      // For Client's Will, auto-populate Spouse as primary; for Spouse's Will, auto-populate Client
+      const coOwner = willType === 'client' ? 'spouse' : 'client';
+      const coOwnerFiduciary = this.fiduciaryPool.find(f => f.id === coOwner);
+      if (coOwnerFiduciary) {
+        primaryBene = {
+          poolId: coOwnerFiduciary.id,
+          name: coOwnerFiduciary.name,
+          percentage: 100,
+          perStirpes: false,
+          isEntity: coOwnerFiduciary.isEntity || false
+        };
+      }
+    }
+
     const devise: SpecificDevise = {
       id: this.generateId(),
       assetId: asset.id,
@@ -416,7 +438,9 @@ export class EstatePlanComponent implements OnInit, OnDestroy {
       assetName: asset.name,
       assetValue: Number(asset.approximate_value) || 0,
       description: '',
-      primaryBeneficiary: createEmptyBeneficiaryDesignation(),
+      primaryBeneficiary: primaryBene,
+      alternateBeneficiary: createEmptyBeneficiaryDesignation(),
+      isJointlyOwned: isJointlyOwned  // Flag for UI display
     };
 
     this.estatePlanService.addSpecificDevise(will, devise);
@@ -441,6 +465,26 @@ export class EstatePlanComponent implements OnInit, OnDestroy {
     const will = willType === 'client' ? this.clientWill : this.spouseWill;
     if (!will) return;
 
+    const ownedBy = (asset.ownedBy || '').toString();
+    const isJointlyOwned = ownedBy.includes('Client') && ownedBy.includes('Spouse');
+
+    // Create primary beneficiary - auto-populate spouse if jointly owned
+    let primaryBene = createEmptyBeneficiaryDesignation();
+
+    if (isJointlyOwned) {
+      const coOwner = willType === 'client' ? 'spouse' : 'client';
+      const coOwnerFiduciary = this.fiduciaryPool.find(f => f.id === coOwner);
+      if (coOwnerFiduciary) {
+        primaryBene = {
+          poolId: coOwnerFiduciary.id,
+          name: coOwnerFiduciary.name,
+          percentage: 100,
+          perStirpes: false,
+          isEntity: coOwnerFiduciary.isEntity || false
+        };
+      }
+    }
+
     const bequest: SpecificBequest = {
       id: this.generateId(),
       assetId: asset.id,
@@ -448,7 +492,9 @@ export class EstatePlanComponent implements OnInit, OnDestroy {
       assetName: asset.name,
       assetValue: Number(asset.approximate_value) || 0,
       description: '',
-      primaryBeneficiary: createEmptyBeneficiaryDesignation(),
+      primaryBeneficiary: primaryBene,
+      alternateBeneficiary: createEmptyBeneficiaryDesignation(),
+      isJointlyOwned: isJointlyOwned
     };
 
     this.estatePlanService.addSpecificBequest(will, bequest);

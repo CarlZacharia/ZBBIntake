@@ -637,6 +637,7 @@ export interface IMaritalInfo {
   previous_marriages: IPreviousMarriage[];
   divorce_obligations: string | null;
   divorce_decree_restrictions: string | null;
+  notes: string | null;
 }
 
 export interface IPersonal {
@@ -656,6 +657,7 @@ export interface IPersonal {
   city: string | null;
   state: string | null;
   zip: string | null;
+  notes: string | null;
   citizenship_country: string | null;
   years_at_address: number | null;
   mobile_phone: string | null;

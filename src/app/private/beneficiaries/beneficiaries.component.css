@@ -6,6 +6,14 @@ input[type="radio"] {
   height: 18px;
   background: #fff;
   box-shadow: 0 0 0 2px #143a6a1a;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input[type="radio"]:checked {
+  background: #143a6a;
+  box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px #143a6a1a;
 }
 /* Clean, equal-width name input row */
 .name-row {

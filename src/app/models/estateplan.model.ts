@@ -102,6 +102,7 @@ export interface SpecificDevise {
   description?: string;         // Additional description
   primaryBeneficiary: BeneficiaryDesignation;
   alternateBeneficiary?: BeneficiaryDesignation;
+  isJointlyOwned?: boolean;     // Flag if property is owned with spouse
 }
 
 export interface SpecificBequest {
@@ -116,6 +117,7 @@ export interface SpecificBequest {
   description?: string;
   primaryBeneficiary: BeneficiaryDesignation;
   alternateBeneficiary?: BeneficiaryDesignation;
+  isJointlyOwned?: boolean;     // Flag if property is owned with spouse
 }
 
 export interface GeneralBequest {

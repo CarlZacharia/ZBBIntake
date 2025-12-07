@@ -143,6 +143,7 @@ export class DataService {
       city: '',
       state: '',
       zip: '',
+      notes: null,
       years_at_address: null,
       mobile_phone: null,
       home_phone: null,
@@ -181,6 +182,7 @@ export class DataService {
       previous_marriages: [],
       divorce_obligations: null,
       divorce_decree_restrictions: null,
+      notes: null,
     },
     children: [],
     family_members: [],
@@ -1875,7 +1877,6 @@ export class DataService {
 
   /**
    * Reset case data (for logout or new user)
-   */
   resetclientdata(): void {
     this._clientdata.set({
       client: {
@@ -1916,6 +1917,7 @@ export class DataService {
         military_service: 'No',
         military_branch: null,
         military_service_dates: null,
+        notes: null,
       },
       marital_info: {
         marital_id: null,
@@ -1943,6 +1945,7 @@ export class DataService {
         previous_marriages: [],
         divorce_obligations: null,
         divorce_decree_restrictions: null,
+        notes: null,
       },
       children: [],
       family_members: [],
