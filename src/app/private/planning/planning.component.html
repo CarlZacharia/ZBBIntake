@@ -18,15 +18,13 @@
     <button
       class="view-toggle-btn"
       [class.active]="currentView === 'spouseFirst'"
-      (click)="setView('spouseFirst')"
-      [disabled]="true">
+      (click)="setView('spouseFirst')">
       {{ spouseName }} Passes First
     </button>
     <button
       class="view-toggle-btn"
       [class.active]="currentView === 'bothDeceased'"
-      (click)="setView('bothDeceased')"
-      [disabled]="true">
+      (click)="setView('bothDeceased')">
       Both Deceased
     </button>
   </div>
@@ -40,20 +38,24 @@
     </app-planningc1>
   </ng-container>
 
-  <!-- Spouse Passes First Scenario (Coming Soon) -->
+  <!-- Spouse Passes First Scenario -->
   <ng-container *ngIf="currentView === 'spouseFirst'">
-    <div class="coming-soon">
-      <h3>{{ spouseName }} Passes First Scenario</h3>
-      <p>Coming soon...</p>
-    </div>
+    <app-plannings1
+      [normalizedAssets]="normalized"
+      [clientName]="clientName"
+      [spouseName]="spouseName">
+    </app-plannings1>
   </ng-container>
 
-  <!-- Both Deceased Scenario (Coming Soon) -->
+  <!-- Both Deceased Scenario -->
   <ng-container *ngIf="currentView === 'bothDeceased'">
-    <div class="coming-soon">
-      <h3>Both Deceased Scenario</h3>
-      <p>Coming soon...</p>
-    </div>
+    <app-planning2
+      [normalizedAssets]="normalized"
+      [clientName]="clientName"
+      [spouseName]="spouseName"
+      [clientHeirs]="clientHeirs"
+      [spouseHeirs]="spouseHeirs">
+    </app-planning2>
   </ng-container>
 
   <!-- Current Overview (existing content) -->

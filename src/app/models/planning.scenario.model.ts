@@ -2,7 +2,7 @@
 
 export interface ScenarioAsset {
   // Original asset data
-  id: number;
+  id: string | number;
   idname: string;
   name: string;
   category: string;
@@ -88,19 +88,46 @@ export interface SpousePassesFirstScenario {
   grandTotal: number;
 }
 
-// Both Deceased Scenario (for future use)
+// Both Deceased Scenario
 export interface BothDeceasedScenario {
-  combinedProbate: ScenarioAsset[];
-  combinedNonProbate: ScenarioAsset[];
+  // Assets organized by original source/mechanism
+  clientProbateAssets: ScenarioAsset[];
+  spouseProbateAssets: ScenarioAsset[];
+  beneficiaryDesignationAssets: ScenarioAsset[];
+  otherJointOwnerAssets: ScenarioAsset[];
   trustAssets: ScenarioAsset[];
   llcAssets: ScenarioAsset[];
 
-  // Totals
-  combinedProbateTotal: number;
-  combinedNonProbateTotal: number;
+  // Distribution organized by heir/beneficiary
+  heirDistributions: HeirDistribution[];
+
+  // Totals by category
+  clientProbateTotal: number;
+  spouseProbateTotal: number;
+  beneficiaryDesignationTotal: number;
+  otherJointOwnerTotal: number;
   trustAssetsTotal: number;
   llcAssetsTotal: number;
   grandTotal: number;
+}
+
+export interface HeirDistribution {
+  name: string;
+  relationship: string;  // 'Child', 'Grandchild', 'Sibling', 'Charity', 'Trust', 'Other', etc.
+  source: 'Client' | 'Spouse' | 'Both' | 'Beneficiary' | 'Joint Owner';
+  assets: HeirAsset[];
+  totalValue: number;
+}
+
+export interface HeirAsset {
+  assetId: string | number;
+  assetIdname: string;
+  assetName: string;
+  category: string;
+  transferMechanism: TransferMechanism;
+  percentage: number;
+  value: number;
+  originalOwner: string;  // Who owned the asset originally
 }
 
 // Master container for all scenarios

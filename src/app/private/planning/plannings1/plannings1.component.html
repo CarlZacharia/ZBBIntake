@@ -1,0 +1,458 @@
+<div class="scenario-container" *ngIf="scenario">
+  <h2 class="scenario-title">Scenario: {{ spouseName }} Passes First</h2>
+  <p class="scenario-description">
+    This scenario shows how assets would be distributed if {{ spouseName }} passes away first,
+    with {{ clientName }} surviving.
+  </p>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card probate">
+      <div class="card-label">Spouse Probate</div>
+      <div class="card-value">{{ scenario.spouseProbateTotal | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="summary-card non-probate">
+      <div class="card-label">Spouse Non-Probate</div>
+      <div class="card-value">{{ scenario.spouseNonProbateTotal | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="summary-card joint-client">
+      <div class="card-label">To Client (Survivorship)</div>
+      <div class="card-value">{{ scenario.spouseJointClientTotal | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="summary-card other">
+      <div class="card-label">To Others</div>
+      <div class="card-value">{{ (scenario.spouseOtherTotal + scenario.spouseJointOtherTotal) | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="summary-card client-sole">
+      <div class="card-label">Client Retains</div>
+      <div class="card-value">{{ scenario.clientSoleTotal | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="summary-card entity">
+      <div class="card-label">Entity Assets</div>
+      <div class="card-value">{{ (scenario.trustAssetsTotal + scenario.llcAssetsTotal) | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SPOUSE PROBATE ASSETS -->
+  <!-- ============================================================ -->
+  <div class="section-divider"></div>
+  <ng-container *ngIf="scenario.spouseProbate.length; else noSpouseProbate">
+    <h3 class="table-section-title probate-title">Spouse Probate Assets</h3>
+    <p class="section-note">Assets passing through {{ spouseName }}'s estate via probate</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Transfer Method</th>
+          <th class="text-center">Inheritors</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.spouseProbate">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">
+              <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
+                {{ asset.inheritors.length }} {{ asset.inheritors.length === 1 ? 'Inheritor' : 'Inheritors' }}
+                <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="isExpanded(asset)" class="detail-row">
+            <td colspan="5">
+              <div class="inheritor-details">
+                <table class="inheritor-subtable">
+                  <thead>
+                    <tr>
+                      <th>Inheritor</th>
+                      <th>Relationship</th>
+                      <th class="text-right">Share</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inheritor of asset.inheritors">
+                      <td>{{ inheritor.name }}</td>
+                      <td>{{ inheritor.relationship }}</td>
+                      <td class="text-right">{{ formatPercent(inheritor.percentage) }}</td>
+                      <td class="text-right">{{ inheritor.value | currency:'USD':'symbol':'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.spouseProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseProbate>
+    <h3 class="table-section-title probate-title">Spouse Probate Assets</h3>
+    <p class="no-assets-message">No assets passing through probate</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- SPOUSE NON-PROBATE ASSETS -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.spouseNonProbate.length; else noSpouseNonProbate">
+    <h3 class="table-section-title non-probate-title">Spouse Non-Probate Assets</h3>
+    <p class="section-note">Assets passing by beneficiary designation, life estate, or deed</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Transfer Method</th>
+          <th class="text-center">Inheritors</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.spouseNonProbate">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">
+              <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
+                {{ asset.inheritors.length }} {{ asset.inheritors.length === 1 ? 'Inheritor' : 'Inheritors' }}
+                <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="isExpanded(asset)" class="detail-row">
+            <td colspan="5">
+              <div class="inheritor-details">
+                <table class="inheritor-subtable">
+                  <thead>
+                    <tr>
+                      <th>Inheritor</th>
+                      <th>Relationship</th>
+                      <th class="text-right">Share</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inheritor of asset.inheritors">
+                      <td>{{ inheritor.name }}</td>
+                      <td>{{ inheritor.relationship }}</td>
+                      <td class="text-right">{{ formatPercent(inheritor.percentage) }}</td>
+                      <td class="text-right">{{ inheritor.value | currency:'USD':'symbol':'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.spouseNonProbateTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseNonProbate>
+    <h3 class="table-section-title non-probate-title">Spouse Non-Probate Assets</h3>
+    <p class="no-assets-message">No non-probate assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- SPOUSE JOINT WITH CLIENT -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.spouseJointClient.length; else noSpouseJointClient">
+    <h3 class="table-section-title joint-client-title">Assets Passing to {{ clientName }} by Survivorship</h3>
+    <p class="section-note">Jointly-owned assets passing to {{ clientName }} by right of survivorship</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Transfer Method</th>
+          <th class="text-center">Inheritors</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.spouseJointClient">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">
+              <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
+                {{ asset.inheritors.length }} {{ asset.inheritors.length === 1 ? 'Inheritor' : 'Inheritors' }}
+                <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="isExpanded(asset)" class="detail-row">
+            <td colspan="5">
+              <div class="inheritor-details">
+                <table class="inheritor-subtable">
+                  <thead>
+                    <tr>
+                      <th>Inheritor</th>
+                      <th>Relationship</th>
+                      <th class="text-right">Share</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inheritor of asset.inheritors">
+                      <td>{{ inheritor.name }}</td>
+                      <td>{{ inheritor.relationship }}</td>
+                      <td class="text-right">{{ formatPercent(inheritor.percentage) }}</td>
+                      <td class="text-right">{{ inheritor.value | currency:'USD':'symbol':'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.spouseJointClientTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseJointClient>
+    <h3 class="table-section-title joint-client-title">Assets Passing to {{ clientName }} by Survivorship</h3>
+    <p class="no-assets-message">No jointly-owned assets with client</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- SPOUSE OTHER (Passes to non-client joint owners) -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.spouseOther.length; else noSpouseOther">
+    <h3 class="table-section-title other-title">Assets Passing to Other Joint Owners</h3>
+    <p class="section-note">Assets passing to non-client joint owners by survivorship or retained by them</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Transfer Method</th>
+          <th class="text-center">Inheritors</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.spouseOther">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">
+              <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
+                {{ asset.inheritors.length }} {{ asset.inheritors.length === 1 ? 'Inheritor' : 'Inheritors' }}
+                <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="isExpanded(asset)" class="detail-row">
+            <td colspan="5">
+              <div class="inheritor-details">
+                <table class="inheritor-subtable">
+                  <thead>
+                    <tr>
+                      <th>Inheritor</th>
+                      <th>Relationship</th>
+                      <th class="text-right">Share</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inheritor of asset.inheritors">
+                      <td>{{ inheritor.name }}</td>
+                      <td>{{ inheritor.relationship }}</td>
+                      <td class="text-right">{{ formatPercent(inheritor.percentage) }}</td>
+                      <td class="text-right">{{ inheritor.value | currency:'USD':'symbol':'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.spouseOtherTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noSpouseOther>
+    <h3 class="table-section-title other-title">Assets Passing to Other Joint Owners</h3>
+    <p class="no-assets-message">No assets passing to other joint owners</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- CLIENT SOLE (Unaffected) -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.clientSole.length; else noClientSole">
+    <h3 class="table-section-title client-sole-title">{{ clientName }}'s Assets (Unaffected)</h3>
+    <p class="section-note">Assets owned solely by {{ clientName }} or {{ clientName }}'s share of jointly-owned assets</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th class="text-center">Owner</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.clientSole">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">
+              <span class="inheritor-toggle" (click)="toggleAssetDetails(asset)">
+                {{ asset.inheritors[0].name || clientName }}
+                <span class="toggle-icon">{{ isExpanded(asset) ? '▼' : '▶' }}</span>
+              </span>
+            </td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="isExpanded(asset)" class="detail-row">
+            <td colspan="5">
+              <div class="inheritor-details">
+                <table class="inheritor-subtable">
+                  <thead>
+                    <tr>
+                      <th>Owner</th>
+                      <th>Relationship</th>
+                      <th class="text-right">Share</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inheritor of asset.inheritors">
+                      <td>{{ inheritor.name }}</td>
+                      <td>{{ inheritor.relationship }}</td>
+                      <td class="text-right">{{ formatPercent(inheritor.percentage) }}</td>
+                      <td class="text-right">{{ inheritor.value | currency:'USD':'symbol':'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.clientSoleTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noClientSole>
+    <h3 class="table-section-title client-sole-title">{{ clientName }}'s Assets (Unaffected)</h3>
+    <p class="no-assets-message">No assets solely owned by {{ clientName }}</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- TRUST ASSETS -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.trustAssets.length; else noTrustAssets">
+    <h3 class="table-section-title trust-title">Trust Assets</h3>
+    <p class="section-note">Assets held in trust - distribution governed by trust terms</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th class="text-center">Beneficiaries</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.trustAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">Per Trust Terms</td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.trustAssetsTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noTrustAssets>
+    <h3 class="table-section-title trust-title">Trust Assets</h3>
+    <p class="no-assets-message">No trust assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- LLC ASSETS -->
+  <!-- ============================================================ -->
+  <ng-container *ngIf="scenario.llcAssets.length; else noLLCAssets">
+    <h3 class="table-section-title llc-title">LLC Assets</h3>
+    <p class="section-note">Assets held in LLC - distribution governed by operating agreement</p>
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Asset Type</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th class="text-center">Members</th>
+          <th class="text-right">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let asset of scenario.llcAssets">
+          <tr>
+            <td>{{ categoryLabel(asset.category) }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ transferMechanismLabel(asset.transferMechanism) }}</td>
+            <td class="text-center">Per Operating Agreement</td>
+            <td class="text-right">{{ asset.calculatedValue | currency:'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+        </ng-container>
+        <tr class="subtotal-row">
+          <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+          <td class="text-right"><strong>{{ scenario.llcAssetsTotal | currency:'USD':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noLLCAssets>
+    <h3 class="table-section-title llc-title">LLC Assets</h3>
+    <p class="no-assets-message">No LLC assets</p>
+  </ng-template>
+
+  <!-- ============================================================ -->
+  <!-- GRAND TOTAL -->
+  <!-- ============================================================ -->
+  <div class="grand-total-section">
+    <div class="grand-total-row">
+      <span class="grand-total-label">Total Estate Value:</span>
+      <span class="grand-total-value">{{ scenario.grandTotal | currency:'USD':'symbol':'1.0-0' }}</span>
+    </div>
+  </div>
+
+</div>

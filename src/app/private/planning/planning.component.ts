@@ -5,13 +5,15 @@ import { DataService } from '../../services/data.service';
 import { NormalizedAssets, Asset } from '../../models/asset.model';
 import { CommonModule } from '@angular/common';
 import { Planningc1Component } from '../planning/planningc1/planningc1.component';
+import { Plannings1Component } from '../planning/plannings1/plannings1.component';
+import { Planning2Component } from '../planning/planning2/planning2.component';
 
 type PlanningView = 'overview' | 'clientFirst' | 'spouseFirst' | 'bothDeceased';
 
 @Component({
   selector: 'app-planning',
   standalone: true,
-  imports: [CommonModule, Planningc1Component],
+  imports: [CommonModule, Planningc1Component, Plannings1Component, Planning2Component],
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.css'],
 })
@@ -59,7 +61,7 @@ export class PlanningComponent implements OnInit {
     return this.normalized.all.filter(
       (a) =>
         a.ownedBy === 'Client' &&
-        a.ownershipForm === 'Sole' &&
+        (a.ownershipForm as string) === 'Sole Ownership' &&
         this.isNoBeneficiary(a.has_bene)
     );
   }
@@ -70,7 +72,7 @@ export class PlanningComponent implements OnInit {
     return this.normalized.all.filter(
       (a) =>
         a.ownedBy === 'Client' &&
-        a.ownershipForm === 'Sole' &&
+        (a.ownershipForm as string) === 'Sole Ownership' &&
         this.hasBeneficiary(a.has_bene)
     );
   }
@@ -107,7 +109,7 @@ export class PlanningComponent implements OnInit {
     return this.normalized.all.filter(
       (a) =>
         a.ownedBy === 'Spouse' &&
-        a.ownershipForm === 'Sole' &&
+        (a.ownershipForm as string) === 'Sole Ownership' &&
         this.isNoBeneficiary(a.has_bene)
     );
   }
@@ -118,7 +120,7 @@ export class PlanningComponent implements OnInit {
     return this.normalized.all.filter(
       (a) =>
         a.ownedBy === 'Spouse' &&
-        a.ownershipForm === 'Sole' &&
+        (a.ownershipForm as string) === 'Sole Ownership' &&
         this.hasBeneficiary(a.has_bene)
     );
   }
@@ -255,12 +257,18 @@ export class PlanningComponent implements OnInit {
         return 'Joint Tenants with Right of Survivorship';
       case 'TIC':
         return 'Tenants in Common';
-      case 'Sole':
+      case 'Sole Ownership':
         return 'Sole Ownership';
       case 'Trust':
         return 'Trust';
       case 'LLC':
         return 'LLC';
+      case 'LifeEstate':
+        return 'Life Estate';
+      case 'LadyBird':
+        return 'Lady Bird Deed';
+      case 'LandContract':
+        return 'Land Contract';
       default:
         return form || '';
     }

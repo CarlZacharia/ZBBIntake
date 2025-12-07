@@ -1,0 +1,306 @@
+/* plannings1.component.css - Spouse Passes First Scenario */
+
+.scenario-container {
+  background: #faf5ff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.scenario-title {
+  font-size: 1.75rem;
+  color: #553c9a;
+  margin-bottom: 0.5rem;
+  border-bottom: 3px solid #6b46c1;
+  padding-bottom: 0.5rem;
+}
+
+.scenario-description {
+  color: #4a5568;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 150px;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card .card-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-card .card-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summary-card.probate {
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+  color: #742a2a;
+}
+
+.summary-card.non-probate {
+  background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+  color: #22543d;
+}
+
+.summary-card.joint-client {
+  background: linear-gradient(135deg, #e9d8fd 0%, #d6bcfa 100%);
+  color: #44337a;
+}
+
+.summary-card.other {
+  background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);
+  color: #744210;
+}
+
+.summary-card.client-sole {
+  background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+  color: #2a4365;
+}
+
+.summary-card.entity {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+  color: #2d3748;
+}
+
+/* Section Divider */
+.section-divider {
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(to right, #553c9a, #9f7aea, #553c9a);
+  margin: 2rem 0 1.5rem 0;
+  border-radius: 3px;
+}
+
+/* Table Section Titles */
+.table-section-title {
+  font-size: 1.15rem;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  margin: 1.5rem 0 0 0;
+  border-radius: 6px 6px 0 0;
+  letter-spacing: 0.3px;
+}
+
+.probate-title {
+  background: #c53030;
+}
+
+.non-probate-title {
+  background: #2f855a;
+}
+
+.joint-client-title {
+  background: #6b46c1;
+}
+
+.other-title {
+  background: #b7791f;
+}
+
+.client-sole-title {
+  background: #2b6cb0;
+}
+
+.trust-title {
+  background: #4a5568;
+}
+
+.llc-title {
+  background: #2d3748;
+}
+
+.section-note {
+  font-size: 0.9rem;
+  color: #718096;
+  margin: 0 0 0.5rem 0;
+  padding: 0.5rem 1rem;
+  background: #f7fafc;
+  border-left: 3px solid #d6bcfa;
+}
+
+/* Scenario Tables */
+.scenario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scenario-table th,
+.scenario-table td {
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1rem;
+  text-align: left;
+}
+
+.scenario-table th {
+  background: #44337a;
+  color: #fff;
+  font-weight: 600;
+}
+
+.scenario-table tbody tr:nth-child(odd):not(.subtotal-row):not(.detail-row) {
+  background: #fff;
+}
+
+.scenario-table tbody tr:nth-child(even):not(.subtotal-row):not(.detail-row) {
+  background: #faf5ff;
+}
+
+.scenario-table tbody tr:hover:not(.subtotal-row):not(.detail-row) {
+  background: #f3e8ff;
+}
+
+/* Subtotal Row */
+.subtotal-row td {
+  background: #e9d8fd !important;
+  border-top: 2px solid #44337a;
+  padding: 0.6rem 1rem;
+}
+
+/* Detail/Inheritor Row */
+.detail-row td {
+  background: #f3e8ff !important;
+  padding: 0.6rem 1rem 0.6rem 2rem !important;
+  border-top: none !important;
+}
+
+.inheritor-details {
+  padding: 0.5rem 0;
+}
+
+.inheritor-subtable {
+  width: 100%;
+  max-width: 600px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.inheritor-subtable th {
+  background: #6b46c1;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.inheritor-subtable td {
+  background: #faf5ff;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #e9d8fd;
+}
+
+.inheritor-subtable tr:nth-child(even) td {
+  background: #f3e8ff;
+}
+
+/* Toggle styles */
+.inheritor-toggle {
+  cursor: pointer;
+  color: #6b46c1;
+  font-weight: 500;
+  user-select: none;
+}
+
+.inheritor-toggle:hover {
+  color: #44337a;
+  text-decoration: underline;
+}
+
+.toggle-icon {
+  font-size: 0.7rem;
+  margin-left: 0.3rem;
+  display: inline-block;
+}
+
+/* No assets message */
+.no-assets-message {
+  font-style: italic;
+  color: #718096;
+  margin: 0.5rem 0 1.5rem 0;
+  padding: 0.75rem 1rem;
+  background: #faf5ff;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Text alignment */
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/* Grand Total Section */
+.grand-total-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #6b46c1 0%, #44337a 100%);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.grand-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grand-total-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e9d8fd;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.grand-total-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .scenario-container {
+    padding: 1rem;
+  }
+
+  .summary-cards {
+    flex-direction: column;
+  }
+
+  .summary-card {
+    min-width: 100%;
+  }
+
+  .scenario-table th,
+  .scenario-table td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .grand-total-value {
+    font-size: 1.5rem;
+  }
+}
