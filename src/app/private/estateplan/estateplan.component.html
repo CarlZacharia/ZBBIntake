@@ -128,10 +128,7 @@
               <option value="Other">Other</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Date Executed</label>
-            <input type="date" [(ngModel)]="trust.dateExecuted" class="form-control">
-          </div>
+
           <div class="form-group">
             <label>State</label>
             <select [(ngModel)]="trust.state" class="form-control">
@@ -637,10 +634,7 @@
           <option value="Limited">Limited</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Date Executed</label>
-        <input type="date" [(ngModel)]="poa.dateExecuted" class="form-control">
-      </div>
+
       <div class="form-group">
         <label>State</label>
         <select [(ngModel)]="poa.state" class="form-control">
@@ -706,10 +700,7 @@
 <ng-template #healthcareEditor let-directive let-ownerName="ownerName">
   <div class="healthcare-editor">
     <div class="form-row">
-      <div class="form-group">
-        <label>Date Executed</label>
-        <input type="date" [(ngModel)]="directive.dateExecuted" class="form-control">
-      </div>
+
       <div class="form-group">
         <label>State</label>
         <select [(ngModel)]="directive.state" class="form-control">

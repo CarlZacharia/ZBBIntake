@@ -301,6 +301,7 @@ export class EstatePlanComponent implements OnInit, OnDestroy {
       const ref = this.selectFiduciary(poolId);
       will.executors[position] = ref;
     }
+    console.log('Client Will ', this.clientWill);
     this.estatePlanService.setClientWill(this.clientWill);
   }
 

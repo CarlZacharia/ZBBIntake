@@ -161,7 +161,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'ClientWill',
             null,
-            $will['dateExecuted'] ?? null,
             $will['state'] ?? null
         ]);
     }
@@ -173,7 +172,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'SpouseWill',
             null,
-            $will['dateExecuted'] ?? null,
             $will['state'] ?? null
         ]);
     }
@@ -185,7 +183,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
                 $portal_user_id,
                 'Trust',
                 $trust['name'] ?? null,
-                $trust['dateExecuted'] ?? null,
                 $trust['state'] ?? null
             ]);
         }
@@ -198,7 +195,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'ClientFinancialPOA',
             null,
-            $poa['dateExecuted'] ?? null,
             $poa['state'] ?? null
         ]);
     }
@@ -210,7 +206,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'SpouseFinancialPOA',
             null,
-            $poa['dateExecuted'] ?? null,
             $poa['state'] ?? null
         ]);
     }
@@ -222,7 +217,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'ClientHealthcare',
             null,
-            $hc['dateExecuted'] ?? null,
             $hc['state'] ?? null
         ]);
     }
@@ -234,7 +228,6 @@ function syncDocumentMetadata($pdo, $portal_user_id, $planData) {
             $portal_user_id,
             'SpouseHealthcare',
             null,
-            $hc['dateExecuted'] ?? null,
             $hc['state'] ?? null
         ]);
     }

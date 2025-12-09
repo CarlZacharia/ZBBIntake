@@ -92,6 +92,7 @@ export class EstatePlanService {
    * Save estate plan to server
    */
   saveEstatePlan(portalUserId?: number): Observable<any> {
+    console.log('EP ', this.estatePlan);
     const userId = portalUserId || this.portalUserId;
     if (!userId) {
       return throwError(() => new Error('No portal_user_id set'));

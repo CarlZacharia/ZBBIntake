@@ -74,7 +74,6 @@ export interface BeneficiaryDesignation {
 
 export interface Will {
   testator: 'Client' | 'Spouse';
-  dateExecuted?: string;
   state?: string;
 
   executors: FiduciaryDesignation;
@@ -140,7 +139,6 @@ export interface Trust {
   id: string;
   name: string;
   type: TrustType;
-  dateExecuted?: string;
   state?: string;
 
   grantors: ('Client' | 'Spouse' | 'Both')[];
@@ -183,7 +181,6 @@ export interface TrustBeneficiary {
 export interface PowerOfAttorney {
   principal: 'Client' | 'Spouse';
   type: 'Durable' | 'Springing' | 'Limited';
-  dateExecuted?: string;
   state?: string;
 
   agents: FiduciaryDesignation;
@@ -200,7 +197,6 @@ export interface PowerOfAttorney {
 
 export interface HealthcareDirective {
   principal: 'Client' | 'Spouse';
-  dateExecuted?: string;
   state?: string;
 
   surrogates: FiduciaryDesignation;     // Healthcare agents/proxies
@@ -268,7 +264,6 @@ export function createEmptyEstatePlan(): EstatePlan {
 export function createEmptyWill(testator: 'Client' | 'Spouse'): Will {
   return {
     testator,
-    dateExecuted: undefined,
     state: undefined,
     executors: {
       primary: null,
@@ -292,7 +287,6 @@ export function createEmptyTrust(): Trust {
     id: generateId(),
     name: '',
     type: 'Revocable',
-    dateExecuted: undefined,
     state: undefined,
     grantors: [],
     trustees: {
@@ -310,7 +304,6 @@ export function createEmptyPOA(principal: 'Client' | 'Spouse'): PowerOfAttorney 
   return {
     principal,
     type: 'Durable',
-    dateExecuted: undefined,
     state: undefined,
     agents: {
       primary: null,
@@ -327,7 +320,6 @@ export function createEmptyPOA(principal: 'Client' | 'Spouse'): PowerOfAttorney 
 export function createEmptyHealthcareDirective(principal: 'Client' | 'Spouse'): HealthcareDirective {
   return {
     principal,
-    dateExecuted: undefined,
     state: undefined,
     surrogates: {
       primary: null,
