@@ -36,7 +36,9 @@ type WillSubTab = 'client' | 'spouse';
   styleUrls: ['./estateplan.component.css'],
 })
 export class EstatePlanComponent implements OnInit, OnDestroy {
-
+  specdev: boolean = false;
+  specbeq: boolean = false;
+  genbeq: boolean = false;
   // Tab state
   activeTab: EstatePlanTab = 'wills';
   activeWillSubTab: WillSubTab = 'client';

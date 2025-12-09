@@ -356,19 +356,21 @@
 <ng-template #willEditor let-will let-willType="willType" let-ownerName="ownerName">
   <div class="will-editor">
     <!-- Basic Info -->
-    <div class="form-row">
-      <div class="form-group">
-        <label>Date Executed</label>
-        <input type="date" [(ngModel)]="will.dateExecuted" class="form-control">
+
+      <div class="mb-6" style="display: flex; flex-direction: row; gap: 2em; align-items: center;background-color:black; color:white; padding:10px">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" [(ngModel)]="specdev" name="specdev" />
+          Include Gift of Land?
+        </label>
+        <label class="flex items-center gap-2">
+          <input type="checkbox" [(ngModel)]="specbeq" name="specbeq" />
+          Include Gift of Specific Items?
+        </label>
+        <label class="flex items-center gap-2">
+          <input type="checkbox" [(ngModel)]="genbeq" name="genbeq" />
+          Include Gift of  an Amount of Money?
+        </label>
       </div>
-      <div class="form-group">
-        <label>State</label>
-        <select [(ngModel)]="will.state" class="form-control">
-          <option value="">Select...</option>
-          <option *ngFor="let st of states" [value]="st">{{ st }}</option>
-        </select>
-      </div>
-    </div>
 
     <!-- Executors -->
     <fieldset class="fiduciary-fieldset">
@@ -406,7 +408,7 @@
     </fieldset>
 
     <!-- Specific Devises (Real Property) -->
-    <fieldset class="bequest-fieldset">
+    <fieldset class="bequest-fieldset" *ngIf="specdev">
       <legend>Specific Devises (Real Property)</legend>
       <div *ngIf="will.specificDevises.length === 0" class="no-items">
         No specific devises added.
@@ -472,7 +474,7 @@
     </fieldset>
 
     <!-- Specific Bequests (Personal Property) -->
-    <fieldset class="bequest-fieldset">
+    <fieldset class="bequest-fieldset" *ngIf="specbeq">
       <legend>Specific Bequests (Personal Property)</legend>
       <div *ngIf="will.specificBequests.length === 0" class="no-items">
         No specific bequests added.
@@ -538,7 +540,7 @@
     </fieldset>
 
     <!-- General Bequests (Cash) -->
-    <fieldset class="bequest-fieldset">
+    <fieldset class="bequest-fieldset" *ngIf="genbeq">
       <legend>General Bequests (Cash)</legend>
       <div *ngIf="will.generalBequests.length === 0" class="no-items">
         No general bequests added.
