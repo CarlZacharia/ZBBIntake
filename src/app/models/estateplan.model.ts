@@ -74,7 +74,7 @@ export interface BeneficiaryDesignation {
 
 export interface Will {
   testator: 'Client' | 'Spouse';
-  state?: string;
+
 
   executors: FiduciaryDesignation;
 
@@ -139,7 +139,7 @@ export interface Trust {
   id: string;
   name: string;
   type: TrustType;
-  state?: string;
+
 
   grantors: ('Client' | 'Spouse' | 'Both')[];
 
@@ -181,7 +181,7 @@ export interface TrustBeneficiary {
 export interface PowerOfAttorney {
   principal: 'Client' | 'Spouse';
   type: 'Durable' | 'Springing' | 'Limited';
-  state?: string;
+
 
   agents: FiduciaryDesignation;
 
@@ -197,7 +197,7 @@ export interface PowerOfAttorney {
 
 export interface HealthcareDirective {
   principal: 'Client' | 'Spouse';
-  state?: string;
+
 
   surrogates: FiduciaryDesignation;     // Healthcare agents/proxies
 
@@ -264,7 +264,6 @@ export function createEmptyEstatePlan(): EstatePlan {
 export function createEmptyWill(testator: 'Client' | 'Spouse'): Will {
   return {
     testator,
-    state: undefined,
     executors: {
       primary: null,
       secondary: null,
@@ -287,7 +286,6 @@ export function createEmptyTrust(): Trust {
     id: generateId(),
     name: '',
     type: 'Revocable',
-    state: undefined,
     grantors: [],
     trustees: {
       primary: null,
@@ -304,7 +302,6 @@ export function createEmptyPOA(principal: 'Client' | 'Spouse'): PowerOfAttorney 
   return {
     principal,
     type: 'Durable',
-    state: undefined,
     agents: {
       primary: null,
       secondary: null,
@@ -320,7 +317,6 @@ export function createEmptyPOA(principal: 'Client' | 'Spouse'): PowerOfAttorney 
 export function createEmptyHealthcareDirective(principal: 'Client' | 'Spouse'): HealthcareDirective {
   return {
     principal,
-    state: undefined,
     surrogates: {
       primary: null,
       secondary: null,
@@ -346,7 +342,6 @@ export function createEmptyFiduciaryPoolMember(): FiduciaryPoolMember {
     relationship: undefined,
     address: undefined,
     city: undefined,
-    state: undefined,
     zip: undefined,
     phone: undefined,
     email: undefined,
