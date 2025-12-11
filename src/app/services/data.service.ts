@@ -2052,12 +2052,14 @@ export class DataService {
   private parseJsonFields(data: IClientData): IClientData {
     // Parse beneficiary arrays in all asset types that have them
     const assetHoldings = [
+      'real_estate_holdings',
       'bank_account_holdings',
       'nq_account_holdings',
       'retirement_account_holdings',
       'life_insurance_holdings',
       'business_interest_holdings',
       'digital_asset_holdings',
+      'other_asset_holdings',
     ];
 
     if (data.assets) {

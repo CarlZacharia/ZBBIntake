@@ -411,7 +411,22 @@ export class PlanningScenarioService {
    */
   private createInheritorsFromBeneficiaries(asset: Asset, totalValue: number): Inheritor[] {
     const inheritors: Inheritor[] = [];
-    const beneficiaries = asset.primary_beneficiaries ?? [];
+
+    // Safely get beneficiaries array - handle string JSON, arrays, and null/undefined
+    let beneficiaries: any[] = [];
+    const rawBeneficiaries = asset.primary_beneficiaries;
+
+    if (Array.isArray(rawBeneficiaries)) {
+      beneficiaries = rawBeneficiaries;
+    } else if (typeof rawBeneficiaries === 'string' && rawBeneficiaries) {
+      // Try to parse JSON string
+      try {
+        const parsed = JSON.parse(rawBeneficiaries);
+        beneficiaries = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        beneficiaries = [];
+      }
+    }
 
     if (beneficiaries.length === 0) {
       return [{ name: 'Designated Beneficiary', relationship: 'Beneficiary', percentage: 100, value: totalValue }];
